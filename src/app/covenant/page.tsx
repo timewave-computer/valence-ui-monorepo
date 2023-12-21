@@ -43,7 +43,7 @@ const CovenantPage = () => {
   return (
     <main className="flex grow min-h-0 flex-col bg-white text-black">
       <div className="flex flex-row items-stretch grow min-h-0">
-        <div className="flex flex-col items-stretch w-[28rem] shrink-0 border-r border-black overflow-hidden">
+        <div className="overflow-y-auto flex flex-col items-stretch w-[28rem] shrink-0 border-r border-black overflow-hidden">
           <div className="px-4 py-6 flex flex-col gap-5 border-b-2 border-black">
             <h1 className="text-xl font-bold">Covenant</h1>
             <p className="text-sm">
@@ -64,11 +64,15 @@ const CovenantPage = () => {
             <Button onClick={() => {}}>Propose</Button>
           </div>
 
-          <div className="flex flex-col items-stretch overflow-y-auto grow">
+          <div className="flex flex-col items-stretch grow">
             <div className="p-4 flex flex-col gap-5 border-l-[6px] border-l-valence-red">
-              <h1 className="text-base bg-valence-red text-white py-1 px-2 self-start">
-                Party A
-              </h1>
+              <div className="flex flex-row items-center gap-2">
+                <div className="w-4 h-4 rounded-full bg-valence-red"></div>
+
+                <h1 className="text-base font-medium">
+                  Party A
+                </h1>
+              </div>
 
               <TextInput
                 input={partyA}
@@ -94,9 +98,13 @@ const CovenantPage = () => {
                 <div className="h-[2px] bg-black shrink-0"></div>
 
                 <div className="p-4 flex flex-col gap-5 border-l-[6px] border-valence-blue">
-                  <h1 className="text-base bg-valence-blue text-white py-1 px-2 self-start">
-                    Party B
-                  </h1>
+                  <div className="flex flex-row items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-valence-blue"></div>
+
+                    <h1 className="text-base font-medium">
+                      Party A
+                    </h1>
+                  </div>
 
                   <TextInput
                     input={partyB}
@@ -127,9 +135,13 @@ const CovenantPage = () => {
                 <div className="h-[2px] bg-black shrink-0"></div>
 
                 <div className="p-4 flex flex-col gap-5 border-l-[6px] border-valence-purple pb-20">
-                  <h1 className="text-base bg-valence-purple text-white py-1 px-2 self-start">
+                  <div className="flex flex-row items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-valence-purple"></div>
+
+                    <h1 className="text-base font-medium">
                     Both Parties
-                  </h1>
+                    </h1>
+                  </div>
 
                   {FIELDS[covenantType]!.both!.map((field) => (
                     <Field
@@ -373,10 +385,7 @@ const Field = ({ field, value, onChange, data }: FieldProps) => {
       {field.type === "text" ? (
         <TextInput input={value} onChange={onChange} />
       ) : field.type === "check" ? (
-        <Checkbox
-          checked={!!value}
-          onChange={onChange}
-        />
+        <Checkbox checked={!!value} onChange={onChange} />
       ) : field.type === "dropdown" ? (
         <Dropdown
           options={field.options}
@@ -974,8 +983,7 @@ const FIELDS: Record<
         key: "duration",
         type: "group",
         if: (data) =>
-          !!data?.durationStrategy &&
-          data.durationStrategy !== "none",
+          !!data?.durationStrategy && data.durationStrategy !== "none",
         fields: [
           {
             key: "blockHeight",
@@ -994,7 +1002,7 @@ const FIELDS: Record<
       {
         key: "ragequit",
         type: "text",
-        label: 'Ragequit penalty (in %)',
+        label: "Ragequit penalty (in %)",
       },
       {
         key: "liquidityDestination",
