@@ -41,7 +41,7 @@ const CovenantPage = () => {
   const [partyBParameterE, setPartyBParameterE] = useState(true);
 
   return (
-    <main className="flex h-screen flex-col bg-white text-black">
+    <main className="flex grow min-h-0 flex-col bg-white text-black">
       <div className="flex flex-row items-stretch grow min-h-0">
         <div className="flex flex-col items-stretch w-[28rem] shrink-0 border-r border-black overflow-hidden">
           <div className="px-4 py-6 flex flex-col gap-5 border-b-2 border-black">

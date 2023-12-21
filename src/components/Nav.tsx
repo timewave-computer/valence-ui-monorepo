@@ -7,7 +7,7 @@ export const Nav = () => {
   const path = usePathname();
 
   return (
-    <nav className="bg-white flex flex-row gap-6 items-center border-b border-black text-black">
+    <nav className="bg-white shrink-0 flex flex-row gap-6 items-center border-b-2 border-black text-black">
       <a className="flex justify-center items-center p-4" href="/">
         Valence
       </a>

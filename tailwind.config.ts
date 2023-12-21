@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'valence-gray': '#BABABA',
+        'valence-gray': '#D6D6D6',
         'valence-red': '#FF2A00',
         'valence-blue': '#00A3FF',
         'valence-purple': '#806780',
