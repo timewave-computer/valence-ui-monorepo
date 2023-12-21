@@ -2,36 +2,36 @@ import clsx from "clsx";
 import { useState } from "react";
 import { BsCheck2, BsChevronDown } from "react-icons/bs";
 
-export type DropdownOption = {
+export type DropdownOption<T extends string> = {
   label: string;
-  value: string;
+  value: T;
 };
 
-export type DropdownProps = {
+export type DropdownProps<T extends string> = {
   /**
    * The dropdown options.
    */
-  options: DropdownOption[];
+  options: DropdownOption<T>[];
   /**
    * The selected option value.
    */
-  selected: string | undefined;
+  selected: T | undefined;
   /**
    * The callback when an option is selected.
    */
-  onSelected: (value: string) => void;
+  onSelected: (value: T) => void;
   /**
    * The placeholder text when no option is selected.
    */
   placeholder?: string;
 };
 
-export const Dropdown = ({
+export const Dropdown = <T extends string>({
   options,
   selected,
   onSelected,
   placeholder = "Select",
-}: DropdownProps) => {
+}: DropdownProps<T>) => {
   const [visible, setVisible] = useState(false);
 
   const selectedOption = selected
@@ -43,8 +43,8 @@ export const Dropdown = ({
     <div className="relative">
       <button
         className={clsx(
-          "border border-slate-700 p-3 pl-4 flex flex-row gap-6 justify-between items-center bg-gray-950 min-w-[12rem]",
-          isPlaceholder ? "text-gray-400" : "text-white"
+          "w-full border border-slate-300 p-2 pl-3 flex flex-row gap-6 justify-between items-center min-w-[12rem] bg-white",
+          isPlaceholder ? "text-gray-700" : "text-black"
         )}
         onClick={() => setVisible(!visible)}
       >
@@ -53,13 +53,13 @@ export const Dropdown = ({
       </button>
 
       {visible && (
-        <div className="absolute z-10 top-[calc(100%-1px)] left-0 right-0 border border-slate-700 bg-gray-950 flex flex-col">
+        <div className="absolute z-10 top-[calc(100%-1px)] left-0 right-0 border border-slate-300 bg-gray-100 flex flex-col">
           {options.map((option, index) => (
             <button
               key={option.value}
               className={clsx(
-                "p-3 pl-4 flex flex-row gap-6 justify-between items-center hover hover:",
-                index < options.length - 1 && "border-b border-slate-700"
+                "p-3 pl-4 flex flex-row gap-6 justify-between items-center hover",
+                index < options.length - 1 && "border-b border-slate-300"
               )}
               onClick={() => {
                 onSelected(option.value);

@@ -1,4 +1,5 @@
-export * from './CheckCircle'
+export * from './Button'
+export * from './Checkbox'
 export * from './Dropdown'
 export * from './Header'
 export * from './TextInput'

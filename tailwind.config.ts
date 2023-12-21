@@ -8,6 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        'valence-gray': '#BABABA',
+        'valence-red': '#FF2A00',
+        'valence-blue': '#00A3FF',
+        'valence-purple': '#806780',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
