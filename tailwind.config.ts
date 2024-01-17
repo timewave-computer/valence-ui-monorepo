@@ -14,6 +14,7 @@ const config: Config = {
         "valence-red": "#FF2A00",
         "valence-blue": "#00A3FF",
         "valence-purple": "#806780",
+        "valence-bg-gray": "#E9E9E9",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

@@ -166,7 +166,7 @@ const CovenantPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col bg-valence-gray text-sm grow">
+        <div className="flex flex-col bg-valence-bg-gray text-sm grow">
           <div className="flex flex-row items-stretch justify-between border-b border-black">
             <div className="flex flex-row items-stretch">
               <div
