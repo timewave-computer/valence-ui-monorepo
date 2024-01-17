@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsCheck2, BsChevronDown } from "react-icons/bs";
 
 export type DropdownOption<T extends string> = {
@@ -24,6 +24,10 @@ export type DropdownProps<T extends string> = {
    * The placeholder text when no option is selected.
    */
   placeholder?: string;
+  /**
+   * An optional class name to apply to the container.
+   */
+  containerClassName?: string;
 };
 
 export const Dropdown = <T extends string>({
@@ -31,6 +35,7 @@ export const Dropdown = <T extends string>({
   selected,
   onSelected,
   placeholder = "Select",
+  containerClassName,
 }: DropdownProps<T>) => {
   const [visible, setVisible] = useState(false);
 
@@ -39,12 +44,34 @@ export const Dropdown = <T extends string>({
     : undefined;
   const isPlaceholder = !selectedOption;
 
+  // Close when click anywhere else.
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const onClick = (event: MouseEvent) => {
+      if (
+        event.target &&
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setVisible(false);
+      }
+    };
+
+    window.addEventListener("click", onClick);
+    return () => window.removeEventListener("click", onClick);
+  }, []);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         className={clsx(
-          "w-full border border-slate-300 p-2 pl-3 flex flex-row gap-6 justify-between items-center min-w-[12rem] bg-white",
-          isPlaceholder ? "text-gray-700" : "text-black"
+          "w-full h-full border border-slate-300 p-2 pl-3 flex flex-row gap-6 justify-between items-center min-w-[12rem] bg-white",
+          isPlaceholder ? "text-gray-700" : "text-black",
+          containerClassName
         )}
         onClick={() => setVisible(!visible)}
       >
@@ -58,7 +85,7 @@ export const Dropdown = <T extends string>({
             <button
               key={option.value}
               className={clsx(
-                "p-3 pl-4 flex flex-row gap-6 justify-between items-center hover",
+                "p-2 pl-3 flex flex-row gap-6 justify-between items-center hover",
                 index < options.length - 1 && "border-b border-slate-300"
               )}
               onClick={() => {
@@ -67,7 +94,9 @@ export const Dropdown = <T extends string>({
               }}
             >
               {option.label}
-              {selectedOption === option && <BsCheck2 className="w-6 h-6 shrink-0" />}
+              {selectedOption === option && (
+                <BsCheck2 className="w-5 h-5 shrink-0" />
+              )}
             </button>
           ))}
         </div>

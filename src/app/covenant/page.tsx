@@ -9,6 +9,7 @@ import {
 } from "@/components";
 import clsx from "clsx";
 import { useState } from "react";
+import Image from "next/image";
 
 const CovenantPage = () => {
   const [covenantType, setCovenantType] = useState<CovenantType>(
@@ -44,8 +45,16 @@ const CovenantPage = () => {
     <main className="flex grow min-h-0 flex-col bg-white text-black">
       <div className="flex flex-row items-stretch grow min-h-0">
         <div className="overflow-y-auto flex flex-col items-stretch w-[28rem] shrink-0 border-r border-black overflow-hidden">
-          <div className="px-4 py-6 flex flex-col gap-5 border-b-2 border-black">
-            <h1 className="text-xl font-bold">Covenant</h1>
+          <div className="px-4 py-6 flex flex-col gap-2 border-b-2 border-black">
+            <Image
+              src="/img/covenant.png"
+              alt="Covenant illustration"
+              width={140}
+              height={89}
+            />
+
+            <h1 className="text-xl font-bold mt-2">Covenant</h1>
+
             <p className="text-sm">
               To begin, choose a party on each side and set the covenant
               parameters. Pressing &quot;Propose&quot; will then deploy a smart
@@ -54,14 +63,14 @@ const CovenantPage = () => {
               agreement.
             </p>
 
-            <p className="font-bold -mb-3">Covenant type</p>
+            <p className="font-bold mt-4">Covenant type</p>
             <Dropdown
               options={TYPE_OPTIONS}
               selected={covenantType}
               onSelected={setCovenantType}
             />
 
-            <Button onClick={() => {}}>Propose</Button>
+            <Button className="mt-2" onClick={() => {}}>Propose</Button>
           </div>
 
           <div className="flex flex-col items-stretch grow">
@@ -69,9 +78,7 @@ const CovenantPage = () => {
               <div className="flex flex-row items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-valence-red"></div>
 
-                <h1 className="text-base font-medium">
-                  Party A
-                </h1>
+                <h1 className="text-base font-medium">Party A</h1>
               </div>
 
               <TextInput
@@ -101,9 +108,7 @@ const CovenantPage = () => {
                   <div className="flex flex-row items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-valence-blue"></div>
 
-                    <h1 className="text-base font-medium">
-                      Party A
-                    </h1>
+                    <h1 className="text-base font-medium">Party A</h1>
                   </div>
 
                   <TextInput
@@ -138,9 +143,7 @@ const CovenantPage = () => {
                   <div className="flex flex-row items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-valence-purple"></div>
 
-                    <h1 className="text-base font-medium">
-                    Both Parties
-                    </h1>
+                    <h1 className="text-base font-medium">Both Parties</h1>
                   </div>
 
                   {FIELDS[covenantType]!.both!.map((field) => (
@@ -163,7 +166,7 @@ const CovenantPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col bg-valence-gray text-sm">
+        <div className="flex flex-col bg-valence-gray text-sm grow">
           <div className="flex flex-row items-stretch justify-between border-b border-black">
             <div className="flex flex-row items-stretch">
               <div
