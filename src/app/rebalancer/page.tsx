@@ -21,6 +21,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
+  YAxis,
 } from "recharts";
 import { simulate } from "@/utils";
 import clsx from "clsx";
@@ -51,7 +52,7 @@ const RebalancerPage = () => {
   const [valueBase, setValueBase] = useState("usd");
   const [sorterKey, setSorter] = useState<string>("value");
   const [sortAscending, setSortAscending] = useState(true);
-  const [scale, setScale] = useState("y");
+  const [scale, setScale] = useState<Scale>(Scale.Year);
 
   const { setValue, watch, control } = useForm<RebalancerConfig>({
     defaultValues: {
@@ -93,8 +94,8 @@ const RebalancerPage = () => {
 
   const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
 
-  // Last 9 months of ticks
-  const ticksLast9Months = new Array(9)
+  // Last 10 months of ticks
+  const ticksLast9Months = new Array(10)
     .fill(0)
     .map((_, i) => {
       const date = new Date();
@@ -106,12 +107,12 @@ const RebalancerPage = () => {
     .sort();
 
   const projection = useMemo(() => {
-    // Simulate the next 90 days.
+    // Simulate the next 60 days.
     const rebalances = simulate(
       0.3,
       0.2,
       0.1,
-      90,
+      60,
       REBALANCED_TOKENS.map(({ holdings, usdPrice, target }) => ({
         amount: holdings,
         price: usdPrice,
@@ -150,6 +151,29 @@ const RebalancerPage = () => {
     })),
     ...projection,
   ];
+
+  const scaledDataTicks = [
+    ...data.map((d) => d.timestamp),
+    ...projection.map((p) => p.timestamp),
+  ];
+  const minTick = Math.min(...scaledDataTicks);
+  const tickCount = scaleTickCount[scale];
+  const tickInterval = scaleIntervalSeconds[scale] * 1000;
+  const ticks = new Array(tickCount).fill(0).map((_, i) => {
+    const timestamp = new Date(minTick + tickInterval * i);
+    if (scale === Scale.Year) {
+      timestamp.setDate(1);
+      timestamp.setHours(0, 0, 0, 0);
+    } else if (scale === Scale.Month || scale === Scale.Week) {
+      timestamp.setHours(0, 0, 0, 0);
+    } else if (scale === Scale.Day) {
+      timestamp.setMinutes(0, 0, 0);
+    } else if (scale === Scale.Hour) {
+      timestamp.setSeconds(0, 0);
+    }
+
+    return timestamp.getTime();
+  });
 
   const sortedTokens = [...REBALANCED_TOKENS].sort((a, b) =>
     sorter.sort(a, b, sortAscending)
@@ -279,7 +303,7 @@ const RebalancerPage = () => {
                     "flex flex-col justify-center items-center cursor-pointer text-base",
                     scale === thisScale ? "text-black" : "text-gray-500"
                   )}
-                  onClick={() => setScale(thisScale)}
+                  onClick={() => setScale(thisScale as Scale)}
                 >
                   <p>1{thisScale.toUpperCase()}</p>
                 </div>
@@ -287,20 +311,43 @@ const RebalancerPage = () => {
             </div>
           </div>
 
-          <ResponsiveContainer height={500}>
+          <ResponsiveContainer key={scale} height={500}>
             <LineChart
-              data={data}
-              margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
+              data={data.filter(
+                ({ timestamp }) => timestamp < ticks[ticks.length - 1] + tickInterval - 1
+              )}
+              margin={{ top: 0, left: 10, right: 0, bottom: 10 }}
             >
+              <YAxis
+                type="number"
+                domain={[0, 1100000]}
+                scale="linear"
+                ticks={[
+                  0, 100000, 200000, 300000, 400000, 500000, 600000, 700000,
+                  800000, 900000, 1000000,
+                ]}
+                tickFormatter={(value) =>
+                  Number(value).toLocaleString(undefined, {
+                    notation: "compact",
+                    maximumSignificantDigits: 2,
+                  })
+                }
+                tickLine={false}
+                axisLine={{ stroke: "white" }}
+                className="font-sans text-xs"
+                dx={-6}
+              />
               <XAxis
                 dataKey="timestamp"
                 type="number"
                 scale="time"
                 domain={["dataMin", "dataMax"]}
-                tickFormatter={(time) => new Date(time).toLocaleDateString()}
-                ticks={projection.map(({ timestamp }) => timestamp)}
+                tickFormatter={scaleFormatter[scale]}
+                ticks={ticks}
                 tickLine={false}
                 axisLine={{ stroke: "white" }}
+                className="font-sans text-xs text-black"
+                dy={6}
               />
               <Tooltip />
               <CartesianGrid syncWithTicks stroke="white" />
@@ -333,8 +380,8 @@ const RebalancerPage = () => {
             </LineChart>
           </ResponsiveContainer>
 
-          <div className="bg-white grow">
-            <div className="grid grid-cols-[2fr_2fr_3fr_4fr_4fr_2fr] border-t border-black">
+          <div className="bg-white grow overflow-x-auto">
+            <div className="grid grid-cols-[2fr_2fr_3fr_4fr_4fr_2fr]">
               {/* Headers */}
               <SortableTableHeader
                 label="Ticker"
@@ -345,7 +392,7 @@ const RebalancerPage = () => {
                 setSortAscending={setSortAscending}
               />
 
-              <div className="border-b border-black"></div>
+              <div className="border-y border-black"></div>
 
               <SortableTableHeader
                 label="Holdings"
@@ -519,7 +566,7 @@ const REBALANCED_TOKENS: RebalancedToken[] = [
     denom: "untrn",
     symbol: "NTRN",
     name: "Neutron",
-    holdings: 169530000,
+    holdings: 569537,
     usdPrice: 1.55,
     target: 0.2,
   },
@@ -527,7 +574,7 @@ const REBALANCED_TOKENS: RebalancedToken[] = [
     denom: "uusdc",
     symbol: "USDC",
     name: "USDC",
-    holdings: 42847124,
+    holdings: 428471,
     usdPrice: 1,
     target: 0.1,
   },
@@ -535,7 +582,7 @@ const REBALANCED_TOKENS: RebalancedToken[] = [
     denom: "uatom",
     symbol: "ATOM",
     name: "Atom",
-    holdings: 32495823,
+    holdings: 32495,
     usdPrice: 10.2,
     target: 0.4,
   },
@@ -543,7 +590,7 @@ const REBALANCED_TOKENS: RebalancedToken[] = [
     denom: "uosmo",
     symbol: "OSMO",
     name: "Osmosis",
-    holdings: 52817939,
+    holdings: 52817,
     usdPrice: 1.76,
     target: 0.3,
   },
@@ -600,4 +647,34 @@ const data = [
   },
 ];
 
-const scales = ["h", "d", "w", "m", "y"];
+enum Scale {
+  Hour = "h",
+  Day = "d",
+  Week = "w",
+  Month = "m",
+  Year = "y",
+}
+const scaleTickCount: Record<Scale, number> = {
+  [Scale.Hour]: 60, // per-minute
+  [Scale.Day]: 24, // per-hour
+  [Scale.Week]: 7, // per day
+  [Scale.Month]: 31, // per day
+  [Scale.Year]: 12, // per month
+};
+const scaleIntervalSeconds: Record<Scale, number> = {
+  [Scale.Hour]: 60, // per-minute
+  [Scale.Day]: 60 * 60, // per-hour
+  [Scale.Week]: 12 * 60 * 60, // per day
+  [Scale.Month]: 24 * 60 * 60, // per day
+  [Scale.Year]: 31 * 24 * 60 * 60, // per month
+};
+const scaleFormatter: Record<Scale, (value: number) => string> = {
+  [Scale.Hour]: (value) =>
+    new Date(value).toLocaleTimeString("default", { timeStyle: "short" }),
+  [Scale.Day]: (value) => new Date(value).getHours().toString(),
+  [Scale.Week]: (value) => new Date(value).getDate().toString(),
+  [Scale.Month]: (value) => new Date(value).getDate().toString(),
+  [Scale.Year]: (value) =>
+    new Date(value).toLocaleString("default", { month: "short" }).toUpperCase(),
+};
+const scales = Object.values(Scale);
