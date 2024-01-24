@@ -25,6 +25,19 @@ import {
 } from "recharts";
 import { simulate } from "@/utils";
 import clsx from "clsx";
+import atomPrices from "./atom_price.json";
+import ntrnPrices from "./ntrn_price.json";
+import osmoPrices from "./osmo_price.json";
+import usdcPrices from "./usdc_price.json";
+
+type OsmosisPrice = {
+  time: number;
+  close: number;
+  high: number;
+  low: number;
+  open: number;
+  volume: number | null;
+};
 
 type Token = {
   denom: string;
@@ -37,7 +50,8 @@ type RebalancedToken = {
   name: string;
   color: string;
   holdings: number;
-  usdPrice: number;
+  latestUsdPrice: number;
+  osmosisPrices: OsmosisPrice[];
   target: number;
 };
 
@@ -113,9 +127,9 @@ const RebalancerPage = () => {
       0.2,
       0.1,
       60,
-      REBALANCED_TOKENS.map(({ holdings, usdPrice, target }) => ({
+      REBALANCED_TOKENS.map(({ holdings, latestUsdPrice, target }) => ({
         amount: holdings,
-        price: usdPrice,
+        price: latestUsdPrice,
         target,
       }))
     );
@@ -123,11 +137,11 @@ const RebalancerPage = () => {
     return rebalances.map((tokenAmounts, index) => ({
       timestamp: Date.now() + index * 24 * 60 * 60 * 1000,
       ...REBALANCED_TOKENS.reduce(
-        (acc, { denom, usdPrice }, index) => ({
+        (acc, { denom, latestUsdPrice }, index) => ({
           ...acc,
           [denom]: {
             historical: null,
-            projection: tokenAmounts[index] * usdPrice,
+            projection: tokenAmounts[index] * latestUsdPrice,
           },
         }),
         {} as Record<string, { historical: null; projection: number }>
@@ -139,10 +153,16 @@ const RebalancerPage = () => {
     ...[...ticksLast9Months, projection[0].timestamp].map((timestamp) => ({
       timestamp,
       ...REBALANCED_TOKENS.reduce(
-        (acc, { denom, holdings, usdPrice }) => ({
+        (acc, { denom, holdings, osmosisPrices }) => ({
           ...acc,
           [denom]: {
-            historical: holdings * usdPrice,
+            historical:
+              holdings *
+              // Osmosis prices are descending by time, so find the first price
+              // with a time less than the current timestamp to find the latest
+              // price at this timestamp.
+              (osmosisPrices.find(({ time }) => time * 1000 < timestamp)
+                ?.close || 0),
             projection: null,
           },
         }),
@@ -314,7 +334,8 @@ const RebalancerPage = () => {
           <ResponsiveContainer key={scale} height={500}>
             <LineChart
               data={data.filter(
-                ({ timestamp }) => timestamp < ticks[ticks.length - 1] + tickInterval - 1
+                ({ timestamp }) =>
+                  timestamp < ticks[ticks.length - 1] + tickInterval - 1
               )}
               margin={{ top: 0, left: 10, right: 0, bottom: 10 }}
             >
@@ -455,7 +476,7 @@ const RebalancerPage = () => {
 
                   <p className="p-4 border-b border-black flex flex-row items-center justify-end text-right font-mono text-sm">
                     $
-                    {(token.holdings * token.usdPrice).toLocaleString(
+                    {(token.holdings * token.latestUsdPrice).toLocaleString(
                       undefined,
                       {
                         minimumFractionDigits: 2,
@@ -561,43 +582,51 @@ const COLORS = [
   "#17CFCF",
 ];
 
-const REBALANCED_TOKENS: RebalancedToken[] = [
-  {
-    denom: "untrn",
-    symbol: "NTRN",
-    name: "Neutron",
-    holdings: 569537,
-    usdPrice: 1.55,
-    target: 0.2,
-  },
-  {
-    denom: "uusdc",
-    symbol: "USDC",
-    name: "USDC",
-    holdings: 428471,
-    usdPrice: 1,
-    target: 0.1,
-  },
-  {
-    denom: "uatom",
-    symbol: "ATOM",
-    name: "Atom",
-    holdings: 32495,
-    usdPrice: 10.2,
-    target: 0.4,
-  },
-  {
-    denom: "uosmo",
-    symbol: "OSMO",
-    name: "Osmosis",
-    holdings: 52817,
-    usdPrice: 1.76,
-    target: 0.3,
-  },
-].map((token, index) => ({
-  ...token,
-  color: COLORS[index % COLORS.length],
-}));
+const REBALANCED_TOKENS = (
+  [
+    {
+      denom: "untrn",
+      symbol: "NTRN",
+      name: "Neutron",
+      holdings: 569537,
+      osmosisPrices: ntrnPrices,
+      target: 0.2,
+    },
+    {
+      denom: "uusdc",
+      symbol: "USDC",
+      name: "USDC",
+      holdings: 428471,
+      osmosisPrices: usdcPrices,
+      target: 0.1,
+    },
+    {
+      denom: "uatom",
+      symbol: "ATOM",
+      name: "Atom",
+      holdings: 32495,
+      osmosisPrices: atomPrices,
+      target: 0.4,
+    },
+    {
+      denom: "uosmo",
+      symbol: "OSMO",
+      name: "Osmosis",
+      holdings: 662817,
+      osmosisPrices: osmoPrices,
+      target: 0.3,
+    },
+  ] as Omit<RebalancedToken, "latestUsdPrice" | "color">[]
+).map((token, index) => {
+  // Descending.
+  token.osmosisPrices.reverse();
+
+  return {
+    ...token,
+    latestUsdPrice: token.osmosisPrices[0].close,
+    color: COLORS[index % COLORS.length],
+  };
+});
 
 const SORTERS: Sorter<RebalancedToken>[] = [
   {
@@ -614,8 +643,8 @@ const SORTERS: Sorter<RebalancedToken>[] = [
     key: "value",
     sort: (a, b, ascending) =>
       ascending
-        ? a.holdings * a.usdPrice - b.holdings * b.usdPrice
-        : b.holdings * b.usdPrice - a.holdings * a.usdPrice,
+        ? a.holdings * a.latestUsdPrice - b.holdings * b.latestUsdPrice
+        : b.holdings * b.latestUsdPrice - a.holdings * a.latestUsdPrice,
   },
   {
     key: "distribution",
@@ -626,24 +655,6 @@ const SORTERS: Sorter<RebalancedToken>[] = [
     key: "target",
     sort: (a, b, ascending) =>
       ascending ? a.target - b.target : b.target - a.target,
-  },
-];
-
-const data = [
-  {
-    name: "Page A",
-    data: 4000,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    data: 3000,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    data: 9800,
-    amt: 2290,
   },
 ];
 
