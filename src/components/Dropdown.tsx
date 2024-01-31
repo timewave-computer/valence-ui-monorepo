@@ -69,24 +69,24 @@ export const Dropdown = <T extends string>({
     <div className="relative" ref={containerRef}>
       <button
         className={clsx(
-          "w-full h-full border border-slate-300 p-2 pl-3 flex flex-row gap-6 justify-between items-center min-w-[12rem] bg-white",
-          isPlaceholder ? "text-gray-700" : "text-black",
+          "w-full h-full border border-valence-mediumgray p-2 pl-3 flex flex-row gap-6 justify-between items-center min-w-[12rem] bg-valence-white",
+          isPlaceholder ? "text-valence-gray" : "text-valence-black",
           containerClassName
         )}
         onClick={() => setVisible(!visible)}
       >
         {selectedOption?.label ?? placeholder}
-        <BsChevronDown className="w-5 h-5 shrink-0" />
+        <BsChevronDown className="w-4 h-4 shrink-0" />
       </button>
 
       {visible && (
-        <div className="absolute z-10 top-[calc(100%-1px)] left-0 right-0 border border-slate-300 bg-gray-100 flex flex-col">
+        <div className="absolute z-10 top-[calc(100%-1px)] left-0 right-0 border border-valence-mediumgray bg-gray-100 flex flex-col">
           {options.map((option, index) => (
             <button
               key={option.value}
               className={clsx(
                 "p-2 pl-3 flex flex-row gap-6 justify-between items-center hover",
-                index < options.length - 1 && "border-b border-slate-300"
+                index < options.length - 1 && "border-b border-valence-mediumgray"
               )}
               onClick={() => {
                 onSelected(option.value);

@@ -30,9 +30,9 @@ export type TextInputProps = {
    */
   style?: "ghost";
   /**
-   * Hide the icon.
+   * A label to attach to the left side of the input.
    */
-  noIcon?: boolean;
+  label?: string;
 };
 
 export const TextInput = ({
@@ -42,7 +42,7 @@ export const TextInput = ({
   textClassName,
   containerClassName,
   style,
-  noIcon,
+  label,
 }: TextInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
 
@@ -50,16 +50,22 @@ export const TextInput = ({
     <div
       className={clsx(
         "relative flex flex-row items-center gap-4 w-[12rem] cursor-text",
-        style !== "ghost" && "py-2 px-3 border border-slate-300",
+        style !== "ghost" && "py-2 px-3 border border-valence-mediumgray",
         containerClassName
       )}
       onClick={() => ref.current?.focus()}
     >
+      {!!label && (
+        <div className="flex flex-row items-center border-r border-valence-mediumgray -my-2 py-2 pr-2 basis-0 grow">
+          <p>{label}</p>
+        </div>
+      )}
+
       <input
         ref={ref}
         type="text"
         className={clsx(
-          "flex flex-row gap-2 items-center text-black outline-none z-10 bg-transparent min-w-0 w-full",
+          "flex flex-row gap-2 items-center text-valence-black outline-none z-[1] bg-transparent min-w-0 w-full basis-0 grow",
           textClassName
         )}
         value={input}
@@ -74,12 +80,8 @@ export const TextInput = ({
             style !== "ghost" && "p-2 pl-3"
           )}
         >
-          <p className={clsx("text-gray-500", textClassName)}>{placeholder}</p>
+          <p className={clsx("text-valence-gray", textClassName)}>{placeholder}</p>
         </div>
-      )}
-
-      {style !== "ghost" && !noIcon && (
-        <BsPencilSquare className="shrink-0 w-4 h-4 text-gray-600" />
       )}
     </div>
   );

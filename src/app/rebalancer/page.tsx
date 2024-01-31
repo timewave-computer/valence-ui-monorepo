@@ -200,43 +200,43 @@ const RebalancerPage = () => {
   );
 
   return (
-    <main className="flex grow min-h-0 flex-col bg-white text-black">
+    <main className="flex grow min-h-0 flex-col bg-valence-white text-valence-black">
       <div className="flex flex-row items-stretch grow min-h-0">
-        <div className="overflow-y-auto flex flex-col items-stretch w-[24rem] shrink-0 border-r border-black overflow-hidden">
-          <div className="px-4 py-6 flex flex-col gap-2 border-b-2 border-black">
+        <div className="overflow-y-auto flex flex-col items-stretch w-[24rem] shrink-0 border-r border-valence-black overflow-hidden">
+          <div className="px-4 pb-8 flex flex-col gap-2 border-b border-valence-black">
             <Image
-              src="/img/rebalancer.png"
+              className="mt-8 mb-6"
+              src="/img/rebalancer.svg"
               alt="Rebalancer illustration"
-              width={140}
-              height={83}
+              width={236}
+              height={140}
             />
 
-            <h1 className="text-xl font-bold mt-2">Rebalancer</h1>
+            <h1 className="text-xl font-bold">Rebalancer</h1>
 
-            <p className="text-sm">
+            <p>
               To get started with the rebalancer, create a governance proposal
               to deposit funds into a valence account with a portfolio target.
             </p>
           </div>
 
-          <div className="p-4 flex flex-col gap-6">
+          <div className="p-4 pb-8 flex flex-col gap-6 border-b border-valence-black">
             <div className="flex flex-col gap-2">
-              <h1 className="text-base font-medium">Valence account</h1>
+              <h1 className="font-bold">Valence account</h1>
 
               <TextInput
                 input={valenceAccount}
                 onChange={setValenceAccount}
-                style="ghost"
                 placeholder="neutron12345..."
                 textClassName="font-mono"
                 containerClassName="w-full"
               />
+
+              <Button className="mt-2" onClick={onConnect}>Connect</Button>
             </div>
 
-            <Button onClick={onConnect}>Connect</Button>
-
             <div className="flex flex-col gap-3">
-              <p className="text-base font-medium">Base token</p>
+              <p className="font-bold">Base token</p>
 
               <Dropdown
                 options={BASE_TOKEN_OPTIONS}
@@ -247,7 +247,7 @@ const RebalancerPage = () => {
 
             <div className="flex flex-col gap-3">
               <div className="flex flex-row justify-between items-center">
-                <p className="text-base font-medium">Tokens</p>
+                <p className="font-bold">Tokens</p>
                 <button
                   className="flex flex-row justify-center items-center"
                   onClick={() =>
@@ -263,20 +263,21 @@ const RebalancerPage = () => {
 
               <div className="flex flex-col gap-2">
                 {tokenFields.map(({ id }, index) => (
-                  <div className="flex flex-row gap-2 items-stretch" key={id}>
+                  <div className="flex flex-row items-stretch" key={id}>
                     <Dropdown
                       options={TOKEN_OPTIONS}
                       selected={watch(`tokens.${index}.denom`)}
                       onSelected={(value) =>
                         setValue(`tokens.${index}.denom`, value)
                       }
-                      containerClassName="!min-w-[8rem]"
+                      containerClassName="!min-w-[8rem] !border-r-0 pr-4"
                     />
 
                     <NumberInput
                       containerClassName="grow"
                       min={0.01}
                       max={100}
+                      hidePlusMinus
                       input={watch(`tokens.${index}.percent`)}
                       onChange={(value) =>
                         setValue(`tokens.${index}.percent`, value)
@@ -285,7 +286,7 @@ const RebalancerPage = () => {
                     />
 
                     <button
-                      className="flex flex-row justify-center items-center"
+                      className="flex flex-row justify-center items-center ml-3"
                       onClick={() => removeToken(index)}
                     >
                       <BsX className="w-6 h-6" />
@@ -296,7 +297,7 @@ const RebalancerPage = () => {
             </div>
 
             <div className="flex flex-col gap-3">
-              <p className="text-base font-medium">P/I/D Preset</p>
+              <p className="font-bold">P/I/D Preset</p>
 
               <Dropdown
                 options={PID_PRESET_OPTIONS}
@@ -307,8 +308,8 @@ const RebalancerPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col bg-valence-bg-gray text-sm grow overflow-y-auto">
-          <div className="flex flex-row items-stretch justify-between border-b border-black p-4">
+        <div className="flex flex-col bg-valence-lightgray text-sm grow overflow-y-auto">
+          <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
             <Dropdown
               options={VALUE_BASE_OPTIONS}
               selected={valueBase}
@@ -321,7 +322,7 @@ const RebalancerPage = () => {
                   key={thisScale}
                   className={clsx(
                     "flex flex-col justify-center items-center cursor-pointer text-base",
-                    scale === thisScale ? "text-black" : "text-gray-500"
+                    scale === thisScale ? "text-valence-black" : "text-valence-gray"
                   )}
                   onClick={() => setScale(thisScale as Scale)}
                 >
@@ -367,7 +368,7 @@ const RebalancerPage = () => {
                 ticks={ticks}
                 tickLine={false}
                 axisLine={{ stroke: "white" }}
-                className="font-sans text-xs text-black"
+                className="font-sans text-xs text-valence-black"
                 dy={6}
               />
               <Tooltip />
@@ -401,7 +402,7 @@ const RebalancerPage = () => {
             </LineChart>
           </ResponsiveContainer>
 
-          <div className="bg-white grow overflow-x-auto">
+          <div className="bg-valence-white grow overflow-x-auto">
             <div className="grid grid-cols-[2fr_2fr_3fr_4fr_4fr_2fr]">
               {/* Headers */}
               <SortableTableHeader
@@ -413,7 +414,7 @@ const RebalancerPage = () => {
                 setSortAscending={setSortAscending}
               />
 
-              <div className="border-y border-black"></div>
+              <div className="border-y border-valence-black"></div>
 
               <SortableTableHeader
                 label="Holdings"
@@ -457,7 +458,7 @@ const RebalancerPage = () => {
 
               {sortedTokens.map((token, index) => (
                 <Fragment key={index}>
-                  <div className="flex flex-row items-center gap-2 p-4 border-b border-black">
+                  <div className="flex flex-row items-center gap-2 p-4 border-b border-valence-black">
                     <div
                       className="w-4 h-4 rounded-full shrink-0"
                       style={{ backgroundColor: token.color }}
@@ -466,15 +467,15 @@ const RebalancerPage = () => {
                     <p className="font-bold text-sm">{token.name}</p>
                   </div>
 
-                  <p className="p-4 border-b border-black flex flex-row items-center text-gray-500 text-sm">
+                  <p className="p-4 border-b border-valence-black flex flex-row items-center text-valence-gray text-sm">
                     {token.symbol}
                   </p>
 
-                  <p className="p-4 border-b border-black flex flex-row items-center justify-end text-right font-mono text-sm">
+                  <p className="p-4 border-b border-valence-black flex flex-row items-center justify-end text-right font-mono text-sm">
                     {token.holdings.toLocaleString()}
                   </p>
 
-                  <p className="p-4 border-b border-black flex flex-row items-center justify-end text-right font-mono text-sm">
+                  <p className="p-4 border-b border-valence-black flex flex-row items-center justify-end text-right font-mono text-sm">
                     $
                     {(token.holdings * token.latestUsdPrice).toLocaleString(
                       undefined,
@@ -485,7 +486,7 @@ const RebalancerPage = () => {
                     )}
                   </p>
 
-                  <p className="p-4 border-b border-black flex flex-row items-center justify-end text-right text-sm">
+                  <p className="p-4 border-b border-valence-black flex flex-row items-center justify-end text-right text-sm">
                     {((token.holdings / totalHoldings) * 100).toLocaleString(
                       undefined,
                       {
@@ -495,7 +496,7 @@ const RebalancerPage = () => {
                     %
                   </p>
 
-                  <p className="p-4 border-b border-black flex flex-row items-center justify-end text-right text-sm">
+                  <p className="p-4 border-b border-valence-black flex flex-row items-center justify-end text-right text-sm">
                     {(token.target * 100).toLocaleString(undefined, {
                       maximumSignificantDigits: 4,
                     })}

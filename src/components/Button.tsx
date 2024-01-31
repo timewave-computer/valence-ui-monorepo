@@ -31,8 +31,8 @@ export const Button = ({
       className={clsx(
         "text-center py-1.5 px-2 transition",
         {
-          "bg-black text-white hover:bg-gray-800": style === "primary",
-          "bg-white text-black hover:bg-gray-200 border border-black":
+          "bg-valence-black text-valence-white border border-valence-black hover:bg-valence-white hover:text-valence-black hover:border-valence-black": style === "primary",
+          "bg-valence-white text-valence-black border border-valence-black hover:bg-valence-black hover:text-valence-white":
             style === "secondary",
         },
         className

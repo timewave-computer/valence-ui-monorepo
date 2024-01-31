@@ -52,7 +52,7 @@ export const SortableTableHeader = <T extends unknown>({
   return (
     <button
       className={clsx(
-        "p-4 border-y border-black flex flex-row items-center gap-2 outline-none",
+        "p-4 border-y border-valence-black flex flex-row items-center gap-2 outline-none",
         buttonClassName
       )}
       onClick={() => {

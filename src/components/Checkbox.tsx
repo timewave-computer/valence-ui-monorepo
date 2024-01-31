@@ -16,14 +16,14 @@ export const Checkbox = ({ checked, onChange }: CheckboxProps) => {
   return (
     <button
       className={clsx(
-        "flex flex-row justify-center items-center border border-slate-300 w-10 h-10 cursor-pointer outline-none transition",
-        checked ? "bg-black" : "bg-white"
+        "flex flex-row justify-center items-center border border-valence-mediumgray w-7 h-7 cursor-pointer outline-none transition",
+        checked ? "bg-valence-black" : "bg-valence-white"
       )}
       onClick={() => onChange(!checked)}
     >
       <BsCheck2
         className={clsx(
-          "w-6 h-6 text-white transition",
+          "w-5 h-5 text-valence-white transition",
           checked ? "opacity-100" : "opacity-0"
         )}
       />

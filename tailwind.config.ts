@@ -10,11 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "valence-gray": "#D6D6D6",
+        "valence-black": "#000000",
+        "valence-white": "#FFFFFF",
         "valence-red": "#FF2A00",
         "valence-blue": "#00A3FF",
         "valence-purple": "#806780",
-        "valence-bg-gray": "#E9E9E9",
+        "valence-pink": "#EA80D1",
+        "valence-green": "#4EBB5B",
+        "valence-yellow": "#FFBC57",
+        "valence-brown": "#800000",
+        "valence-gray": "#A0A0A0",
+        "valence-mediumgray": "#C9C9C9",
+        "valence-lightgray": "#E9E9E9",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -23,8 +30,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["SF Pro", ...defaultTheme.fontFamily.sans],
-        serif: ["Times", ...defaultTheme.fontFamily.serif],
-        mono: ["SF Mono", ...defaultTheme.fontFamily.mono],
+        serif: ["Times", "Times New Roman", ...defaultTheme.fontFamily.serif],
+        mono: ["SF Mono", "SFMono-Regular", ...defaultTheme.fontFamily.mono],
       },
     },
   },

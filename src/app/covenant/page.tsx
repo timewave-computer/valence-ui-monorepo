@@ -19,10 +19,10 @@ const CovenantPage = () => {
     "contract" | "json"
   >("contract");
 
-  const [partyA, setPartyA] = useState("");
+  const [partyA, setPartyA] = useState("Party A");
   const [partyAData, setPartyAData] = useState<Record<string, any>>({});
 
-  const [partyB, setPartyB] = useState("");
+  const [partyB, setPartyB] = useState("Party B");
   const [partyBData, setPartyBData] = useState<Record<string, any>>({});
 
   const [bothPartiesData, setBothPartiesData] = useState<Record<string, any>>(
@@ -41,26 +41,35 @@ const CovenantPage = () => {
   const [partyBParameterD, setPartyBParameterD] = useState("");
   const [partyBParameterE, setPartyBParameterE] = useState(true);
 
+  const json = JSON.stringify(
+    {
+      ...partyAData,
+      ...partyBData,
+      ...bothPartiesData,
+    },
+    null,
+    2
+  );
+
   return (
-    <main className="flex grow min-h-0 flex-col bg-white text-black">
+    <main className="flex grow min-h-0 flex-col bg-valence-white text-valence-black">
       <div className="flex flex-row items-stretch grow min-h-0">
-        <div className="overflow-y-auto flex flex-col items-stretch w-[28rem] shrink-0 border-r border-black overflow-hidden">
-          <div className="px-4 py-6 flex flex-col gap-2 border-bs border-black">
+        <div className="overflow-y-auto flex flex-col items-stretch w-[20rem] shrink-0 border-r border-valence-black overflow-hidden pt-4">
+          <div className="px-4 pb-8 flex flex-col gap-2 border-b border-valence-black">
             <Image
-              src="/img/covenant.png"
+              className="mt-8 mb-6"
+              src="/img/covenant.svg"
               alt="Covenant illustration"
-              width={140}
-              height={89}
+              width={226}
+              height={144}
             />
 
-            <h1 className="text-xl font-bold mt-2">Covenant</h1>
+            <h1 className="text-xl font-bold">Covenant</h1>
 
-            <p className="text-sm">
-              To begin, choose a party on each side and set the covenant
-              parameters. Pressing &quot;Propose&quot; will then deploy a smart
-              contract with the covenant terms and create a governance proposal
-              for each party. They can then choose whether to participate in the
-              agreement.
+            <p>
+              Covenants are interchain agreements. Permissionless digital
+              institutions that enable humanity to collaborate with
+              unprecedented scope and scale.
             </p>
 
             <p className="font-bold mt-4">Covenant type</p>
@@ -70,22 +79,23 @@ const CovenantPage = () => {
               onSelected={setCovenantType}
             />
 
-            <Button className="mt-2" onClick={() => {}}>Propose</Button>
+            <Button className="mt-6" onClick={() => {}}>
+              Propose
+            </Button>
           </div>
 
           <div className="flex flex-col items-stretch grow">
-            <div className="p-4 flex flex-col gap-5 border-l-[6px] border-l-valence-red">
+            <div className="p-4 flex flex-col gap-5 border-l-8 border-l-valence-red pb-8">
               <div className="flex flex-row items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-valence-red"></div>
+                <div className="w-5 h-5 rounded-sm bg-valence-red"></div>
 
-                <h1 className="text-base font-medium">Party A</h1>
+                <TextInput
+                  input={partyA}
+                  onChange={setPartyA}
+                  textClassName="font-bold text-valence-black"
+                  style="ghost"
+                />
               </div>
-
-              <TextInput
-                input={partyA}
-                onChange={setPartyA}
-                placeholder="Party A"
-              />
 
               {FIELDS[covenantType]?.each.map((field) => (
                 <Field
@@ -102,20 +112,19 @@ const CovenantPage = () => {
 
             {FIELDS[covenantType]?.parties === 2 && (
               <>
-                <div className="h-[2px] bg-black shrink-0"></div>
+                <div className="h-[1px] bg-valence-black shrink-0"></div>
 
-                <div className="p-4 flex flex-col gap-5 border-l-[6px] border-valence-blue">
+                <div className="p-4 flex flex-col gap-5 border-l-8 border-valence-blue pb-8">
                   <div className="flex flex-row items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-valence-blue"></div>
+                    <div className="w-5 h-5 rounded-sm bg-valence-blue"></div>
 
-                    <h1 className="text-base font-medium">Party A</h1>
+                    <TextInput
+                      input={partyB}
+                      onChange={setPartyB}
+                      textClassName="font-bold text-valence-black"
+                      style="ghost"
+                    />
                   </div>
-
-                  <TextInput
-                    input={partyB}
-                    onChange={setPartyB}
-                    placeholder="Party B"
-                  />
 
                   {FIELDS[covenantType]?.each.map((field) => (
                     <Field
@@ -137,9 +146,9 @@ const CovenantPage = () => {
 
             {FIELDS[covenantType]?.both && (
               <>
-                <div className="h-[2px] bg-black shrink-0"></div>
+                <div className="h-[1px] bg-valence-black shrink-0"></div>
 
-                <div className="p-4 flex flex-col gap-5 border-l-[6px] border-valence-purple pb-20">
+                <div className="p-4 flex flex-col gap-5 border-l-[6px] border-valence-purple pb-8">
                   <div className="flex flex-row items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-valence-purple"></div>
 
@@ -166,13 +175,13 @@ const CovenantPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col bg-valence-bg-gray text-sm grow">
-          <div className="flex flex-row items-stretch justify-between border-b border-black">
+        <div className="flex flex-col bg-valence-lightgray grow">
+          <div className="flex flex-row items-stretch justify-between border-b border-valence-black">
             <div className="flex flex-row items-stretch">
               <div
                 className={clsx(
-                  "border-r border-black flex flex-col justify-center items-center p-4 cursor-pointer",
-                  contractDisplayMode === "contract" && "bg-white"
+                  "border-r border-valence-black flex flex-col justify-center items-center p-4 cursor-pointer",
+                  contractDisplayMode === "contract" && "bg-valence-white"
                 )}
                 onClick={() => setContractDisplayMode("contract")}
               >
@@ -180,8 +189,8 @@ const CovenantPage = () => {
               </div>
               <div
                 className={clsx(
-                  "border-r border-black flex flex-col justify-center items-center p-4 cursor-pointer",
-                  contractDisplayMode === "json" && "bg-white"
+                  "border-r border-valence-black flex flex-col justify-center items-center p-4 cursor-pointer",
+                  contractDisplayMode === "json" && "bg-valence-white"
                 )}
                 onClick={() => setContractDisplayMode("json")}
               >
@@ -191,13 +200,15 @@ const CovenantPage = () => {
 
             <div className="flex flex-row items-stretch">
               <div
-                className="flex flex-col justify-center items-center p-4 cursor-pointer"
-                onClick={() => {}}
+                className="flex flex-col justify-center items-center p-4 cursor-pointer text-base"
+                onClick={() => {
+                  navigator.clipboard.writeText(json);
+                }}
               >
                 <p>Copy text</p>
               </div>
               <div
-                className="flex flex-col justify-center items-center p-4 cursor-pointer"
+                className="flex flex-col justify-center items-center p-4 cursor-pointer text-base"
                 onClick={() => {}}
               >
                 <p>Download</p>
@@ -205,128 +216,152 @@ const CovenantPage = () => {
             </div>
           </div>
 
-          <div className="overflow-y-auto text-xs flex flex-col gap-4 font-mono text-black grow p-8">
-            <p>I. Initial terms</p>
+          <div
+            className={clsx(
+              "overflow-y-auto text-valence-black grow flex flex-row items-stretch",
+              contractDisplayMode === "json" ? "font-mono" : "font-serif"
+            )}
+          >
+            {contractDisplayMode === "json" ? (
+              <>
+                <div className="shrink-0 flex flex-col p-4 text-valence-gray border-r border-valence-gray text-sm">
+                  {new Array((json.match(/\n/g) || "").length + 1)
+                    .fill(0)
+                    .map((_, i) => (
+                      <p key={i}>{i + 1}</p>
+                    ))}
+                </div>
 
-            <div className="mt-6 ml-6 flex flex-col gap-4">
-              <p>
-                <span className="py-0.5 bg-valence-red text-white">
-                  {partyA || "Party A"}
-                </span>{" "}
-                agrees to the following:{" "}
-              </p>
+                <div className="p-4 grow text-sm">
+                  <pre>{json}</pre>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col gap-4 grow p-8">
+                <p>I. Initial terms</p>
 
-              <p className="pl-4">
-                Bacon ipsum dolor amet pork chop ball tip venison meatloaf
-                burgdoggen{" "}
-                <span className="py-0.5 bg-valence-red text-white">
-                  {partyAParameterA || "Parameter A"}
-                </span>{" "}
-                tri-tip landjaeger. Tri-tip leberkas beef, alcatra tenderloin
-                chislic pork chop short ribs sausage short loin. Fatback flank
-                tongue, prosciutto boudin ground round beef ball tip sausage
-                tenderloin. Burgdoggen cow alcatra, biltong picanha short ribs
-                beef venison shoulder leberkas tongue strip steak shankle{" "}
-                <span className="py-0.5 bg-valence-red text-white">
-                  {partyAParameterB || "Parameter B"}
-                </span>
-                .
-              </p>
-            </div>
+                <div className="mt-6 ml-6 flex flex-col gap-4">
+                  <p>
+                    <span className="py-0.5 bg-valence-red text-valence-white">
+                      {partyA || "Party A"}
+                    </span>{" "}
+                    agrees to the following:{" "}
+                  </p>
 
-            <div className="mt-4 ml-6 flex flex-col gap-4">
-              <p>
-                <span className="py-0.5 bg-valence-blue text-white">
-                  {partyB || "Party B"}
-                </span>{" "}
-                agrees to the following:{" "}
-              </p>
+                  <p className="pl-4">
+                    Bacon ipsum dolor amet pork chop ball tip venison meatloaf
+                    burgdoggen{" "}
+                    <span className="py-0.5 bg-valence-red text-valence-white">
+                      {partyAParameterA || "Parameter A"}
+                    </span>{" "}
+                    tri-tip landjaeger. Tri-tip leberkas beef, alcatra
+                    tenderloin chislic pork chop short ribs sausage short loin.
+                    Fatback flank tongue, prosciutto boudin ground round beef
+                    ball tip sausage tenderloin. Burgdoggen cow alcatra, biltong
+                    picanha short ribs beef venison shoulder leberkas tongue
+                    strip steak shankle{" "}
+                    <span className="py-0.5 bg-valence-red text-valence-white">
+                      {partyAParameterB || "Parameter B"}
+                    </span>
+                    .
+                  </p>
+                </div>
 
-              <p className="pl-4">
-                Cow doner strip steak flank pork loin beef ham hock shank{" "}
-                <span className="py-0.5 bg-valence-blue text-white">
-                  {partyBParameterA || "Parameter A"}
-                </span>{" "}
-                bresaola tenderloin salami pork belly chislic. Ball tip doner
-                swine chicken cow pancetta ham hock pork loin pork turkey
-                fatback. Kevin ball tip tongue shank spare ribs, sirloin doner
-                turkey beef ribs shoulder boudin fatback{" "}
-                <span className="py-0.5 bg-valence-blue text-white">
-                  {partyBParameterB || "Parameter B"}
-                </span>
-                .
-              </p>
-            </div>
+                <div className="mt-4 ml-6 flex flex-col gap-4">
+                  <p>
+                    <span className="py-0.5 bg-valence-blue text-valence-white">
+                      {partyB || "Party B"}
+                    </span>{" "}
+                    agrees to the following:{" "}
+                  </p>
 
-            <p className="mt-8">II. Early release</p>
-            <p className="ml-6 mt-2">
-              In the event one or both parties wants to terminate this agreement
-              before its natural conclusion, they have set forth the following
-              terms.
-            </p>
+                  <p className="pl-4">
+                    Cow doner strip steak flank pork loin beef ham hock shank{" "}
+                    <span className="py-0.5 bg-valence-blue text-valence-white">
+                      {partyBParameterA || "Parameter A"}
+                    </span>{" "}
+                    bresaola tenderloin salami pork belly chislic. Ball tip
+                    doner swine chicken cow pancetta ham hock pork loin pork
+                    turkey fatback. Kevin ball tip tongue shank spare ribs,
+                    sirloin doner turkey beef ribs shoulder boudin fatback{" "}
+                    <span className="py-0.5 bg-valence-blue text-valence-white">
+                      {partyBParameterB || "Parameter B"}
+                    </span>
+                    .
+                  </p>
+                </div>
 
-            <div className="mt-4 ml-6 flex flex-col gap-4">
-              <p>
-                <span className="py-0.5 bg-valence-red text-white">
-                  {partyA || "Party A"}
-                </span>{" "}
-                ground round alcatra, picanha pig cupim pancetta turducken
-                meatloaf fatback jerky. Sausage ball tip beef ribs, meatball
-                ribeye t-bone{" "}
-                <span className="py-0.5 bg-valence-red text-white">
-                  {partyAParameterC || "Parameter C"}
-                </span>{" "}
-                turkey. Meatloaf pork loin pancetta, pork chop porchetta chislic
-                prosciutto beef bacon leberkas bresaola drumstick cow alcatra
-                rump. Kevin burgdoggen ham hock, meatloaf ground round shoulder
-                beef turducken spare ribs short loin kielbasa{" "}
-                <span className="py-0.5 bg-valence-red text-white">
-                  {partyAParameterD || "Parameter D"}
-                </span>
-                .
-              </p>
-            </div>
+                <p className="mt-8">II. Early release</p>
+                <p className="ml-6 mt-2">
+                  In the event one or both parties wants to terminate this
+                  agreement before its natural conclusion, they have set forth
+                  the following terms.
+                </p>
 
-            <div className="mt-4 ml-6 flex flex-col gap-4">
-              <p>
-                <span className="py-0.5 bg-valence-blue text-white">
-                  {partyB || "Party B"}
-                </span>{" "}
-                bacon jerky spare ribs strip steak doner meatball alcatra rump
-                sirloin{" "}
-                <span className="py-0.5 bg-valence-blue text-white">
-                  {partyBParameterC || "Parameter C"}
-                </span>{" "}
-                venison ground round jowl. Buffalo pancetta chicken bacon. Short
-                ribs prosciutto filet mignon pork chop venison buffalo short
-                loin jerky swine{" "}
-                <span className="py-0.5 bg-valence-blue text-white">
-                  {partyBParameterD || "Parameter D"}
-                </span>
-                , drumstick shoulder.
-              </p>
-            </div>
+                <div className="mt-4 ml-6 flex flex-col gap-4">
+                  <p>
+                    <span className="py-0.5 bg-valence-red text-valence-white">
+                      {partyA || "Party A"}
+                    </span>{" "}
+                    ground round alcatra, picanha pig cupim pancetta turducken
+                    meatloaf fatback jerky. Sausage ball tip beef ribs, meatball
+                    ribeye t-bone{" "}
+                    <span className="py-0.5 bg-valence-red text-valence-white">
+                      {partyAParameterC || "Parameter C"}
+                    </span>{" "}
+                    turkey. Meatloaf pork loin pancetta, pork chop porchetta
+                    chislic prosciutto beef bacon leberkas bresaola drumstick
+                    cow alcatra rump. Kevin burgdoggen ham hock, meatloaf ground
+                    round shoulder beef turducken spare ribs short loin kielbasa{" "}
+                    <span className="py-0.5 bg-valence-red text-valence-white">
+                      {partyAParameterD || "Parameter D"}
+                    </span>
+                    .
+                  </p>
+                </div>
 
-            <p className="mt-8">III. Conclusion</p>
-            <p className="ml-6 mt-2">
-              Upon the conclusion of this agreement,{" "}
-              <span className="py-0.5 bg-valence-red text-white">
-                {partyA || "Party A"}
-              </span>{" "}
-              agrees to{" "}
-              {partyAParameterE
-                ? "sirloin rump alcatra pastrami pork t-bone andouille filet mignon chislic buffalo"
-                : "filet mignon drumstick pork loin andouille turkey landjaeger salami ham"}
-              , whereas{" "}
-              <span className="py-0.5 bg-valence-blue text-white">
-                {partyB || "Party B"}
-              </span>{" "}
-              agrees to
-              {partyBParameterE
-                ? "short loin t-bone pancetta doner tri-tip cow meatball meatloaf fatback"
-                : "burgdoggen ground round frankfurter jowl corned beef pancetta pig pork"}
-              .
-            </p>
+                <div className="mt-4 ml-6 flex flex-col gap-4">
+                  <p>
+                    <span className="py-0.5 bg-valence-blue text-valence-white">
+                      {partyB || "Party B"}
+                    </span>{" "}
+                    bacon jerky spare ribs strip steak doner meatball alcatra
+                    rump sirloin{" "}
+                    <span className="py-0.5 bg-valence-blue text-valence-white">
+                      {partyBParameterC || "Parameter C"}
+                    </span>{" "}
+                    venison ground round jowl. Buffalo pancetta chicken bacon.
+                    Short ribs prosciutto filet mignon pork chop venison buffalo
+                    short loin jerky swine{" "}
+                    <span className="py-0.5 bg-valence-blue text-valence-white">
+                      {partyBParameterD || "Parameter D"}
+                    </span>
+                    , drumstick shoulder.
+                  </p>
+                </div>
+
+                <p className="mt-8">III. Conclusion</p>
+                <p className="ml-6 mt-2">
+                  Upon the conclusion of this agreement,{" "}
+                  <span className="py-0.5 bg-valence-red text-valence-white">
+                    {partyA || "Party A"}
+                  </span>{" "}
+                  agrees to{" "}
+                  {partyAParameterE
+                    ? "sirloin rump alcatra pastrami pork t-bone andouille filet mignon chislic buffalo"
+                    : "filet mignon drumstick pork loin andouille turkey landjaeger salami ham"}
+                  , whereas{" "}
+                  <span className="py-0.5 bg-valence-blue text-valence-white">
+                    {partyB || "Party B"}
+                  </span>{" "}
+                  agrees to
+                  {partyBParameterE
+                    ? "short loin t-bone pancetta doner tri-tip cow meatball meatloaf fatback"
+                    : "burgdoggen ground round frankfurter jowl corned beef pancetta pig pork"}
+                  .
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -345,6 +380,10 @@ type Field = {
 } & (
   | {
       type: "text";
+      /**
+       * Whether or not the label should inline.
+       */
+      inlineLabel?: boolean;
     }
   | {
       type: "check";
@@ -356,6 +395,14 @@ type Field = {
   | {
       type: "group";
       fields: Field[];
+      /**
+       * Whether or not to bold the group title.
+       */
+      bold?: boolean;
+      /**
+       * Whether or not to indent the group fields.
+       */
+      indent?: boolean;
     }
 );
 
@@ -377,16 +424,23 @@ const Field = ({ field, value, onChange, data }: FieldProps) => {
   return (
     <div
       className={clsx(
-        "flex relative",
-        field.type === "group"
-          ? "flex-col gap-2"
-          : "flex-row gap-6 items-center"
+        "flex gap-2",
+        field.type === "check"
+          ? "flex-row justify-between items-center"
+          : "flex-col"
       )}
     >
-      {!!field.label && <p className="w-32">{field.label}</p>}
+      {!!field.label && !(field.type === "text" && field.inlineLabel) && (
+        <p>{field.label}</p>
+      )}
 
       {field.type === "text" ? (
-        <TextInput input={value} onChange={onChange} />
+        <TextInput
+          input={value}
+          onChange={onChange}
+          containerClassName="w-full"
+          label={field.inlineLabel ? field.label : undefined}
+        />
       ) : field.type === "check" ? (
         <Checkbox checked={!!value} onChange={onChange} />
       ) : field.type === "dropdown" ? (
@@ -396,7 +450,12 @@ const Field = ({ field, value, onChange, data }: FieldProps) => {
           onSelected={onChange}
         />
       ) : field.type === "group" ? (
-        <div className="pl-4 flex flex-col gap-2">
+        <div
+          className={clsx(
+            "flex flex-col gap-4",
+            field.indent && "pl-4 p-2 border-l-2 border-valence-lightgray"
+          )}
+        >
           {field.fields.map((field) => (
             <Field
               key={field.key}
@@ -499,11 +558,13 @@ const FIELDS: Record<
             key: "native",
             type: "text",
             label: "Native",
+            inlineLabel: true,
           },
           {
             key: "neutronIbc",
             type: "text",
             label: "Neutron IBC",
+            inlineLabel: true,
           },
         ],
       },
@@ -521,11 +582,13 @@ const FIELDS: Record<
             key: "hostToNeutron",
             type: "text",
             label: "To Neutron",
+            inlineLabel: true,
           },
           {
             key: "neutronToHost",
             type: "text",
             label: "From Neutron",
+            inlineLabel: true,
           },
         ],
       },
@@ -637,11 +700,13 @@ const FIELDS: Record<
             key: "native",
             type: "text",
             label: "Native",
+            inlineLabel: true,
           },
           {
             key: "neutronIbc",
             type: "text",
             label: "Neutron IBC",
+            inlineLabel: true,
           },
         ],
       },
@@ -659,11 +724,13 @@ const FIELDS: Record<
             key: "hostToNeutron",
             type: "text",
             label: "To Neutron",
+            inlineLabel: true,
           },
           {
             key: "neutronToHost",
             type: "text",
             label: "From Neutron",
+            inlineLabel: true,
           },
         ],
       },
@@ -681,6 +748,7 @@ const FIELDS: Record<
         key: "liquidStaking",
         type: "group",
         label: "Liquid staking",
+        indent: true,
         fields: [
           {
             key: "chain",
@@ -706,11 +774,13 @@ const FIELDS: Record<
                 key: "channel",
                 type: "text",
                 label: "Channel",
+                inlineLabel: true,
               },
               {
                 key: "connection",
                 type: "text",
                 label: "Connection",
+                inlineLabel: true,
               },
             ],
           },
@@ -728,11 +798,13 @@ const FIELDS: Record<
                 key: "nativeLs",
                 type: "text",
                 label: "LS Hub native denom",
+                inlineLabel: true,
               },
               {
                 key: "ibcNeutronLs",
                 type: "text",
                 label: "IBC denom on Neutron",
+                inlineLabel: true,
               },
             ],
           },
@@ -742,6 +814,7 @@ const FIELDS: Record<
         key: "liquidityDestination",
         type: "group",
         label: "Liquidity destination",
+        indent: true,
         fields: [
           {
             key: "dex",
@@ -850,11 +923,13 @@ const FIELDS: Record<
             key: "native",
             type: "text",
             label: "Native",
+            inlineLabel: true,
           },
           {
             key: "neutronIbc",
             type: "text",
             label: "Neutron IBC",
+            inlineLabel: true,
           },
         ],
       },
@@ -872,11 +947,13 @@ const FIELDS: Record<
             key: "hostToNeutron",
             type: "text",
             label: "To Neutron",
+            inlineLabel: true,
           },
           {
             key: "neutronToHost",
             type: "text",
             label: "From Neutron",
+            inlineLabel: true,
           },
         ],
       },
@@ -1011,6 +1088,7 @@ const FIELDS: Record<
         key: "liquidityDestination",
         type: "group",
         label: "Liquidity destination",
+        indent: true,
         fields: [
           {
             key: "dex",

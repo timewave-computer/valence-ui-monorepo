@@ -8,16 +8,22 @@ export const Nav = () => {
   const path = usePathname();
 
   return path === "/" ? null : (
-    <nav className="bg-white shrink-0 flex flex-row gap-6 items-center border-b border-black text-black">
-      <a className="flex flex-row items-center gap-1 p-4 text-2xl font-serif" href="/">
-        <Image src="/img/valence.png" alt="Logo" width={30} height={42} />
-
-        Valence
+    <nav className="bg-valence-white shrink-0 flex flex-row gap-8 items-center border-b border-valence-black text-valence-black px-4 h-[3.25rem]">
+      <a
+        className="flex flex-row items-center"
+        href="/"
+      >
+        <Image
+          src="/img/valence_horizontal.svg"
+          alt="Logo"
+          width={110}
+          height={38}
+        />
       </a>
 
       <a
         className={clsx(
-          "flex justify-center items-center p-4",
+          "flex flex-row items-center top-[1px] relative",
           path.startsWith("/covenant") && "font-bold"
         )}
         href="/covenant"
@@ -27,7 +33,7 @@ export const Nav = () => {
 
       <a
         className={clsx(
-          "flex justify-center items-center p-4",
+          "flex flex-row items-center top-[1px] relative",
           path.startsWith("/rebalancer") && "font-bold"
         )}
         href="/rebalancer"

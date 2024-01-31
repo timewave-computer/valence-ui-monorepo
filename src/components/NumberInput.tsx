@@ -31,6 +31,10 @@ export type NumberInputProps = {
    * An optional unit to append to the input.
    */
   unit?: string;
+  /**
+   * Hide the plus/minus buttons.
+   */
+  hidePlusMinus?: boolean;
 };
 
 export const NumberInput = ({
@@ -41,29 +45,32 @@ export const NumberInput = ({
   min = -Infinity,
   max = Infinity,
   unit,
+  hidePlusMinus,
 }: NumberInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
 
   return (
     <div
       className={clsx(
-        "relative flex flex-row items-center gap-2 cursor-text py-3 px-2 border border-slate-300",
+        "relative flex flex-row items-center gap-2 cursor-text py-3 px-2 border border-valence-mediumgray",
         containerClassName
       )}
       onClick={() => ref.current?.focus()}
     >
-      <button
-        className="flex flex-row justify-center items-center"
-        onClick={() =>
-          onChange(
-            Math.round(
-              Math.max(min, Math.min((Number(input) || 0) - 1, max))
-            ).toString()
-          )
-        }
-      >
-        <BsDash className="w-6 h-6 opacity-50" />
-      </button>
+      {!hidePlusMinus && (
+        <button
+          className="flex flex-row justify-center items-center"
+          onClick={() =>
+            onChange(
+              Math.round(
+                Math.max(min, Math.min((Number(input) || 0) - 1, max))
+              ).toString()
+            )
+          }
+        >
+          <BsDash className="w-6 h-6 opacity-50" />
+        </button>
+      )}
 
       <div
         className="flex flex-row self-stretch justify-center items-center gap-0.5 min-w-0 grow relative"
@@ -73,7 +80,7 @@ export const NumberInput = ({
           ref={ref}
           type="number"
           className={clsx(
-            "flex flex-row gap-2 items-center text-black outline-none z-10 bg-transparent text-center w-[50%]",
+            "flex flex-row gap-2 items-center text-valence-black outline-none z-10 bg-transparent text-center w-[50%]",
             textClassName
           )}
           value={input}
@@ -83,7 +90,7 @@ export const NumberInput = ({
         {!!unit && (
           <p
             className={clsx(
-              "text-black pointer-events-none select-none absolute right-2",
+              "text-valence-black pointer-events-none select-none absolute right-2",
               textClassName
             )}
           >
@@ -92,18 +99,20 @@ export const NumberInput = ({
         )}
       </div>
 
-      <button
-        className="flex flex-row justify-center items-center"
-        onClick={() =>
-          onChange(
-            Math.round(
-              Math.max(min, Math.min((Number(input) || 0) + 1, max))
-            ).toString()
-          )
-        }
-      >
-        <BsPlus className="w-6 h-6 opacity-50" />
-      </button>
+      {!hidePlusMinus && (
+        <button
+          className="flex flex-row justify-center items-center"
+          onClick={() =>
+            onChange(
+              Math.round(
+                Math.max(min, Math.min((Number(input) || 0) + 1, max))
+              ).toString()
+            )
+          }
+        >
+          <BsPlus className="w-6 h-6 opacity-50" />
+        </button>
+      )}
     </div>
   );
 };
