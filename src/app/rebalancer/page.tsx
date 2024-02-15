@@ -232,7 +232,9 @@ const RebalancerPage = () => {
                 containerClassName="w-full"
               />
 
-              <Button className="mt-2" onClick={onConnect}>Connect</Button>
+              <Button className="mt-2" onClick={onConnect} disabled>
+                Connect wallet
+              </Button>
             </div>
 
             <div className="flex flex-col gap-3">
@@ -322,7 +324,9 @@ const RebalancerPage = () => {
                   key={thisScale}
                   className={clsx(
                     "flex flex-col justify-center items-center cursor-pointer text-base",
-                    scale === thisScale ? "text-valence-black" : "text-valence-gray"
+                    scale === thisScale
+                      ? "text-valence-black"
+                      : "text-valence-gray"
                   )}
                   onClick={() => setScale(thisScale as Scale)}
                 >
