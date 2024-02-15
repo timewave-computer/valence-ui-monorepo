@@ -8,45 +8,40 @@ import {
   TextInput,
 } from "@/components";
 import clsx from "clsx";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import Image from "next/image";
 
 const CovenantPage = () => {
-  const [covenantType, setCovenantType] = useState<CovenantType>(
-    TYPE_OPTIONS[0].value
-  );
+  const [covenantTypeSelection, setCovenantType] =
+    useState<CovenantTypeSelector>(TYPE_OPTIONS[0].value);
+  const [numParties, setNumParties] = useState<"1" | "2">("2");
+
+  const covenantType: CovenantType =
+    covenantTypeSelection === "swap"
+      ? "swapLp"
+      : numParties === "1"
+      ? "onePartyPol"
+      : "twoPartyPol";
+  const covenantSelected =
+    COVENANT_TYPES[covenantType] || Object.values(COVENANT_TYPES)[0];
+
   const [contractDisplayMode, setContractDisplayMode] = useState<
     "contract" | "json"
   >("contract");
 
-  const [partyA, setPartyA] = useState("Party A");
   const [partyAData, setPartyAData] = useState<Record<string, any>>({});
-
-  const [partyB, setPartyB] = useState("Party B");
   const [partyBData, setPartyBData] = useState<Record<string, any>>({});
 
   const [bothPartiesData, setBothPartiesData] = useState<Record<string, any>>(
     {}
   );
 
-  const [partyAParameterA, setPartyAParameterA] = useState("");
-  const [partyAParameterB, setPartyAParameterB] = useState("");
-  const [partyAParameterC, setPartyAParameterC] = useState("");
-  const [partyAParameterD, setPartyAParameterD] = useState("");
-  const [partyAParameterE, setPartyAParameterE] = useState(true);
-
-  const [partyBParameterA, setPartyBParameterA] = useState("");
-  const [partyBParameterB, setPartyBParameterB] = useState("");
-  const [partyBParameterC, setPartyBParameterC] = useState("");
-  const [partyBParameterD, setPartyBParameterD] = useState("");
-  const [partyBParameterE, setPartyBParameterE] = useState(true);
-
   const json = JSON.stringify(
-    {
-      ...partyAData,
-      ...partyBData,
-      ...bothPartiesData,
-    },
+    covenantSelected.makeInstantiateMsg(
+      partyAData,
+      partyBData,
+      bothPartiesData
+    ),
     null,
     2
   );
@@ -67,19 +62,32 @@ const CovenantPage = () => {
             <h1 className="text-xl font-bold">Covenant</h1>
 
             <p>
-              Covenants are interchain agreements. Permissionless digital
-              institutions that enable humanity to collaborate with
-              unprecedented scope and scale.
+              To begin, select the type of Covenant you are interested in
+              creating, and set the Covenant parameters. Pressing
+              &quot;Propose&quot; will deploy a smart contract with the Covenant
+              terms and create the governance proposal(s) required to complete
+              the Covenant.
             </p>
 
             <p className="font-bold mt-4">Covenant type</p>
             <Dropdown
               options={TYPE_OPTIONS}
-              selected={covenantType}
+              selected={covenantTypeSelection}
               onSelected={setCovenantType}
             />
 
-            <Button className="mt-6" onClick={() => {}}>
+            {covenantTypeSelection === "pol" && (
+              <div className="space-y-2 mt-2">
+                <p className="font-bold">How many parties?</p>
+                <Dropdown
+                  options={POL_TYPE_PARTIES_OPTIONS}
+                  selected={numParties}
+                  onSelected={setNumParties}
+                />
+              </div>
+            )}
+
+            <Button className="mt-6" onClick={() => {}} disabled>
               Propose
             </Button>
           </div>
@@ -89,15 +97,12 @@ const CovenantPage = () => {
               <div className="flex flex-row items-center gap-2">
                 <div className="w-5 h-5 rounded-sm bg-valence-red"></div>
 
-                <TextInput
-                  input={partyA}
-                  onChange={setPartyA}
-                  textClassName="font-bold text-valence-black"
-                  style="ghost"
-                />
+                <h1 className="text-base font-bold text-valence-black">
+                  Party A
+                </h1>
               </div>
 
-              {FIELDS[covenantType]?.each.map((field) => (
+              {COVENANT_TYPES[covenantType]?.each.map((field) => (
                 <Field
                   key={field.key}
                   field={field}
@@ -110,7 +115,7 @@ const CovenantPage = () => {
               ))}
             </div>
 
-            {FIELDS[covenantType]?.parties === 2 && (
+            {COVENANT_TYPES[covenantType]?.parties === 2 && (
               <>
                 <div className="h-[1px] bg-valence-black shrink-0"></div>
 
@@ -118,15 +123,12 @@ const CovenantPage = () => {
                   <div className="flex flex-row items-center gap-2">
                     <div className="w-5 h-5 rounded-sm bg-valence-blue"></div>
 
-                    <TextInput
-                      input={partyB}
-                      onChange={setPartyB}
-                      textClassName="font-bold text-valence-black"
-                      style="ghost"
-                    />
+                    <h1 className="text-base font-bold text-valence-black">
+                      Party B
+                    </h1>
                   </div>
 
-                  {FIELDS[covenantType]?.each.map((field) => (
+                  {COVENANT_TYPES[covenantType]?.each.map((field) => (
                     <Field
                       key={field.key}
                       field={field}
@@ -144,18 +146,20 @@ const CovenantPage = () => {
               </>
             )}
 
-            {FIELDS[covenantType]?.both && (
+            {COVENANT_TYPES[covenantType]?.both && (
               <>
                 <div className="h-[1px] bg-valence-black shrink-0"></div>
 
-                <div className="p-4 flex flex-col gap-5 border-l-[6px] border-valence-purple pb-8">
+                <div className="p-4 flex flex-col gap-5 border-l-8 border-valence-purple pb-8">
                   <div className="flex flex-row items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-valence-purple"></div>
+                    <div className="w-5 h-5 rounded-sm bg-valence-purple"></div>
 
-                    <h1 className="text-base font-medium">Both Parties</h1>
+                    <h1 className="text-base text-valence-black font-bold">
+                      Both Parties
+                    </h1>
                   </div>
 
-                  {FIELDS[covenantType]!.both!.map((field) => (
+                  {COVENANT_TYPES[covenantType]!.both!.map((field) => (
                     <Field
                       key={field.key}
                       field={field}
@@ -238,128 +242,11 @@ const CovenantPage = () => {
               </>
             ) : (
               <div className="flex flex-col gap-4 grow p-8">
-                <p>I. Initial terms</p>
-
-                <div className="mt-6 ml-6 flex flex-col gap-4">
-                  <p>
-                    <span className="py-0.5 bg-valence-red text-valence-white">
-                      {partyA || "Party A"}
-                    </span>{" "}
-                    agrees to the following:{" "}
-                  </p>
-
-                  <p className="pl-4">
-                    Bacon ipsum dolor amet pork chop ball tip venison meatloaf
-                    burgdoggen{" "}
-                    <span className="py-0.5 bg-valence-red text-valence-white">
-                      {partyAParameterA || "Parameter A"}
-                    </span>{" "}
-                    tri-tip landjaeger. Tri-tip leberkas beef, alcatra
-                    tenderloin chislic pork chop short ribs sausage short loin.
-                    Fatback flank tongue, prosciutto boudin ground round beef
-                    ball tip sausage tenderloin. Burgdoggen cow alcatra, biltong
-                    picanha short ribs beef venison shoulder leberkas tongue
-                    strip steak shankle{" "}
-                    <span className="py-0.5 bg-valence-red text-valence-white">
-                      {partyAParameterB || "Parameter B"}
-                    </span>
-                    .
-                  </p>
-                </div>
-
-                <div className="mt-4 ml-6 flex flex-col gap-4">
-                  <p>
-                    <span className="py-0.5 bg-valence-blue text-valence-white">
-                      {partyB || "Party B"}
-                    </span>{" "}
-                    agrees to the following:{" "}
-                  </p>
-
-                  <p className="pl-4">
-                    Cow doner strip steak flank pork loin beef ham hock shank{" "}
-                    <span className="py-0.5 bg-valence-blue text-valence-white">
-                      {partyBParameterA || "Parameter A"}
-                    </span>{" "}
-                    bresaola tenderloin salami pork belly chislic. Ball tip
-                    doner swine chicken cow pancetta ham hock pork loin pork
-                    turkey fatback. Kevin ball tip tongue shank spare ribs,
-                    sirloin doner turkey beef ribs shoulder boudin fatback{" "}
-                    <span className="py-0.5 bg-valence-blue text-valence-white">
-                      {partyBParameterB || "Parameter B"}
-                    </span>
-                    .
-                  </p>
-                </div>
-
-                <p className="mt-8">II. Early release</p>
-                <p className="ml-6 mt-2">
-                  In the event one or both parties wants to terminate this
-                  agreement before its natural conclusion, they have set forth
-                  the following terms.
-                </p>
-
-                <div className="mt-4 ml-6 flex flex-col gap-4">
-                  <p>
-                    <span className="py-0.5 bg-valence-red text-valence-white">
-                      {partyA || "Party A"}
-                    </span>{" "}
-                    ground round alcatra, picanha pig cupim pancetta turducken
-                    meatloaf fatback jerky. Sausage ball tip beef ribs, meatball
-                    ribeye t-bone{" "}
-                    <span className="py-0.5 bg-valence-red text-valence-white">
-                      {partyAParameterC || "Parameter C"}
-                    </span>{" "}
-                    turkey. Meatloaf pork loin pancetta, pork chop porchetta
-                    chislic prosciutto beef bacon leberkas bresaola drumstick
-                    cow alcatra rump. Kevin burgdoggen ham hock, meatloaf ground
-                    round shoulder beef turducken spare ribs short loin kielbasa{" "}
-                    <span className="py-0.5 bg-valence-red text-valence-white">
-                      {partyAParameterD || "Parameter D"}
-                    </span>
-                    .
-                  </p>
-                </div>
-
-                <div className="mt-4 ml-6 flex flex-col gap-4">
-                  <p>
-                    <span className="py-0.5 bg-valence-blue text-valence-white">
-                      {partyB || "Party B"}
-                    </span>{" "}
-                    bacon jerky spare ribs strip steak doner meatball alcatra
-                    rump sirloin{" "}
-                    <span className="py-0.5 bg-valence-blue text-valence-white">
-                      {partyBParameterC || "Parameter C"}
-                    </span>{" "}
-                    venison ground round jowl. Buffalo pancetta chicken bacon.
-                    Short ribs prosciutto filet mignon pork chop venison buffalo
-                    short loin jerky swine{" "}
-                    <span className="py-0.5 bg-valence-blue text-valence-white">
-                      {partyBParameterD || "Parameter D"}
-                    </span>
-                    , drumstick shoulder.
-                  </p>
-                </div>
-
-                <p className="mt-8">III. Conclusion</p>
-                <p className="ml-6 mt-2">
-                  Upon the conclusion of this agreement,{" "}
-                  <span className="py-0.5 bg-valence-red text-valence-white">
-                    {partyA || "Party A"}
-                  </span>{" "}
-                  agrees to{" "}
-                  {partyAParameterE
-                    ? "sirloin rump alcatra pastrami pork t-bone andouille filet mignon chislic buffalo"
-                    : "filet mignon drumstick pork loin andouille turkey landjaeger salami ham"}
-                  , whereas{" "}
-                  <span className="py-0.5 bg-valence-blue text-valence-white">
-                    {partyB || "Party B"}
-                  </span>{" "}
-                  agrees to
-                  {partyBParameterE
-                    ? "short loin t-bone pancetta doner tri-tip cow meatball meatloaf fatback"
-                    : "burgdoggen ground round frankfurter jowl corned beef pancetta pig pork"}
-                  .
-                </p>
+                {covenantSelected.makeContractText(
+                  partyAData,
+                  partyBData,
+                  bothPartiesData
+                )}
               </div>
             )}
           </div>
@@ -371,11 +258,13 @@ const CovenantPage = () => {
 
 export default CovenantPage;
 
+type CovenantTypeSelector = "swap" | "pol";
 type CovenantType = "swapLp" | "onePartyPol" | "twoPartyPol";
 
 type Field = {
   key: string;
   label?: string;
+  placeholder?: string;
   if?: (data: any) => boolean;
 } & (
   | {
@@ -440,6 +329,7 @@ const Field = ({ field, value, onChange, data }: FieldProps) => {
           onChange={onChange}
           containerClassName="w-full"
           label={field.inlineLabel ? field.label : undefined}
+          placeholder={field.placeholder}
         />
       ) : field.type === "check" ? (
         <Checkbox checked={!!value} onChange={onChange} />
@@ -476,73 +366,79 @@ const Field = ({ field, value, onChange, data }: FieldProps) => {
   );
 };
 
-const TYPE_OPTIONS: { label: string; value: CovenantType }[] = [
+const TYPE_OPTIONS: DropdownOption<CovenantTypeSelector>[] = [
   {
-    label: "Swap and LP",
-    value: "swapLp",
+    label: "Swap",
+    value: "swap",
   },
   {
-    label: "One-Party POL",
-    value: "onePartyPol",
-  },
-  {
-    label: "Two-Party POL",
-    value: "twoPartyPol",
+    label: "Provide Liquidity",
+    value: "pol",
   },
 ];
 
-const PARAMETER_OPTIONS = [
+const POL_TYPE_PARTIES_OPTIONS: DropdownOption<"1" | "2">[] = [
   {
-    label: "Option 1",
-    value: "Option 1",
+    label: "1",
+    value: "1",
   },
   {
-    label: "Option 2",
-    value: "Option 2",
-  },
-  {
-    label: "Option 3",
-    value: "Option 3",
+    label: "2",
+    value: "2",
   },
 ];
 
-const FIELDS: Record<
+const CHAIN_ID_OPTIONS: DropdownOption<string>[] = [
+  {
+    label: "Cosmos Hub",
+    value: "cosmoshub-4",
+  },
+  {
+    label: "Neutron",
+    value: "neutron-1",
+  },
+  {
+    label: "Osmosis",
+    value: "osmosis-1",
+  },
+];
+
+const COVENANT_TYPES: Record<
   CovenantType,
   {
     parties: 1 | 2;
     each: Field[];
     both?: Field[];
+    makeContractText: (
+      aData: Record<string, any>,
+      bData: Record<string, any>,
+      bothData: Record<string, any>
+    ) => ReactNode;
+    makeInstantiateMsg: (
+      aData: Record<string, any>,
+      bData: Record<string, any>,
+      bothData: Record<string, any>
+    ) => Record<string, any>;
   }
 > = {
   swapLp: {
     parties: 2,
     each: [
       {
-        key: "returnedAssetDest",
-        type: "dropdown",
-        label: "Destination for returned assets",
-        options: [
-          {
-            label: "Community pool",
-            value: "communityPool",
-          },
-          {
-            label: "Address",
-            value: "address",
-          },
-        ],
+        key: "name",
+        type: "text",
+        label: "Name",
       },
       {
-        key: "returnedAssetDestAddress",
-        type: "group",
-        if: (data) => data?.returnedAssetDest === "address",
-        fields: [
-          {
-            key: "value",
-            type: "text",
-            label: "Return address",
-          },
-        ],
+        key: "chainId",
+        type: "dropdown",
+        label: "Source of funds",
+        options: CHAIN_ID_OPTIONS,
+      },
+      {
+        key: "returnedAssetDest",
+        type: "text",
+        label: "Destination for returned assets",
       },
       {
         key: "neutronAddress",
@@ -554,13 +450,23 @@ const FIELDS: Record<
         type: "group",
         label: "Denom",
         fields: [
+          // No "Native" label:
           {
+            key: "native",
+            type: "text",
+            if: (data) => !data.chainId || data.chainId === "neutron-1",
+          },
+
+          // Native and IBC labeled fields:
+          {
+            if: (data) => !!data.chainId && data.chainId !== "neutron-1",
             key: "native",
             type: "text",
             label: "Native",
             inlineLabel: true,
           },
           {
+            if: (data) => !!data.chainId && data.chainId !== "neutron-1",
             key: "neutronIbc",
             type: "text",
             label: "Neutron IBC",
@@ -574,6 +480,7 @@ const FIELDS: Record<
         label: "Amount",
       },
       {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "channelIds",
         type: "group",
         label: "Channel IDs",
@@ -593,17 +500,24 @@ const FIELDS: Record<
         ],
       },
       {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "fromNeutronConnection",
         type: "text",
         label: "Connection from Neutron",
       },
       {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "ibcTransferTimeout",
         type: "text",
         label: "IBC transfer timeout (seconds)",
       },
     ],
     both: [
+      {
+        key: "covenantName",
+        type: "text",
+        label: "Covenant Name",
+      },
       {
         key: "depositDeadlineStrategy",
         type: "dropdown",
@@ -612,10 +526,6 @@ const FIELDS: Record<
           {
             label: "None",
             value: "none",
-          },
-          {
-            label: "Block height",
-            value: "blockHeight",
           },
           {
             label: "Time",
@@ -631,13 +541,7 @@ const FIELDS: Record<
           data.depositDeadlineStrategy !== "none",
         fields: [
           {
-            key: "blockHeight",
-            type: "text",
-            label: "Block height",
-            if: (data) => data?.depositDeadlineStrategy === "blockHeight",
-          },
-          {
-            key: "Time",
+            key: "time",
             type: "text",
             label: "Time",
             if: (data) => data?.depositDeadlineStrategy === "time",
@@ -645,46 +549,169 @@ const FIELDS: Record<
         ],
       },
       {
-        key: "convenantLabel",
-        type: "text",
-        label: "Convenant Label",
-      },
-      {
         key: "clockTickMaxGas",
         type: "text",
         label: "Clock tick max gas",
+        placeholder: "50",
       },
     ],
+    makeContractText: (a, b, both) => {
+      const aName = a.name || "Party A";
+      const aSource =
+        CHAIN_ID_OPTIONS.find(({ value }) => value === a.chainId)?.label ||
+        a.chainId;
+
+      const bName = b.name || "Party B";
+      const bSource =
+        CHAIN_ID_OPTIONS.find(({ value }) => value === b.chainId)?.label ||
+        a.chainId;
+
+      return (
+        <>
+          <h1 className="text-xl font-bold">I. Summary</h1>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer>
+            {" and "}
+            <BFieldRenderer>{bName}</BFieldRenderer>
+            {" propose to enter into a token swap Covenant with each other."}
+          </p>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer>
+            {" will swap "}
+            <AFieldRenderer>
+              {a.amount} {a.denom?.native}
+            </AFieldRenderer>
+            {" for "}
+            <BFieldRenderer>{bName}</BFieldRenderer>
+            {"'s "}
+            <BFieldRenderer>
+              {b.amount} {b.denom?.native}
+            </BFieldRenderer>
+            {"."}
+          </p>
+
+          <p>
+            This swap will happen entirely on-chain without any intermediaries.
+          </p>
+
+          <h1 className="text-xl font-bold">II. Swap Terms</h1>
+
+          <h2 className="text-lg font-semibold">
+            {"A. "}
+            <AFieldRenderer>{aName}</AFieldRenderer>
+            {" Details"}
+          </h2>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer>
+            {" will send "}
+            <AFieldRenderer>
+              {a.amount} {a.denom?.native}
+            </AFieldRenderer>
+            {" to the Covenant for swapping. The assets that "}
+            <AFieldRenderer>{aName}</AFieldRenderer>
+            {" receives in return will be directed to "}
+            <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>
+            {" on "}
+            <AFieldRenderer>{aSource}</AFieldRenderer>
+            {"."}
+          </p>
+
+          <h2 className="text-lg font-semibold">
+            {"B. "}
+            <BFieldRenderer>{bName}</BFieldRenderer>
+            {" Details"}
+          </h2>
+
+          <p>
+            <BFieldRenderer>{bName}</BFieldRenderer>
+            {" will send "}
+            <BFieldRenderer>
+              {b.amount} {b.denom?.native}
+            </BFieldRenderer>
+            {" to the Covenant for swapping. The assets that "}
+            <BFieldRenderer>{bName}</BFieldRenderer>
+            {" receives in return will be directed to "}
+            <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>
+            {" on "}
+            <BFieldRenderer>{bSource}</BFieldRenderer>.
+          </p>
+
+          <h2 className="text-lg font-semibold">C. Deposit Deadline</h2>
+
+          {!both.depositDeadlineStrategy ||
+          both.depositDeadlineStrategy === "none" ? (
+            <p>
+              There is no deposit deadline. The swap will occur once both
+              parties have sent their assets to the Covenant.
+            </p>
+          ) : (
+            <p>
+              Both parties have until{" "}
+              <BothFieldRenderer>
+                {both.depositDeadline?.time}
+              </BothFieldRenderer>{" "}
+              to send their assets to the Covenant. The swap will occur once
+              both parties have sent their assets to the Covenant. If only one
+              party has sent its assets to the Covenant by the time the deadline
+              has been reached, no swap will occur, and the Covenant will return
+              the assets to the sending party&apos;s return address.{" "}
+              <AFieldRenderer>{aName}</AFieldRenderer>&apos;s return address is{" "}
+              <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>, and{" "}
+              <BFieldRenderer>{bName}</BFieldRenderer>&apos;s return address is{" "}
+              <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>.
+            </p>
+          )}
+
+          <h2 className="text-lg font-semibold">D. Withdrawal</h2>
+
+          <p>
+            After one party sends its assets to the Covenant, that party may
+            withdraw its assets any time prior to the other party sending its
+            assets to the Covenant. The address authorized to withdraw{" "}
+            <AFieldRenderer>{aName}</AFieldRenderer>&apos;s assets is{" "}
+            <AFieldRenderer>{a.neutronAddress}</AFieldRenderer>, and the address
+            authorized to withdraw <BFieldRenderer>{bName}</BFieldRenderer>
+            &apos;s assets is{" "}
+            <BFieldRenderer>{b.neutronAddress}</BFieldRenderer>.
+          </p>
+
+          <h1 className="text-xl font-bold">III. Next Steps</h1>
+
+          <p>
+            This proposal was automatically generated at timewave.computer.
+            Reach out if you have any questions or feature requests:
+            @timewavelabs.
+          </p>
+        </>
+      );
+    },
+    makeInstantiateMsg: (a, b, both) => ({
+      a,
+      b,
+      both,
+    }),
   },
   onePartyPol: {
     parties: 1,
     each: [
       {
-        key: "returnedAssetDest",
-        type: "dropdown",
-        label: "Destination for returned assets",
-        options: [
-          {
-            label: "Community pool",
-            value: "communityPool",
-          },
-          {
-            label: "Address",
-            value: "address",
-          },
-        ],
+        key: "name",
+        type: "text",
+        label: "Name",
       },
       {
-        key: "returnedAssetDestAddress",
-        type: "group",
-        if: (data) => data?.returnedAssetDest === "address",
-        fields: [
-          {
-            key: "value",
-            type: "text",
-            label: "Return address",
-          },
-        ],
+        key: "chainId",
+        type: "dropdown",
+        label: "Source of funds",
+        options: CHAIN_ID_OPTIONS,
+      },
+      {
+        key: "returnedAssetDest",
+        type: "text",
+        label: "Destination for returned assets",
       },
       {
         key: "neutronAddress",
@@ -878,36 +905,31 @@ const FIELDS: Record<
         ],
       },
     ],
+    makeContractText: (a, b, both) => <></>,
+    makeInstantiateMsg: (a, b, both) => ({
+      a,
+      b,
+      both,
+    }),
   },
   twoPartyPol: {
     parties: 2,
     each: [
       {
-        key: "returnedAssetDest",
-        type: "dropdown",
-        label: "Destination for returned assets",
-        options: [
-          {
-            label: "Community pool",
-            value: "communityPool",
-          },
-          {
-            label: "Address",
-            value: "address",
-          },
-        ],
+        key: "name",
+        type: "text",
+        label: "Name",
       },
       {
-        key: "returnedAssetDestAddress",
-        type: "group",
-        if: (data) => data?.returnedAssetDest === "address",
-        fields: [
-          {
-            key: "value",
-            type: "text",
-            label: "Return address",
-          },
-        ],
+        key: "chainId",
+        type: "dropdown",
+        label: "Source of funds",
+        options: CHAIN_ID_OPTIONS,
+      },
+      {
+        key: "returnedAssetDest",
+        type: "text",
+        label: "Destination for returned assets",
       },
       {
         key: "neutronAddress",
@@ -1010,10 +1032,6 @@ const FIELDS: Record<
             value: "none",
           },
           {
-            label: "Block height",
-            value: "blockHeight",
-          },
-          {
             label: "Time",
             value: "time",
           },
@@ -1027,13 +1045,7 @@ const FIELDS: Record<
           data.depositDeadlineStrategy !== "none",
         fields: [
           {
-            key: "blockHeight",
-            type: "text",
-            label: "Block height",
-            if: (data) => data?.depositDeadlineStrategy === "blockHeight",
-          },
-          {
-            key: "Time",
+            key: "time",
             type: "text",
             label: "Time",
             if: (data) => data?.depositDeadlineStrategy === "time",
@@ -1050,10 +1062,6 @@ const FIELDS: Record<
             value: "none",
           },
           {
-            label: "Block height",
-            value: "blockHeight",
-          },
-          {
             label: "Time",
             value: "time",
           },
@@ -1065,12 +1073,6 @@ const FIELDS: Record<
         if: (data) =>
           !!data?.durationStrategy && data.durationStrategy !== "none",
         fields: [
-          {
-            key: "blockHeight",
-            type: "text",
-            label: "Block height",
-            if: (data) => data?.durationStrategy === "blockHeight",
-          },
           {
             key: "Time",
             type: "text",
@@ -1174,5 +1176,29 @@ const FIELDS: Record<
         ],
       },
     ],
+    makeContractText: (a, b, both) => <></>,
+    makeInstantiateMsg: (a, b, both) => ({
+      a,
+      b,
+      both,
+    }),
   },
 };
+
+const AFieldRenderer = ({ children }: { children: ReactNode }) => (
+  <span className="p-0.5 bg-valence-red text-valence-white rounded-sm">
+    {children}
+  </span>
+);
+
+const BFieldRenderer = ({ children }: { children: ReactNode }) => (
+  <span className="p-0.5 bg-valence-blue text-valence-white rounded-sm">
+    {children}
+  </span>
+);
+
+const BothFieldRenderer = ({ children }: { children: ReactNode }) => (
+  <span className="p-0.5 bg-valence-purple text-valence-white rounded-sm">
+    {children}
+  </span>
+);
