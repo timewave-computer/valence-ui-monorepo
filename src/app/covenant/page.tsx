@@ -446,6 +446,11 @@ const COVENANT_TYPES: Record<
         label: "Party-authorized Neutron address",
       },
       {
+        key: "amount",
+        type: "text",
+        label: "Amount",
+      },
+      {
         key: "denom",
         type: "group",
         label: "Denom",
@@ -473,11 +478,6 @@ const COVENANT_TYPES: Record<
             inlineLabel: true,
           },
         ],
-      },
-      {
-        key: "amount",
-        type: "text",
-        label: "Amount",
       },
       {
         if: (data) => !!data.chainId && data.chainId !== "neutron-1",
@@ -541,10 +541,10 @@ const COVENANT_TYPES: Record<
           data.depositDeadlineStrategy !== "none",
         fields: [
           {
+            if: (data) => data?.depositDeadlineStrategy === "time",
             key: "time",
             type: "text",
-            label: "Time",
-            if: (data) => data?.depositDeadlineStrategy === "time",
+            placeholder: "2024-02-15 12:00:00 +0000",
           },
         ],
       },
@@ -571,25 +571,22 @@ const COVENANT_TYPES: Record<
           <h1 className="text-xl font-bold">I. Summary</h1>
 
           <p>
-            <AFieldRenderer>{aName}</AFieldRenderer>
-            {" and "}
-            <BFieldRenderer>{bName}</BFieldRenderer>
-            {" propose to enter into a token swap Covenant with each other."}
+            <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer> propose to enter into a
+            token swap Covenant with each other.
           </p>
 
           <p>
-            <AFieldRenderer>{aName}</AFieldRenderer>
-            {" will swap "}
+            <AFieldRenderer>{aName}</AFieldRenderer> will swap{" "}
             <AFieldRenderer>
               {a.amount} {a.denom?.native}
-            </AFieldRenderer>
-            {" for "}
-            <BFieldRenderer>{bName}</BFieldRenderer>
+            </AFieldRenderer>{" "}
+            for <BFieldRenderer>{bName}</BFieldRenderer>
             {"'s "}
             <BFieldRenderer>
               {b.amount} {b.denom?.native}
             </BFieldRenderer>
-            {"."}
+            .
           </p>
 
           <p>
@@ -599,44 +596,34 @@ const COVENANT_TYPES: Record<
           <h1 className="text-xl font-bold">II. Swap Terms</h1>
 
           <h2 className="text-lg font-semibold">
-            {"A. "}
-            <AFieldRenderer>{aName}</AFieldRenderer>
-            {" Details"}
+            A. <AFieldRenderer>{aName}</AFieldRenderer> Details
           </h2>
 
           <p>
-            <AFieldRenderer>{aName}</AFieldRenderer>
-            {" will send "}
+            <AFieldRenderer>{aName}</AFieldRenderer> will send{" "}
             <AFieldRenderer>
               {a.amount} {a.denom?.native}
-            </AFieldRenderer>
-            {" to the Covenant for swapping. The assets that "}
-            <AFieldRenderer>{aName}</AFieldRenderer>
-            {" receives in return will be directed to "}
-            <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>
-            {" on "}
-            <AFieldRenderer>{aSource}</AFieldRenderer>
-            {"."}
+            </AFieldRenderer>{" "}
+            to the Covenant for swapping. The assets that{" "}
+            <AFieldRenderer>{aName}</AFieldRenderer> receives in return will
+            be directed to{" "}
+            <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer> on{" "}
+            <AFieldRenderer>{aSource}</AFieldRenderer>.
           </p>
 
           <h2 className="text-lg font-semibold">
-            {"B. "}
-            <BFieldRenderer>{bName}</BFieldRenderer>
-            {" Details"}
+            B. <BFieldRenderer>{bName}</BFieldRenderer> Details
           </h2>
 
           <p>
-            <BFieldRenderer>{bName}</BFieldRenderer>
-            {" will send "}
+            <BFieldRenderer>{bName}</BFieldRenderer> will send{" "}
             <BFieldRenderer>
               {b.amount} {b.denom?.native}
-            </BFieldRenderer>
-            {" to the Covenant for swapping. The assets that "}
-            <BFieldRenderer>{bName}</BFieldRenderer>
-            {" receives in return will be directed to "}
-            <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>
-            {" on "}
-            <BFieldRenderer>{bSource}</BFieldRenderer>.
+            </BFieldRenderer>{" "}
+            to the Covenant for swapping. The assets that{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer> receives in return will be
+            directed to <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>{" "}
+            on <BFieldRenderer>{bSource}</BFieldRenderer>.
           </p>
 
           <h2 className="text-lg font-semibold">C. Deposit Deadline</h2>
@@ -719,17 +706,32 @@ const COVENANT_TYPES: Record<
         label: "Party-authorized Neutron address",
       },
       {
+        key: "amount",
+        type: "text",
+        label: "Amount",
+      },
+      {
         key: "denom",
         type: "group",
         label: "Denom",
         fields: [
+          // No "Native" label:
           {
+            key: "native",
+            type: "text",
+            if: (data) => !data.chainId || data.chainId === "neutron-1",
+          },
+
+          // Native and IBC labeled fields:
+          {
+            if: (data) => !!data.chainId && data.chainId !== "neutron-1",
             key: "native",
             type: "text",
             label: "Native",
             inlineLabel: true,
           },
           {
+            if: (data) => !!data.chainId && data.chainId !== "neutron-1",
             key: "neutronIbc",
             type: "text",
             label: "Neutron IBC",
@@ -738,11 +740,7 @@ const COVENANT_TYPES: Record<
         ],
       },
       {
-        key: "amount",
-        type: "text",
-        label: "Amount",
-      },
-      {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "channelIds",
         type: "group",
         label: "Channel IDs",
@@ -762,11 +760,13 @@ const COVENANT_TYPES: Record<
         ],
       },
       {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "fromNeutronConnection",
         type: "text",
         label: "Connection from Neutron",
       },
       {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "ibcTransferTimeout",
         type: "text",
         label: "IBC transfer timeout (seconds)",
@@ -905,7 +905,126 @@ const COVENANT_TYPES: Record<
         ],
       },
     ],
-    makeContractText: (a, b, both) => <></>,
+    makeContractText: (a, b, both) => {
+      const aName = a.name || "Party A";
+      const aSource =
+        CHAIN_ID_OPTIONS.find(({ value }) => value === a.chainId)?.label ||
+        a.chainId;
+
+      const bName = b.name || "Party B";
+      const bSource =
+        CHAIN_ID_OPTIONS.find(({ value }) => value === b.chainId)?.label ||
+        a.chainId;
+
+      return (
+        <>
+          <h1 className="text-xl font-bold">I. Summary</h1>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer> propose to enter into a
+            token swap Covenant with each other.
+          </p>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer> will swap{" "}
+            <AFieldRenderer>
+              {a.amount} {a.denom?.native}
+            </AFieldRenderer>{" "}
+            for <BFieldRenderer>{bName}</BFieldRenderer>
+            {"'s "}
+            <BFieldRenderer>
+              {b.amount} {b.denom?.native}
+            </BFieldRenderer>
+            .
+          </p>
+
+          <p>
+            This swap will happen entirely on-chain without any intermediaries.
+          </p>
+
+          <h1 className="text-xl font-bold">II. Swap Terms</h1>
+
+          <h2 className="text-lg font-semibold">
+            A. <AFieldRenderer>{aName}</AFieldRenderer> Details
+          </h2>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer> will send{" "}
+            <AFieldRenderer>
+              {a.amount} {a.denom?.native}
+            </AFieldRenderer>{" "}
+            to the Covenant for swapping. The assets that{" "}
+            <AFieldRenderer>{aName}</AFieldRenderer> receives in return will
+            be directed to{" "}
+            <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer> on{" "}
+            <AFieldRenderer>{aSource}</AFieldRenderer>.
+          </p>
+
+          <h2 className="text-lg font-semibold">
+            B. <BFieldRenderer>{bName}</BFieldRenderer> Details
+          </h2>
+
+          <p>
+            <BFieldRenderer>{bName}</BFieldRenderer> will send{" "}
+            <BFieldRenderer>
+              {b.amount} {b.denom?.native}
+            </BFieldRenderer>{" "}
+            to the Covenant for swapping. The assets that{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer> receives in return will be
+            directed to <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>{" "}
+            on <BFieldRenderer>{bSource}</BFieldRenderer>.
+          </p>
+
+          <h2 className="text-lg font-semibold">C. Deposit Deadline</h2>
+
+          {!both.depositDeadlineStrategy ||
+          both.depositDeadlineStrategy === "none" ? (
+            <p>
+              There is no deposit deadline. The swap will occur once both
+              parties have sent their assets to the Covenant.
+            </p>
+          ) : (
+            <p>
+              Both parties have until{" "}
+              <BothFieldRenderer>
+                {both.depositDeadline?.time}
+              </BothFieldRenderer>{" "}
+              to send their assets to the Covenant. The swap will occur once
+              both parties have sent their assets to the Covenant. If only one
+              party has sent its assets to the Covenant by the time the deadline
+              has been reached, no swap will occur, and the Covenant will return
+              the assets to the sending party&apos;s return address.{" "}
+              <AFieldRenderer>{aName}</AFieldRenderer>&apos;s return address is{" "}
+              <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>, and{" "}
+              <BFieldRenderer>{bName}</BFieldRenderer>&apos;s return address is{" "}
+              <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>.
+            </p>
+          )}
+
+          <h2 className="text-lg font-semibold">D. Withdrawal</h2>
+
+          <p>
+            After one party sends its assets to the Covenant, that party may
+            withdraw its assets any time prior to the other party sending its
+            assets to the Covenant. The address authorized to withdraw{" "}
+            <AFieldRenderer>{aName}</AFieldRenderer>&apos;s assets is{" "}
+            <AFieldRenderer>{a.neutronAddress}</AFieldRenderer>, and the address
+            authorized to withdraw <BFieldRenderer>{bName}</BFieldRenderer>
+            &apos;s assets is{" "}
+            <BFieldRenderer>{b.neutronAddress}</BFieldRenderer>.
+          </p>
+
+          <h1 className="text-xl font-bold">III. Next Steps</h1>
+
+          <p>
+            This proposal was automatically generated at timewave.computer.
+            Reach out if you have any questions or feature requests:
+            @timewavelabs.
+          </p>
+        </>
+      );
+    },
     makeInstantiateMsg: (a, b, both) => ({
       a,
       b,
@@ -937,17 +1056,32 @@ const COVENANT_TYPES: Record<
         label: "Party-authorized Neutron address",
       },
       {
+        key: "amount",
+        type: "text",
+        label: "Amount",
+      },
+      {
         key: "denom",
         type: "group",
         label: "Denom",
         fields: [
+          // No "Native" label:
           {
+            key: "native",
+            type: "text",
+            if: (data) => !data.chainId || data.chainId === "neutron-1",
+          },
+
+          // Native and IBC labeled fields:
+          {
+            if: (data) => !!data.chainId && data.chainId !== "neutron-1",
             key: "native",
             type: "text",
             label: "Native",
             inlineLabel: true,
           },
           {
+            if: (data) => !!data.chainId && data.chainId !== "neutron-1",
             key: "neutronIbc",
             type: "text",
             label: "Neutron IBC",
@@ -956,11 +1090,7 @@ const COVENANT_TYPES: Record<
         ],
       },
       {
-        key: "amount",
-        type: "text",
-        label: "Amount",
-      },
-      {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "channelIds",
         type: "group",
         label: "Channel IDs",
@@ -980,48 +1110,19 @@ const COVENANT_TYPES: Record<
         ],
       },
       {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "fromNeutronConnection",
         type: "text",
         label: "Connection from Neutron",
       },
       {
+        if: (data) => !!data.chainId && data.chainId !== "neutron-1",
         key: "ibcTransferTimeout",
         type: "text",
         label: "IBC transfer timeout (seconds)",
       },
     ],
     both: [
-      {
-        key: "type",
-        type: "dropdown",
-        label: "Type",
-        options: [
-          {
-            label: "Split",
-            value: "split",
-          },
-          {
-            label: "Maintain Side",
-            value: "maintain",
-          },
-          {
-            label: "Swap Side",
-            value: "swap",
-          },
-        ],
-      },
-      {
-        key: "splitPercent",
-        type: "group",
-        if: (data) => data?.type === "split",
-        fields: [
-          {
-            key: "value",
-            type: "text",
-            label: "Split percent",
-          },
-        ],
-      },
       {
         key: "depositDeadlineStrategy",
         type: "dropdown",
@@ -1045,39 +1146,58 @@ const COVENANT_TYPES: Record<
           data.depositDeadlineStrategy !== "none",
         fields: [
           {
+            if: (data) => data?.depositDeadlineStrategy === "time",
             key: "time",
             type: "text",
-            label: "Time",
-            if: (data) => data?.depositDeadlineStrategy === "time",
+            placeholder: "2024-02-15 12:00:00 +0000",
           },
         ],
       },
       {
-        key: "durationStrategy",
+        key: "lpRetryDays",
+        type: "text",
+        label: "LP retry duration (in days)",
+      },
+      {
+        key: "lpHoldDays",
+        type: "text",
+        label: "LP hold duration (in days)",
+      },
+      {
+        key: "uponCompletion",
         type: "dropdown",
-        label: "Duration",
+        label: "Upon completion",
         options: [
           {
-            label: "None",
-            value: "none",
+            label: "Split",
+            value: "split",
           },
           {
-            label: "Time",
-            value: "time",
+            label: "Maintain Side",
+            value: "maintain",
+          },
+          {
+            label: "Swap Side",
+            value: "swap",
           },
         ],
       },
       {
-        key: "duration",
-        type: "group",
-        if: (data) =>
-          !!data?.durationStrategy && data.durationStrategy !== "none",
-        fields: [
+        key: "completionTrigger",
+        type: "dropdown",
+        label: "Completion trigger",
+        options: [
           {
-            key: "Time",
-            type: "text",
-            label: "Time",
-            if: (data) => data?.durationStrategy === "time",
+            label: "Automatic trigger",
+            value: "automatic",
+          },
+          {
+            label: "Either party",
+            value: "either",
+          },
+          {
+            label: "Both parties",
+            value: "both",
           },
         ],
       },
@@ -1127,14 +1247,14 @@ const COVENANT_TYPES: Record<
             ],
           },
           {
-            key: "expectedPrice",
+            key: "expectedRatio",
             type: "text",
-            label: "Expected price",
+            label: "Expected ratio (1 denom A: X denom B)",
           },
           {
             key: "acceptablePriceDelta",
             type: "text",
-            label: "Acceptable price delta (in %)",
+            label: "Acceptable ratio delta (%)",
           },
           {
             key: "handleRemainder",
@@ -1176,7 +1296,126 @@ const COVENANT_TYPES: Record<
         ],
       },
     ],
-    makeContractText: (a, b, both) => <></>,
+    makeContractText: (a, b, both) => {
+      const aName = a.name || "Party A";
+      const aSource =
+        CHAIN_ID_OPTIONS.find(({ value }) => value === a.chainId)?.label ||
+        a.chainId;
+
+      const bName = b.name || "Party B";
+      const bSource =
+        CHAIN_ID_OPTIONS.find(({ value }) => value === b.chainId)?.label ||
+        a.chainId;
+
+      return (
+        <>
+          <h1 className="text-xl font-bold">I. Summary</h1>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer> propose to enter into a
+            token swap Covenant with each other.
+          </p>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer> will swap{" "}
+            <AFieldRenderer>
+              {a.amount} {a.denom?.native}
+            </AFieldRenderer>{" "}
+            for <BFieldRenderer>{bName}</BFieldRenderer>
+            {"'s "}
+            <BFieldRenderer>
+              {b.amount} {b.denom?.native}
+            </BFieldRenderer>
+            .
+          </p>
+
+          <p>
+            This swap will happen entirely on-chain without any intermediaries.
+          </p>
+
+          <h1 className="text-xl font-bold">II. Swap Terms</h1>
+
+          <h2 className="text-lg font-semibold">
+            A. <AFieldRenderer>{aName}</AFieldRenderer> Details
+          </h2>
+
+          <p>
+            <AFieldRenderer>{aName}</AFieldRenderer> will send{" "}
+            <AFieldRenderer>
+              {a.amount} {a.denom?.native}
+            </AFieldRenderer>{" "}
+            to the Covenant for swapping. The assets that{" "}
+            <AFieldRenderer>{aName}</AFieldRenderer> receives in return will
+            be directed to{" "}
+            <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer> on{" "}
+            <AFieldRenderer>{aSource}</AFieldRenderer>.
+          </p>
+
+          <h2 className="text-lg font-semibold">
+            B. <BFieldRenderer>{bName}</BFieldRenderer> Details
+          </h2>
+
+          <p>
+            <BFieldRenderer>{bName}</BFieldRenderer> will send{" "}
+            <BFieldRenderer>
+              {b.amount} {b.denom?.native}
+            </BFieldRenderer>{" "}
+            to the Covenant for swapping. The assets that{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer> receives in return will be
+            directed to <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>{" "}
+            on <BFieldRenderer>{bSource}</BFieldRenderer>.
+          </p>
+
+          <h2 className="text-lg font-semibold">C. Deposit Deadline</h2>
+
+          {!both.depositDeadlineStrategy ||
+          both.depositDeadlineStrategy === "none" ? (
+            <p>
+              There is no deposit deadline. The swap will occur once both
+              parties have sent their assets to the Covenant.
+            </p>
+          ) : (
+            <p>
+              Both parties have until{" "}
+              <BothFieldRenderer>
+                {both.depositDeadline?.time}
+              </BothFieldRenderer>{" "}
+              to send their assets to the Covenant. The swap will occur once
+              both parties have sent their assets to the Covenant. If only one
+              party has sent its assets to the Covenant by the time the deadline
+              has been reached, no swap will occur, and the Covenant will return
+              the assets to the sending party&apos;s return address.{" "}
+              <AFieldRenderer>{aName}</AFieldRenderer>&apos;s return address is{" "}
+              <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>, and{" "}
+              <BFieldRenderer>{bName}</BFieldRenderer>&apos;s return address is{" "}
+              <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>.
+            </p>
+          )}
+
+          <h2 className="text-lg font-semibold">D. Withdrawal</h2>
+
+          <p>
+            After one party sends its assets to the Covenant, that party may
+            withdraw its assets any time prior to the other party sending its
+            assets to the Covenant. The address authorized to withdraw{" "}
+            <AFieldRenderer>{aName}</AFieldRenderer>&apos;s assets is{" "}
+            <AFieldRenderer>{a.neutronAddress}</AFieldRenderer>, and the address
+            authorized to withdraw <BFieldRenderer>{bName}</BFieldRenderer>
+            &apos;s assets is{" "}
+            <BFieldRenderer>{b.neutronAddress}</BFieldRenderer>.
+          </p>
+
+          <h1 className="text-xl font-bold">III. Next Steps</h1>
+
+          <p>
+            This proposal was automatically generated at timewave.computer.
+            Reach out if you have any questions or feature requests:
+            @timewavelabs.
+          </p>
+        </>
+      );
+    },
     makeInstantiateMsg: (a, b, both) => ({
       a,
       b,
