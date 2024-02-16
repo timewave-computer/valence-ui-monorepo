@@ -222,12 +222,12 @@ const CovenantPage = () => {
 
           <div
             className={clsx(
-              "overflow-y-auto text-valence-black grow flex flex-row items-stretch",
+              "grow text-valence-black flex flex-col overflow-y-auto",
               contractDisplayMode === "json" ? "font-mono" : "font-serif"
             )}
           >
             {contractDisplayMode === "json" ? (
-              <>
+              <div className="flex flex-row items-stretch shrink-0 grow">
                 <div className="shrink-0 flex flex-col p-4 text-valence-gray border-r border-valence-gray text-sm">
                   {new Array((json.match(/\n/g) || "").length + 1)
                     .fill(0)
@@ -239,9 +239,9 @@ const CovenantPage = () => {
                 <div className="p-4 grow text-sm">
                   <pre>{json}</pre>
                 </div>
-              </>
+              </div>
             ) : (
-              <div className="flex flex-col gap-4 grow p-8">
+              <div className="flex flex-col gap-4 grow p-8 shrink-0">
                 {covenantSelected.makeContractText(
                   partyAData,
                   partyBData,
@@ -457,9 +457,9 @@ const COVENANT_TYPES: Record<
         fields: [
           // No "Native" label:
           {
+            if: (data) => !data.chainId || data.chainId === "neutron-1",
             key: "native",
             type: "text",
-            if: (data) => !data.chainId || data.chainId === "neutron-1",
           },
 
           // Native and IBC labeled fields:
@@ -605,10 +605,9 @@ const COVENANT_TYPES: Record<
               {a.amount} {a.denom?.native}
             </AFieldRenderer>{" "}
             to the Covenant for swapping. The assets that{" "}
-            <AFieldRenderer>{aName}</AFieldRenderer> receives in return will
-            be directed to{" "}
-            <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer> on{" "}
-            <AFieldRenderer>{aSource}</AFieldRenderer>.
+            <AFieldRenderer>{aName}</AFieldRenderer> receives in return will be
+            directed to <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>{" "}
+            on <AFieldRenderer>{aSource}</AFieldRenderer>.
           </p>
 
           <h2 className="text-lg font-semibold">
@@ -955,10 +954,9 @@ const COVENANT_TYPES: Record<
               {a.amount} {a.denom?.native}
             </AFieldRenderer>{" "}
             to the Covenant for swapping. The assets that{" "}
-            <AFieldRenderer>{aName}</AFieldRenderer> receives in return will
-            be directed to{" "}
-            <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer> on{" "}
-            <AFieldRenderer>{aSource}</AFieldRenderer>.
+            <AFieldRenderer>{aName}</AFieldRenderer> receives in return will be
+            directed to <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>{" "}
+            on <AFieldRenderer>{aSource}</AFieldRenderer>.
           </p>
 
           <h2 className="text-lg font-semibold">
@@ -1192,19 +1190,32 @@ const COVENANT_TYPES: Record<
             value: "automatic",
           },
           {
-            label: "Either party",
-            value: "either",
-          },
-          {
             label: "Both parties",
             value: "both",
+          },
+          {
+            label: "Either party",
+            value: "either",
           },
         ],
       },
       {
-        key: "ragequit",
-        type: "text",
-        label: "Ragequit penalty (in %)",
+        key: "ragequitAllowed",
+        type: "check",
+        label: "Ragequit allowed",
+      },
+      {
+        if: (data) => !!data?.ragequitAllowed,
+        key: "ragequitPenalty",
+        type: "group",
+        indent: true,
+        fields: [
+          {
+            key: "value",
+            type: "text",
+            label: "Penalty (%)",
+          },
+        ],
       },
       {
         key: "liquidityDestination",
@@ -1252,7 +1263,7 @@ const COVENANT_TYPES: Record<
             label: "Expected ratio (1 denom A: X denom B)",
           },
           {
-            key: "acceptablePriceDelta",
+            key: "acceptableRatioDelta",
             type: "text",
             label: "Acceptable ratio delta (%)",
           },
@@ -1266,8 +1277,8 @@ const COVENANT_TYPES: Record<
                 value: "single",
               },
               {
-                label: "Other",
-                value: "other",
+                label: "Return to sender",
+                value: "return",
               },
             ],
           },
@@ -1284,9 +1295,10 @@ const COVENANT_TYPES: Record<
         label: "Emergency admin",
       },
       {
+        if: (data) => !!data?.emergencyAdminEnabled,
         key: "emergencyAdminAddress",
         type: "group",
-        if: (data) => !!data?.emergencyAdminEnabled,
+        indent: true,
         fields: [
           {
             key: "value",
@@ -1314,19 +1326,26 @@ const COVENANT_TYPES: Record<
           <p>
             <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
             <BFieldRenderer>{bName}</BFieldRenderer> propose to enter into a
-            token swap Covenant with each other.
+            two-party liquidity sharing Covenant with each other.
           </p>
 
           <p>
-            <AFieldRenderer>{aName}</AFieldRenderer> will swap{" "}
+            <AFieldRenderer>{aName}</AFieldRenderer> will contribute{" "}
             <AFieldRenderer>
               {a.amount} {a.denom?.native}
-            </AFieldRenderer>{" "}
-            for <BFieldRenderer>{bName}</BFieldRenderer>
-            {"'s "}
+            </AFieldRenderer>
+            , and <BFieldRenderer>{bName}</BFieldRenderer> will contribute{" "}
             <BFieldRenderer>
               {b.amount} {b.denom?.native}
             </BFieldRenderer>
+            . All assets will be used to provide liquidity on the{" "}
+            <BothFieldRenderer>
+              {both.liquidityDestination?.pool}
+            </BothFieldRenderer>{" "}
+            pool on{" "}
+            <BothFieldRenderer>
+              {both.liquidityDestination?.dex}
+            </BothFieldRenderer>
             .
           </p>
 
@@ -1334,7 +1353,9 @@ const COVENANT_TYPES: Record<
             This swap will happen entirely on-chain without any intermediaries.
           </p>
 
-          <h1 className="text-xl font-bold">II. Swap Terms</h1>
+          <h1 className="text-xl font-bold">
+            II. Liquidity Provisioning Terms
+          </h1>
 
           <h2 className="text-lg font-semibold">
             A. <AFieldRenderer>{aName}</AFieldRenderer> Details
@@ -1345,11 +1366,12 @@ const COVENANT_TYPES: Record<
             <AFieldRenderer>
               {a.amount} {a.denom?.native}
             </AFieldRenderer>{" "}
-            to the Covenant for swapping. The assets that{" "}
-            <AFieldRenderer>{aName}</AFieldRenderer> receives in return will
-            be directed to{" "}
-            <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer> on{" "}
-            <AFieldRenderer>{aSource}</AFieldRenderer>.
+            to the Covenant for liquidity provisioning. The Covenant will hold
+            the liquidity provider (LP) tokens that result from providing
+            liquidity. When the time comes to return any assets to{" "}
+            <AFieldRenderer>{aName}</AFieldRenderer>, those assets will be
+            directed to <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>{" "}
+            on <AFieldRenderer>{aSource}</AFieldRenderer>.
           </p>
 
           <h2 className="text-lg font-semibold">
@@ -1361,8 +1383,10 @@ const COVENANT_TYPES: Record<
             <BFieldRenderer>
               {b.amount} {b.denom?.native}
             </BFieldRenderer>{" "}
-            to the Covenant for swapping. The assets that{" "}
-            <BFieldRenderer>{bName}</BFieldRenderer> receives in return will be
+            to the Covenant for liquidity provisioning. The Covenant will hold
+            the liquidity provider (LP) tokens that result from providing
+            liquidity. When the time comes to return any assets to{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer>, those assets will be
             directed to <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>{" "}
             on <BFieldRenderer>{bSource}</BFieldRenderer>.
           </p>
@@ -1372,8 +1396,8 @@ const COVENANT_TYPES: Record<
           {!both.depositDeadlineStrategy ||
           both.depositDeadlineStrategy === "none" ? (
             <p>
-              There is no deposit deadline. The swap will occur once both
-              parties have sent their assets to the Covenant.
+              There is no deposit deadline. The liquidity provisioning will
+              occur once both parties have sent their assets to the Covenant.
             </p>
           ) : (
             <p>
@@ -1381,11 +1405,12 @@ const COVENANT_TYPES: Record<
               <BothFieldRenderer>
                 {both.depositDeadline?.time}
               </BothFieldRenderer>{" "}
-              to send their assets to the Covenant. The swap will occur once
-              both parties have sent their assets to the Covenant. If only one
-              party has sent its assets to the Covenant by the time the deadline
-              has been reached, no swap will occur, and the Covenant will return
-              the assets to the sending party&apos;s return address.{" "}
+              to send their assets to the Covenant. The liquidity provisioning
+              will occur once both parties have sent their assets to the
+              Covenant. If only one party has sent its assets to the Covenant by
+              the time the deadline has been reached, no liquidity provisioning
+              will occur, and the Covenant will return the assets to the sending
+              party&apos;s return address.{" "}
               <AFieldRenderer>{aName}</AFieldRenderer>&apos;s return address is{" "}
               <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>, and{" "}
               <BFieldRenderer>{bName}</BFieldRenderer>&apos;s return address is{" "}
@@ -1398,13 +1423,183 @@ const COVENANT_TYPES: Record<
           <p>
             After one party sends its assets to the Covenant, that party may
             withdraw its assets any time prior to the other party sending its
-            assets to the Covenant. The address authorized to withdraw{" "}
+            assets to the Covenant.
+          </p>
+
+          <p>
+            The address authorized to withdraw{" "}
             <AFieldRenderer>{aName}</AFieldRenderer>&apos;s assets is{" "}
             <AFieldRenderer>{a.neutronAddress}</AFieldRenderer>, and the address
             authorized to withdraw <BFieldRenderer>{bName}</BFieldRenderer>
             &apos;s assets is{" "}
             <BFieldRenderer>{b.neutronAddress}</BFieldRenderer>.
           </p>
+
+          <h2 className="text-lg font-semibold">E. Destination</h2>
+
+          <p>
+            Once both parties have sent their assets to the Covenant, the
+            Covenant will use the assets to provide liquidity on the{" "}
+            <BothFieldRenderer>
+              {both.liquidityDestination?.pool}
+            </BothFieldRenderer>{" "}
+            pool on{" "}
+            <BothFieldRenderer>
+              {both.liquidityDestination?.dex}
+            </BothFieldRenderer>
+            .
+          </p>
+
+          <h2 className="text-lg font-semibold">F. Duration</h2>
+
+          <p>
+            The assets will remain in the LP position for{" "}
+            <BothFieldRenderer>{both.lpHoldDays}</BothFieldRenderer> days.
+          </p>
+
+          <h2 className="text-lg font-semibold">G. Redemption</h2>
+
+          {!both.completionTrigger || both.completionTrigger === "automatic" ? (
+            <p>
+              After <BothFieldRenderer>{both.lpHoldDays}</BothFieldRenderer>{" "}
+              days, the Covenant will automatically redeem the LP tokens for the
+              underlying assets.
+            </p>
+          ) : both.completionTrigger === "both" ? (
+            <p>
+              After <BothFieldRenderer>{both.lpHoldDays}</BothFieldRenderer>{" "}
+              days, the Covenant will redeem the LP tokens for the underlying
+              assets once both parties agree to redeem.
+            </p>
+          ) : both.completionTrigger === "either" ? (
+            <p>
+              After <BothFieldRenderer>{both.lpHoldDays}</BothFieldRenderer>{" "}
+              days, the Covenant will redeem the LP tokens for the underlying
+              assets once either of the parties decides to redeem.
+            </p>
+          ) : null}
+
+          {!both.uponCompletion || both.uponCompletion === "split" ? (
+            <p>
+              Upon redemption, the Covenant will direct half of{" "}
+              <AFieldRenderer>{a.denom?.native}</AFieldRenderer> and half of{" "}
+              <BFieldRenderer>{b.denom?.native}</BFieldRenderer> to{" "}
+              <AFieldRenderer>{aName}</AFieldRenderer> and direct the remaining
+              halves to <BFieldRenderer>{bName}</BFieldRenderer>.
+            </p>
+          ) : both.uponCompletion === "maintain" ? (
+            <p>
+              Upon redemption, the Covenant will direct all of{" "}
+              <AFieldRenderer>{a.denom?.native}</AFieldRenderer> to
+              <AFieldRenderer>{aName}</AFieldRenderer> and all of{" "}
+              <BFieldRenderer>{b.denom?.native}</BFieldRenderer> to{" "}
+              <BFieldRenderer>{bName}</BFieldRenderer>.
+            </p>
+          ) : both.uponCompletion === "swap" ? (
+            <p>
+              Upon redemption, the Covenant will direct all of{" "}
+              <AFieldRenderer>{a.denom?.native}</AFieldRenderer> to
+              <BFieldRenderer>{bName}</BFieldRenderer> and all of{" "}
+              <BFieldRenderer>{b.denom?.native}</BFieldRenderer> to{" "}
+              <AFieldRenderer>{aName}</AFieldRenderer>.
+            </p>
+          ) : null}
+
+          <h2 className="text-lg font-semibold">H. Early exit</h2>
+
+          {both.ragequitAllowed ? (
+            <p>
+              While both parties have committed to maintaining the liquidity
+              position for at least{" "}
+              <BothFieldRenderer>{both.lpHoldDays}</BothFieldRenderer> days,
+              either party has the option to early exit at any time. The fee for
+              early exit is{" "}
+              <BothFieldRenderer>
+                {both.ragequitPenalty?.value}
+              </BothFieldRenderer>
+              %, which will apply across all assets returned to the exiting
+              party. All fee payments will be directed to the party that did not
+              opt to exit early.
+            </p>
+          ) : (
+            <p>
+              There is no option to exit the liquidity position early. Once the
+              Covenant initiates the liquidity position, that liquidity will
+              remain in the pool for at least{" "}
+              <BothFieldRenderer>{both.lpHoldDays}</BothFieldRenderer> days.
+            </p>
+          )}
+
+          <h2 className="text-lg font-semibold">I. Slippage protection</h2>
+
+          <p>
+            The Covenant expects a ratio of 1{" "}
+            <AFieldRenderer>{a.denom?.native}</AFieldRenderer> to{" "}
+            <BothFieldRenderer>{both.expectedRatio}</BothFieldRenderer>{" "}
+            <BFieldRenderer>{b.denom?.native}</BFieldRenderer>.
+          </p>
+
+          <p>
+            If the ratio between{" "}
+            <AFieldRenderer>{a.denom?.native}</AFieldRenderer> and{" "}
+            <BFieldRenderer>{b.denom?.native}</BFieldRenderer> is within
+            <BothFieldRenderer>{both.acceptableRatioDelta}</BothFieldRenderer>%
+            of the expected ratio by the time both parties have deposited their
+            assets, the Covenant will move forward with the liquidity
+            provisioning. Any excess tokens will be{" "}
+            <BothFieldRenderer>
+              {both.handleRemainder === "single"
+                ? "provided as single-sided liquidity into the same pool"
+                : both.handleRemainder === "return"
+                ? "returned to the party who sent that asset"
+                : null}
+            </BothFieldRenderer>
+            .
+          </p>
+
+          <p>
+            If the ratio changes by more than{" "}
+            <BothFieldRenderer>{both.acceptableRatioDelta}</BothFieldRenderer>%,
+            the Covenant will wait up to{" "}
+            <BothFieldRenderer>{both.lpRetryDays}</BothFieldRenderer> days for
+            the prices to fall back within{" "}
+            <BothFieldRenderer>{both.acceptableRatioDelta}</BothFieldRenderer>%
+            of the acceptable ratio. During this time, either party may withdraw
+            its assets, or both parties could agree to a wider acceptable ratio
+            delta. If no resolution is made within{" "}
+            <BothFieldRenderer>{both.lpRetryDays}</BothFieldRenderer> days, the
+            Covenant will return <AFieldRenderer>{aName}</AFieldRenderer>&apos;s
+            assets to <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer>&apos;s assets to{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer>.
+          </p>
+
+          <h2 className="text-lg font-semibold">J. Fallback split</h2>
+
+          <p>
+            Certain circumstances may lead to unforeseen assets accruing within
+            the Covenant, such as a protocol airdropping assets to{" "}
+            <AFieldRenderer>{a.denom?.native}</AFieldRenderer>
+            holders. In the event that unforeseen assets accrue within the
+            Covenant,{" "}
+            <BothFieldRenderer>{both.fallbackSplit}</BothFieldRenderer>% will be
+            directed to <AFieldRenderer>{aName}</AFieldRenderer>, and the
+            remaining assets will be directed to{" "}
+            <BFieldRenderer>{bName}</BFieldRenderer>.
+          </p>
+
+          <h2 className="text-lg font-semibold">K. Emergency administrator</h2>
+
+          {both.emergencyAdminEnabled ? (
+            <p>
+              This Covenant&apos;s emergency administrator is{" "}
+              <BothFieldRenderer>
+                {both.emergencyAdmin?.value}
+              </BothFieldRenderer>
+            </p>
+          ) : (
+            <p>This covenant does not have an emergency administrator.</p>
+          )}
 
           <h1 className="text-xl font-bold">III. Next Steps</h1>
 
