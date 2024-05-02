@@ -20,7 +20,7 @@ export const simulate = (
     amount: number;
     price: number;
     target: number;
-  }[]
+  }[],
 ) => {
   // PID controller for each asset.
   const controllers = assets.map(
@@ -30,7 +30,7 @@ export const simulate = (
         k_i: ki,
         k_d: kd,
         dt: 1,
-      })
+      }),
   );
 
   // Each projection is a list of all assets' amount and price after each
@@ -45,7 +45,7 @@ export const simulate = (
       // Get total value of assets.
       const totalValue = newProjection.reduce(
         (acc, amount, index) => acc + amount * assets[index].price,
-        0
+        0,
       );
 
       // Use PID controller with new values to rebalance amounts.
@@ -72,7 +72,7 @@ export const simulate = (
     [
       // Start with initial amount.
       assets.map(({ amount }) => amount),
-    ]
+    ],
   );
 
   return projections;

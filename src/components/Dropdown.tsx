@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { BsCheck2, BsChevronDown } from "react-icons/bs";
 
@@ -68,10 +68,10 @@ export const Dropdown = <T extends string>({
   return (
     <div className="relative" ref={containerRef}>
       <button
-        className={clsx(
+        className={cn(
           "w-full h-full border border-valence-mediumgray p-2 pl-3 flex flex-row gap-6 justify-between items-center min-w-[12rem] bg-valence-white",
           isPlaceholder ? "text-valence-gray" : "text-valence-black",
-          containerClassName
+          containerClassName,
         )}
         onClick={() => setVisible(!visible)}
       >
@@ -84,9 +84,10 @@ export const Dropdown = <T extends string>({
           {options.map((option, index) => (
             <button
               key={option.value}
-              className={clsx(
+              className={cn(
                 "p-2 pl-3 flex flex-row gap-6 justify-between items-center hover",
-                index < options.length - 1 && "border-b border-valence-mediumgray"
+                index < options.length - 1 &&
+                  "border-b border-valence-mediumgray",
               )}
               onClick={() => {
                 onSelected(option.value);

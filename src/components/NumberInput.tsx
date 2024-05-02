@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/utils";
 import { useRef } from "react";
 import { BsDash, BsPlus } from "react-icons/bs";
 
@@ -51,9 +51,9 @@ export const NumberInput = ({
 
   return (
     <div
-      className={clsx(
+      className={cn(
         "relative flex flex-row items-center gap-2 cursor-text py-3 px-2 border border-valence-mediumgray",
-        containerClassName
+        containerClassName,
       )}
       onClick={() => ref.current?.focus()}
     >
@@ -63,8 +63,8 @@ export const NumberInput = ({
           onClick={() =>
             onChange(
               Math.round(
-                Math.max(min, Math.min((Number(input) || 0) - 1, max))
-              ).toString()
+                Math.max(min, Math.min((Number(input) || 0) - 1, max)),
+              ).toString(),
             )
           }
         >
@@ -79,9 +79,9 @@ export const NumberInput = ({
         <input
           ref={ref}
           type="number"
-          className={clsx(
+          className={cn(
             "flex flex-row gap-2 items-center text-valence-black outline-none z-10 bg-transparent text-center w-[50%]",
-            textClassName
+            textClassName,
           )}
           value={input}
           onChange={(e) => onChange(e.target.value)}
@@ -89,9 +89,9 @@ export const NumberInput = ({
 
         {!!unit && (
           <p
-            className={clsx(
+            className={cn(
               "text-valence-black pointer-events-none select-none absolute right-2",
-              textClassName
+              textClassName,
             )}
           >
             {unit}
@@ -105,8 +105,8 @@ export const NumberInput = ({
           onClick={() =>
             onChange(
               Math.round(
-                Math.max(min, Math.min((Number(input) || 0) + 1, max))
-              ).toString()
+                Math.max(min, Math.min((Number(input) || 0) + 1, max)),
+              ).toString(),
             )
           }
         >

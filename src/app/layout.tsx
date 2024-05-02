@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
-import clsx from "clsx";
+import { cn } from "@/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={clsx(inter.className, "flex flex-col min-h-screen max-h-screen")}>
+      <body
+        className={cn(
+          inter.className,
+          "flex flex-col min-h-screen max-h-screen",
+        )}
+      >
         <Nav />
 
         {children}

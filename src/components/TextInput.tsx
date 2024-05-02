@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/utils";
 import { useRef } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 
@@ -48,10 +48,10 @@ export const TextInput = ({
 
   return (
     <div
-      className={clsx(
+      className={cn(
         "relative flex flex-row items-center gap-4 w-[12rem] cursor-text",
         style !== "ghost" && "py-2 px-3 border border-valence-mediumgray",
-        containerClassName
+        containerClassName,
       )}
       onClick={() => ref.current?.focus()}
     >
@@ -64,9 +64,9 @@ export const TextInput = ({
       <input
         ref={ref}
         type="text"
-        className={clsx(
+        className={cn(
           "flex flex-row gap-2 items-center text-valence-black outline-none z-[1] bg-transparent min-w-0 w-full basis-0 grow",
-          textClassName
+          textClassName,
         )}
         value={input}
         onChange={(e) => onChange(e.target.value)}
@@ -75,12 +75,14 @@ export const TextInput = ({
       {/* Placeholder when input is empty */}
       {!input && !!placeholder && (
         <div
-          className={clsx(
+          className={cn(
             "absolute left-0 top-0 bottom-0 z-0",
-            style !== "ghost" && "p-2 pl-3"
+            style !== "ghost" && "p-2 pl-3",
           )}
         >
-          <p className={clsx("text-valence-gray", textClassName)}>{placeholder}</p>
+          <p className={cn("text-valence-gray", textClassName)}>
+            {placeholder}
+          </p>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/utils";
 import { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
 
@@ -51,9 +51,9 @@ export const SortableTableHeader = <T extends unknown>({
 
   return (
     <button
-      className={clsx(
+      className={cn(
         "p-4 border-y border-valence-black flex flex-row items-center gap-2 outline-none",
-        buttonClassName
+        buttonClassName,
       )}
       onClick={() => {
         if (currentSorter.key === sorterKey) {

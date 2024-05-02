@@ -1,55 +1,43 @@
-import clsx from "clsx";
-import { ReactNode } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/utils";
+import { Slot } from "@radix-ui/react-slot";
+import React from "react";
 
-export type ButtonProps = {
-  /**
-   * The callback for when the button is clicked.
-   */
-  onClick: () => void;
-  /**
-   * The content of the button.
-   */
-  children: ReactNode;
-  /**
-   * An optional class name for the button.
-   */
-  className?: string;
-  /**
-   * The style to apply to the button. Defaults to `primary`.
-   */
-  style?: "primary" | "secondary";
-  /**
-   * Whether or not the button is disabled. Defaults to `false`.
-   */
+const buttonVariants = cva("text-center py-1.5 px-2 transition", {
+  variants: {
+    variant: {
+      primary:
+        "bg-valence-black text-valence-white border border-valence-black hover:bg-valence-white hover:text-valence-black hover:border-valence-black",
+      secondary:
+        "bg-valence-white text-valence-black border border-valence-black hover:bg-valence-black hover:text-valence-white",
+    },
+    disabled: {
+      true: "!bg-valence-gray  !border-valence-gray !text-valence-white !opacity-50",
+    },
+  },
+  defaultVariants: {
+    variant: "primary",
+  },
+});
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
   disabled?: boolean;
-};
+}
 
-export const Button = ({
-  onClick,
-  children,
-  className,
-  style = "primary",
-  disabled = false,
-}: ButtonProps) => {
-  return (
-    <button
-      className={clsx(
-        "text-center py-1.5 px-2 transition",
-        {
-          "bg-valence-black text-valence-white border border-valence-black hover:bg-valence-white hover:text-valence-black hover:border-valence-black":
-            style === "primary",
-          "!bg-valence-gray !border-valence-gray !text-valence-white opacity-50":
-            style === "primary" && disabled,
-
-          "bg-valence-white text-valence-black border border-valence-black hover:bg-valence-black hover:text-valence-white":
-            style === "secondary",
-        },
-        className
-      )}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  );
-};
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, disabled, variant, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return (
+      <Comp
+        disabled // keep it here for accessibilty but style is handled in CVA
+        className={cn(buttonVariants({ disabled, variant, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  },
+);
+Button.displayName = "Button";

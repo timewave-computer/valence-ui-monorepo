@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, TextInput } from "@/components";
-import { ButtonLink } from "@/components/ButtonLink";
+import { LinkText } from "@/components/LinkText";
 import { useState } from "react";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
@@ -10,9 +10,9 @@ const HomePage = () => {
   const [email, setEmail] = useState("");
 
   return (
-    <main className="grow h-screen overflow-auto bg-valence-white text-valence-black px-4 pt-8 transition-[padding]">
-      <div className="max-w-5xl mx-auto flex flex-col">
-        <div className="pb-8 px-4 flex flex-col items-center self-start">
+    <main className="h-screen grow overflow-auto bg-valence-white px-4 pt-8 text-valence-black transition-[padding]">
+      <div className="mx-auto flex max-w-5xl flex-col">
+        <div className="flex flex-col items-center self-start px-4 pb-8">
           <Image
             src="/img/valence_vertical.svg"
             alt="Logo"
@@ -21,23 +21,27 @@ const HomePage = () => {
           />
         </div>
 
-        <div className="flex flex-col md:flex-row gap-x-10">
-          <div className="border-y border-valence-black px-4 pt-4 pb-12 flex flex-col basis-0 grow">
+        <div className="flex flex-col gap-x-10 md:flex-row">
+          <div className="flex grow basis-0 flex-col border-y border-valence-black px-4 pb-12 pt-4">
             <h2 className="font-bold">Covenant</h2>
 
             <p className="mt-2">
-              Covenants enable Interchain agreements. Use Covenants to create
-              protocol-to-protocol deals.
+              Covenants enable trust minimized agreements among digital
+              organizations across any chain. Lend protocol-owned assets to
+              other protocols for a fee, or create protocol-to-protocol
+              liquidity sharing agreements to jointly improve execution quality
+              and strengthen economic integration between two token communities.
             </p>
 
-            <ButtonLink
-              style="secondary"
-              className="mt-6 self-start flex flex-row items-center gap-1.5"
-              href="/covenant"
-            >
-              Create a Covenant
-              <HiMiniArrowRight className="w-4 h-4" />
-            </ButtonLink>
+            <Button variant="secondary" asChild>
+              <LinkText
+                className="mt-6 flex flex-row items-center gap-1.5 self-start"
+                href="/covenant"
+              >
+                Create a Covenant
+                <HiMiniArrowRight className="h-4 w-4" />
+              </LinkText>
+            </Button>
 
             {/* Spacing */}
             <div className="grow"></div>
@@ -51,23 +55,26 @@ const HomePage = () => {
             />
           </div>
 
-          <div className="border-b md:border-t border-valence-black px-4 pt-4 pb-12 flex flex-col basis-0 grow">
+          <div className="flex grow basis-0 flex-col border-b border-valence-black px-4 pb-12 pt-4 md:border-t">
             <h2 className="font-bold">Rebalancer</h2>
 
             <p className="mt-2">
-              The Rebalancer enables automated treasury management for
-              blockchains, protocols, and decentralized applications. Use the
-              Rebalancer to manage your digital organization&apos;s wealth.
+              The Rebalancer enables automated balance sheet and treasury
+              management for any blockchains, protocols, and decentralized
+              applications. Use the Rebalancer to efficiently convert tokens for
+              scheduled payments or manage your digital organization&apos;s
+              asset portfolio.
             </p>
 
-            <ButtonLink
-              style="secondary"
-              className="mt-6 self-start flex flex-row items-center gap-1.5"
-              href="/rebalancer"
-            >
-              Rebalance portfolio
-              <HiMiniArrowRight className="w-4 h-4" />
-            </ButtonLink>
+            <Button variant="secondary" asChild>
+              <LinkText
+                className="mt-6 flex flex-row items-center gap-1.5 self-start"
+                href="/rebalancer"
+              >
+                Rebalance portfolio
+                <HiMiniArrowRight className="h-4 w-4" />
+              </LinkText>
+            </Button>
 
             {/* Spacing */}
             <div className="grow"></div>
@@ -82,9 +89,9 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-x-10">
-          <div className="flex flex-col justify-between md:gap-20 basis-0 grow">
-            <h2 className="px-6 py-8 text-[3rem] sm:text-[4.5rem] font-serif leading-[0.9]">
+        <div className="flex flex-col gap-x-10 md:flex-row">
+          <div className="flex grow basis-0 flex-col justify-between md:gap-20">
+            <h2 className="px-6 py-8 font-serif text-[3rem] leading-[0.9] sm:text-[4.5rem]">
               Creating tools for crypto-native institutions
             </h2>
 
@@ -96,7 +103,7 @@ const HomePage = () => {
               className="mb-10 self-center md:hidden"
             />
 
-            <div className="border-y border-valence-black px-4 pt-8 pb-16 flex flex-col">
+            <div className="flex flex-col border-y border-valence-black px-4 pb-16 pt-8">
               <h2 className="font-bold">Interchain Guild</h2>
 
               <p className="mt-2">
@@ -105,26 +112,18 @@ const HomePage = () => {
                 essential public goods infrastructure.
               </p>
 
-              <ButtonLink
-                style="secondary"
-                className="mt-6 self-start flex flex-row items-center gap-1.5"
-                href="https://google.com"
-              >
-                Fund public goods
-                <HiMiniArrowRight className="w-4 h-4" />
-              </ButtonLink>
-
-              <Image
-                src="/img/interchain_guild.svg"
-                alt="Interchain Guild illustration"
-                className="mt-12"
-                width={310}
-                height={148}
-              />
+              <Button variant="secondary" asChild disabled>
+                <LinkText
+                  className="mt-6 flex flex-row items-center gap-1.5 self-start"
+                  href=""
+                >
+                  Coming Soon
+                </LinkText>
+              </Button>
             </div>
           </div>
 
-          <div className="flex-col items-center basis-0 grow hidden md:flex">
+          <div className="hidden grow basis-0 flex-col items-center md:flex">
             <Image
               className="m-8"
               src="/img/hero.svg"
@@ -135,8 +134,8 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col-reverse md:flex-row gap-x-10 text-sm">
-          <div className="p-4 flex flex-col justify-between gap-y-10 basis-0 grow">
+        <div className="flex flex-col-reverse gap-x-10 text-sm md:flex-row">
+          <div className="flex grow basis-0 flex-col justify-between gap-y-10 p-4">
             <div className="flex flex-col gap-4">
               <p>
                 Timewave increases the scope and scale of interoperability
@@ -155,7 +154,7 @@ const HomePage = () => {
             <p>2024</p>
           </div>
 
-          <div className="border-b md:border-t md:border-b-0 border-valence-black p-4 flex flex-col justify-between basis-0 grow gap-4">
+          <div className="flex grow basis-0 flex-col justify-between gap-4 border-b border-valence-black p-4 md:border-b-0 md:border-t">
             <div className="flex flex-col gap-4">
               <p>Sign up for our newsletter</p>
 
@@ -166,7 +165,7 @@ const HomePage = () => {
                   containerClassName="!border-valence-black border-r-0 w-full max-w-xs"
                 />
 
-                <Button style="secondary" onClick={() => {}}>
+                <Button variant="secondary" onClick={() => {}}>
                   Subscribe
                 </Button>
               </div>

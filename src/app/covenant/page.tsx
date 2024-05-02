@@ -7,9 +7,12 @@ import {
   DropdownOption,
   TextInput,
 } from "@/components";
-import clsx from "clsx";
-import { ReactNode, useState } from "react";
+import { cn } from "@/utils";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { FFs } from "@/utils";
+import { createPortal } from "react-dom";
+import { Overlay } from "@/components/Overlay";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -20,8 +23,8 @@ const CovenantPage = () => {
     covenantTypeSelection === "swap"
       ? "swapLp"
       : numParties === "1"
-      ? "onePartyPol"
-      : "twoPartyPol";
+        ? "onePartyPol"
+        : "twoPartyPol";
   const covenantSelected =
     COVENANT_TYPES[covenantType] || Object.values(COVENANT_TYPES)[0];
 
@@ -29,30 +32,89 @@ const CovenantPage = () => {
     "contract" | "json"
   >("contract");
 
-  const [partyAData, setPartyAData] = useState<Record<string, any>>({});
-  const [partyBData, setPartyBData] = useState<Record<string, any>>({});
+  const [partyAData, setPartyAData] = useState<Record<string, any>>(
+    PLACEHOLDER_PARTY_A_DATA,
+  );
+  const [partyBData, setPartyBData] = useState<Record<string, any>>(
+    PLACEHOLDER_PARTY_B_DATA,
+  );
 
   const [bothPartiesData, setBothPartiesData] = useState<Record<string, any>>(
-    {}
+    {},
   );
 
   const json = JSON.stringify(
     covenantSelected.makeInstantiateMsg(
       partyAData,
       partyBData,
-      bothPartiesData
+      bothPartiesData,
     ),
     null,
-    2
+    2,
   );
 
+  /***
+   * Overlay logic
+   */
+  const containerRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  // for repositioning based on container
+  const [portalPosition, setPortalPosition] = useState({
+    top: 0,
+    left: 0,
+    height: 0,
+  });
+
+  // this is needed to trigger a re-render to populate refs
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    // take position of container, to place overlay appropriately
+    if (containerRef.current && overlayRef.current) {
+      const target = containerRef.current.getBoundingClientRect();
+
+      const top = target.top;
+      const left = target.left;
+      const height = target.height;
+
+      setPortalPosition({ top, left, height });
+    }
+  }, [isClient, setPortalPosition]);
+
   return (
-    <main className="flex grow min-h-0 flex-col bg-valence-white text-valence-black">
-      <div className="flex flex-row items-stretch grow min-h-0">
-        <div className="overflow-y-auto flex flex-col items-stretch w-[20rem] shrink-0 border-r border-valence-black overflow-hidden pt-4">
-          <div className="px-4 pb-8 flex flex-col gap-2 border-b border-valence-black">
+    <main
+      ref={containerRef}
+      className="flex min-h-0 grow flex-col bg-valence-white text-valence-black"
+    >
+      {!FFs.COVENANTS_ENABLED() &&
+        containerRef?.current &&
+        createPortal(
+          <Overlay
+            ref={overlayRef}
+            position={{
+              top: portalPosition.top,
+              left: portalPosition.left,
+              height: portalPosition.height,
+            }}
+          >
+            <span className="border-2 border-valence-black bg-valence-white px-5 py-3 text-center font-serif text-4xl text-valence-black ">
+              Coming Soon.
+            </span>
+          </Overlay>,
+
+          containerRef?.current,
+        )}
+
+      <div className="flex min-h-0 grow flex-row items-stretch">
+        <div className="flex w-[20rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black pt-4">
+          <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
             <Image
-              className="mt-8 mb-6"
+              className="mb-6 mt-8"
               src="/img/covenant.svg"
               alt="Covenant illustration"
               width={226}
@@ -69,7 +131,7 @@ const CovenantPage = () => {
               the Covenant.
             </p>
 
-            <p className="font-bold mt-4">Covenant type</p>
+            <p className="mt-4 font-bold">Covenant type</p>
             <Dropdown
               options={TYPE_OPTIONS}
               selected={covenantTypeSelection}
@@ -77,7 +139,7 @@ const CovenantPage = () => {
             />
 
             {covenantTypeSelection === "pol" && (
-              <div className="space-y-2 mt-2">
+              <div className="mt-2 space-y-2">
                 <p className="font-bold">How many parties?</p>
                 <Dropdown
                   options={POL_TYPE_PARTIES_OPTIONS}
@@ -92,10 +154,10 @@ const CovenantPage = () => {
             </Button>
           </div>
 
-          <div className="flex flex-col items-stretch grow">
-            <div className="p-4 flex flex-col gap-5 border-l-8 border-l-valence-red pb-8">
+          <div className="flex grow flex-col items-stretch">
+            <div className="flex flex-col gap-5 border-l-8 border-l-valence-red p-4 pb-8">
               <div className="flex flex-row items-center gap-2">
-                <div className="w-5 h-5 rounded-sm bg-valence-red"></div>
+                <div className="h-5 w-5 rounded-sm bg-valence-red"></div>
 
                 <h1 className="text-base font-bold text-valence-black">
                   Party A
@@ -104,7 +166,7 @@ const CovenantPage = () => {
 
               {COVENANT_TYPES[covenantType]?.each.map((field) => (
                 <Field
-                  key={field.key}
+                  key={`party-a-field-${field.key}`}
                   field={field}
                   value={partyAData[field.key]}
                   data={partyAData}
@@ -117,11 +179,11 @@ const CovenantPage = () => {
 
             {COVENANT_TYPES[covenantType]?.parties === 2 && (
               <>
-                <div className="h-[1px] bg-valence-black shrink-0"></div>
+                <div className="h-[1px] shrink-0 bg-valence-black"></div>
 
-                <div className="p-4 flex flex-col gap-5 border-l-8 border-valence-blue pb-8">
+                <div className="flex flex-col gap-5 border-l-8 border-valence-blue p-4 pb-8">
                   <div className="flex flex-row items-center gap-2">
-                    <div className="w-5 h-5 rounded-sm bg-valence-blue"></div>
+                    <div className="h-5 w-5 rounded-sm bg-valence-blue"></div>
 
                     <h1 className="text-base font-bold text-valence-black">
                       Party B
@@ -130,7 +192,7 @@ const CovenantPage = () => {
 
                   {COVENANT_TYPES[covenantType]?.each.map((field) => (
                     <Field
-                      key={field.key}
+                      key={`party-b-field-${field.key}`}
                       field={field}
                       value={partyBData[field.key]}
                       data={partyBData}
@@ -148,20 +210,20 @@ const CovenantPage = () => {
 
             {COVENANT_TYPES[covenantType]?.both && (
               <>
-                <div className="h-[1px] bg-valence-black shrink-0"></div>
+                <div className="h-[1px] shrink-0 bg-valence-black"></div>
 
-                <div className="p-4 flex flex-col gap-5 border-l-8 border-valence-purple pb-8">
+                <div className="flex flex-col gap-5 border-l-8 border-valence-purple p-4 pb-8">
                   <div className="flex flex-row items-center gap-2">
-                    <div className="w-5 h-5 rounded-sm bg-valence-purple"></div>
+                    <div className="h-5 w-5 rounded-sm bg-valence-purple"></div>
 
-                    <h1 className="text-base text-valence-black font-bold">
+                    <h1 className="text-base font-bold text-valence-black">
                       Both Parties
                     </h1>
                   </div>
 
                   {COVENANT_TYPES[covenantType]!.both!.map((field) => (
                     <Field
-                      key={field.key}
+                      key={`both-party-field-${field.key}`}
                       field={field}
                       value={bothPartiesData[field.key]}
                       data={bothPartiesData}
@@ -179,22 +241,22 @@ const CovenantPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col bg-valence-lightgray grow">
+        <div className="flex grow flex-col bg-valence-lightgray">
           <div className="flex flex-row items-stretch justify-between border-b border-valence-black">
             <div className="flex flex-row items-stretch">
               <div
-                className={clsx(
-                  "border-r border-valence-black flex flex-col justify-center items-center p-4 cursor-pointer",
-                  contractDisplayMode === "contract" && "bg-valence-white"
+                className={cn(
+                  "flex cursor-pointer flex-col items-center justify-center border-r border-valence-black p-4",
+                  contractDisplayMode === "contract" && "bg-valence-white",
                 )}
                 onClick={() => setContractDisplayMode("contract")}
               >
                 <p>Contract</p>
               </div>
               <div
-                className={clsx(
-                  "border-r border-valence-black flex flex-col justify-center items-center p-4 cursor-pointer",
-                  contractDisplayMode === "json" && "bg-valence-white"
+                className={cn(
+                  "flex cursor-pointer flex-col items-center justify-center border-r border-valence-black p-4",
+                  contractDisplayMode === "json" && "bg-valence-white",
                 )}
                 onClick={() => setContractDisplayMode("json")}
               >
@@ -204,7 +266,7 @@ const CovenantPage = () => {
 
             <div className="flex flex-row items-stretch">
               <div
-                className="flex flex-col justify-center items-center p-4 cursor-pointer text-base"
+                className="flex cursor-pointer flex-col items-center justify-center p-4 text-base"
                 onClick={() => {
                   navigator.clipboard.writeText(json);
                 }}
@@ -212,7 +274,7 @@ const CovenantPage = () => {
                 <p>Copy text</p>
               </div>
               <div
-                className="flex flex-col justify-center items-center p-4 cursor-pointer text-base"
+                className="flex cursor-pointer flex-col items-center justify-center p-4 text-base"
                 onClick={() => {}}
               >
                 <p>Download</p>
@@ -221,14 +283,14 @@ const CovenantPage = () => {
           </div>
 
           <div
-            className={clsx(
-              "grow text-valence-black flex flex-col overflow-y-auto",
-              contractDisplayMode === "json" ? "font-mono" : "font-serif"
+            className={cn(
+              "flex grow flex-col overflow-y-auto text-valence-black",
+              contractDisplayMode === "json" ? "font-mono" : "font-serif",
             )}
           >
             {contractDisplayMode === "json" ? (
-              <div className="flex flex-row items-stretch shrink-0 grow">
-                <div className="shrink-0 flex flex-col p-4 text-valence-gray border-r border-valence-gray text-sm">
+              <div className="flex shrink-0 grow flex-row items-stretch">
+                <div className="flex shrink-0 flex-col border-r border-valence-gray p-4 text-sm text-valence-gray">
                   {new Array((json.match(/\n/g) || "").length + 1)
                     .fill(0)
                     .map((_, i) => (
@@ -236,16 +298,16 @@ const CovenantPage = () => {
                     ))}
                 </div>
 
-                <div className="p-4 grow text-sm">
+                <div className="grow p-4 text-sm">
                   <pre>{json}</pre>
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col gap-4 grow p-8 shrink-0">
+              <div className="flex shrink-0 grow flex-col gap-4 p-8">
                 {covenantSelected.makeContractText(
                   partyAData,
                   partyBData,
-                  bothPartiesData
+                  bothPartiesData,
                 )}
               </div>
             )}
@@ -312,11 +374,11 @@ const Field = ({ field, value, onChange, data }: FieldProps) => {
 
   return (
     <div
-      className={clsx(
+      className={cn(
         "flex gap-2",
         field.type === "check"
-          ? "flex-row justify-between items-center"
-          : "flex-col"
+          ? "flex-row items-center justify-between"
+          : "flex-col",
       )}
     >
       {!!field.label && !(field.type === "text" && field.inlineLabel) && (
@@ -341,14 +403,14 @@ const Field = ({ field, value, onChange, data }: FieldProps) => {
         />
       ) : field.type === "group" ? (
         <div
-          className={clsx(
+          className={cn(
             "flex flex-col gap-4",
-            field.indent && "pl-4 p-2 border-l-2 border-valence-lightgray"
+            field.indent && "border-l-2 border-valence-lightgray p-2 pl-4",
           )}
         >
-          {field.fields.map((field) => (
+          {field.fields.map((field, i) => (
             <Field
-              key={field.key}
+              key={`dropdown-${i}-${field.key}`} // low pri TODO: find a way to construct key without index
               field={field}
               value={value?.[field.key]}
               data={data}
@@ -412,12 +474,12 @@ const COVENANT_TYPES: Record<
     makeContractText: (
       aData: Record<string, any>,
       bData: Record<string, any>,
-      bothData: Record<string, any>
+      bothData: Record<string, any>,
     ) => ReactNode;
     makeInstantiateMsg: (
       aData: Record<string, any>,
       bData: Record<string, any>,
-      bothData: Record<string, any>
+      bothData: Record<string, any>,
     ) => Record<string, any>;
   }
 > = {
@@ -1147,8 +1209,8 @@ const COVENANT_TYPES: Record<
               {both.handleRemainder === "single"
                 ? "provided as single-sided liquidity into the same pool"
                 : both.handleRemainder === "return"
-                ? "returned to the party who sent that asset"
-                : null}
+                  ? "returned to the party who sent that asset"
+                  : null}
             </BothFieldRenderer>
             .
           </p>
@@ -1735,8 +1797,8 @@ const COVENANT_TYPES: Record<
               {both.handleRemainder === "single"
                 ? "provided as single-sided liquidity into the same pool"
                 : both.handleRemainder === "return"
-                ? "returned to the party who sent that asset"
-                : null}
+                  ? "returned to the party who sent that asset"
+                  : null}
             </BothFieldRenderer>
             .
           </p>
@@ -1804,19 +1866,44 @@ const COVENANT_TYPES: Record<
 };
 
 const AFieldRenderer = ({ children }: { children: ReactNode }) => (
-  <span className="p-0.5 bg-valence-red text-valence-white rounded-sm">
+  <span className="rounded-sm bg-valence-red p-0.5 text-valence-white">
     {children}
   </span>
 );
 
 const BFieldRenderer = ({ children }: { children: ReactNode }) => (
-  <span className="p-0.5 bg-valence-blue text-valence-white rounded-sm">
+  <span className="rounded-sm bg-valence-blue p-0.5 text-valence-white">
     {children}
   </span>
 );
 
 const BothFieldRenderer = ({ children }: { children: ReactNode }) => (
-  <span className="p-0.5 bg-valence-purple text-valence-white rounded-sm">
+  <span className="rounded-sm bg-valence-purple p-0.5 text-valence-white">
     {children}
   </span>
 );
+
+const PLACEHOLDER_PARTY_A_DATA = {
+  chainId: "neutron-1",
+  name: " Neutron",
+  returnedAssetDest:
+    "neutron1ajjddqsr9spepwsrt4u2nxpy4hmheyek5uxqc2gsy7sgt905s86sa3xzy6",
+  neutronAddress:
+    "neutron1fk0v8pmzc96depwljsl9pevuzz5fnj9s4xy8xaaj8zyc5c3pc8vsm00exh",
+  amount: "100,000.00",
+  denom: {
+    native: "NTRN",
+  },
+};
+const PLACEHOLDER_PARTY_B_DATA = {
+  chainId: "cosmoshub-4",
+  name: "Cosmos Hub",
+  returnedAssetDest:
+    "cosmos1zq5nue004v9z9x7fvtkfhexavlr5ndg2fz5yet9pekjqedvwrqwqren3m7",
+  neutronAddress:
+    "neutron1g5pwy6uvlzqsqacux9en725l62g9zc0r3ufqtqz8kdcrcfl7649s0qhk06",
+  amount: "8,264.153855",
+  denom: {
+    native: "NTRN",
+  },
+};

@@ -24,7 +24,7 @@ import {
   YAxis,
 } from "recharts";
 import { simulate } from "@/utils";
-import clsx from "clsx";
+import { cn } from "@/utils";
 import atomPrices from "./atom_price.json";
 import ntrnPrices from "./ntrn_price.json";
 import osmoPrices from "./osmo_price.json";
@@ -103,7 +103,7 @@ const RebalancerPage = () => {
 
   const totalHoldings = REBALANCED_TOKENS.reduce(
     (acc, token) => acc + token.holdings,
-    0
+    0,
   );
 
   const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
@@ -131,7 +131,7 @@ const RebalancerPage = () => {
         amount: holdings,
         price: latestUsdPrice,
         target,
-      }))
+      })),
     );
 
     return rebalances.map((tokenAmounts, index) => ({
@@ -144,7 +144,7 @@ const RebalancerPage = () => {
             projection: tokenAmounts[index] * latestUsdPrice,
           },
         }),
-        {} as Record<string, { historical: null; projection: number }>
+        {} as Record<string, { historical: null; projection: number }>,
       ),
     }));
   }, []);
@@ -166,7 +166,7 @@ const RebalancerPage = () => {
             projection: null,
           },
         }),
-        {} as Record<string, { historical: number; projection: null }>
+        {} as Record<string, { historical: number; projection: null }>,
       ),
     })),
     ...projection,
@@ -196,7 +196,7 @@ const RebalancerPage = () => {
   });
 
   const sortedTokens = [...REBALANCED_TOKENS].sort((a, b) =>
-    sorter.sort(a, b, sortAscending)
+    sorter.sort(a, b, sortAscending),
   );
 
   return (
@@ -322,11 +322,11 @@ const RebalancerPage = () => {
               {scales.map((thisScale) => (
                 <div
                   key={thisScale}
-                  className={clsx(
+                  className={cn(
                     "flex flex-col justify-center items-center cursor-pointer text-base",
                     scale === thisScale
                       ? "text-valence-black"
-                      : "text-valence-gray"
+                      : "text-valence-gray",
                   )}
                   onClick={() => setScale(thisScale as Scale)}
                 >
@@ -340,7 +340,7 @@ const RebalancerPage = () => {
             <LineChart
               data={data.filter(
                 ({ timestamp }) =>
-                  timestamp < ticks[ticks.length - 1] + tickInterval - 1
+                  timestamp < ticks[ticks.length - 1] + tickInterval - 1,
               )}
               margin={{ top: 0, left: 10, right: 0, bottom: 10 }}
             >
@@ -486,7 +486,7 @@ const RebalancerPage = () => {
                       {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
-                      }
+                      },
                     )}
                   </p>
 
@@ -495,7 +495,7 @@ const RebalancerPage = () => {
                       undefined,
                       {
                         maximumSignificantDigits: 4,
-                      }
+                      },
                     )}
                     %
                   </p>
