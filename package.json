@@ -11,11 +11,13 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
+    "@tanstack/react-query": "^5.35.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "framer-motion": "^11.1.7",
     "next": "14.0.4",
     "node-pid-controller": "^1.0.1",
+    "nuqs": "^1.17.2",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.49.3",
@@ -24,6 +26,7 @@
     "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.32.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

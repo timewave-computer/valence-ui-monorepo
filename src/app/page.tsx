@@ -71,7 +71,7 @@ const HomePage = () => {
                 className="mt-6 flex flex-row items-center gap-1.5 self-start"
                 href="/rebalancer"
               >
-                Rebalance portfolio
+                Rebalance Assets
                 <HiMiniArrowRight className="h-4 w-4" />
               </LinkText>
             </Button>
@@ -117,7 +117,7 @@ const HomePage = () => {
                   className="mt-6 flex flex-row items-center gap-1.5 self-start"
                   href=""
                 >
-                  Coming Soon
+                  Coming soon
                 </LinkText>
               </Button>
             </div>

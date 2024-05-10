@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Button,
   Dropdown,
@@ -23,12 +22,21 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { simulate } from "@/utils";
+import { QUERY_KEYS, simulate } from "@/utils";
 import { cn } from "@/utils";
-import atomPrices from "./atom_price.json";
-import ntrnPrices from "./ntrn_price.json";
-import osmoPrices from "./osmo_price.json";
-import usdcPrices from "./usdc_price.json";
+import { useQueryState } from "nuqs";
+import { useQuery } from "@tanstack/react-query";
+import {
+  fetchHistoricalValues,
+  fetchValenceAccountConfiguration,
+  fetchLivePortfolio,
+} from "@/server/actions";
+import {
+  atomPrices,
+  ntrnPrices,
+  osmoPrices,
+  usdcPrices,
+} from "@/const/mock-data";
 
 type OsmosisPrice = {
   time: number;
@@ -62,8 +70,57 @@ type RebalancerConfig = {
 };
 
 const RebalancerPage = () => {
-  const [valenceAccount, setValenceAccount] = useState("");
-  const [valueBase, setValueBase] = useState("usd");
+  const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
+    defaultValue: "usd",
+  });
+  const [valenceAccount, setValenceAccount] = useQueryState("valenceAccount", {
+    defaultValue: "",
+  });
+  const isValidValenceAccount = useMemo(() => {
+    return !!valenceAccount && valenceAccount !== "";
+  }, [valenceAccount]);
+
+  const accountConfigQuery = useQuery({
+    queryKey: [QUERY_KEYS.VALENCE_ACCOUNT_CONFIG, valenceAccount],
+    queryFn: () =>
+      fetchValenceAccountConfiguration({ address: valenceAccount }),
+    enabled: isValidValenceAccount,
+  });
+
+  const isValidTargetDenoms = useMemo(() => {
+    if (
+      accountConfigQuery?.data?.targets &&
+      accountConfigQuery?.data?.targets.length > 0
+    )
+      return true;
+    return false;
+  }, [accountConfigQuery?.data]);
+
+  const livePortfolioQuery = useQuery({
+    queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom],
+    queryFn: () =>
+      fetchLivePortfolio({ address: valenceAccount, baseDenom: baseDenom }),
+    enabled: isValidValenceAccount,
+  });
+
+  const historicalValuesQuery = useQuery({
+    queryKey: [QUERY_KEYS.HISTORICAL_VALUES, valenceAccount, baseDenom],
+    queryFn: () => {
+      let now = new Date();
+      let oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      return fetchHistoricalValues({
+        targetDenoms:
+          accountConfigQuery?.data?.targets?.map((t) => t.denom) ?? [],
+        baseDenom: baseDenom,
+        address: valenceAccount,
+        startDate: oneYearAgo,
+        endDate: now,
+      });
+    },
+    enabled: isValidValenceAccount && isValidTargetDenoms,
+  });
+
   const [sorterKey, setSorter] = useState<string>("value");
   const [sortAscending, setSortAscending] = useState(true);
   const [scale, setScale] = useState<Scale>(Scale.Year);
@@ -88,6 +145,7 @@ const RebalancerPage = () => {
       pidPreset: "default",
     },
   });
+
   const {
     fields: tokenFields,
     append: addToken,
@@ -200,12 +258,12 @@ const RebalancerPage = () => {
   );
 
   return (
-    <main className="flex grow min-h-0 flex-col bg-valence-white text-valence-black">
-      <div className="flex flex-row items-stretch grow min-h-0">
-        <div className="overflow-y-auto flex flex-col items-stretch w-[24rem] shrink-0 border-r border-valence-black overflow-hidden">
-          <div className="px-4 pb-8 flex flex-col gap-2 border-b border-valence-black">
+    <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
+      <div className="flex min-h-0 grow flex-row items-stretch">
+        <div className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black">
+          <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
             <Image
-              className="mt-8 mb-6"
+              className="mb-6 mt-8"
               src="/img/rebalancer.svg"
               alt="Rebalancer illustration"
               width={236}
@@ -220,7 +278,7 @@ const RebalancerPage = () => {
             </p>
           </div>
 
-          <div className="p-4 pb-8 flex flex-col gap-6 border-b border-valence-black">
+          <div className="flex flex-col gap-6 border-b border-valence-black p-4 pb-8">
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Valence account</h1>
 
@@ -248,10 +306,10 @@ const RebalancerPage = () => {
             </div>
 
             <div className="flex flex-col gap-3">
-              <div className="flex flex-row justify-between items-center">
+              <div className="flex flex-row items-center justify-between">
                 <p className="font-bold">Tokens</p>
                 <button
-                  className="flex flex-row justify-center items-center"
+                  className="flex flex-row items-center justify-center"
                   onClick={() =>
                     addToken({
                       denom: "uusdc",
@@ -259,7 +317,7 @@ const RebalancerPage = () => {
                     })
                   }
                 >
-                  <BsPlus className="w-6 h-6" />
+                  <BsPlus className="h-6 w-6" />
                 </button>
               </div>
 
@@ -288,10 +346,10 @@ const RebalancerPage = () => {
                     />
 
                     <button
-                      className="flex flex-row justify-center items-center ml-3"
+                      className="ml-3 flex flex-row items-center justify-center"
                       onClick={() => removeToken(index)}
                     >
-                      <BsX className="w-6 h-6" />
+                      <BsX className="h-6 w-6" />
                     </button>
                   </div>
                 ))}
@@ -310,20 +368,20 @@ const RebalancerPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col bg-valence-lightgray text-sm grow overflow-y-auto">
+        <div className="flex grow flex-col overflow-y-auto bg-valence-lightgray text-sm">
           <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
             <Dropdown
               options={VALUE_BASE_OPTIONS}
-              selected={valueBase}
-              onSelected={setValueBase}
+              selected={baseDenom}
+              onSelected={setBaseDenom}
             />
 
-            <div className="flex flex-row gap-8 items-center pr-2">
+            <div className="flex flex-row items-center gap-8 pr-2">
               {scales.map((thisScale) => (
                 <div
                   key={thisScale}
                   className={cn(
-                    "flex flex-col justify-center items-center cursor-pointer text-base",
+                    "flex cursor-pointer flex-col items-center justify-center text-base",
                     scale === thisScale
                       ? "text-valence-black"
                       : "text-valence-gray",
@@ -406,7 +464,7 @@ const RebalancerPage = () => {
             </LineChart>
           </ResponsiveContainer>
 
-          <div className="bg-valence-white grow overflow-x-auto">
+          <div className="grow overflow-x-auto bg-valence-white">
             <div className="grid grid-cols-[2fr_2fr_3fr_4fr_4fr_2fr]">
               {/* Headers */}
               <SortableTableHeader
@@ -462,24 +520,24 @@ const RebalancerPage = () => {
 
               {sortedTokens.map((token, index) => (
                 <Fragment key={index}>
-                  <div className="flex flex-row items-center gap-2 p-4 border-b border-valence-black">
+                  <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
                     <div
-                      className="w-4 h-4 rounded-full shrink-0"
+                      className="h-4 w-4 shrink-0 rounded-full"
                       style={{ backgroundColor: token.color }}
                     ></div>
 
-                    <p className="font-bold text-sm">{token.name}</p>
+                    <p className="text-sm font-bold">{token.name}</p>
                   </div>
 
-                  <p className="p-4 border-b border-valence-black flex flex-row items-center text-valence-gray text-sm">
+                  <p className="flex flex-row items-center border-b border-valence-black p-4 text-sm text-valence-gray">
                     {token.symbol}
                   </p>
 
-                  <p className="p-4 border-b border-valence-black flex flex-row items-center justify-end text-right font-mono text-sm">
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
                     {token.holdings.toLocaleString()}
                   </p>
 
-                  <p className="p-4 border-b border-valence-black flex flex-row items-center justify-end text-right font-mono text-sm">
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
                     $
                     {(token.holdings * token.latestUsdPrice).toLocaleString(
                       undefined,
@@ -490,7 +548,7 @@ const RebalancerPage = () => {
                     )}
                   </p>
 
-                  <p className="p-4 border-b border-valence-black flex flex-row items-center justify-end text-right text-sm">
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
                     {((token.holdings / totalHoldings) * 100).toLocaleString(
                       undefined,
                       {
@@ -500,7 +558,7 @@ const RebalancerPage = () => {
                     %
                   </p>
 
-                  <p className="p-4 border-b border-valence-black flex flex-row items-center justify-end text-right text-sm">
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
                     {(token.target * 100).toLocaleString(undefined, {
                       maximumSignificantDigits: 4,
                     })}

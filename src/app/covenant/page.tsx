@@ -102,8 +102,8 @@ const CovenantPage = () => {
               height: portalPosition.height,
             }}
           >
-            <span className="border-2 border-valence-black bg-valence-white px-5 py-3 text-center font-serif text-4xl text-valence-black ">
-              Coming Soon.
+            <span className="bg-valence-black px-5 py-3 text-center font-serif text-4xl text-valence-white ">
+              Coming soon
             </span>
           </Overlay>,
 

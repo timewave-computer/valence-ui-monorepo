@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { cn } from "@/utils";
-
+import { ReactQueryProvider } from "@/context";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,17 +17,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          inter.className,
-          "flex flex-col min-h-screen max-h-screen",
-        )}
-      >
-        <Nav />
+    <ReactQueryProvider>
+      <html lang="en">
+        <body
+          className={cn(
+            inter.className,
+            "flex max-h-screen min-h-screen flex-col",
+          )}
+        >
+          <Nav />
 
-        {children}
-      </body>
-    </html>
+          {children}
+        </body>
+      </html>
+    </ReactQueryProvider>
   );
 }
