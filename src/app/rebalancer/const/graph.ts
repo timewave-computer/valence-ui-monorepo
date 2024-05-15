@@ -112,3 +112,5 @@ export const COLORS = [
   "#8476DE",
   "#17CFCF",
 ];
+
+export const yTickCount = 11;

@@ -93,11 +93,18 @@ const RebalancerPage = () => {
     enabled: isValidValenceAccount && isValidTargetDenoms,
   });
 
-  const { scale, setScale, xAxisTicks, graphData, keys, todayTimestamp } =
-    useHistoricalValueGraph({
-      data: historicalValuesQuery.data?.values,
-      config: accountConfigQuery.data,
-    });
+  const {
+    scale,
+    setScale,
+    xAxisTicks,
+    yAxisTicks,
+    graphData,
+    keys,
+    todayTimestamp,
+  } = useHistoricalValueGraph({
+    data: historicalValuesQuery.data?.values,
+    config: accountConfigQuery.data,
+  });
 
   const [sorterKey, setSorter] = useState<string>("value");
   const [sortAscending, setSortAscending] = useState(true);
@@ -278,7 +285,12 @@ const RebalancerPage = () => {
             </div>
           </div>
 
-          <Graph scale={scale} xAxisTicks={xAxisTicks} data={graphData}>
+          <Graph
+            scale={scale}
+            xAxisTicks={xAxisTicks}
+            yAxisTicks={yAxisTicks}
+            data={graphData}
+          >
             <Tooltip
               content={
                 <ValueTooltip keys={[...keys.values, ...keys.projections]} />

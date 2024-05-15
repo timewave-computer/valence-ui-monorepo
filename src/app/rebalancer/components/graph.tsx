@@ -15,10 +15,11 @@ export type GraphData = Array<{
 
 export const Graph: React.FC<{
   xAxisTicks: number[];
+  yAxisTicks: number[];
   scale: Scale;
   data: GraphData;
   children: ReactNode;
-}> = ({ xAxisTicks, scale, data, children }) => {
+}> = ({ xAxisTicks, yAxisTicks, scale, data, children }) => {
   return (
     <ResponsiveContainer key={scale} height={500}>
       <LineChart
@@ -27,12 +28,9 @@ export const Graph: React.FC<{
       >
         <YAxis
           type="number"
-          domain={[0, 1100000]}
+          domain={[0, Math.max(...yAxisTicks) + Math.max(...yAxisTicks) * 0.1]}
           scale="linear"
-          ticks={[
-            0, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000,
-            900000, 1000000,
-          ]}
+          ticks={yAxisTicks}
           tickFormatter={(value) =>
             Number(value).toLocaleString(undefined, {
               notation: "compact",

@@ -6,6 +6,7 @@ import {
   KeyTag,
   minimumTimestampGenerator,
   projectionLength,
+  yTickCount,
 } from "@/app/rebalancer/const/graph";
 import {
   FetchHistoricalValuesReturnValue,
@@ -16,7 +17,7 @@ import { useMemo } from "react";
 import { GraphData } from "@/app/rebalancer/components/graph";
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import { UTCDate } from "@date-fns/utc";
-import { set, addDays } from "date-fns";
+import { addDays } from "date-fns";
 
 type HistoricalValueGraphProps = {
   config?: ValenceAccountConfig;
@@ -75,6 +76,28 @@ export const useHistoricalValueGraph = ({
     if (!minTimestamp) return [];
     return rawData?.filter((d) => d.timestamp >= minTimestamp);
   }, [rawData, minTimestamp]);
+
+  const yAxisTicks = useMemo(() => {
+    if (!data || !data.length) return [];
+
+    let yMax = 0;
+    let yMin = 0;
+
+    data.forEach((d) => {
+      const localMax = Math.max(...d.tokens.map((t) => t.amount * t.price));
+      const localMin = Math.min(...d.tokens.map((t) => t.amount * t.price));
+      yMax = Math.max(yMax, localMax);
+      yMin = Math.min(yMin, localMin);
+    });
+
+    const yRange = yMax - yMin;
+    const yTickInterval = yRange / yTickCount;
+
+    // adds extra space on top
+    return new Array(yTickCount + 1).fill(0).map((_, i) => {
+      return yMin + yTickInterval * i;
+    });
+  }, [data]);
 
   const dataFormatted: GraphData = useMemo(() => {
     if (!data) return [];
@@ -155,6 +178,7 @@ export const useHistoricalValueGraph = ({
       values: keys.filter((k) => k.includes(KeyTag.value)),
     },
     xAxisTicks,
+    yAxisTicks,
     scale,
     setScale,
   };
@@ -164,6 +188,7 @@ type HistoricalValueGraphReturnValue = {
   todayTimestamp: number;
   graphData: GraphData;
   xAxisTicks: number[];
+  yAxisTicks: number[];
   scale: Scale;
   keys: {
     projections: string[];
