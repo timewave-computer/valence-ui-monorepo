@@ -54,7 +54,7 @@ const LIVE_PORTFOLIO: FetchLivePortfolioReturnValue = {
       amount: 428471,
       price: 1.000002,
     },
-    uuatom: {
+    uatom: {
       metadata: {
         denom: "uatom",
         symbol: "ATOM",
@@ -63,7 +63,7 @@ const LIVE_PORTFOLIO: FetchLivePortfolioReturnValue = {
       amount: 428471,
       price: 1.000002,
     },
-    uuosmo: {
+    uosmo: {
       metadata: {
         denom: "uosmo",
         symbol: "OSMO",

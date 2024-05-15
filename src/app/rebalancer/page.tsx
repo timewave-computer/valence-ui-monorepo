@@ -12,17 +12,11 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { BsPlus, BsX } from "react-icons/bs";
 import Image from "next/image";
 import {
-  CartesianGrid,
-  Label,
-  Line,
-  LineChart,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { QUERY_KEYS, simulate } from "@/utils";
+  atomPrices,
+  ntrnPrices,
+  osmoPrices,
+  usdcPrices,
+} from "@/const/mock-data";
 import { cn } from "@/utils";
 import { useQueryState } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
@@ -31,43 +25,11 @@ import {
   fetchValenceAccountConfiguration,
   fetchLivePortfolio,
 } from "@/server/actions";
-import {
-  atomPrices,
-  ntrnPrices,
-  osmoPrices,
-  usdcPrices,
-} from "@/const/mock-data";
-
-type OsmosisPrice = {
-  time: number;
-  close: number;
-  high: number;
-  low: number;
-  open: number;
-  volume: number | null;
-};
-
-type Token = {
-  denom: string;
-  percent: string;
-};
-
-type RebalancedToken = {
-  denom: string;
-  symbol: string;
-  name: string;
-  color: string;
-  holdings: number;
-  latestUsdPrice: number;
-  osmosisPrices: OsmosisPrice[];
-  target: number;
-};
-
-type RebalancerConfig = {
-  baseToken: string;
-  tokens: Token[];
-  pidPreset: string;
-};
+import { Graph, ValueTooltip } from "@/app/rebalancer/components";
+import { COLORS, Scale } from "@/app/rebalancer/const/graph";
+import { QUERY_KEYS } from "@/const/query-keys";
+import { useHistoricalValueGraph } from "@/app/rebalancer/hooks";
+import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
@@ -76,6 +38,7 @@ const RebalancerPage = () => {
   const [valenceAccount, setValenceAccount] = useQueryState("valenceAccount", {
     defaultValue: "",
   });
+
   const isValidValenceAccount = useMemo(() => {
     return !!valenceAccount && valenceAccount !== "";
   }, [valenceAccount]);
@@ -96,6 +59,10 @@ const RebalancerPage = () => {
     return false;
   }, [accountConfigQuery?.data]);
 
+  const targetDenoms = useMemo(() => {
+    return accountConfigQuery?.data?.targets?.map((t) => t.denom) ?? [];
+  }, [accountConfigQuery?.data]);
+
   const livePortfolioQuery = useQuery({
     queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom],
     queryFn: () =>
@@ -104,14 +71,18 @@ const RebalancerPage = () => {
   });
 
   const historicalValuesQuery = useQuery({
-    queryKey: [QUERY_KEYS.HISTORICAL_VALUES, valenceAccount, baseDenom],
+    queryKey: [
+      QUERY_KEYS.HISTORICAL_VALUES,
+      valenceAccount,
+      baseDenom,
+      targetDenoms,
+    ],
     queryFn: () => {
       let now = new Date();
       let oneYearAgo = new Date();
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
       return fetchHistoricalValues({
-        targetDenoms:
-          accountConfigQuery?.data?.targets?.map((t) => t.denom) ?? [],
+        targetDenoms: targetDenoms,
         baseDenom: baseDenom,
         address: valenceAccount,
         startDate: oneYearAgo,
@@ -121,9 +92,14 @@ const RebalancerPage = () => {
     enabled: isValidValenceAccount && isValidTargetDenoms,
   });
 
+  const { scale, setScale, xAxisTicks, graphData, keys, todayTimestamp } =
+    useHistoricalValueGraph({
+      data: historicalValuesQuery.data?.values,
+      config: accountConfigQuery.data,
+    });
+
   const [sorterKey, setSorter] = useState<string>("value");
   const [sortAscending, setSortAscending] = useState(true);
-  const [scale, setScale] = useState<Scale>(Scale.Year);
 
   const { setValue, watch, control } = useForm<RebalancerConfig>({
     defaultValues: {
@@ -155,104 +131,11 @@ const RebalancerPage = () => {
     name: "tokens",
   });
 
-  const onConnect = () => {
-    // TODO
-  };
-
   const totalHoldings = REBALANCED_TOKENS.reduce(
     (acc, token) => acc + token.holdings,
     0,
   );
-
   const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
-
-  // Last 10 months of ticks
-  const ticksLast9Months = new Array(10)
-    .fill(0)
-    .map((_, i) => {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
-      date.setDate(1);
-      date.setHours(0, 0, 0, 0);
-      return date.getTime();
-    })
-    .sort();
-
-  const projection = useMemo(() => {
-    // Simulate the next 60 days.
-    const rebalances = simulate(
-      0.3,
-      0.2,
-      0.1,
-      60,
-      REBALANCED_TOKENS.map(({ holdings, latestUsdPrice, target }) => ({
-        amount: holdings,
-        price: latestUsdPrice,
-        target,
-      })),
-    );
-
-    return rebalances.map((tokenAmounts, index) => ({
-      timestamp: Date.now() + index * 24 * 60 * 60 * 1000,
-      ...REBALANCED_TOKENS.reduce(
-        (acc, { denom, latestUsdPrice }, index) => ({
-          ...acc,
-          [denom]: {
-            historical: null,
-            projection: tokenAmounts[index] * latestUsdPrice,
-          },
-        }),
-        {} as Record<string, { historical: null; projection: number }>,
-      ),
-    }));
-  }, []);
-
-  const data = [
-    ...[...ticksLast9Months, projection[0].timestamp].map((timestamp) => ({
-      timestamp,
-      ...REBALANCED_TOKENS.reduce(
-        (acc, { denom, holdings, osmosisPrices }) => ({
-          ...acc,
-          [denom]: {
-            historical:
-              holdings *
-              // Osmosis prices are descending by time, so find the first price
-              // with a time less than the current timestamp to find the latest
-              // price at this timestamp.
-              (osmosisPrices.find(({ time }) => time * 1000 < timestamp)
-                ?.close || 0),
-            projection: null,
-          },
-        }),
-        {} as Record<string, { historical: number; projection: null }>,
-      ),
-    })),
-    ...projection,
-  ];
-
-  const scaledDataTicks = [
-    ...data.map((d) => d.timestamp),
-    ...projection.map((p) => p.timestamp),
-  ];
-  const minTick = Math.min(...scaledDataTicks);
-  const tickCount = scaleTickCount[scale];
-  const tickInterval = scaleIntervalSeconds[scale] * 1000;
-  const ticks = new Array(tickCount).fill(0).map((_, i) => {
-    const timestamp = new Date(minTick + tickInterval * i);
-    if (scale === Scale.Year) {
-      timestamp.setDate(1);
-      timestamp.setHours(0, 0, 0, 0);
-    } else if (scale === Scale.Month || scale === Scale.Week) {
-      timestamp.setHours(0, 0, 0, 0);
-    } else if (scale === Scale.Day) {
-      timestamp.setMinutes(0, 0, 0);
-    } else if (scale === Scale.Hour) {
-      timestamp.setSeconds(0, 0);
-    }
-
-    return timestamp.getTime();
-  });
-
   const sortedTokens = [...REBALANCED_TOKENS].sort((a, b) =>
     sorter.sort(a, b, sortAscending),
   );
@@ -290,7 +173,7 @@ const RebalancerPage = () => {
                 containerClassName="w-full"
               />
 
-              <Button className="mt-2" onClick={onConnect} disabled>
+              <Button className="mt-2" onClick={() => {}} disabled>
                 Connect wallet
               </Button>
             </div>
@@ -394,79 +277,52 @@ const RebalancerPage = () => {
             </div>
           </div>
 
-          <ResponsiveContainer key={scale} height={500}>
-            <LineChart
-              data={data.filter(
-                ({ timestamp }) =>
-                  timestamp < ticks[ticks.length - 1] + tickInterval - 1,
-              )}
-              margin={{ top: 0, left: 10, right: 0, bottom: 10 }}
-            >
-              <YAxis
-                type="number"
-                domain={[0, 1100000]}
-                scale="linear"
-                ticks={[
-                  0, 100000, 200000, 300000, 400000, 500000, 600000, 700000,
-                  800000, 900000, 1000000,
-                ]}
-                tickFormatter={(value) =>
-                  Number(value).toLocaleString(undefined, {
-                    notation: "compact",
-                    maximumSignificantDigits: 2,
-                  })
-                }
-                tickLine={false}
-                axisLine={{ stroke: "white" }}
-                className="font-sans text-xs"
-                dx={-6}
+          <Graph scale={scale} xAxisTicks={xAxisTicks} data={graphData}>
+            <Tooltip
+              content={
+                <ValueTooltip keys={[...keys.values, ...keys.projections]} />
+              }
+            />
+
+            <ReferenceLine x={todayTimestamp} stroke="black" isFront>
+              <Label
+                value="Today"
+                position="insideTopLeft"
+                style={{ fill: "black" }}
+                offset={10}
               />
-              <XAxis
-                dataKey="timestamp"
-                type="number"
-                scale="time"
-                domain={["dataMin", "dataMax"]}
-                tickFormatter={scaleFormatter[scale]}
-                ticks={ticks}
-                tickLine={false}
-                axisLine={{ stroke: "white" }}
-                className="font-sans text-xs text-valence-black"
-                dy={6}
-              />
-              <Tooltip />
-              <CartesianGrid syncWithTicks stroke="white" />
-              <ReferenceLine x={Date.now()} stroke="black" isFront>
-                <Label
-                  value="Today"
-                  position="insideTopLeft"
-                  style={{ fill: "black" }}
-                  offset={10}
-                />
-              </ReferenceLine>
-              {REBALANCED_TOKENS.map(({ denom, color }) => (
-                <Fragment key={denom}>
+            </ReferenceLine>
+            {keys.values.map((k, i) => {
+              return (
+                <Fragment key={k}>
                   <Line
-                    dataKey={denom + ".historical"}
+                    dataKey={k}
                     type="monotone"
                     dot={false}
-                    stroke={color}
+                    stroke={COLORS[i]}
                     isAnimationActive={false}
                   />
+                </Fragment>
+              );
+            })}
+            {keys.projections.map((k, i) => {
+              return (
+                <Fragment key={k}>
                   <Line
-                    dataKey={denom + ".projection"}
+                    dataKey={k}
                     type="monotone"
                     dot={false}
+                    stroke={COLORS[i]}
+                    isAnimationActive={false}
                     strokeDasharray="3 3"
-                    stroke={color}
                   />
                 </Fragment>
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
+              );
+            })}
+          </Graph>
 
           <div className="grow overflow-x-auto bg-valence-white">
             <div className="grid grid-cols-[2fr_2fr_3fr_4fr_4fr_2fr]">
-              {/* Headers */}
               <SortableTableHeader
                 label="Ticker"
                 sorterKey="ticker"
@@ -632,19 +488,6 @@ const VALUE_BASE_OPTIONS: { label: string; value: string }[] = [
   },
 ];
 
-const COLORS = [
-  "#FF2A00",
-  "#00A3FF",
-  "#EA80D1",
-  "#4EBB5B",
-  "#FFBC57",
-  "#800000",
-  "#BABABA",
-  "#C2C600",
-  "#8476DE",
-  "#17CFCF",
-];
-
 const REBALANCED_TOKENS = (
   [
     {
@@ -721,34 +564,35 @@ const SORTERS: Sorter<RebalancedToken>[] = [
   },
 ];
 
-enum Scale {
-  Hour = "h",
-  Day = "d",
-  Week = "w",
-  Month = "m",
-  Year = "y",
-}
-const scaleTickCount: Record<Scale, number> = {
-  [Scale.Hour]: 60, // per-minute
-  [Scale.Day]: 24, // per-hour
-  [Scale.Week]: 7, // per day
-  [Scale.Month]: 31, // per day
-  [Scale.Year]: 12, // per month
-};
-const scaleIntervalSeconds: Record<Scale, number> = {
-  [Scale.Hour]: 60, // per-minute
-  [Scale.Day]: 60 * 60, // per-hour
-  [Scale.Week]: 12 * 60 * 60, // per day
-  [Scale.Month]: 24 * 60 * 60, // per day
-  [Scale.Year]: 31 * 24 * 60 * 60, // per month
-};
-const scaleFormatter: Record<Scale, (value: number) => string> = {
-  [Scale.Hour]: (value) =>
-    new Date(value).toLocaleTimeString("default", { timeStyle: "short" }),
-  [Scale.Day]: (value) => new Date(value).getHours().toString(),
-  [Scale.Week]: (value) => new Date(value).getDate().toString(),
-  [Scale.Month]: (value) => new Date(value).getDate().toString(),
-  [Scale.Year]: (value) =>
-    new Date(value).toLocaleString("default", { month: "short" }).toUpperCase(),
-};
 const scales = Object.values(Scale);
+
+type OsmosisPrice = {
+  time: number;
+  close: number;
+  high: number;
+  low: number;
+  open: number;
+  volume: number | null;
+};
+
+type RebalancedToken = {
+  denom: string;
+  symbol: string;
+  name: string;
+  color: string;
+  holdings: number;
+  latestUsdPrice: number;
+  osmosisPrices: OsmosisPrice[];
+  target: number;
+};
+
+export type Token = {
+  denom: string;
+  percent: string;
+};
+
+export type RebalancerConfig = {
+  baseToken: string;
+  tokens: Token[];
+  pidPreset: string;
+};
