@@ -6,6 +6,8 @@ import {
   osmoPrices,
   atomPrices,
 } from "@/const/mock-data";
+import { UTCDate } from "@date-fns/utc";
+import { subDays } from "date-fns";
 
 export async function fetchHistoricalValues({
   address,
@@ -29,7 +31,7 @@ export async function fetchHistoricalValues({
 
   return Promise.resolve({
     baseDenom: "uusdc",
-    values: generateHistoricValues(),
+    values: generateHistoricValues(startDate),
   });
 }
 
@@ -45,21 +47,14 @@ export type FetchHistoricalValuesReturnValue = {
   }>;
 };
 
-const generateHistoricValues = () => {
-  // start with todays date
-  // create array for 365 days, access element[i]
-
+const generateHistoricValues = (startDate: Date) => {
   const vals = [];
-
   for (let i = 0; i < 365; i++) {
-    // last 10 months
-    const date = new Date();
-    date.setDate(date.getDate() - i); // Subtract i days from current date
+    let date = new UTCDate(startDate);
+    date = subDays(date, i);
+    date.setHours(0, 0, 0, 0);
+    const timestamp = date.getTime();
 
-    // Get timestamp for the current date at 00:00:00 (midnight)
-    const timestamp = date.setHours(0, 0, 0, 0);
-
-    // TODO: do this by target input and not hardcoded
     vals.push({
       timestamp: timestamp,
       tokens: [

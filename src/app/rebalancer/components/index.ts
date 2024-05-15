@@ -1,2 +1,2 @@
 export * from "./graph";
-export * from "./tooltip";
+export * from "./value-tooltip";

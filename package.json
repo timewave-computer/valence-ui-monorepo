@@ -10,10 +10,12 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@date-fns/utc": "^1.2.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@tanstack/react-query": "^5.35.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "date-fns": "^3.6.0",
     "framer-motion": "^11.1.7",
     "next": "14.0.4",
     "node-pid-controller": "^1.0.1",

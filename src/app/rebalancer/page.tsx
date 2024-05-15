@@ -30,6 +30,7 @@ import { COLORS, Scale } from "@/app/rebalancer/const/graph";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useHistoricalValueGraph } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
+import { UTCDate } from "@date-fns/utc";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
@@ -77,16 +78,16 @@ const RebalancerPage = () => {
       baseDenom,
       targetDenoms,
     ],
-    queryFn: () => {
-      let now = new Date();
-      let oneYearAgo = new Date();
-      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    queryFn: async () => {
+      let startDate = new UTCDate();
+      startDate.setHours(0, 0, 0, 0);
+
       return fetchHistoricalValues({
         targetDenoms: targetDenoms,
         baseDenom: baseDenom,
         address: valenceAccount,
-        startDate: oneYearAgo,
-        endDate: now,
+        startDate: startDate,
+        endDate: startDate, // nothing is done with this yet, its mock data
       });
     },
     enabled: isValidValenceAccount && isValidTargetDenoms,

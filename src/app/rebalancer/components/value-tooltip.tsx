@@ -1,5 +1,5 @@
 import { KeyTag, COLORS, GraphKey } from "@/app/rebalancer/const/graph";
-import { cn, displayNumber } from "@/utils";
+import { cn, displayNumber, displayUtcTime } from "@/utils";
 import { TooltipProps } from "recharts";
 import {
   NameType,
@@ -25,13 +25,15 @@ export const ValueTooltip = ({
 
   return (
     <div className="flex flex-col gap-2 bg-white p-4">
-      <div className="flex items-center justify-between ">
-        <div className="text-lg font-semibold">
+      <div className=" ">
+        <div className="self-start text-lg font-semibold">
           {isProjection ? "Projected" : "Rebalance Activity"}
         </div>
-        <div className="text"> {date.toLocaleDateString()}</div>
+        <div className="flex items-end gap-0.5 text-xs">
+          <span>{date.toLocaleDateString()} </span>
+          <span>{displayUtcTime(date)}</span>{" "}
+        </div>
       </div>
-
       <table>
         <thead>
           <tr className="p-1">

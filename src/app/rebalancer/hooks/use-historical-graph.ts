@@ -12,8 +12,11 @@ import {
   ValenceAccountConfig,
 } from "@/server/actions";
 import { simulate } from "@/utils";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { GraphData } from "@/app/rebalancer/components/graph";
+import { parseAsStringEnum, useQueryState } from "nuqs";
+import { UTCDate } from "@date-fns/utc";
+import { set, addDays } from "date-fns";
 
 type HistoricalValueGraphProps = {
   config?: ValenceAccountConfig;
@@ -30,7 +33,10 @@ export const useHistoricalValueGraph = ({
   data: rawData,
   config,
 }: HistoricalValueGraphProps): HistoricalValueGraphReturnValue => {
-  const [scale, setScale] = useState<Scale>(Scale.Year);
+  const [scale, setScale] = useQueryState(
+    "scale",
+    parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Year),
+  );
   const keys = useMemo(() => {
     const targetDenoms = config?.targets?.map((t) => t.denom) ?? [];
     let result: string[] = [];
@@ -40,6 +46,7 @@ export const useHistoricalValueGraph = ({
     });
     return result;
   }, [config]);
+
   const minTimestamp = useMemo(() => {
     if (!rawData || !rawData.length) return;
     const mostRecentEntry = rawData[rawData.length - 1];
@@ -52,7 +59,7 @@ export const useHistoricalValueGraph = ({
     const tickInterval = scaleIntervalSeconds[scale] * 1000;
 
     return new Array(tickCount).fill(0).map((_, i) => {
-      const timestamp = new Date(minTimestamp + tickInterval * i);
+      const timestamp = new UTCDate(minTimestamp + tickInterval * i);
       if (scale === Scale.Year) {
         timestamp.setMonth(timestamp.getMonth() + 1); // don't show tick for incomplete first month
         timestamp.setDate(1);
@@ -111,9 +118,9 @@ export const useHistoricalValueGraph = ({
     );
 
     return projections.map((tokenAmounts, i) => {
-      const ts = new Date();
+      let ts = new UTCDate();
       ts.setHours(0, 0, 0, 0);
-      ts.setDate(ts.getDate() + i);
+      ts = addDays(ts, i);
 
       return {
         timestamp: ts.getTime(),
@@ -135,7 +142,7 @@ export const useHistoricalValueGraph = ({
   }, [dataFormatted, projectionsFormatted]);
 
   const todayTimestamp = useMemo(() => {
-    const date = new Date();
+    const date = new UTCDate();
     date.setHours(0, 0, 0, 0);
     return date.getTime();
   }, []);

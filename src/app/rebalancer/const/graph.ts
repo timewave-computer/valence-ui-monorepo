@@ -1,3 +1,4 @@
+import { UTCDate } from "@date-fns/utc";
 export enum Scale {
   // these two are disabled for now, we only have historical day 1x per day
   // Hour = "h",
@@ -83,17 +84,17 @@ export const minimumTimestampGenerator: Record<
   //    new Date(value).toLocaleTimeString("default", { timeStyle: "short" }),
   //   [Scale.Day]: (value) => new Date(value).getHours().toString(),
   [Scale.Week]: (startValue) => {
-    const date = new Date(startValue);
+    const date = new UTCDate(startValue);
     date.setDate(date.getDate() - 7);
     return date.getTime();
   },
   [Scale.Month]: (startValue) => {
-    const date = new Date(startValue);
+    const date = new UTCDate(startValue);
     date.setDate(date.getDate() - 30);
     return date.getTime();
   },
   [Scale.Year]: (startValue) => {
-    const date = new Date(startValue);
+    const date = new UTCDate(startValue);
     date.setDate(date.getDate() - 365);
     return date.getTime();
   },
