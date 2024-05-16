@@ -1,10 +1,12 @@
-import { KeyTag, COLORS, GraphKey } from "@/app/rebalancer/const/graph";
-import { cn, displayNumber, displayUtcTime } from "@/utils";
+import { KeyTag, GraphKey } from "@/app/rebalancer/const/graph";
+import { displayNumber, displayUtcTime } from "@/utils";
 import { TooltipProps } from "recharts";
 import {
   NameType,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+
+import { ColoredDot } from "@/app/rebalancer/components";
 
 export const ValueTooltip = ({
   active,
@@ -53,7 +55,6 @@ export const ValueTooltip = ({
             ? keys
                 .filter((k) => k.includes(KeyTag.projectedValue))
                 .map((k: string, i: number) => {
-                  const color = `bg-[${COLORS[i]}]`;
                   const denom = k.split(".")[0];
                   const amount = data[GraphKey.projectedAmount(denom)];
                   const value = data[GraphKey.projectedValue(denom)];
@@ -65,7 +66,7 @@ export const ValueTooltip = ({
                         }
                         scope="row"
                       >
-                        <div className={cn("h-2 w-2 rounded-full", color)} />
+                        <ColoredDot i={i} />
                         <span>{denom}</span>
                       </th>
                       <td className="p-0.5 px-2 text-end">
@@ -78,11 +79,9 @@ export const ValueTooltip = ({
             : keys
                 .filter((k) => k.includes(KeyTag.value))
                 .map((k: string, i: number) => {
-                  const color = `bg-[${COLORS[i]}]`;
                   const denom = k.split(".")[0];
                   const amount = data[GraphKey.balance(denom)];
                   const value = data[GraphKey.value(denom)];
-
                   return (
                     <tr key={`tooltip-${label}-${k}`} className="p-0.5">
                       <th
@@ -91,9 +90,7 @@ export const ValueTooltip = ({
                         }
                         scope="row"
                       >
-                        <div
-                          className={cn("h-2 w-2 rounded-full text-end", color)}
-                        />
+                        <ColoredDot i={i} />
                         <span>{denom}</span>
                       </th>
                       <td className="p-0.5 px-2 text-end">

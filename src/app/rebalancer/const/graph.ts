@@ -100,17 +100,30 @@ export const minimumTimestampGenerator: Record<
   },
 };
 
-export const COLORS = [
-  "#FF2A00",
-  "#00A3FF",
-  "#EA80D1",
-  "#4EBB5B",
-  "#FFBC57",
-  "#800000",
-  "#BABABA",
-  "#C2C600",
-  "#8476DE",
-  "#17CFCF",
-];
+export class GraphColor {
+  // this only applied to lines. modal dots are controlled via CVA
+  // if changing one, must change colored dot component as well
+  static COLORS = [
+    "#FF2A00",
+    "#00A3FF",
+    "#EA80D1",
+    "#4EBB5B",
+    "#FFBC57",
+    "#800000",
+    "#BABABA",
+    "#C2C600",
+    "#8476DE",
+    "#17CFCF",
+  ];
+
+  static get(i: number) {
+    if (i < this.COLORS.length) {
+      return this.COLORS[i];
+    } else {
+      let circularI = ((i - 1) % this.COLORS.length) + 1;
+      return this.COLORS[circularI];
+    }
+  }
+}
 
 export const yTickCount = 11;

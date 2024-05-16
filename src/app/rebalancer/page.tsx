@@ -26,7 +26,7 @@ import {
   fetchLivePortfolio,
 } from "@/server/actions";
 import { Graph, ValueTooltip } from "@/app/rebalancer/components";
-import { COLORS, Scale } from "@/app/rebalancer/const/graph";
+import { GraphColor, Scale } from "@/app/rebalancer/const/graph";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useHistoricalValueGraph } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
@@ -312,7 +312,7 @@ const RebalancerPage = () => {
                     dataKey={k}
                     type="monotone"
                     dot={false}
-                    stroke={COLORS[i]}
+                    stroke={GraphColor.get(i)}
                     isAnimationActive={false}
                   />
                 </Fragment>
@@ -325,7 +325,7 @@ const RebalancerPage = () => {
                     dataKey={k}
                     type="monotone"
                     dot={false}
-                    stroke={COLORS[i]}
+                    stroke={GraphColor.get(i)}
                     isAnimationActive={false}
                     strokeDasharray="3 3"
                   />
@@ -543,7 +543,7 @@ const REBALANCED_TOKENS = (
   return {
     ...token,
     latestUsdPrice: token.osmosisPrices[0].close,
-    color: COLORS[index % COLORS.length],
+    color: GraphColor.get(index),
   };
 });
 
