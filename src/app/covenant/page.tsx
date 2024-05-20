@@ -10,7 +10,7 @@ import {
 import { cn } from "@/utils";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { FFs } from "@/utils";
+import { FeatureFlags } from "@/utils";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
 
@@ -91,7 +91,7 @@ const CovenantPage = () => {
       ref={containerRef}
       className="flex min-h-0 grow flex-col bg-valence-white text-valence-black"
     >
-      {!FFs.COVENANTS_ENABLED() &&
+      {!FeatureFlags.COVENANTS_ENABLED() &&
         containerRef?.current &&
         createPortal(
           <Overlay

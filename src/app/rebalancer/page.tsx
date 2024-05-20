@@ -1,31 +1,18 @@
 "use client";
-import {
-  Button,
-  Dropdown,
-  NumberInput,
-  SortableTableHeader,
-  Sorter,
-  TextInput,
-} from "@/components";
+import { Button, Dropdown, NumberInput, TextInput } from "@/components";
 import { Fragment, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { BsPlus, BsX } from "react-icons/bs";
 import Image from "next/image";
-import {
-  atomPrices,
-  ntrnPrices,
-  osmoPrices,
-  usdcPrices,
-} from "@/const/mock-data";
-import { cn } from "@/utils";
+import { FeatureFlags, cn } from "@/utils";
 import { useQueryState } from "nuqs";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   fetchHistoricalValues,
   fetchValenceAccountConfiguration,
   fetchLivePortfolio,
 } from "@/server/actions";
-import { Graph, ValueTooltip } from "@/app/rebalancer/components";
+import { Graph, Table, ValueTooltip } from "@/app/rebalancer/components";
 import { GraphColor, Scale } from "@/app/rebalancer/const/graph";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useHistoricalValueGraph } from "@/app/rebalancer/hooks";
@@ -36,6 +23,7 @@ const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
     defaultValue: "usd",
   });
+
   const [valenceAccount, setValenceAccount] = useQueryState("valenceAccount", {
     defaultValue: "",
   });
@@ -64,11 +52,21 @@ const RebalancerPage = () => {
     return accountConfigQuery?.data?.targets?.map((t) => t.denom) ?? [];
   }, [accountConfigQuery?.data]);
 
-  const livePortfolioQuery = useQuery({
-    queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom],
-    queryFn: () =>
-      fetchLivePortfolio({ address: valenceAccount, baseDenom: baseDenom }),
-    enabled: isValidValenceAccount,
+  const isFetchLivePortfolioEnabled = useMemo(() => {
+    return (
+      !!valenceAccount && !!baseDenom && !!targetDenoms && !!targetDenoms.length
+    );
+  }, [valenceAccount, baseDenom, targetDenoms]);
+
+  const { mutate: fetchPortfolio, data } = useMutation({
+    // this is a mutation to make lazy query (here temporarily)
+    mutationKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom],
+    mutationFn: () =>
+      fetchLivePortfolio({
+        address: valenceAccount,
+        baseDenom: baseDenom,
+        targetDenoms,
+      }),
   });
 
   const historicalValuesQuery = useQuery({
@@ -106,9 +104,6 @@ const RebalancerPage = () => {
     config: accountConfigQuery.data,
   });
 
-  const [sorterKey, setSorter] = useState<string>("value");
-  const [sortAscending, setSortAscending] = useState(true);
-
   const { setValue, watch, control } = useForm<RebalancerConfig>({
     defaultValues: {
       baseToken: "uusdc",
@@ -139,14 +134,9 @@ const RebalancerPage = () => {
     name: "tokens",
   });
 
-  const totalHoldings = REBALANCED_TOKENS.reduce(
-    (acc, token) => acc + token.holdings,
-    0,
-  );
-  const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
-  const sortedTokens = [...REBALANCED_TOKENS].sort((a, b) =>
-    sorter.sort(a, b, sortAscending),
-  );
+  const REBALANCER_NON_USDC_VALUE_ENABLED = useMemo(() => {
+    return FeatureFlags.REBALANCER_NON_USDC_VALUE_ENABLED();
+  }, []);
 
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
@@ -162,7 +152,6 @@ const RebalancerPage = () => {
             />
 
             <h1 className="text-xl font-bold">Rebalancer</h1>
-
             <p>
               To get started with the rebalancer, create a governance proposal
               to deposit funds into a valence account with a portfolio target.
@@ -261,11 +250,13 @@ const RebalancerPage = () => {
 
         <div className="flex grow flex-col overflow-y-auto bg-valence-lightgray text-sm">
           <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
-            <Dropdown
-              options={VALUE_BASE_OPTIONS}
-              selected={baseDenom}
-              onSelected={setBaseDenom}
-            />
+            {REBALANCER_NON_USDC_VALUE_ENABLED && (
+              <Dropdown
+                options={VALUE_BASE_OPTIONS}
+                selected={baseDenom}
+                onSelected={setBaseDenom}
+              />
+            )}
 
             <div className="flex flex-row items-center gap-8 pr-2">
               {scales.map((thisScale) => (
@@ -335,107 +326,7 @@ const RebalancerPage = () => {
           </Graph>
 
           <div className="grow overflow-x-auto bg-valence-white">
-            <div className="grid grid-cols-[2fr_2fr_3fr_4fr_4fr_2fr]">
-              <SortableTableHeader
-                label="Ticker"
-                sorterKey="ticker"
-                currentSorter={sorter}
-                ascending={sortAscending}
-                setSorter={setSorter}
-                setSortAscending={setSortAscending}
-              />
-
-              <div className="border-y border-valence-black"></div>
-
-              <SortableTableHeader
-                label="Holdings"
-                sorterKey="holdings"
-                currentSorter={sorter}
-                ascending={sortAscending}
-                setSorter={setSorter}
-                setSortAscending={setSortAscending}
-                buttonClassName="justify-end text-right"
-              />
-
-              <SortableTableHeader
-                label="Est. USD Value"
-                sorterKey="value"
-                currentSorter={sorter}
-                ascending={sortAscending}
-                setSorter={setSorter}
-                setSortAscending={setSortAscending}
-                buttonClassName="justify-end text-right"
-              />
-
-              <SortableTableHeader
-                label="Distribution"
-                sorterKey="distribution"
-                currentSorter={sorter}
-                ascending={sortAscending}
-                setSorter={setSorter}
-                setSortAscending={setSortAscending}
-                buttonClassName="justify-end text-right"
-              />
-
-              <SortableTableHeader
-                label="Target"
-                sorterKey="target"
-                currentSorter={sorter}
-                ascending={sortAscending}
-                setSorter={setSorter}
-                setSortAscending={setSortAscending}
-                buttonClassName="justify-end text-right"
-              />
-
-              {sortedTokens.map((token, index) => (
-                <Fragment key={index}>
-                  <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
-                    <div
-                      className="h-4 w-4 shrink-0 rounded-full"
-                      style={{ backgroundColor: token.color }}
-                    ></div>
-
-                    <p className="text-sm font-bold">{token.name}</p>
-                  </div>
-
-                  <p className="flex flex-row items-center border-b border-valence-black p-4 text-sm text-valence-gray">
-                    {token.symbol}
-                  </p>
-
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                    {token.holdings.toLocaleString()}
-                  </p>
-
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                    $
-                    {(token.holdings * token.latestUsdPrice).toLocaleString(
-                      undefined,
-                      {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      },
-                    )}
-                  </p>
-
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-                    {((token.holdings / totalHoldings) * 100).toLocaleString(
-                      undefined,
-                      {
-                        maximumSignificantDigits: 4,
-                      },
-                    )}
-                    %
-                  </p>
-
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-                    {(token.target * 100).toLocaleString(undefined, {
-                      maximumSignificantDigits: 4,
-                    })}
-                    %
-                  </p>
-                </Fragment>
-              ))}
-            </div>
+            <Table />
           </div>
         </div>
       </div>
@@ -501,103 +392,7 @@ const VALUE_BASE_OPTIONS: { label: string; value: string }[] = [
   },
 ];
 
-const REBALANCED_TOKENS = (
-  [
-    {
-      denom: "untrn",
-      symbol: "NTRN",
-      name: "Neutron",
-      holdings: 569537,
-      osmosisPrices: ntrnPrices,
-      target: 0.2,
-    },
-    {
-      denom: "uusdc",
-      symbol: "USDC",
-      name: "USDC",
-      holdings: 428471,
-      osmosisPrices: usdcPrices,
-      target: 0.1,
-    },
-    {
-      denom: "uatom",
-      symbol: "ATOM",
-      name: "Atom",
-      holdings: 32495,
-      osmosisPrices: atomPrices,
-      target: 0.4,
-    },
-    {
-      denom: "uosmo",
-      symbol: "OSMO",
-      name: "Osmosis",
-      holdings: 662817,
-      osmosisPrices: osmoPrices,
-      target: 0.3,
-    },
-  ] as Omit<RebalancedToken, "latestUsdPrice" | "color">[]
-).map((token, index) => {
-  // Descending.
-  token.osmosisPrices.reverse();
-
-  return {
-    ...token,
-    latestUsdPrice: token.osmosisPrices[0].close,
-    color: GraphColor.get(index),
-  };
-});
-
-const SORTERS: Sorter<RebalancedToken>[] = [
-  {
-    key: "ticker",
-    sort: (a, b, ascending) =>
-      ascending ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name),
-  },
-  {
-    key: "holdings",
-    sort: (a, b, ascending) =>
-      ascending ? a.holdings - b.holdings : b.holdings - a.holdings,
-  },
-  {
-    key: "value",
-    sort: (a, b, ascending) =>
-      ascending
-        ? a.holdings * a.latestUsdPrice - b.holdings * b.latestUsdPrice
-        : b.holdings * b.latestUsdPrice - a.holdings * a.latestUsdPrice,
-  },
-  {
-    key: "distribution",
-    sort: (a, b, ascending) =>
-      ascending ? a.holdings - b.holdings : b.holdings - a.holdings,
-  },
-  {
-    key: "target",
-    sort: (a, b, ascending) =>
-      ascending ? a.target - b.target : b.target - a.target,
-  },
-];
-
 const scales = Object.values(Scale);
-
-type OsmosisPrice = {
-  time: number;
-  close: number;
-  high: number;
-  low: number;
-  open: number;
-  volume: number | null;
-};
-
-type RebalancedToken = {
-  denom: string;
-  symbol: string;
-  name: string;
-  color: string;
-  holdings: number;
-  latestUsdPrice: number;
-  osmosisPrices: OsmosisPrice[];
-  target: number;
-};
 
 export type Token = {
   denom: string;

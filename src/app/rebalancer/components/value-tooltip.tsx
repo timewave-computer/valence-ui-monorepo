@@ -39,14 +39,14 @@ export const ValueTooltip = ({
       <table>
         <thead>
           <tr className="p-1">
-            <th className="wrap-text max-w-16 px-2 text-start" scope="col">
+            <th className="px-2 text-start" scope="col">
               Asset
             </th>
-            <th className="wrap-text max-w-16 px-2 text-start" scope="col">
-              Amount
+            <th className="px-2 text-start" scope="col">
+              Est. USD Value
             </th>
-            <th className="wrap-text max-w-16 px-2 text-start" scope="col">
-              Value
+            <th className="px-2 text-start" scope="col">
+              Amount
             </th>
           </tr>
         </thead>
@@ -69,10 +69,10 @@ export const ValueTooltip = ({
                         <ColoredDot i={i} />
                         <span>{denom}</span>
                       </th>
+                      <td className="p-0.5 px-2 text-end">{`$${displayNumber.format(value)}`}</td>
                       <td className="p-0.5 px-2 text-end">
                         {displayNumber.format(amount)}
                       </td>
-                      <td className="p-0.5 px-2 text-end">{`$${displayNumber.format(value)}`}</td>
                     </tr>
                   );
                 })
@@ -93,10 +93,11 @@ export const ValueTooltip = ({
                         <ColoredDot i={i} />
                         <span>{denom}</span>
                       </th>
+
+                      <td className="p-0.5 px-2 text-end">{`$${displayNumber.format(value)}`}</td>
                       <td className="p-0.5 px-2 text-end">
                         {displayNumber.format(amount)}
                       </td>
-                      <td className="p-0.5 px-2 text-end">{`$${displayNumber.format(value)}`}</td>
                     </tr>
                   );
                 })}

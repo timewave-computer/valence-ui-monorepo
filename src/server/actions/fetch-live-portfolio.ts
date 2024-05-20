@@ -1,76 +1,72 @@
 "use server";
 
+import { NEUTRON_CHAIN_ID } from "@/const/neutron";
+import { getOriginAssets, getPrices, getStargateClient } from "@/server/utils";
+import { CoingeckoPrice } from "@/types/coingecko";
+import { OriginAsset } from "@/types/ibc";
+
+/***
+ * STILL TODO:
+ * fetch amounts on auction from indexer /auction/account [date=today] [address=address]
+ */
 export async function fetchLivePortfolio({
   address,
   baseDenom,
+  targetDenoms,
 }: {
   address: string;
   baseDenom: string;
+  targetDenoms: string[];
 }): Promise<FetchLivePortfolioReturnValue> {
-  /***
-   * TODO:
-   * 1. fetch live balances on valence account (cosmjs)
-   * 2. fetch amounts on auction from indexer /auction/account [date=today] [address=address]
-   * 4. fetch prices from CoinGecko
-   * 3. combine balances, compute value + distribution
-   */
+  const stargateClient = await getStargateClient();
 
-  return Promise.resolve(LIVE_PORTFOLIO);
+  let balances = await stargateClient.getAllBalances(address);
+  balances = balances.filter((b) => !(b.denom in targetDenoms));
+
+  const originAssets = await getOriginAssets(
+    balances.map((b) => {
+      return {
+        denom: b.denom,
+        chain_id: NEUTRON_CHAIN_ID,
+      };
+    }),
+  );
+
+  const coinGeckoIds = originAssets
+    .filter((id) => !!id)
+    .map((a) => a.asset.coingecko_id as string);
+  const coinGeckoPrices = await getPrices(coinGeckoIds);
+
+  const portfolio: any[] = [];
+  // for each portfolio balance, pull in origin asset trace + coingecko price
+  balances.forEach((balance, i) => {
+    const { denom, amount } = balance;
+    const traceAsset = originAssets[i];
+    const coinGeckoId = traceAsset.asset.coingecko_id;
+    let price: CoingeckoPrice | null = null;
+    if (coinGeckoId && coinGeckoId in coinGeckoPrices) {
+      price = coinGeckoPrices[coinGeckoId];
+    }
+    portfolio.push({
+      denom,
+      amount: Number(amount),
+      price,
+      asset: traceAsset,
+    });
+  });
+
+  return Promise.resolve({
+    baseDenom,
+    portfolio,
+  });
 }
 
 export type FetchLivePortfolioReturnValue = {
   baseDenom: string;
-  portfolio: {
-    [denom: string]: {
-      metadata: {
-        denom: string;
-        symbol: string;
-        name: string;
-      };
-      amount: number;
-      price: number;
-    };
-  };
-};
-
-const LIVE_PORTFOLIO: FetchLivePortfolioReturnValue = {
-  baseDenom: "uusdc",
-  portfolio: {
-    untrn: {
-      metadata: {
-        denom: "untrn",
-        symbol: "NTRN",
-        name: "Neutron",
-      },
-      amount: 569537,
-      price: 0.733591,
-    },
-    uusdc: {
-      metadata: {
-        denom: "uusdc",
-        symbol: "USDC",
-        name: "USDC",
-      },
-      amount: 428471,
-      price: 1.000002,
-    },
-    uatom: {
-      metadata: {
-        denom: "uatom",
-        symbol: "ATOM",
-        name: "Atom",
-      },
-      amount: 428471,
-      price: 1.000002,
-    },
-    uosmo: {
-      metadata: {
-        denom: "uosmo",
-        symbol: "OSMO",
-        name: "Osmosis",
-      },
-      amount: 662817,
-      price: 0.8332321,
-    },
-  },
+  portfolio: Array<{
+    denom: string;
+    amount: number;
+    price: CoingeckoPrice | null;
+    asset: OriginAsset;
+  }>;
 };

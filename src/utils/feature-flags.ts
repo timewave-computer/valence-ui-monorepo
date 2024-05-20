@@ -3,12 +3,13 @@
  * They are boolean values saved as strings, so make sure to handle string -> boolean interpretation appropriately
  */
 
-class FeatureFlags {
-  COVENANTS_ENABLED() {
-    const FF_COVENANTS_ENABLED =
-      process.env.NEXT_PUBLIC_FF_COVENANTS_ENABLED ?? false;
-    return FF_COVENANTS_ENABLED === "true" ? true : false;
+export class FeatureFlags {
+  static COVENANTS_ENABLED() {
+    return process.env.NEXT_PUBLIC_FF_COVENANTS === "true" ? true : false;
+  }
+  static REBALANCER_NON_USDC_VALUE_ENABLED() {
+    return process.env.NEXT_PUBLIC_FF_REBALANCER_NONUSDC_VALUE === "true"
+      ? true
+      : false;
   }
 }
-
-export const FFs = new FeatureFlags();

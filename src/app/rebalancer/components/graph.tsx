@@ -32,10 +32,10 @@ export const Graph: React.FC<{
           scale="linear"
           ticks={yAxisTicks}
           tickFormatter={(value) =>
-            Number(value).toLocaleString(undefined, {
+            `$${Number(value).toLocaleString(undefined, {
               notation: "compact",
               maximumSignificantDigits: 2,
-            })
+            })}`
           }
           tickLine={false}
           axisLine={{ stroke: "white" }}
