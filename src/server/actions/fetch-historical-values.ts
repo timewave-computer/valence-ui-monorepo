@@ -1,23 +1,19 @@
 "use server";
 
-import {
-  ntrnPrices,
-  usdcPrices,
-  osmoPrices,
-  atomPrices,
-} from "@/const/mock-data";
+import { ntrnPrices, usdcPrices } from "@/const/mock-data";
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
+import { AccountTarget } from "@/server/actions/fetch-valence-account-config";
 
 export async function fetchHistoricalValues({
   address,
   startDate,
   endDate,
   baseDenom,
-  targetDenoms,
+  targets,
 }: {
   baseDenom: string;
-  targetDenoms: string[];
+  targets: Array<AccountTarget>;
   address: string;
   startDate: Date;
   endDate: Date;
@@ -43,6 +39,7 @@ export type FetchHistoricalValuesReturnValue = {
       denom: string;
       price: number;
       amount: number;
+      decimals: number;
     }>;
   }>;
 };
@@ -61,19 +58,15 @@ const generateHistoricValues = (startDate: Date) => {
         {
           denom: "untrn",
           price: ntrnPrices[i].close,
-          amount: 569537,
+          amount: 1229473994,
+          decimals: 6,
         },
         {
-          denom: "uusdc",
+          denom:
+            "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
           price: usdcPrices[i].close,
-          amount: 128471,
-        },
-
-        { denom: "uatom", price: atomPrices[i].close, amount: 4393 },
-        {
-          denom: "uosmo",
-          price: osmoPrices[i].close,
-          amount: 83222,
+          amount: 2031277390,
+          decimals: 6,
         },
       ],
     });

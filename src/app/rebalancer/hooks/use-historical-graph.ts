@@ -9,18 +9,18 @@ import {
   yTickCount,
 } from "@/app/rebalancer/const/graph";
 import {
+  FetchAccountConfigReturnValue,
   FetchHistoricalValuesReturnValue,
-  ValenceAccountConfig,
 } from "@/server/actions";
-import { simulate } from "@/utils";
+import { baseToUnit, simulate } from "@/utils";
 import { useMemo } from "react";
-import { GraphData } from "@/app/rebalancer/components/graph";
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import { UTCDate } from "@date-fns/utc";
 import { addDays } from "date-fns";
+import type { GraphData } from "@/app/rebalancer/components/graph";
 
 type HistoricalValueGraphProps = {
-  config?: ValenceAccountConfig;
+  config?: FetchAccountConfigReturnValue;
   data?: FetchHistoricalValuesReturnValue["values"];
 };
 
@@ -38,15 +38,14 @@ export const useHistoricalValueGraph = ({
     "scale",
     parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Year),
   );
-  const keys = useMemo(() => {
-    const targetDenoms = config?.targets?.map((t) => t.denom) ?? [];
+  const keysToGraph = useMemo(() => {
     let result: string[] = [];
-    targetDenoms.forEach((denom) => {
-      result.push(GraphKey.value(denom));
-      result.push(GraphKey.projectedValue(denom));
+    config?.targets?.forEach((target) => {
+      result.push(GraphKey.value(target.asset.name));
+      result.push(GraphKey.projectedValue(target.asset.name));
     });
     return result;
-  }, [config]);
+  }, [config?.targets]);
 
   const minTimestamp = useMemo(() => {
     if (!rawData || !rawData.length) return;
@@ -77,36 +76,19 @@ export const useHistoricalValueGraph = ({
     return rawData?.filter((d) => d.timestamp >= minTimestamp);
   }, [rawData, minTimestamp]);
 
-  const yAxisTicks = useMemo(() => {
-    if (!data || !data.length) return [];
-
-    let yMax = 0;
-    let yMin = 0;
-
-    data.forEach((d) => {
-      const localMax = Math.max(...d.tokens.map((t) => t.amount * t.price));
-      const localMin = Math.min(...d.tokens.map((t) => t.amount * t.price));
-      yMax = Math.max(yMax, localMax);
-      yMin = Math.min(yMin, localMin);
-    });
-
-    const yRange = yMax - yMin;
-    const yTickInterval = yRange / yTickCount;
-
-    // adds extra space on top
-    return new Array(yTickCount + 1).fill(0).map((_, i) => {
-      return yMin + yTickInterval * i;
-    });
-  }, [data]);
-
   const dataFormatted: GraphData = useMemo(() => {
     if (!data) return [];
 
     return data.map((historicalValue) => {
       const restOfKeys: { [key: string]: number } = {};
       historicalValue.tokens.forEach((token) => {
-        restOfKeys[GraphKey.balance(token.denom)] = token.amount;
-        restOfKeys[GraphKey.value(token.denom)] = token.amount * token.price;
+        const asset = config?.targets.find(
+          (target) => target.denom === token.denom,
+        )?.asset;
+        if (!asset) return; // should not happen but just in case
+        const amount = baseToUnit(token.amount, asset.decimals);
+        restOfKeys[GraphKey.balance(asset.name)] = amount;
+        restOfKeys[GraphKey.value(asset.name)] = amount * token.price;
       });
       return {
         timestamp: historicalValue.timestamp,
@@ -117,11 +99,11 @@ export const useHistoricalValueGraph = ({
 
   const projectionsFormatted = useMemo(() => {
     if (!data || data.length === 0) return [];
-    if (!config?.pid) return [];
+    if (!config?.pid || !config?.targets || !config?.targets.length) return [];
     const latest = data[data.length - 1];
 
     const simulationInput = latest.tokens.map((token) => {
-      const targetConfig = config?.targets.find(
+      const targetConfig = config.targets.find(
         (target) => target.denom === token.denom,
       );
       return {
@@ -148,21 +130,55 @@ export const useHistoricalValueGraph = ({
       return {
         timestamp: ts.getTime(),
         ...latest.tokens.reduce(
-          (acc, { denom, price }, i) => ({
-            ...acc,
-            [GraphKey.projectedValue(denom)]: tokenAmounts[i] * price,
-            [GraphKey.projectedAmount(denom)]: tokenAmounts[i] * price,
-          }),
+          (acc, { denom, price }, i) => {
+            const asset = config?.targets.find(
+              (target) => target.denom === denom,
+            )?.asset;
+            if (!asset) return acc; // should not happen but just in case
+            const amount = baseToUnit(tokenAmounts[i], asset.decimals);
+            return {
+              ...acc,
+              [GraphKey.projectedValue(asset.name)]: amount * price,
+              [GraphKey.projectedAmount(asset.name)]: amount,
+            };
+          },
           {} as Record<string, number>,
         ),
       };
     });
-  }, [scale, data, config]);
+  }, [scale, data, config?.targets, config?.pid]);
 
   const allData: GraphData = useMemo(() => {
     const allData = [...dataFormatted, ...projectionsFormatted];
     return allData;
   }, [dataFormatted, projectionsFormatted]);
+
+  const yAxisTicks = useMemo(() => {
+    if (!allData || !allData.length) return [];
+
+    let yMax = 0;
+    let yMin = 0;
+
+    allData.forEach((d) => {
+      const dItems = Object.entries(d);
+      const graphedYValues = dItems
+        .filter(([key, value]) => keysToGraph.includes(key))
+        .map(([key, value]) => value);
+
+      const localMax = Math.max(...graphedYValues);
+      const localMin = Math.min(...graphedYValues);
+      yMax = Math.max(yMax, localMax);
+      yMin = Math.min(yMin, localMin);
+    });
+
+    const yRange = yMax - yMin;
+    const yTickInterval = yRange / yTickCount;
+
+    // adds extra space on top
+    return new Array(yTickCount + 1).fill(0).map((_, i) => {
+      return yMin + yTickInterval * i;
+    });
+  }, [allData, keysToGraph]);
 
   const todayTimestamp = useMemo(() => {
     const date = new UTCDate();
@@ -174,8 +190,8 @@ export const useHistoricalValueGraph = ({
     todayTimestamp,
     graphData: allData,
     keys: {
-      projections: keys.filter((k) => k.includes(KeyTag.projectedValue)),
-      values: keys.filter((k) => k.includes(KeyTag.value)),
+      projections: keysToGraph.filter((k) => k.includes(KeyTag.projectedValue)),
+      values: keysToGraph.filter((k) => k.includes(KeyTag.value)),
     },
     xAxisTicks,
     yAxisTicks,

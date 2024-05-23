@@ -1,18 +1,16 @@
 "use server";
-
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
-import { NEUTRON_CHAIN_ID } from "@/const/neutron";
 import { CACHE_KEYS } from "@/const/ui-api-cache";
 import {
   fetchMaybeCached,
-  getOriginAssets,
   getStargateClient,
   isFulfilled,
   isRejected,
 } from "@/server/utils";
-import { CoingeckoPrice } from "@/types/coingecko";
 import { OriginAsset } from "@/types/ibc";
 import { z } from "zod";
+import { FetchAccountConfigReturnValue } from "@/server/actions/fetch-valence-account-config";
+import { baseToUnit } from "@/utils";
 
 /***
  * STILL TODO:
@@ -21,62 +19,78 @@ import { z } from "zod";
 export async function fetchLivePortfolio({
   address,
   baseDenom,
-  targetDenoms,
+  targets,
 }: {
   address: string;
   baseDenom: string;
-  targetDenoms: string[];
+  targets: FetchAccountConfigReturnValue["targets"];
 }): Promise<FetchLivePortfolioReturnValue> {
   const stargateClient = await getStargateClient();
 
+  // fetch balances on account
   let balances = await stargateClient.getAllBalances(address);
-  balances = balances.filter((b) => !(b.denom in targetDenoms));
 
-  const originAssets = await getOriginAssets(
-    balances.map((b) => {
-      return {
-        denom: b.denom,
-        chain_id: NEUTRON_CHAIN_ID,
-      };
-    }),
-  );
-
-  const coinGeckoIds = originAssets
-    .filter((id) => !!id)
-    .map((a) => a.asset.coingecko_id as string);
+  // get coingecko ID for each target & fetch prices
+  const coinGeckoIds =
+    targets
+      ?.filter((t) => !!t.asset.coingecko_id)
+      .map((t) => t.asset.coingecko_id as string) ?? [];
   const coinGeckoPrices = await getPrices(coinGeckoIds);
 
-  const portfolio: any[] = [];
-  // for each portfolio balance, pull in origin asset trace + coingecko price
-  balances.forEach((balance, i) => {
-    const { denom, amount } = balance;
-    const traceAsset = originAssets[i];
-    const coinGeckoId = traceAsset.asset.coingecko_id;
-    let price: number | null = null;
+  let totalValue = 0;
+
+  const portfolioNoCalcs: Omit<LiveHolding, "distribution">[] = [];
+  // compose each portfolio line
+  targets.forEach((target) => {
+    const denom = target.denom;
+    const balance = balances.find((b) => b.denom === target.denom); // if target denom has no balances in account, its 0
+    const amount = balance ? balance.amount : 0;
+    const traceAsset = target.asset;
+    const coinGeckoId = traceAsset.coingecko_id;
+    let price: number = 0;
     if (coinGeckoId && coinGeckoId in coinGeckoPrices) {
       price = coinGeckoPrices[coinGeckoId];
     }
-    portfolio.push({
+
+    const formattedAmount = baseToUnit(amount, traceAsset.decimals);
+    portfolioNoCalcs.push({
       denom,
-      amount: Number(amount),
-      price,
-      asset: traceAsset,
+      target: target.percent,
+      amount: formattedAmount,
+      price: price,
+      asset: target.asset,
     });
+
+    if (price) totalValue += formattedAmount * price;
   });
+
+  // compose with distribution
+  const portfolio = portfolioNoCalcs.map((holding) => {
+    return {
+      ...holding,
+      distribution: (holding.amount * holding.price) / totalValue,
+    };
+  });
+
   return Promise.resolve({
     baseDenom,
+    totalValue,
     portfolio,
   });
 }
 
+export type LiveHolding = {
+  denom: string;
+  amount: number;
+  price: number;
+  asset: OriginAsset;
+  target: number;
+  distribution: number;
+};
+
 export type FetchLivePortfolioReturnValue = {
   baseDenom: string;
-  portfolio: Array<{
-    denom: string;
-    amount: number;
-    price: CoingeckoPrice | null;
-    asset: OriginAsset;
-  }>;
+  portfolio: Array<LiveHolding>;
 };
 
 const getPrices = async (

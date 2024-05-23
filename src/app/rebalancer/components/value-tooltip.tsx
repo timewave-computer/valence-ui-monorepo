@@ -29,7 +29,7 @@ export const ValueTooltip = ({
     <div className="flex flex-col gap-2 bg-white p-4">
       <div className=" ">
         <div className="self-start text-lg font-semibold">
-          {isProjection ? "Projected" : "Rebalance Activity"}
+          {isProjection ? "Projected Balances" : "Balances"}
         </div>
         <div className="flex items-end gap-0.5 text-xs">
           <span>{date.toLocaleDateString()} </span>

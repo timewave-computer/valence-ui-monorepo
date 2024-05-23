@@ -1,75 +1,68 @@
 "use client";
 import { Button, Dropdown, NumberInput, TextInput } from "@/components";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { BsPlus, BsX } from "react-icons/bs";
 import Image from "next/image";
 import { FeatureFlags, cn } from "@/utils";
 import { useQueryState } from "nuqs";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   fetchHistoricalValues,
   fetchValenceAccountConfiguration,
   fetchLivePortfolio,
 } from "@/server/actions";
+import { useAtom } from "jotai";
+
 import { Graph, Table, ValueTooltip } from "@/app/rebalancer/components";
-import { GraphColor, Scale } from "@/app/rebalancer/const/graph";
+import { GraphColor, GraphKey, Scale } from "@/app/rebalancer/const/graph";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useHistoricalValueGraph } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import { UTCDate } from "@date-fns/utc";
+import { USDC } from "@/const/mock-data";
+import { DenomColorIndexMap, denomColorIndexMap } from "@/ui-globals";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
-    defaultValue: "usd",
+    defaultValue: USDC,
   });
-
   const [valenceAccount, setValenceAccount] = useQueryState("valenceAccount", {
     defaultValue: "",
   });
+  const isValidValenceAccount = !!valenceAccount && valenceAccount !== "";
 
-  const isValidValenceAccount = useMemo(() => {
-    return !!valenceAccount && valenceAccount !== "";
-  }, [valenceAccount]);
-
+  // TODO: handle error state
   const accountConfigQuery = useQuery({
     queryKey: [QUERY_KEYS.VALENCE_ACCOUNT_CONFIG, valenceAccount],
     queryFn: () =>
       fetchValenceAccountConfiguration({ address: valenceAccount }),
     enabled: isValidValenceAccount,
   });
+  const targets = useMemo(
+    () => accountConfigQuery.data?.targets ?? [],
+    [accountConfigQuery.data?.targets],
+  );
 
-  const isValidTargetDenoms = useMemo(() => {
-    if (
-      accountConfigQuery?.data?.targets &&
-      accountConfigQuery?.data?.targets.length > 0
-    )
-      return true;
-    return false;
-  }, [accountConfigQuery?.data]);
+  const [colorIndexMap, setColorIndexMap] = useAtom(denomColorIndexMap);
+  useEffect(() => {
+    if (!targets.length) return;
+    const colorIndexMap: DenomColorIndexMap = {};
+    targets.map((target, i) => {
+      colorIndexMap[target.denom] = i;
+    });
+    setColorIndexMap(colorIndexMap);
+  }, [targets, setColorIndexMap]);
 
-  const targetDenoms = useMemo(() => {
-    return accountConfigQuery?.data?.targets?.map((t) => t.denom) ?? [];
-  }, [accountConfigQuery?.data]);
-
-  const isFetchLivePortfolioEnabled = useMemo(() => {
-    return (
-      !!valenceAccount && !!baseDenom && !!targetDenoms && !!targetDenoms.length
-    );
-  }, [valenceAccount, baseDenom, targetDenoms]);
-
+  const isFetchLivePortfolioEnabled =
+    !!valenceAccount && !!baseDenom && !!targets?.length;
   const livePortfolioQuery = useQuery({
-    queryKey: [
-      QUERY_KEYS.LIVE_PORTFOLIO,
-      valenceAccount,
-      baseDenom,
-      targetDenoms,
-    ],
+    queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom, targets],
     queryFn: async () =>
       fetchLivePortfolio({
         address: valenceAccount,
         baseDenom: baseDenom,
-        targetDenoms,
+        targets: targets,
       }),
     enabled: isFetchLivePortfolioEnabled,
   });
@@ -79,21 +72,21 @@ const RebalancerPage = () => {
       QUERY_KEYS.HISTORICAL_VALUES,
       valenceAccount,
       baseDenom,
-      targetDenoms,
+      targets,
     ],
     queryFn: async () => {
       let startDate = new UTCDate();
       startDate.setHours(0, 0, 0, 0);
 
       return fetchHistoricalValues({
-        targetDenoms: targetDenoms,
+        targets: targets,
         baseDenom: baseDenom,
         address: valenceAccount,
         startDate: startDate,
         endDate: startDate, // nothing is done with this yet, its mock data
       });
     },
-    enabled: isValidValenceAccount && isValidTargetDenoms,
+    enabled: isValidValenceAccount && !!targets.length,
   });
 
   const {
@@ -139,9 +132,8 @@ const RebalancerPage = () => {
     name: "tokens",
   });
 
-  const REBALANCER_NON_USDC_VALUE_ENABLED = useMemo(() => {
-    return FeatureFlags.REBALANCER_NON_USDC_VALUE_ENABLED();
-  }, []);
+  const REBALANCER_NON_USDC_VALUE_ENABLED =
+    FeatureFlags.REBALANCER_NON_USDC_VALUE_ENABLED();
 
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
@@ -301,27 +293,24 @@ const RebalancerPage = () => {
                 offset={10}
               />
             </ReferenceLine>
-            {keys.values.map((k, i) => {
+            {accountConfigQuery?.data?.targets.map((target) => {
+              const valuekey = GraphKey.value(target.asset.name);
+              const projectionKey = GraphKey.projectedValue(target.asset.name);
+              const colorIndex = colorIndexMap[target.denom];
               return (
-                <Fragment key={k}>
+                <Fragment key={`line-${target.denom}`}>
                   <Line
-                    dataKey={k}
+                    dataKey={valuekey}
                     type="monotone"
                     dot={false}
-                    stroke={GraphColor.get(i)}
+                    stroke={GraphColor.get(colorIndex)}
                     isAnimationActive={false}
                   />
-                </Fragment>
-              );
-            })}
-            {keys.projections.map((k, i) => {
-              return (
-                <Fragment key={k}>
                   <Line
-                    dataKey={k}
+                    dataKey={projectionKey}
                     type="monotone"
                     dot={false}
-                    stroke={GraphColor.get(i)}
+                    stroke={GraphColor.get(colorIndex)}
                     isAnimationActive={false}
                     strokeDasharray="3 3"
                   />
@@ -331,7 +320,7 @@ const RebalancerPage = () => {
           </Graph>
 
           <div className="grow overflow-x-auto bg-valence-white">
-            <Table />
+            <Table livePortfolio={livePortfolioQuery.data} />
           </div>
         </div>
       </div>
