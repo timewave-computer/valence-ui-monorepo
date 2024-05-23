@@ -48,9 +48,16 @@ export const useHistoricalValueGraph = ({
   }, [config?.targets]);
 
   const minTimestamp = useMemo(() => {
-    if (!rawData || !rawData.length) return;
-    const mostRecentEntry = rawData[rawData.length - 1];
-    return minimumTimestampGenerator[scale](mostRecentEntry.timestamp);
+    let ts: number;
+    // if no data yet, use current time so some ticks render by default
+    if (!rawData || !rawData.length) {
+      ts = new UTCDate().getTime();
+    } else {
+      const mostRecentEntry = rawData[rawData.length - 1];
+      ts = mostRecentEntry.timestamp;
+    }
+
+    return minimumTimestampGenerator[scale](ts);
   }, [scale, rawData]);
 
   const xAxisTicks = useMemo(() => {
@@ -154,7 +161,10 @@ export const useHistoricalValueGraph = ({
   }, [dataFormatted, projectionsFormatted]);
 
   const yAxisTicks = useMemo(() => {
-    if (!allData || !allData.length) return [];
+    if (!allData || !allData.length)
+      return new Array(yTickCount).fill(0).map((_, i) => {
+        return 5000 * i;
+      });
 
     let yMax = 0;
     let yMin = 0;

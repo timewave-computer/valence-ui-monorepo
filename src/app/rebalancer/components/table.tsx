@@ -78,6 +78,7 @@ export const Table: React.FC<{
         setSortAscending={setSortAscending}
         buttonClassName="justify-end text-right"
       />
+      {sortedHoldings.length === 0 && <EmptyRow />}
 
       {sortedHoldings.map((holding, index) => (
         <Fragment key={index}>
@@ -181,3 +182,33 @@ const SORTERS: Sorter<LiveHolding>[] = [
       doCompare(String(a.target), String(b.target), ascending),
   },
 ];
+
+const EmptyRow = () => {
+  return (
+    <>
+      <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
+        <div className="h-4 w-4 shrink-0 rounded-full"></div>
+        <p className="text-sm font-bold">{"-"}</p>
+      </div>
+      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+        {"0.00"}
+      </p>
+
+      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+        {"$0.00"}
+      </p>
+
+      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+        {"$0.00"}
+      </p>
+
+      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+        {"0%"}
+      </p>
+
+      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+        {"-"}
+      </p>
+    </>
+  );
+};

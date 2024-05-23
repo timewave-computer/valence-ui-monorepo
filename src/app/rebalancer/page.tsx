@@ -1,8 +1,6 @@
 "use client";
-import { Button, Dropdown, NumberInput, TextInput } from "@/components";
+import { Button, Dropdown, TextInput } from "@/components";
 import { Fragment, useEffect, useMemo } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { BsPlus, BsX } from "react-icons/bs";
 import Image from "next/image";
 import { FeatureFlags, cn } from "@/utils";
 import { useQueryState } from "nuqs";
@@ -13,15 +11,19 @@ import {
   fetchLivePortfolio,
 } from "@/server/actions";
 import { useAtom } from "jotai";
-
-import { Graph, Table, ValueTooltip } from "@/app/rebalancer/components";
-import { GraphColor, GraphKey, Scale } from "@/app/rebalancer/const/graph";
+import {
+  Graph,
+  Table,
+  ValueTooltip,
+  ConfigPanel,
+} from "@/app/rebalancer/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useHistoricalValueGraph } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import { UTCDate } from "@date-fns/utc";
 import { USDC } from "@/const/mock-data";
 import { DenomColorIndexMap, denomColorIndexMap } from "@/ui-globals";
+import { Scale, GraphKey, GraphColor } from "@/app/rebalancer/const";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
@@ -102,36 +104,6 @@ const RebalancerPage = () => {
     config: accountConfigQuery.data,
   });
 
-  const { setValue, watch, control } = useForm<RebalancerConfig>({
-    defaultValues: {
-      baseToken: "uusdc",
-      tokens: [
-        {
-          denom: "untrn",
-          percent: "33.33",
-        },
-        {
-          denom: "uatom",
-          percent: "33.33",
-        },
-        {
-          denom: "uusdc",
-          percent: "33.33",
-        },
-      ],
-      pidPreset: "default",
-    },
-  });
-
-  const {
-    fields: tokenFields,
-    append: addToken,
-    remove: removeToken,
-  } = useFieldArray({
-    control,
-    name: "tokens",
-  });
-
   const REBALANCER_NON_USDC_VALUE_ENABLED =
     FeatureFlags.REBALANCER_NON_USDC_VALUE_ENABLED();
 
@@ -171,77 +143,10 @@ const RebalancerPage = () => {
                 Connect wallet
               </Button>
             </div>
-
-            <div className="flex flex-col gap-3">
-              <p className="font-bold">Base token</p>
-
-              <Dropdown
-                options={BASE_TOKEN_OPTIONS}
-                selected={watch("baseToken")}
-                onSelected={(value) => setValue("baseToken", value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-row items-center justify-between">
-                <p className="font-bold">Tokens</p>
-                <button
-                  className="flex flex-row items-center justify-center"
-                  onClick={() =>
-                    addToken({
-                      denom: "uusdc",
-                      percent: "25",
-                    })
-                  }
-                >
-                  <BsPlus className="h-6 w-6" />
-                </button>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                {tokenFields.map(({ id }, index) => (
-                  <div className="flex flex-row items-stretch" key={id}>
-                    <Dropdown
-                      options={TOKEN_OPTIONS}
-                      selected={watch(`tokens.${index}.denom`)}
-                      onSelected={(value) =>
-                        setValue(`tokens.${index}.denom`, value)
-                      }
-                      containerClassName="!min-w-[8rem] !border-r-0 pr-4"
-                    />
-
-                    <NumberInput
-                      containerClassName="grow"
-                      min={0.01}
-                      max={100}
-                      hidePlusMinus
-                      input={watch(`tokens.${index}.percent`)}
-                      onChange={(value) =>
-                        setValue(`tokens.${index}.percent`, value)
-                      }
-                      unit="%"
-                    />
-
-                    <button
-                      className="ml-3 flex flex-row items-center justify-center"
-                      onClick={() => removeToken(index)}
-                    >
-                      <BsX className="h-6 w-6" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <p className="font-bold">P/I/D Preset</p>
-
-              <Dropdown
-                options={PID_PRESET_OPTIONS}
-                selected={watch("pidPreset")}
-                onSelected={(value) => setValue("pidPreset", value)}
-              />
-            </div>
+            <ConfigPanel
+              isValidValenceAccount={isValidValenceAccount}
+              config={accountConfigQuery.data}
+            />
           </div>
         </div>
 
@@ -330,51 +235,6 @@ const RebalancerPage = () => {
 
 export default RebalancerPage;
 
-const BASE_TOKEN_OPTIONS: { label: string; value: string }[] = [
-  {
-    label: "USDC",
-    value: "uusdc",
-  },
-  {
-    label: "NTRN",
-    value: "untrn",
-  },
-  {
-    label: "ATOM",
-    value: "uatom",
-  },
-];
-
-const TOKEN_OPTIONS: { label: string; value: string }[] = [
-  {
-    label: "USDC",
-    value: "uusdc",
-  },
-  {
-    label: "NTRN",
-    value: "untrn",
-  },
-  {
-    label: "ATOM",
-    value: "uatom",
-  },
-];
-
-const PID_PRESET_OPTIONS: { label: string; value: string }[] = [
-  {
-    label: "Default",
-    value: "default",
-  },
-  {
-    label: "Correct faster",
-    value: "faster",
-  },
-  {
-    label: "Correct slower",
-    value: "slower",
-  },
-];
-
 const VALUE_BASE_OPTIONS: { label: string; value: string }[] = [
   {
     label: "Est. USD Value",
@@ -387,14 +247,3 @@ const VALUE_BASE_OPTIONS: { label: string; value: string }[] = [
 ];
 
 const scales = Object.values(Scale);
-
-export type Token = {
-  denom: string;
-  percent: string;
-};
-
-export type RebalancerConfig = {
-  baseToken: string;
-  tokens: Token[];
-  pidPreset: string;
-};
