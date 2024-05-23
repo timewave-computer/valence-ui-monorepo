@@ -1,3 +1,4 @@
 export * from "./rpc";
-export * from "./coingecko";
+export * from "./ui-api-cache";
 export * from "./ibc";
+export * from "./promises";

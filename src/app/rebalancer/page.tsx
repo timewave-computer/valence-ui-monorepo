@@ -58,15 +58,20 @@ const RebalancerPage = () => {
     );
   }, [valenceAccount, baseDenom, targetDenoms]);
 
-  const { mutate: fetchPortfolio, data } = useMutation({
-    // this is a mutation to make lazy query (here temporarily)
-    mutationKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom],
-    mutationFn: () =>
+  const livePortfolioQuery = useQuery({
+    queryKey: [
+      QUERY_KEYS.LIVE_PORTFOLIO,
+      valenceAccount,
+      baseDenom,
+      targetDenoms,
+    ],
+    queryFn: async () =>
       fetchLivePortfolio({
         address: valenceAccount,
         baseDenom: baseDenom,
         targetDenoms,
       }),
+    enabled: isFetchLivePortfolioEnabled,
   });
 
   const historicalValuesQuery = useQuery({

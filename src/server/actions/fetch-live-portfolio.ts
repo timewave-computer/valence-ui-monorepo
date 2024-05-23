@@ -1,9 +1,18 @@
 "use server";
 
+import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { NEUTRON_CHAIN_ID } from "@/const/neutron";
-import { getOriginAssets, getPrices, getStargateClient } from "@/server/utils";
+import { CACHE_KEYS } from "@/const/ui-api-cache";
+import {
+  fetchMaybeCached,
+  getOriginAssets,
+  getStargateClient,
+  isFulfilled,
+  isRejected,
+} from "@/server/utils";
 import { CoingeckoPrice } from "@/types/coingecko";
 import { OriginAsset } from "@/types/ibc";
+import { z } from "zod";
 
 /***
  * STILL TODO:
@@ -43,7 +52,7 @@ export async function fetchLivePortfolio({
     const { denom, amount } = balance;
     const traceAsset = originAssets[i];
     const coinGeckoId = traceAsset.asset.coingecko_id;
-    let price: CoingeckoPrice | null = null;
+    let price: number | null = null;
     if (coinGeckoId && coinGeckoId in coinGeckoPrices) {
       price = coinGeckoPrices[coinGeckoId];
     }
@@ -54,7 +63,6 @@ export async function fetchLivePortfolio({
       asset: traceAsset,
     });
   });
-
   return Promise.resolve({
     baseDenom,
     portfolio,
@@ -69,4 +77,42 @@ export type FetchLivePortfolioReturnValue = {
     price: CoingeckoPrice | null;
     asset: OriginAsset;
   }>;
+};
+
+const getPrices = async (
+  coingeckoIds: string[],
+): Promise<Record<string, number>> => {
+  if (!coingeckoIds.length) {
+    ErrorHandler.warn("No IDs to fetch prices for");
+    return {};
+  }
+  const promises = coingeckoIds.map(async (id) => {
+    try {
+      const data = await fetchMaybeCached(CACHE_KEYS.COINGECKO_PRICE, { id });
+      const price = z.number().parse(data);
+      return {
+        coinGeckoId: id,
+        price: price,
+      };
+    } catch (e) {
+      throw ErrorHandler.makeError(
+        `${ERROR_MESSAGES.COINGECKO_PRICE_FAIL},${e}`,
+      );
+    }
+  });
+
+  const settled = await Promise.allSettled(promises);
+  const prices: Record<string, number> = {};
+
+  settled.filter(isFulfilled).forEach((promise) => {
+    if (promise.value?.coinGeckoId)
+      prices[promise.value.coinGeckoId] = promise.value.price;
+  });
+  settled.filter(isRejected).forEach((promise) => {
+    ErrorHandler.warn(
+      ERROR_MESSAGES.COINGECKO_PRICE_FAIL +
+        `: ${promise.status}, ${promise.reason}`,
+    );
+  });
+  return prices;
 };
