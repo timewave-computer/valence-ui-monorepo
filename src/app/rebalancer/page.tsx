@@ -144,6 +144,7 @@ const RebalancerPage = () => {
               </Button>
             </div>
             <ConfigPanel
+              isLoading={accountConfigQuery.isLoading}
               isValidValenceAccount={isValidValenceAccount}
               config={accountConfigQuery.data}
             />
@@ -225,7 +226,10 @@ const RebalancerPage = () => {
           </Graph>
 
           <div className="grow overflow-x-auto bg-valence-white">
-            <Table livePortfolio={livePortfolioQuery.data} />
+            <Table
+              isLoading={livePortfolioQuery.isLoading}
+              livePortfolio={livePortfolioQuery.data}
+            />
           </div>
         </div>
       </div>

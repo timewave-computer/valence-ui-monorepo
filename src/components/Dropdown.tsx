@@ -28,6 +28,11 @@ export type DropdownProps<T extends string> = {
    * An optional class name to apply to the container.
    */
   containerClassName?: string;
+
+  /**
+   * To show loading state
+   */
+  isLoading?: boolean;
 };
 
 export const Dropdown = <T extends string>({
@@ -36,6 +41,7 @@ export const Dropdown = <T extends string>({
   onSelected,
   placeholder = "Select",
   containerClassName,
+  isLoading,
 }: DropdownProps<T>) => {
   const [visible, setVisible] = useState(false);
 
@@ -67,25 +73,36 @@ export const Dropdown = <T extends string>({
 
   return (
     <div className="relative" ref={containerRef}>
-      <button
-        className={cn(
-          "w-full h-full border border-valence-mediumgray p-2 pl-3 flex flex-row gap-6 justify-between items-center min-w-[12rem] bg-valence-white",
-          isPlaceholder ? "text-valence-gray" : "text-valence-black",
-          containerClassName,
-        )}
-        onClick={() => setVisible(!visible)}
-      >
-        {selectedOption?.label ?? placeholder}
-        <BsChevronDown className="w-4 h-4 shrink-0" />
-      </button>
+      {isLoading ? (
+        <button
+          disabled={true}
+          className={cn(
+            "flex h-full min-h-10 w-full min-w-[12rem] animate-pulse  flex-row items-center justify-between gap-6 border bg-valence-lightgray p-2 ",
+            containerClassName,
+          )}
+        ></button>
+      ) : (
+        <button
+          disabled={isLoading}
+          className={cn(
+            "flex h-full w-full min-w-[12rem] flex-row items-center justify-between gap-6 border border-valence-mediumgray bg-valence-white p-2 pl-3",
+            isPlaceholder ? "text-valence-gray" : "text-valence-black",
+            containerClassName,
+          )}
+          onClick={() => setVisible(!visible)}
+        >
+          {selectedOption?.label ?? placeholder}
+          <BsChevronDown className="h-4 w-4 shrink-0" />
+        </button>
+      )}
 
       {visible && (
-        <div className="absolute z-10 top-[calc(100%-1px)] left-0 right-0 border border-valence-mediumgray bg-gray-100 flex flex-col">
+        <div className="absolute left-0 right-0 top-[calc(100%-1px)] z-10 flex flex-col border border-valence-mediumgray bg-gray-100">
           {options.map((option, index) => (
             <button
               key={option.value}
               className={cn(
-                "p-2 pl-3 flex flex-row gap-6 justify-between items-center hover",
+                "hover flex flex-row items-center justify-between gap-6 p-2 pl-3",
                 index < options.length - 1 &&
                   "border-b border-valence-mediumgray",
               )}
@@ -96,7 +113,7 @@ export const Dropdown = <T extends string>({
             >
               {option.label}
               {selectedOption === option && (
-                <BsCheck2 className="w-5 h-5 shrink-0" />
+                <BsCheck2 className="h-5 w-5 shrink-0" />
               )}
             </button>
           ))}

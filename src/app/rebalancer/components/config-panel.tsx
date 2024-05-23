@@ -10,7 +10,8 @@ import { BsPlus, BsX } from "react-icons/bs";
 export const ConfigPanel: React.FC<{
   config?: FetchAccountConfigReturnValue;
   isValidValenceAccount: boolean;
-}> = ({ config, isValidValenceAccount }) => {
+  isLoading?: boolean;
+}> = ({ config, isValidValenceAccount, isLoading }) => {
   const { setValue, watch, control } = useForm<RebalancerConfig>({
     defaultValues: {
       pidPreset: "default",
@@ -51,6 +52,7 @@ export const ConfigPanel: React.FC<{
         <p className="font-bold">Base token</p>
 
         <Dropdown
+          isLoading={isLoading}
           options={BASE_TOKEN_OPTIONS}
           selected={watch("baseToken")}
           onSelected={(value) => setValue("baseToken", value)}
@@ -77,6 +79,7 @@ export const ConfigPanel: React.FC<{
           {tokenFields.map(({ id }, index) => (
             <div className="flex flex-row items-stretch" key={id}>
               <Dropdown
+                isLoading={isLoading}
                 options={TOKEN_OPTIONS}
                 selected={watch(`tokens.${index}.denom`)}
                 onSelected={(value) => setValue(`tokens.${index}.denom`, value)}
@@ -101,6 +104,24 @@ export const ConfigPanel: React.FC<{
               </button>
             </div>
           ))}
+          {/* dummy component for loading state */}
+          {tokenFields.length === 0 && isLoading && (
+            <>
+              {" "}
+              <Dropdown
+                isLoading={isLoading}
+                options={[]}
+                selected=""
+                onSelected={() => {}}
+              />{" "}
+              <Dropdown
+                isLoading={isLoading}
+                options={[]}
+                selected=""
+                onSelected={() => {}}
+              />
+            </>
+          )}
         </div>
       </div>
 
@@ -108,6 +129,7 @@ export const ConfigPanel: React.FC<{
         <p className="font-bold">P/I/D Preset</p>
 
         <Dropdown
+          isLoading={isLoading}
           options={PID_PRESET_OPTIONS}
           selected={watch("pidPreset")}
           onSelected={(value) => setValue("pidPreset", value)}

@@ -7,7 +7,8 @@ import { denomColorIndexMap } from "@/ui-globals";
 
 export const Table: React.FC<{
   livePortfolio?: FetchLivePortfolioReturnValue;
-}> = ({ livePortfolio }) => {
+  isLoading?: boolean;
+}> = ({ livePortfolio, isLoading }) => {
   const [sorterKey, setSorter] = useState<string>(SORTER_KEYS.VALUE);
   const [sortAscending, setSortAscending] = useState(true);
   const [colorIndexMap] = useAtom(denomColorIndexMap);
@@ -19,114 +20,123 @@ export const Table: React.FC<{
     : [];
 
   return (
-    <div className="grid grid-cols-[2fr_2fr_3fr_4fr_4fr_2fr]">
-      <SortableTableHeader
-        label="Ticker"
-        sorterKey={SORTER_KEYS.TICKER}
-        currentSorter={sorter}
-        ascending={sortAscending}
-        setSorter={setSorter}
-        setSortAscending={setSortAscending}
-      />
+    <>
+      <div className="grid grid-cols-[2fr_2fr_3fr_4fr_4fr_2fr]">
+        <SortableTableHeader
+          label="Ticker"
+          sorterKey={SORTER_KEYS.TICKER}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+        />
 
-      <SortableTableHeader
-        label="Holdings"
-        sorterKey={SORTER_KEYS.HOLDINGS}
-        currentSorter={sorter}
-        ascending={sortAscending}
-        setSorter={setSorter}
-        setSortAscending={setSortAscending}
-        buttonClassName="justify-end text-right"
-      />
+        <SortableTableHeader
+          label="Holdings"
+          sorterKey={SORTER_KEYS.HOLDINGS}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="justify-end text-right"
+        />
 
-      <SortableTableHeader
-        label="Price"
-        sorterKey={SORTER_KEYS.PRICE}
-        currentSorter={sorter}
-        ascending={sortAscending}
-        setSorter={setSorter}
-        setSortAscending={setSortAscending}
-        buttonClassName="justify-end text-right"
-      />
+        <SortableTableHeader
+          label="Price"
+          sorterKey={SORTER_KEYS.PRICE}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="justify-end text-right"
+        />
 
-      <SortableTableHeader
-        label="Est. USD Value"
-        sorterKey={SORTER_KEYS.VALUE}
-        currentSorter={sorter}
-        ascending={sortAscending}
-        setSorter={setSorter}
-        setSortAscending={setSortAscending}
-        buttonClassName="justify-end text-right"
-      />
+        <SortableTableHeader
+          label="Est. USD Value"
+          sorterKey={SORTER_KEYS.VALUE}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="justify-end text-right"
+        />
 
-      <SortableTableHeader
-        label="Distribution"
-        sorterKey={SORTER_KEYS.DISTRIBUTION}
-        currentSorter={sorter}
-        ascending={sortAscending}
-        setSorter={setSorter}
-        setSortAscending={setSortAscending}
-        buttonClassName="justify-end text-right"
-      />
+        <SortableTableHeader
+          label="Distribution"
+          sorterKey={SORTER_KEYS.DISTRIBUTION}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="justify-end text-right"
+        />
 
-      <SortableTableHeader
-        label="Target"
-        sorterKey={SORTER_KEYS.TARGET}
-        currentSorter={sorter}
-        ascending={sortAscending}
-        setSorter={setSorter}
-        setSortAscending={setSortAscending}
-        buttonClassName="justify-end text-right"
-      />
-      {sortedHoldings.length === 0 && <EmptyRow />}
+        <SortableTableHeader
+          label="Target"
+          sorterKey={SORTER_KEYS.TARGET}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="justify-end text-right"
+        />
+        {!isLoading && (
+          <>
+            {sortedHoldings.length === 0 && <EmptyRow />}
 
-      {sortedHoldings.map((holding, index) => (
-        <Fragment key={index}>
-          <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
-            <div
-              className="h-4 w-4 shrink-0 rounded-full"
-              style={{
-                backgroundColor: GraphColor.get(colorIndexMap[holding.denom]),
-              }}
-            ></div>
-            <p className="text-sm font-bold">{holding.asset.name}</p>
-          </div>
-          <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-            {holding.amount.toLocaleString()}
-          </p>
+            {sortedHoldings.map((holding, index) => (
+              <Fragment key={index}>
+                <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
+                  <div
+                    className="h-4 w-4 shrink-0 rounded-full"
+                    style={{
+                      backgroundColor: GraphColor.get(
+                        colorIndexMap[holding.denom],
+                      ),
+                    }}
+                  ></div>
+                  <p className="text-sm font-bold">{holding.asset.name}</p>
+                </div>
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                  {holding.amount.toLocaleString()}
+                </p>
 
-          <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-            $
-            {holding.price.toLocaleString(undefined, {
-              minimumFractionDigits: 4,
-              maximumFractionDigits: 4,
-            })}
-          </p>
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                  $
+                  {holding.price.toLocaleString(undefined, {
+                    minimumFractionDigits: 4,
+                    maximumFractionDigits: 4,
+                  })}
+                </p>
 
-          <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-            $
-            {calcValue(holding).toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </p>
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                  $
+                  {calcValue(holding).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
 
-          <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-            {(holding.distribution * 100).toLocaleString(undefined, {
-              maximumSignificantDigits: 4,
-            })}
-            %
-          </p>
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+                  {(holding.distribution * 100).toLocaleString(undefined, {
+                    maximumSignificantDigits: 4,
+                  })}
+                  %
+                </p>
 
-          <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-            {(holding.target * 100).toLocaleString(undefined, {
-              maximumSignificantDigits: 4,
-            })}
-            %
-          </p>
-        </Fragment>
-      ))}
-    </div>
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+                  {(holding.target * 100).toLocaleString(undefined, {
+                    maximumSignificantDigits: 4,
+                  })}
+                  %
+                </p>
+              </Fragment>
+            ))}
+          </>
+        )}
+      </div>
+      {isLoading && <LoadingRows />}
+    </>
   );
 };
 
@@ -183,32 +193,38 @@ const SORTERS: Sorter<LiveHolding>[] = [
   },
 ];
 
-const EmptyRow = () => {
-  return (
-    <>
-      <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
-        <div className="h-4 w-4 shrink-0 rounded-full"></div>
-        <p className="text-sm font-bold">{"-"}</p>
-      </div>
-      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-        {"0.00"}
-      </p>
+const EmptyRow = () => (
+  <>
+    <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
+      <div className="h-4 w-4 shrink-0 rounded-full"></div>
+      <p className="text-sm font-bold">{"-"}</p>
+    </div>
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+      {"0.00"}
+    </p>
 
-      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-        {"$0.00"}
-      </p>
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+      {"$0.00"}
+    </p>
 
-      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-        {"$0.00"}
-      </p>
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+      {"$0.00"}
+    </p>
 
-      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-        {"0%"}
-      </p>
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+      {"0%"}
+    </p>
 
-      <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-        {"-"}
-      </p>
-    </>
-  );
-};
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+      {"-"}
+    </p>
+  </>
+);
+
+const LoadingRows = () => (
+  <div className="flex flex-col gap-0.5">
+    <div className="min-h-12 animate-pulse bg-valence-lightgray"></div>
+    <div className="min-h-12 animate-pulse bg-valence-lightgray"></div>
+    <div className="min-h-12 animate-pulse bg-valence-lightgray"></div>
+  </div>
+);
