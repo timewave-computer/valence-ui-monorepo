@@ -1,4 +1,5 @@
 export const ERROR_MESSAGES = {
+  SUBMIT_EMAIL_FAIL: "Failed to submit email",
   DISPLAY_UTC_TIME_FAIL: "Failed to format date to UTC Time",
   STARGATE_CONNECT_FAIL: "RPC connect failed, could not create stargate client",
   IBC_TRACE_FAIL: "Failed to trace origin assets",

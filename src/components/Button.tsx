@@ -28,11 +28,14 @@ export interface ButtonProps
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, disabled, variant, asChild = false, ...props }, ref) => {
+  (
+    { className, disabled = false, variant, asChild = false, ...props },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        disabled // keep it here for accessibilty but style is handled in CVA
+        disabled={disabled} // keep it here for accessibilty but style is handled in CVA
         className={cn(buttonVariants({ disabled, variant, className }))}
         ref={ref}
         {...props}

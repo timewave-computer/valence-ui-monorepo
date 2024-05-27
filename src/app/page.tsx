@@ -5,9 +5,27 @@ import { LinkText } from "@/components/LinkText";
 import { useState } from "react";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
+import { useMutation } from "@tanstack/react-query";
+import { submitSubscribe } from "@/server/actions/submit-subscribe";
 
 const HomePage = () => {
   const [email, setEmail] = useState("");
+  const [showSubscribe, setShowSubscribe] = useState(true);
+  const [showSubmitError, setShowSubmitError] = useState(false);
+
+  const subscribeMutation = useMutation({
+    mutationKey: ["subscribe", email],
+    mutationFn: () => submitSubscribe(email),
+    onMutate: () => {
+      setShowSubmitError(false);
+      setEmail("");
+      setShowSubscribe(false);
+    },
+    onError: () => {
+      setShowSubscribe(true);
+      setShowSubmitError(true);
+    },
+  });
 
   return (
     <main className="h-screen grow overflow-auto bg-valence-white px-4 pt-8 text-valence-black transition-[padding]">
@@ -156,19 +174,35 @@ const HomePage = () => {
 
           <div className="flex grow basis-0 flex-col justify-between gap-4 border-b border-valence-black p-4 md:border-b-0 md:border-t">
             <div className="flex flex-col gap-4">
-              <p>Sign up for our newsletter</p>
-
-              <div className="flex flex-row items-stretch">
-                <TextInput
-                  input={email}
-                  onChange={setEmail}
-                  containerClassName="!border-valence-black border-r-0 w-full max-w-xs"
-                />
-
-                <Button variant="secondary" onClick={() => {}}>
-                  Subscribe
-                </Button>
-              </div>
+              {showSubscribe ? (
+                <>
+                  {" "}
+                  <p>Sign up for our newsletter</p>
+                  <div className="flex flex-row items-stretch">
+                    <TextInput
+                      input={email}
+                      onChange={setEmail}
+                      containerClassName="!border-valence-black border-r-0 w-full max-w-xs"
+                    />
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        console.log("submitting", email);
+                        subscribeMutation.mutate();
+                      }}
+                    >
+                      Subscribe
+                    </Button>
+                  </div>
+                  {showSubmitError && (
+                    <div className="text-valence-red">
+                      Failed to submit email. Please try again later
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p>Subscribed!</p>
+              )}
             </div>
 
             <p>hello at timewave.computer</p>
