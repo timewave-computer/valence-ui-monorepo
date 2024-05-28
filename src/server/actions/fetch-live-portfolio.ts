@@ -11,11 +11,31 @@ import { OriginAsset } from "@/types/ibc";
 import { z } from "zod";
 import { FetchAccountConfigReturnValue } from "@/server/actions/fetch-valence-account-config";
 import { baseToUnit } from "@/utils";
+import {
+  fetchFundsInAuction,
+  IndexerFundsInAuctionResponse,
+} from "@/server/indexer/funds-in-auction";
 
-/***
- * STILL TODO:
- * fetch amounts on auction from indexer /auction/account [date=today] [address=address]
- */
+const fetchAuctionBalances = async (
+  address: string,
+): Promise<IndexerFundsInAuctionResponse> => {
+  const fundsInAuction = await fetchFundsInAuction(address);
+  return fundsInAuction;
+};
+
+const getAuctionBalances = async (
+  address: string,
+): Promise<Record<string, number>> => {
+  const balances = await fetchAuctionBalances(address);
+  const result: Record<string, number> = {};
+  balances.forEach((balance) => {
+    const denom = balance.pair[0];
+    const amount = parseFloat(balance.amount);
+    result[denom] = amount;
+  });
+  return result;
+};
+
 export async function fetchLivePortfolio({
   address,
   baseDenom,
@@ -28,7 +48,12 @@ export async function fetchLivePortfolio({
   const stargateClient = await getStargateClient();
 
   // fetch balances on account
-  let balances = await stargateClient.getAllBalances(address);
+  let balances = (await stargateClient.getAllBalances(address)).map((b) => {
+    return {
+      denom: b.denom,
+      amount: Number(b.amount),
+    };
+  });
 
   // get coingecko ID for each target & fetch prices
   const coinGeckoIds =
@@ -39,12 +64,16 @@ export async function fetchLivePortfolio({
 
   let totalValue = 0;
 
-  const portfolioNoCalcs: Omit<LiveHolding, "distribution">[] = [];
+  const auctionBalances = await getAuctionBalances(address);
+
+  const portfolioWithoutDistribution: Omit<LiveHolding, "distribution">[] = [];
   // compose each portfolio line
   targets.forEach((target) => {
     const denom = target.denom;
-    const balance = balances.find((b) => b.denom === target.denom); // if target denom has no balances in account, its 0
-    const amount = balance ? balance.amount : 0;
+    const accountBalance =
+      balances.find((b) => b.denom === target.denom)?.amount ?? 0; // if target denom has no balances in account, its 0
+    const auctionBalance = auctionBalances[target.denom] ?? 0;
+    const amount = accountBalance + auctionBalance;
     const traceAsset = target.asset;
     const coinGeckoId = traceAsset.coingecko_id;
     let price: number = 0;
@@ -53,9 +82,9 @@ export async function fetchLivePortfolio({
     }
 
     const formattedAmount = baseToUnit(amount, traceAsset.decimals);
-    portfolioNoCalcs.push({
+    portfolioWithoutDistribution.push({
       denom,
-      target: target.percent,
+      target: target.percentage,
       amount: formattedAmount,
       price: price,
       asset: target.asset,
@@ -65,7 +94,7 @@ export async function fetchLivePortfolio({
   });
 
   // compose with distribution
-  const portfolio = portfolioNoCalcs.map((holding) => {
+  const portfolio = portfolioWithoutDistribution.map((holding) => {
     return {
       ...holding,
       distribution: (holding.amount * holding.price) / totalValue,

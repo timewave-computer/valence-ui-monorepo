@@ -29,7 +29,7 @@ const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
     defaultValue: USDC,
   });
-  const [valenceAccount, setValenceAccount] = useQueryState("valenceAccount", {
+  const [valenceAccount, setValenceAccount] = useQueryState("account", {
     defaultValue: "",
   });
   const isValidValenceAccount = !!valenceAccount && valenceAccount !== "";
@@ -45,7 +45,6 @@ const RebalancerPage = () => {
     () => accountConfigQuery.data?.targets ?? [],
     [accountConfigQuery.data?.targets],
   );
-
   const [colorIndexMap, setColorIndexMap] = useAtom(denomColorIndexMap);
   useEffect(() => {
     if (!targets.length) return;
@@ -129,7 +128,7 @@ const RebalancerPage = () => {
 
           <div className="flex flex-col gap-6 border-b border-valence-black p-4 pb-8">
             <div className="flex flex-col gap-2">
-              <h1 className="font-bold">Valence account</h1>
+              <h1 className="font-bold">Rebalancer account</h1>
 
               <TextInput
                 input={valenceAccount}

@@ -4,6 +4,8 @@ import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { cn } from "@/utils";
 import { ReactQueryProvider } from "@/context";
+import { Provider as JotaiProvider } from "jotai";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,18 +20,20 @@ export default function RootLayout({
 }) {
   return (
     <ReactQueryProvider>
-      <html lang="en">
-        <body
-          className={cn(
-            inter.className,
-            "flex max-h-screen min-h-screen flex-col",
-          )}
-        >
-          <Nav />
+      <JotaiProvider>
+        <html lang="en">
+          <body
+            className={cn(
+              inter.className,
+              "flex max-h-screen min-h-screen flex-col",
+            )}
+          >
+            <Nav />
 
-          {children}
-        </body>
-      </html>
+            {children}
+          </body>
+        </html>
+      </JotaiProvider>
     </ReactQueryProvider>
   );
 }

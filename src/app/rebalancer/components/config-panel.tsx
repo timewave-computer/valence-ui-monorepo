@@ -30,13 +30,13 @@ export const ConfigPanel: React.FC<{
         "tokens",
         config.targets.map((target) => ({
           denom: target.denom,
-          percent: target.percent.toString(),
+          percent: target.percentage.toString(),
         })),
       );
       setValue("baseToken", config.baseDenom);
       setValue("pidPreset", "default");
     }
-  }, [config, isValidValenceAccount]);
+  }, [setValue, config, isValidValenceAccount]);
 
   const {
     fields: tokenFields,

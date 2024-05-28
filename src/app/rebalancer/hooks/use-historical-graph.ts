@@ -102,7 +102,7 @@ export const useHistoricalValueGraph = ({
         ...restOfKeys,
       };
     });
-  }, [data]);
+  }, [data, config?.targets]);
 
   const projectionsFormatted = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -116,15 +116,15 @@ export const useHistoricalValueGraph = ({
       return {
         amount: token.amount,
         price: token.price,
-        target: targetConfig?.percent ?? 0,
+        target: targetConfig?.percentage ?? 0,
       };
     });
 
-    const { kp, ki, kd } = config.pid;
+    const { p, i, d } = config.pid;
     const projections = simulate(
-      kp,
-      ki,
-      kd,
+      p,
+      i,
+      d,
       projectionLength[scale],
       simulationInput,
     );
