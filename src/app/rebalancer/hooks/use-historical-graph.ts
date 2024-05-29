@@ -4,9 +4,10 @@ import {
   scaleIntervalSeconds,
   GraphKey,
   KeyTag,
-  minimumTimestampGenerator,
   projectionLength,
   yTickCount,
+  dayCountForScale,
+  minTimestampGenerator,
 } from "@/app/rebalancer/const/graph";
 import {
   FetchAccountConfigReturnValue,
@@ -48,6 +49,9 @@ export const useHistoricalValueGraph = ({
   }, [config?.targets]);
 
   const minTimestamp = useMemo(() => {
+    // based on scale, select from certain index
+    if (!rawData || !rawData.length) return new UTCDate().getTime();
+
     let ts: number;
     // if no data yet, use current time so some ticks render by default
     if (!rawData || !rawData.length) {
@@ -57,7 +61,12 @@ export const useHistoricalValueGraph = ({
       ts = mostRecentEntry.timestamp;
     }
 
-    return minimumTimestampGenerator[scale](ts);
+    const dataSize = rawData.length;
+    const dayCount = dayCountForScale[scale];
+    // handle if data is smaller than the graph window
+    if (dataSize < dayCount) return minTimestampGenerator(ts, dayCount);
+    // otherwise, return the first timestamp within the window
+    else return rawData[Math.max(0, dataSize - dayCount)]?.timestamp;
   }, [scale, rawData]);
 
   const xAxisTicks = useMemo(() => {
@@ -70,9 +79,6 @@ export const useHistoricalValueGraph = ({
       if (scale === Scale.Year) {
         timestamp.setMonth(timestamp.getMonth() + 1); // don't show tick for incomplete first month
         timestamp.setDate(1);
-        timestamp.setHours(0, 0, 0, 0);
-      } else if (scale === Scale.Month || scale === Scale.Week) {
-        timestamp.setHours(0, 0, 0, 0);
       }
       return timestamp.getTime();
     });

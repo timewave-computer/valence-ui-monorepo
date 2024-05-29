@@ -11,30 +11,8 @@ import { OriginAsset } from "@/types/ibc";
 import { z } from "zod";
 import { FetchAccountConfigReturnValue } from "@/server/actions/fetch-valence-account-config";
 import { baseToUnit } from "@/utils";
-import {
-  fetchFundsInAuction,
-  IndexerFundsInAuctionResponse,
-} from "@/server/indexer/funds-in-auction";
-
-const fetchAuctionBalances = async (
-  address: string,
-): Promise<IndexerFundsInAuctionResponse> => {
-  const fundsInAuction = await fetchFundsInAuction(address);
-  return fundsInAuction;
-};
-
-const getAuctionBalances = async (
-  address: string,
-): Promise<Record<string, number>> => {
-  const balances = await fetchAuctionBalances(address);
-  const result: Record<string, number> = {};
-  balances.forEach((balance) => {
-    const denom = balance.pair[0];
-    const amount = parseFloat(balance.amount);
-    result[denom] = amount;
-  });
-  return result;
-};
+import { IndexerUrl } from "@/server/utils";
+import { IndexerFundsInAuctionSchema } from "@/types/indexer";
 
 export async function fetchLivePortfolio({
   address,
@@ -101,26 +79,11 @@ export async function fetchLivePortfolio({
     };
   });
 
-  return Promise.resolve({
+  return {
     baseDenom,
-    totalValue,
     portfolio,
-  });
+  };
 }
-
-export type LiveHolding = {
-  denom: string;
-  amount: number;
-  price: number;
-  asset: OriginAsset;
-  target: number;
-  distribution: number;
-};
-
-export type FetchLivePortfolioReturnValue = {
-  baseDenom: string;
-  portfolio: Array<LiveHolding>;
-};
 
 const getPrices = async (
   coingeckoIds: string[],
@@ -158,4 +121,38 @@ const getPrices = async (
     );
   });
   return prices;
+};
+
+const getAuctionBalances = async (
+  address: string,
+): Promise<Record<string, number>> => {
+  const res = await fetch(IndexerUrl.fundsInAuction(address));
+  if (!res.ok) {
+    throw ErrorHandler.makeError(
+      `${ERROR_MESSAGES.INDEXER_FUNDS_IN_AUCTION_ERROR}, API Error: ${res.status}, ${res.statusText}`,
+    );
+  }
+  const data = await res.json();
+  const balances = IndexerFundsInAuctionSchema.parse(data);
+  const result: Record<string, number> = {};
+  balances.forEach((balance) => {
+    const denom = balance.pair[0];
+    const amount = parseFloat(balance.amount);
+    result[denom] = amount;
+  });
+  return result;
+};
+
+export type LiveHolding = {
+  denom: string;
+  amount: number;
+  price: number;
+  asset: OriginAsset;
+  target: number;
+  distribution: number;
+};
+
+export type FetchLivePortfolioReturnValue = {
+  baseDenom: string;
+  portfolio: Array<LiveHolding>;
 };

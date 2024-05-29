@@ -1,5 +1,5 @@
 import { KeyTag, GraphKey } from "@/app/rebalancer/const/graph";
-import { displayNumber, displayUtcTime } from "@/utils";
+import { displayQuantity, displayUtcTime } from "@/utils";
 import { TooltipProps } from "recharts";
 import {
   NameType,
@@ -25,6 +25,24 @@ export const ValueTooltip = ({
     k.includes(KeyTag.projectedValue),
   );
 
+  const totalValue = Object.keys(data)
+    .filter((k) => {
+      return isProjection
+        ? k.includes(KeyTag.projectedValue)
+        : k.includes(KeyTag.value);
+    })
+    .map((k) => {
+      const denom = k.split(".")[0];
+
+      const value = isProjection
+        ? Number(data[GraphKey.projectedValue(denom)])
+        : Number(data[GraphKey.value(denom)]);
+      return value;
+    })
+    .reduce((acc: number, value: number) => {
+      return acc + value;
+    });
+
   return (
     <div className="flex flex-col gap-2 bg-white p-4">
       <div className=" ">
@@ -43,10 +61,10 @@ export const ValueTooltip = ({
               Asset
             </th>
             <th className="px-2 text-start" scope="col">
-              Est. USD Value
+              Amount
             </th>
             <th className="px-2 text-start" scope="col">
-              Amount
+              Est. USD Value
             </th>
           </tr>
         </thead>
@@ -69,15 +87,20 @@ export const ValueTooltip = ({
                         <ColoredDot i={i} />
                         <span>{denom}</span>
                       </th>
-                      <td className="p-0.5 px-2 text-end">{`$${displayNumber.format(value)}`}</td>
                       <td className="p-0.5 px-2 text-end">
-                        {displayNumber.format(amount)}
+                        {displayQuantity.format(amount)}
                       </td>
+                      <td className="p-0.5 px-2 text-end">{`$${displayQuantity.format(value)}`}</td>
                     </tr>
                   );
                 })
             : keys
                 .filter((k) => k.includes(KeyTag.value))
+                .filter((k) => {
+                  const denom = k.split(".")[0];
+                  const amount = data[GraphKey.balance(denom)];
+                  return !isNaN(amount);
+                })
                 .map((k: string, i: number) => {
                   const denom = k.split(".")[0];
                   const amount = data[GraphKey.balance(denom)];
@@ -93,14 +116,23 @@ export const ValueTooltip = ({
                         <ColoredDot i={i} />
                         <span>{denom}</span>
                       </th>
-
-                      <td className="p-0.5 px-2 text-end">{`$${displayNumber.format(value)}`}</td>
                       <td className="p-0.5 px-2 text-end">
-                        {displayNumber.format(amount)}
+                        {displayQuantity.format(amount)}
                       </td>
+                      <td className="p-0.5 px-2 text-end">{`$${displayQuantity.format(value)}`}</td>
                     </tr>
                   );
                 })}
+          <tr className="p-0.5">
+            <th
+              className={"flex items-center gap-1 p-0.5 px-2 text-start"}
+              scope="row"
+            ></th>
+            <td className="p-0.5 px-2 text-end"></td>
+            <th className="p-0.5 px-2 text-end">
+              {`$${displayQuantity.format(totalValue)}`}
+            </th>
+          </tr>
         </tbody>
       </table>
     </div>

@@ -25,8 +25,9 @@ export const getOriginAssets = async (
   const result = await res.json();
   const validated = OriginAssetResponseSchema.safeParse(result);
   if (!validated.success) {
+    const errMsg = validated.error.errors.slice(0, 3); // truncate, array errors are large and redunant
     throw ErrorHandler.makeError(
-      `${ERROR_MESSAGES.IBC_TRACE_FAIL}, Zod Validation Error: ${res.status}, ${res.statusText}`,
+      `${ERROR_MESSAGES.IBC_TRACE_FAIL},  Validation Error (first three items): ${JSON.stringify(errMsg, null, 2)}`,
     );
   }
   return validated.data.origin_assets;

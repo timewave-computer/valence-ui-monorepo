@@ -21,13 +21,13 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { useHistoricalValueGraph } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import { UTCDate } from "@date-fns/utc";
-import { USDC } from "@/const/mock-data";
 import { DenomColorIndexMap, denomColorIndexMap } from "@/ui-globals";
 import { Scale, GraphKey, GraphColor } from "@/app/rebalancer/const";
+import { USDC_DENOM } from "@/const/usdc";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
-    defaultValue: USDC,
+    defaultValue: USDC_DENOM,
   });
   const [valenceAccount, setValenceAccount] = useQueryState("account", {
     defaultValue: "",
@@ -89,7 +89,6 @@ const RebalancerPage = () => {
     },
     enabled: isValidValenceAccount && !!targets.length,
   });
-
   const {
     scale,
     setScale,

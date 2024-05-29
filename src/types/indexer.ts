@@ -1,0 +1,100 @@
+import { ZodType, z } from "zod";
+
+/***
+ * funds in auction endpoint
+ */
+export const IndexerFundsInAuctionSchema = z.array(
+  z.object({
+    pair: z.tuple([z.string(), z.string()]),
+    amount: z.string(),
+  }),
+);
+
+/**
+ * rebalancer config endpoint
+ */
+export const TargetSchema = z.object({
+  // target denom string
+  denom: z.string(),
+  // Percentage of the portfolio the traget should be (between 0-1)
+  percentage: z.string(),
+  // Minimum balance this token should be at
+  min_balance: z.string().optional().nullable(),
+});
+export type RawTarget = z.infer<typeof TargetSchema>;
+
+export const IndexerRebalancerConfigResponseSchema = z.object({
+  // Trustee that can pause/resume the rebalancer for the account
+  trustee: z.string().optional().nullable(),
+  // The base denom this account uses
+  base_denom: z.string(),
+  // List of targets the account want us to rebalance
+  targets: z.array(TargetSchema),
+  // The PID terms the account chose, the strategy to use when doing calculations. between 0-1
+  pid: z.object({
+    p: z.string(),
+    i: z.string(),
+    d: z.string(),
+  }),
+  // Maximum amount we can sell in a single cycle (percentage from total portfolio value)
+  max_limit: z.string().optional().nullable(),
+  // When last rebalance happened in milliseconds
+  last_rebalance: z.string().optional().nullable(),
+  // The override strategy if we have a conflict from different parameters
+  target_override_strategy: z.union([
+    z.literal("proportional"),
+    z.literal("priority"),
+  ]),
+  // If the account is currently paused or not
+  is_paused: z.boolean(),
+});
+
+/***
+ * Time series util
+ */
+export const TimestepQuerySchema = <T extends ZodType<any, any>>(
+  valueSchema: T,
+) => {
+  return z.array(
+    z.object({
+      value: valueSchema,
+      blockHeight: z.number(),
+      blockTimeUnixMs: z.number(),
+    }),
+  );
+};
+
+/**
+ * historical balances endpoint
+ */
+export const IndexerHistoricalBalancesResponseSchema = TimestepQuerySchema(
+  z.record(z.string(), z.string()),
+);
+
+export type IndexerHistoricalBalancesResponse = z.infer<
+  typeof IndexerHistoricalBalancesResponseSchema
+>;
+
+/**
+ * historical prices endpoint
+ */
+
+export const IndexerPriceSchema = z.object({
+  pair: z.tuple([z.string(), z.string()]),
+  price: z.string(),
+  time: z.string(),
+});
+export type IndexerPrice = z.infer<typeof IndexerPriceSchema>;
+
+export const IndexerHistoricalPricesResponseSchema = z.array(
+  z.object({
+    at: z.string(),
+    blockHeight: z.number(),
+    blockTimeUnixMs: z.number(),
+    value: IndexerPriceSchema.nullable(),
+  }),
+);
+
+export type IndexerHistoricalPricesResponse = z.infer<
+  typeof IndexerHistoricalPricesResponseSchema
+>;

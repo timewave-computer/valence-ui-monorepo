@@ -1,33 +1,27 @@
 "use server";
+import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { NEUTRON_CHAIN_ID } from "@/const/neutron";
-import { getOriginAssets } from "@/server/utils";
-import {
-  Target as RawTarget,
-  fetchRebalancerConfig,
-} from "@/server/indexer/rebalancer-config";
+import { getOriginAssets, IndexerUrl } from "@/server/utils";
+
 import { OriginAsset } from "@/types/ibc";
-
-export type AccountTarget = Omit<RawTarget, "percentage"> & {
-  percentage: number;
-  asset: OriginAsset;
-};
-
-export type FetchAccountConfigReturnValue = {
-  targets: AccountTarget[];
-  pid: {
-    p: number;
-    i: number;
-    d: number;
-  };
-  baseDenom: string;
-};
+import {
+  IndexerRebalancerConfigResponseSchema,
+  RawTarget,
+} from "@/types/indexer";
 
 export async function fetchValenceAccountConfiguration({
   address,
 }: {
   address: string;
 }): Promise<FetchAccountConfigReturnValue> {
-  const config = await fetchRebalancerConfig(address);
+  const res = await fetch(IndexerUrl.accountConfig(address));
+  if (!res.ok) {
+    throw ErrorHandler.makeError(
+      `${ERROR_MESSAGES.INDEXER_ACCT_CONFIG_ERROR}, API Error: ${res.status}, ${res.statusText}`,
+    );
+  }
+  const data = await res.json();
+  const config = IndexerRebalancerConfigResponseSchema.parse(data);
   const { targets, base_denom, pid } = config;
 
   const originAssets = await getOriginAssets(
@@ -46,13 +40,30 @@ export async function fetchValenceAccountConfiguration({
     };
   });
 
-  return Promise.resolve({
+  return {
     baseDenom: base_denom,
     pid: {
       p: parseFloat(pid.p),
       i: parseFloat(pid.i),
       d: parseFloat(pid.d),
     },
-    targets: targetsWithAsset,
-  });
+    targets: targetsWithAsset.sort((a, b) =>
+      a.asset.name.localeCompare(b.asset.name),
+    ),
+  };
 }
+
+export type AccountTarget = Omit<RawTarget, "percentage"> & {
+  percentage: number;
+  asset: OriginAsset;
+};
+
+export type FetchAccountConfigReturnValue = {
+  targets: AccountTarget[];
+  pid: {
+    p: number;
+    i: number;
+    d: number;
+  };
+  baseDenom: string;
+};

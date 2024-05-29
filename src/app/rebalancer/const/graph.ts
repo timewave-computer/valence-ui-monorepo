@@ -1,4 +1,6 @@
 import { UTCDate } from "@date-fns/utc";
+import { subDays } from "date-fns";
+
 export enum Scale {
   // these two are disabled for now, we only have historical day 1x per day
   // Hour = "h",
@@ -76,28 +78,17 @@ export const scaleFormatter: Record<Scale, (value: number) => string> = {
   },
 };
 
-export const minimumTimestampGenerator: Record<
-  Scale,
-  (startValue: number) => number
-> = {
-  //   [Scale.Hour]: (value) =>
-  //    new Date(value).toLocaleTimeString("default", { timeStyle: "short" }),
-  //   [Scale.Day]: (value) => new Date(value).getHours().toString(),
-  [Scale.Week]: (startValue) => {
-    const date = new UTCDate(startValue);
-    date.setDate(date.getDate() - 7);
-    return date.getTime();
-  },
-  [Scale.Month]: (startValue) => {
-    const date = new UTCDate(startValue);
-    date.setDate(date.getDate() - 30);
-    return date.getTime();
-  },
-  [Scale.Year]: (startValue) => {
-    const date = new UTCDate(startValue);
-    date.setDate(date.getDate() - 365);
-    return date.getTime();
-  },
+export const dayCountForScale: Record<Scale, number> = {
+  // [Scale.Hour]: 1,
+  // [Scale.Day]: 1,
+  [Scale.Week]: 7,
+  [Scale.Month]: 30,
+  [Scale.Year]: 365,
+};
+
+export const minTimestampGenerator = (startValue: number, dayCount: number) => {
+  const date = new UTCDate(startValue);
+  return subDays(date, dayCount).getTime();
 };
 
 export class GraphColor {

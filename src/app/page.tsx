@@ -187,7 +187,6 @@ const HomePage = () => {
                     <Button
                       variant="secondary"
                       onClick={() => {
-                        console.log("submitting", email);
                         subscribeMutation.mutate();
                       }}
                     >

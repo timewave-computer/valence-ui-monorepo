@@ -1,6 +1,5 @@
 "use client";
 import { Dropdown, NumberInput } from "@/components";
-import { USDC } from "@/const/mock-data";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -17,6 +16,12 @@ export const ConfigPanel: React.FC<{
       pidPreset: "default",
     },
   });
+
+  const tokenOptions =
+    config?.targets.map((target) => ({
+      label: target.asset.recommended_symbol ?? target.asset.symbol,
+      value: target.denom,
+    })) ?? [];
 
   useEffect(() => {
     if (!isValidValenceAccount || !config) {
@@ -53,7 +58,7 @@ export const ConfigPanel: React.FC<{
 
         <Dropdown
           isLoading={isLoading}
-          options={BASE_TOKEN_OPTIONS}
+          options={tokenOptions}
           selected={watch("baseToken")}
           onSelected={(value) => setValue("baseToken", value)}
         />
@@ -80,7 +85,7 @@ export const ConfigPanel: React.FC<{
             <div className="flex flex-row items-stretch" key={id}>
               <Dropdown
                 isLoading={isLoading}
-                options={TOKEN_OPTIONS}
+                options={tokenOptions}
                 selected={watch(`tokens.${index}.denom`)}
                 onSelected={(value) => setValue(`tokens.${index}.denom`, value)}
                 containerClassName="!min-w-[8rem] !border-r-0 pr-4"
@@ -138,28 +143,6 @@ export const ConfigPanel: React.FC<{
     </>
   );
 };
-
-const BASE_TOKEN_OPTIONS: { label: string; value: string }[] = [
-  {
-    label: "USDC",
-    value: USDC,
-  },
-  {
-    label: "NTRN",
-    value: "untrn",
-  },
-];
-
-const TOKEN_OPTIONS: { label: string; value: string }[] = [
-  {
-    label: "USDC",
-    value: USDC,
-  },
-  {
-    label: "NTRN",
-    value: "untrn",
-  },
-];
 
 const PID_PRESET_OPTIONS: { label: string; value: string }[] = [
   {

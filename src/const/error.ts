@@ -8,6 +8,8 @@ export const ERROR_MESSAGES = {
   UNKNOWN_ERROR: "Unknown error",
   INDEXER_ACCT_CONFIG_ERROR: "Failed to fetch account config",
   INDEXER_FUNDS_IN_AUCTION_ERROR: "Failed to fetch funds in auction",
+  INDEXER_HISTORICAL_BALANCES_ERROR: "Failed to fetch historical balances",
+  INDEXER_HISTORICAL_PRICES_ERROR: "Failed to fetch historical prices",
 };
 
 export class ErrorHandler {
