@@ -94,15 +94,20 @@ export const useHistoricalValueGraph = ({
 
     return data.map((historicalValue) => {
       const restOfKeys: { [key: string]: number } = {};
-      historicalValue.tokens.forEach((token) => {
-        const asset = config?.targets.find(
-          (target) => target.denom === token.denom,
-        )?.asset;
-        if (!asset) return; // should not happen but just in case
-        const amount = baseToUnit(token.amount, asset.decimals);
-        restOfKeys[GraphKey.balance(asset.name)] = amount;
-        restOfKeys[GraphKey.value(asset.name)] = amount * token.price;
+
+      config?.targets.forEach((target) => {
+        const value = historicalValue.tokens.find(
+          (t) => t.denom === target.denom,
+        );
+        if (!value) {
+          // should not happen but handle it just in case
+          return;
+        }
+        const amount = baseToUnit(value.amount, target.asset.decimals) ?? 0;
+        restOfKeys[GraphKey.balance(target.asset.name)] = amount;
+        restOfKeys[GraphKey.value(target.asset.name)] = amount * value.price;
       });
+
       return {
         timestamp: historicalValue.timestamp,
         ...restOfKeys,
@@ -114,7 +119,6 @@ export const useHistoricalValueGraph = ({
     if (!data || data.length === 0) return [];
     if (!config?.pid || !config?.targets || !config?.targets.length) return [];
     const latest = data[data.length - 1];
-
     const simulationInput = latest.tokens.map((token) => {
       const targetConfig = config.targets.find(
         (target) => target.denom === token.denom,
@@ -125,7 +129,6 @@ export const useHistoricalValueGraph = ({
         target: targetConfig?.percentage ?? 0,
       };
     });
-
     const { p, i, d } = config.pid;
     const projections = simulate(
       p,

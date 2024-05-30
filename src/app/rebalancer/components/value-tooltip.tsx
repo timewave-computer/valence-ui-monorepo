@@ -64,7 +64,7 @@ export const ValueTooltip = ({
               Amount
             </th>
             <th className="px-2 text-start" scope="col">
-              Est. USD Value
+              USD Value
             </th>
           </tr>
         </thead>
@@ -74,8 +74,11 @@ export const ValueTooltip = ({
                 .filter((k) => k.includes(KeyTag.projectedValue))
                 .map((k: string, i: number) => {
                   const denom = k.split(".")[0];
-                  const amount = data[GraphKey.projectedAmount(denom)];
-                  const value = data[GraphKey.projectedValue(denom)];
+                  let amount = data[GraphKey.projectedAmount(denom)];
+                  if (isNaN(amount)) amount = 0;
+                  let value = data[GraphKey.projectedValue(denom)];
+                  if (isNaN(value)) value = 0;
+
                   return (
                     <tr key={`tooltip-${label}-${k}`} className="p-0.5">
                       <th
@@ -96,14 +99,14 @@ export const ValueTooltip = ({
                 })
             : keys
                 .filter((k) => k.includes(KeyTag.value))
-                .filter((k) => {
-                  const denom = k.split(".")[0];
-                  const amount = data[GraphKey.balance(denom)];
-                  return !isNaN(amount);
-                })
                 .map((k: string, i: number) => {
                   const denom = k.split(".")[0];
                   const amount = data[GraphKey.balance(denom)];
+
+                  if (amount === 0 || isNaN(amount)) {
+                    return;
+                  }
+
                   const value = data[GraphKey.value(denom)];
                   return (
                     <tr key={`tooltip-${label}-${k}`} className="p-0.5">

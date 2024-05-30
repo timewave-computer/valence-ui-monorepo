@@ -89,6 +89,7 @@ const RebalancerPage = () => {
     },
     enabled: isValidValenceAccount && !!targets.length,
   });
+
   const {
     scale,
     setScale,
@@ -239,7 +240,7 @@ export default RebalancerPage;
 
 const VALUE_BASE_OPTIONS: { label: string; value: string }[] = [
   {
-    label: "Est. USD Value",
+    label: "USD Value",
     value: "usd",
   },
   {

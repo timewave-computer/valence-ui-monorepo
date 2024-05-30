@@ -95,7 +95,14 @@ const getPrices = async (
   const promises = coingeckoIds.map(async (id) => {
     try {
       const data = await fetchMaybeCached(CACHE_KEYS.COINGECKO_PRICE, { id });
-      const price = z.number().parse(data);
+      const validated = z.number().safeParse(data);
+      if (!validated.success) {
+        throw ErrorHandler.makeError(
+          `${ERROR_MESSAGES.COINGECKO_PRICE_FAIL}: Validation error ${validated.error}`,
+        );
+      }
+      const price = validated.data;
+
       return {
         coinGeckoId: id,
         price: price,

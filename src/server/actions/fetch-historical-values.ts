@@ -2,7 +2,7 @@
 import { UTCDate } from "@date-fns/utc";
 import { AccountTarget } from "@/server/actions/fetch-valence-account-config";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
-import { IndexerUrl } from "@/server/utils";
+import { IndexerUrl, fetchMaybeCached } from "@/server/utils";
 import { USDC_DENOM } from "@/const/usdc";
 import {
   IndexerHistoricalBalancesResponse,
@@ -43,11 +43,14 @@ export async function fetchHistoricalValues({
   const historicPrices: HistoricPrices = historicPricesRaw.map(
     (priceResponse) => {
       const filtered = priceResponse.prices
-        .filter((price) => !!price.value)
-        .map((price) => price.value);
+        .filter((item): item is GuaranteedPrice => !!item.value)
+        .map((item) => ({
+          price: Number(item.value.price),
+          time: Number(item.value?.time.substring(0, 13)),
+        })); // must trim, ts returned in nanosecodns
       return {
         denom: priceResponse.denom,
-        prices: filtered as IndexerPrice[],
+        prices: filtered as FormattedPrice[],
       };
     },
   );
@@ -58,8 +61,7 @@ export async function fetchHistoricalValues({
 
     const tokens: FetchHistoricalValuesReturnValue["values"][0]["tokens"] = [];
     targets.forEach((target) => {
-      if (!(target.denom in balance.value)) return;
-      let price = 0;
+      let price: number | null = null;
       if (target.denom === USDC_DENOM) {
         price = 1;
       } else {
@@ -70,13 +72,23 @@ export async function fetchHistoricalValues({
           ErrorHandler.warn(`No historic prices found for ${target.denom}`);
           return;
         }
-        const closestPrice = findClosestPrice(balanceTimestamp, pricesForDenom);
-        price = Number(closestPrice?.price) ?? 0;
+        price =
+          target.denom === USDC_DENOM
+            ? 1
+            : findClosestPrice(balanceTimestamp, pricesForDenom);
+      }
+      if (!price) {
+        // should not happen BUT just in case
+        ErrorHandler.warn(`No prices found for ${target.denom}`);
+        return;
       }
 
       tokens.push({
         denom: target.denom,
-        amount: Number(balance.value[target.denom]),
+        amount:
+          target.denom in balance.value
+            ? Number(balance.value[target.denom])
+            : 0,
         decimals: target.asset.decimals,
         price: price,
       });
@@ -84,6 +96,7 @@ export async function fetchHistoricalValues({
 
     results.push({
       timestamp: balance.blockTimeUnixMs,
+      readableDate: new UTCDate(balance.blockTimeUnixMs).toISOString(),
       tokens: tokens,
     });
   });
@@ -94,21 +107,30 @@ export async function fetchHistoricalValues({
   };
 }
 
+type FormattedPrice = {
+  price: number;
+  time: number;
+};
+
 type HistoricPrices = Array<{
   denom: string;
-  prices: Array<IndexerPrice>;
+  prices: Array<FormattedPrice>;
 }>;
+
+type GuaranteedPrice = Omit<IndexerHistoricalPricesResponse[0], "value"> & {
+  value: IndexerPrice;
+};
 
 // Helper function to find the price with the closest timestamp
 function findClosestPrice(
   balanceTimestamp: number,
   prices: HistoricPrices[0]["prices"],
-): IndexerHistoricalPricesResponse[0]["value"] {
-  return prices.sort(
+): number {
+  const s = prices.sort(
     (a, b) =>
-      Math.abs(balanceTimestamp - Number(a.time)) -
-      Math.abs(balanceTimestamp - Number(b.time)),
-  )[0];
+      Math.abs(balanceTimestamp - a.time) - Math.abs(balanceTimestamp - b.time),
+  );
+  return s[0].price;
 }
 
 export const fetchHistoricalBalances = async (
@@ -170,6 +192,7 @@ export type FetchHistoricalValuesReturnValue = {
   baseDenom: string;
   values: Array<{
     timestamp: number;
+    readableDate: string;
     tokens: Array<{
       denom: string;
       price: number;

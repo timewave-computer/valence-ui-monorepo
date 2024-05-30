@@ -78,7 +78,7 @@ export const Table: React.FC<{
         />
 
         <SortableTableHeader
-          label="Est. USD Value"
+          label="USD Value"
           sorterKey={SORTER_KEYS.VALUE}
           currentSorter={sorter}
           ascending={sortAscending}
