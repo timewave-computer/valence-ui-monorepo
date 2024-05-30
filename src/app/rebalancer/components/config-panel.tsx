@@ -35,7 +35,7 @@ export const ConfigPanel: React.FC<{
         "tokens",
         config.targets.map((target) => ({
           denom: target.denom,
-          percent: target.percentage.toString(),
+          percent: (target.percentage * 100).toString(),
         })),
       );
       setValue("baseToken", config.baseDenom);

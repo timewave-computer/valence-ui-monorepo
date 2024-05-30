@@ -30,7 +30,7 @@ const RebalancerPage = () => {
     defaultValue: USDC_DENOM,
   });
   const [valenceAccount, setValenceAccount] = useQueryState("account", {
-    defaultValue: "",
+    defaultValue: DEFAULT_ACCOUNT,
   });
   const isValidValenceAccount = !!valenceAccount && valenceAccount !== "";
 
@@ -121,8 +121,20 @@ const RebalancerPage = () => {
 
             <h1 className="text-xl font-bold">Rebalancer</h1>
             <p>
-              To get started with the rebalancer, create a governance proposal
-              to deposit funds into a valence account with a portfolio target.
+              To get started with the Rebalancer, create a governance proposal
+              to deposit funds into a Rebalancer account with a portfolio
+              target.
+            </p>
+            <p>
+              Contact{" "}
+              <a
+                href="https://x.com/TimewaveLabs"
+                target="_blank"
+                className="text-valence-blue transition-all hover:underline"
+              >
+                @timewavelabs
+              </a>{" "}
+              to get early access.
             </p>
           </div>
 
@@ -250,3 +262,8 @@ const VALUE_BASE_OPTIONS: { label: string; value: string }[] = [
 ];
 
 const scales = Object.values(Scale);
+
+let DEFAULT_ACCOUNT = "";
+if (process.env.NODE_ENV === "development") {
+  DEFAULT_ACCOUNT = process.env.NEXT_PUBLIC_DEFAULT_ACCT ?? "";
+}

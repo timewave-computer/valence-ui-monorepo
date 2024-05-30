@@ -28,7 +28,7 @@ export const Table: React.FC<{
 
   return (
     <>
-      <div className="grid grid-cols-[2fr_2fr_2fr_3fr_3fr_3fr]">
+      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr]">
         <SortableTableHeader
           label="Ticker"
           sorterKey={SORTER_KEYS.TICKER}
@@ -38,8 +38,26 @@ export const Table: React.FC<{
           setSortAscending={setSortAscending}
         />
         <SortableTableHeader
-          label="Target"
-          sorterKey={SORTER_KEYS.TARGET}
+          label="Holdings"
+          sorterKey={SORTER_KEYS.HOLDINGS}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="justify-end text-right"
+        />
+        <SortableTableHeader
+          label="Price"
+          sorterKey={SORTER_KEYS.PRICE}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="justify-end text-right"
+        />
+        <SortableTableHeader
+          label="USD Value"
+          sorterKey={SORTER_KEYS.VALUE}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -56,30 +74,9 @@ export const Table: React.FC<{
           setSortAscending={setSortAscending}
           buttonClassName="justify-end text-right"
         />
-
         <SortableTableHeader
-          label="Holdings"
-          sorterKey={SORTER_KEYS.HOLDINGS}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          buttonClassName="justify-end text-right"
-        />
-
-        <SortableTableHeader
-          label="Price"
-          sorterKey={SORTER_KEYS.PRICE}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          buttonClassName="justify-end text-right"
-        />
-
-        <SortableTableHeader
-          label="USD Value"
-          sorterKey={SORTER_KEYS.VALUE}
+          label="Target"
+          sorterKey={SORTER_KEYS.TARGET}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -104,25 +101,12 @@ export const Table: React.FC<{
                   ></div>
                   <p className="text-sm font-bold">{holding.asset.name}</p>
                 </div>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-                  {(holding.target * 100).toLocaleString(undefined, {
-                    maximumSignificantDigits: 4,
-                  })}
-                  %
-                </p>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-                  {(holding.distribution * 100).toLocaleString(undefined, {
-                    maximumSignificantDigits: 4,
-                  })}
-                  %
-                </p>
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
                   {holding.amount.toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
                 </p>
-
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
                   $
                   {holding.price.toLocaleString(undefined, {
@@ -130,13 +114,24 @@ export const Table: React.FC<{
                     maximumFractionDigits: 4,
                   })}
                 </p>
-
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
                   $
                   {calcValue(holding).toLocaleString(undefined, {
                     minimumFractionDigits: 4,
                     maximumFractionDigits: 4,
                   })}
+                </p>
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+                  {(holding.distribution * 100).toLocaleString(undefined, {
+                    maximumSignificantDigits: 4,
+                  })}
+                  %
+                </p>
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+                  {(holding.target * 100).toLocaleString(undefined, {
+                    maximumSignificantDigits: 4,
+                  })}
+                  %
                 </p>
               </Fragment>
             ))}
@@ -226,19 +221,18 @@ const EmptyRow = () => (
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
       {"0%"}
     </p>
-
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
-      {"-"}
+      {"0%"}
     </p>
   </>
 );
 
 const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
   <>
-    <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
-      <div className="h-4 w-4 shrink-0 rounded-full"></div>
-      <p className="text-sm font-bold">{"-"}</p>
-    </div>
+    <p className="flex flex-row items-center  border-b border-valence-black p-4 text-left text-sm font-bold">
+      Total Value
+    </p>
+
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
 
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
