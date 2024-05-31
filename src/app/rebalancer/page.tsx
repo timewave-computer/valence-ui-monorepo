@@ -1,6 +1,6 @@
 "use client";
 import { Button, Dropdown, TextInput } from "@/components";
-import { Fragment, useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { FeatureFlags, cn } from "@/utils";
 import { useQueryState } from "nuqs";
@@ -16,14 +16,29 @@ import {
   Table,
   ValueTooltip,
   ConfigPanel,
+  TooltipWrapper,
+  ComingSoonTooltipContent,
 } from "@/app/rebalancer/components";
 import { QUERY_KEYS } from "@/const/query-keys";
-import { useHistoricalValueGraph } from "@/app/rebalancer/hooks";
+import {
+  useGraphOverlay,
+  useHistoricalValueGraph,
+} from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import { UTCDate } from "@date-fns/utc";
 import { DenomColorIndexMap, denomColorIndexMap } from "@/ui-globals";
-import { Scale, GraphKey, GraphColor } from "@/app/rebalancer/const";
+import {
+  Scale,
+  GraphKey,
+  GraphColor,
+  LOAD_CONFIG_ERROR,
+} from "@/app/rebalancer/const";
 import { USDC_DENOM } from "@/const/usdc";
+import { createPortal } from "react-dom";
+import { Overlay } from "@/components/Overlay";
+import { StatusBar } from "@/components/StatusBar";
+import { FiAlertTriangle } from "react-icons/fi";
+import { ERROR_CODES, InvalidAccountError } from "@/const/error";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
@@ -32,14 +47,34 @@ const RebalancerPage = () => {
   const [valenceAccount, setValenceAccount] = useQueryState("account", {
     defaultValue: DEFAULT_ACCOUNT,
   });
-  const isValidValenceAccount = !!valenceAccount && valenceAccount !== "";
 
-  // TODO: handle error state
+  // error handled from here and not from accountConfigQuery.isError
+  const [loadConfigError, setLoadConfigError] =
+    useState<null | LOAD_CONFIG_ERROR>(null);
+
+  const isHasAccountInput = !!valenceAccount && valenceAccount !== "";
+  const isValidAccount =
+    isHasAccountInput && loadConfigError !== LOAD_CONFIG_ERROR.INVALID_ACCOUNT;
+
   const accountConfigQuery = useQuery({
     queryKey: [QUERY_KEYS.VALENCE_ACCOUNT_CONFIG, valenceAccount],
-    queryFn: () =>
-      fetchValenceAccountConfiguration({ address: valenceAccount }),
-    enabled: isValidValenceAccount,
+    queryFn: async () => {
+      setLoadConfigError(null);
+      try {
+        return await fetchValenceAccountConfiguration({
+          address: valenceAccount,
+        });
+      } catch (e) {
+        // have to do it this way because server action -> client loses context of erorr instance
+        if (InvalidAccountError.name === ERROR_CODES.InvalidAccountError) {
+          setLoadConfigError(LOAD_CONFIG_ERROR.INVALID_ACCOUNT);
+        } else {
+          setLoadConfigError(LOAD_CONFIG_ERROR.API_ERROR);
+        }
+        // error should be handled from here and not from the isError prop
+      }
+    },
+    enabled: isHasAccountInput,
   });
   const targets = useMemo(
     () => accountConfigQuery.data?.targets ?? [],
@@ -87,7 +122,7 @@ const RebalancerPage = () => {
         endDate: startDate, // nothing is done with this yet, its mock data
       });
     },
-    enabled: isValidValenceAccount && !!targets.length,
+    enabled: isValidAccount && !!targets.length,
   });
 
   const {
@@ -106,8 +141,44 @@ const RebalancerPage = () => {
   const REBALANCER_NON_USDC_VALUE_ENABLED =
     FeatureFlags.REBALANCER_NON_USDC_VALUE_ENABLED();
 
+  const graphRef = useRef<HTMLDivElement>(null);
+  const { portalPosition, overlayRef } = useGraphOverlay(graphRef);
+
+  const GraphMessages = () => {
+    if (accountConfigQuery.isLoading || historicalValuesQuery?.isLoading) {
+      return <StatusBar variant="loading" text="" />;
+    }
+    if (!isHasAccountInput) {
+      return <StatusBar variant="info" text="Please enter an account" />;
+    } else if (loadConfigError === LOAD_CONFIG_ERROR.INVALID_ACCOUNT) {
+      return (
+        <StatusBar
+          variant="error"
+          text="Invalid account"
+          icon={<FiAlertTriangle />}
+        />
+      );
+    } else if (loadConfigError === LOAD_CONFIG_ERROR.API_ERROR) {
+      return (
+        <StatusBar
+          variant="error"
+          text="Could not fetch account"
+          icon={<FiAlertTriangle />}
+        />
+      );
+    } else if (historicalValuesQuery?.isError) {
+      return (
+        <StatusBar
+          variant="error"
+          text="Could not load historical data for accout"
+          icon={<FiAlertTriangle />}
+        />
+      );
+    }
+  };
+
   return (
-    <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
+    <main className="flex min-h-0 min-w-[px] grow flex-col bg-valence-white text-valence-black">
       <div className="flex min-h-0 grow flex-row items-stretch">
         <div className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black">
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
@@ -125,17 +196,6 @@ const RebalancerPage = () => {
               to deposit funds into a Rebalancer account with a portfolio
               target.
             </p>
-            <p>
-              Contact{" "}
-              <a
-                href="https://x.com/TimewaveLabs"
-                target="_blank"
-                className="text-valence-blue transition-all hover:underline"
-              >
-                @timewavelabs
-              </a>{" "}
-              to get early access.
-            </p>
           </div>
 
           <div className="flex flex-col gap-6 border-b border-valence-black p-4 pb-8">
@@ -150,13 +210,20 @@ const RebalancerPage = () => {
                 containerClassName="w-full"
               />
 
-              <Button className="mt-2" onClick={() => {}} disabled>
-                Connect wallet
-              </Button>
+              <TooltipWrapper
+                asChild
+                content={<ComingSoonTooltipContent />}
+                trigger={
+                  <Button className="mt-2" onClick={() => {}} disabled>
+                    Connect wallet
+                  </Button>
+                }
+              />
             </div>
+
             <ConfigPanel
               isLoading={accountConfigQuery.isLoading}
-              isValidValenceAccount={isValidValenceAccount}
+              isValidValenceAccount={isValidAccount}
               config={accountConfigQuery.data}
             />
           </div>
@@ -189,8 +256,23 @@ const RebalancerPage = () => {
               ))}
             </div>
           </div>
+          {graphRef?.current &&
+            GraphMessages() &&
+            createPortal(
+              <Overlay
+                className={cn("overflow-hidden bg-transparent opacity-0")}
+                position={portalPosition}
+                ref={overlayRef}
+              >
+                <div className="flex flex-col justify-center gap-6">
+                  <GraphMessages />
+                </div>
+              </Overlay>,
+              graphRef.current,
+            )}
 
           <Graph
+            ref={graphRef}
             scale={scale}
             xAxisTicks={xAxisTicks}
             yAxisTicks={yAxisTicks}
@@ -241,6 +323,14 @@ const RebalancerPage = () => {
               isLoading={livePortfolioQuery.isLoading}
               livePortfolio={livePortfolioQuery.data}
             />
+            {livePortfolioQuery.isError && !loadConfigError && (
+              <StatusBar
+                className="border-0"
+                variant="error"
+                text="Could not load live portfolio"
+                icon={<FiAlertTriangle />}
+              />
+            )}
           </div>
         </div>
       </div>

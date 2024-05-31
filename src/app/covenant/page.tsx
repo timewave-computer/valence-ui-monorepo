@@ -106,7 +106,6 @@ const CovenantPage = () => {
               Coming soon
             </span>
           </Overlay>,
-
           containerRef?.current,
         )}
 

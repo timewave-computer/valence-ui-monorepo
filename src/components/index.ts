@@ -6,3 +6,4 @@ export * from "./Nav";
 export * from "./NumberInput";
 export * from "./SortableTokenHeader";
 export * from "./TextInput";
+export * from "./Tooltip";

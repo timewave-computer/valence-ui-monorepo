@@ -1,5 +1,9 @@
 "use server";
-import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
+import {
+  ERROR_MESSAGES,
+  ErrorHandler,
+  InvalidAccountError,
+} from "@/const/error";
 import { NEUTRON_CHAIN_ID } from "@/const/neutron";
 import { getOriginAssets, IndexerUrl } from "@/server/utils";
 
@@ -16,6 +20,9 @@ export async function fetchValenceAccountConfiguration({
 }): Promise<FetchAccountConfigReturnValue> {
   const res = await fetch(IndexerUrl.accountConfig(address));
   if (!res.ok) {
+    if (res.status === 404) {
+      throw new InvalidAccountError();
+    }
     throw ErrorHandler.makeError(
       `${ERROR_MESSAGES.INDEXER_ACCT_CONFIG_ERROR}, API Error: ${res.status}, ${res.statusText}`,
     );

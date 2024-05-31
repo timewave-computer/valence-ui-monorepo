@@ -1,3 +1,4 @@
+import { cn } from "@/utils";
 import { motion } from "framer-motion";
 import { ReactNode, forwardRef } from "react";
 
@@ -7,6 +8,7 @@ type OverlayProps = {
     left?: number;
     height?: number;
   };
+  className?: string;
   children?: ReactNode;
 };
 export const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
@@ -18,6 +20,7 @@ export const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
         height: 0,
       },
       children,
+      className,
     },
     ref,
   ) => {
@@ -31,7 +34,10 @@ export const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
           position: "absolute",
           ...position,
         }}
-        className="z-20  flex w-screen flex-grow flex-col items-center justify-center bg-valence-gray/70"
+        className={cn(
+          "z-20  flex w-screen flex-grow flex-col items-center justify-center bg-valence-gray/70",
+          className,
+        )}
       >
         {children}
       </motion.div>

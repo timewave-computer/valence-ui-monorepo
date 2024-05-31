@@ -12,6 +12,18 @@ export const ERROR_MESSAGES = {
   INDEXER_HISTORICAL_PRICES_ERROR: "Failed to fetch historical prices",
 };
 
+// here for parsing specific errors in the client. server actions -> client loses context of error instance
+export enum ERROR_CODES {
+  InvalidAccountError = "InvalidAccountError",
+}
+
+export class InvalidAccountError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = ERROR_CODES.InvalidAccountError;
+  }
+}
+
 export class ErrorHandler {
   private static constructText(text: string, error: unknown) {
     let errorMessage = "";

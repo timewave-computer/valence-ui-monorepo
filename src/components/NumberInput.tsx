@@ -35,6 +35,10 @@ export type NumberInputProps = {
    * Hide the plus/minus buttons.
    */
   hidePlusMinus?: boolean;
+  /***
+   * Disable the input
+   */
+  isDisabled?: boolean;
 };
 
 export const NumberInput = ({
@@ -46,20 +50,22 @@ export const NumberInput = ({
   max = Infinity,
   unit,
   hidePlusMinus,
+  isDisabled,
 }: NumberInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
 
   return (
     <div
       className={cn(
-        "relative flex flex-row items-center gap-2 cursor-text py-3 px-2 border border-valence-mediumgray",
+        "relative flex cursor-text flex-row items-center gap-2 border border-valence-mediumgray px-2 py-3",
         containerClassName,
+        isDisabled && "border-valence-gray bg-valence-lightgray",
       )}
       onClick={() => ref.current?.focus()}
     >
       {!hidePlusMinus && (
         <button
-          className="flex flex-row justify-center items-center"
+          className="flex flex-row items-center justify-center"
           onClick={() =>
             onChange(
               Math.round(
@@ -68,19 +74,20 @@ export const NumberInput = ({
             )
           }
         >
-          <BsDash className="w-6 h-6 opacity-50" />
+          <BsDash className="h-6 w-6 opacity-50" />
         </button>
       )}
 
       <div
-        className="flex flex-row self-stretch justify-center items-center gap-0.5 min-w-0 grow relative"
+        className="relative flex min-w-0 grow flex-row items-center justify-center gap-0.5 self-stretch"
         onClick={() => ref.current?.focus()}
       >
         <input
+          disabled={isDisabled}
           ref={ref}
           type="number"
           className={cn(
-            "flex flex-row gap-2 items-center text-valence-black outline-none z-10 bg-transparent text-center w-[50%]",
+            "z-10 flex w-[50%] flex-row items-center gap-2 bg-transparent text-center text-valence-black outline-none",
             textClassName,
           )}
           value={input}
@@ -90,7 +97,7 @@ export const NumberInput = ({
         {!!unit && (
           <p
             className={cn(
-              "text-valence-black pointer-events-none select-none absolute right-2",
+              "pointer-events-none absolute right-2 select-none text-valence-black",
               textClassName,
             )}
           >
@@ -101,7 +108,7 @@ export const NumberInput = ({
 
       {!hidePlusMinus && (
         <button
-          className="flex flex-row justify-center items-center"
+          className="flex flex-row items-center justify-center"
           onClick={() =>
             onChange(
               Math.round(
@@ -110,7 +117,7 @@ export const NumberInput = ({
             )
           }
         >
-          <BsPlus className="w-6 h-6 opacity-50" />
+          <BsPlus className="h-6 w-6 opacity-50" />
         </button>
       )}
     </div>

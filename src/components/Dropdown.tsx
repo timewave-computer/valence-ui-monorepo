@@ -28,11 +28,14 @@ export type DropdownProps<T extends string> = {
    * An optional class name to apply to the container.
    */
   containerClassName?: string;
-
   /**
    * To show loading state
    */
   isLoading?: boolean;
+  /***
+   * Disable the input
+   */
+  isDisabled?: boolean;
 };
 
 export const Dropdown = <T extends string>({
@@ -42,6 +45,7 @@ export const Dropdown = <T extends string>({
   placeholder = "Select",
   containerClassName,
   isLoading,
+  isDisabled,
 }: DropdownProps<T>) => {
   const [visible, setVisible] = useState(false);
 
@@ -83,15 +87,17 @@ export const Dropdown = <T extends string>({
         ></button>
       ) : (
         <button
-          disabled={isLoading}
+          disabled={isLoading || isDisabled}
           className={cn(
             "flex h-full w-full min-w-[12rem] flex-row items-center justify-between gap-6 border border-valence-mediumgray bg-valence-white p-2 pl-3",
             isPlaceholder ? "text-valence-gray" : "text-valence-black",
+            isDisabled && "border-valence-gray bg-valence-lightgray",
             containerClassName,
           )}
           onClick={() => setVisible(!visible)}
         >
           {selectedOption?.label ?? placeholder}
+
           <BsChevronDown className="h-4 w-4 shrink-0" />
         </button>
       )}

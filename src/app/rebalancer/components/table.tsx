@@ -28,7 +28,7 @@ export const Table: React.FC<{
 
   return (
     <>
-      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr]">
+      <div className="grid min-w-[668px] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr]">
         <SortableTableHeader
           label="Ticker"
           sorterKey={SORTER_KEYS.TICKER}
