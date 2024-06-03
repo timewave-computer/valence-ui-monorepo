@@ -1,6 +1,6 @@
 "use server";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
-import { CACHE_KEYS } from "@/const/ui-api-cache";
+import { CACHE_KEYS } from "@/server/utils/ui-api-cache";
 import {
   fetchMaybeCached,
   getStargateClient,
@@ -138,6 +138,10 @@ const getAuctionBalances = async (
     throw ErrorHandler.makeError(
       `${ERROR_MESSAGES.INDEXER_FUNDS_IN_AUCTION_ERROR}, API Error: ${res.status}, ${res.statusText}`,
     );
+  }
+  if (!res.body) {
+    // this is considered as 'no funds in auction', return empty
+    return {};
   }
   const data = await res.json();
   const balances = IndexerFundsInAuctionSchema.parse(data);

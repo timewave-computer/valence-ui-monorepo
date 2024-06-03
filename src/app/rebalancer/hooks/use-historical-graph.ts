@@ -12,6 +12,7 @@ import {
 import {
   FetchAccountConfigReturnValue,
   FetchHistoricalValuesReturnValue,
+  FetchLivePortfolioReturnValue,
 } from "@/server/actions";
 import { baseToUnit, simulate } from "@/utils";
 import { useMemo } from "react";
@@ -23,6 +24,7 @@ import type { GraphData } from "@/app/rebalancer/components/graph";
 type HistoricalValueGraphProps = {
   config?: FetchAccountConfigReturnValue;
   data?: FetchHistoricalValuesReturnValue["values"];
+  livePortfolio?: FetchLivePortfolioReturnValue["portfolio"];
 };
 
 /***
@@ -34,6 +36,7 @@ type HistoricalValueGraphProps = {
 export const useHistoricalValueGraph = ({
   data: rawData,
   config,
+  livePortfolio,
 }: HistoricalValueGraphProps): HistoricalValueGraphReturnValue => {
   const [scale, setScale] = useQueryState(
     "scale",
@@ -84,48 +87,70 @@ export const useHistoricalValueGraph = ({
     });
   }, [scale, minTimestamp]);
 
+  const todayTimestamp = useMemo(() => {
+    const date = new UTCDate();
+    return date.getTime();
+  }, []);
+
   const data = useMemo(() => {
-    if (!minTimestamp) return [];
-    return rawData?.filter((d) => d.timestamp >= minTimestamp);
-  }, [rawData, minTimestamp]);
+    if (!minTimestamp || !rawData) return [];
+    const filtered = rawData?.filter((d) => d.timestamp >= minTimestamp);
 
-  const dataFormatted: GraphData = useMemo(() => {
-    if (!data) return [];
+    // pad data with current 'Today' timestamp
+    // if live portfolio, use that, use last data point
+    let lastItem = filtered[filtered.length - 1];
+    if (livePortfolio) {
+      lastItem = {
+        timestamp: todayTimestamp,
+        readableDate: new UTCDate(todayTimestamp).toISOString(),
+        tokens: livePortfolio.map((balance) => {
+          return {
+            denom: balance.denom,
+            amount: balance.amount,
+            price: balance.price,
+          };
+        }),
+      };
+      filtered.push(lastItem);
+    }
+    return filtered;
+  }, [rawData, livePortfolio, todayTimestamp, minTimestamp]);
 
-    return data.map((historicalValue) => {
+  const historicalGraphData: GraphData = useMemo(() => {
+    return data.map((graphDataPoint) => {
       const restOfKeys: { [key: string]: number } = {};
-
       config?.targets.forEach((target) => {
-        const value = historicalValue.tokens.find(
+        const value = graphDataPoint.tokens.find(
           (t) => t.denom === target.denom,
         );
         if (!value) {
           // should not happen but handle it just in case
           return;
         }
-        const amount = baseToUnit(value.amount, target.asset.decimals) ?? 0;
-        restOfKeys[GraphKey.balance(target.asset.name)] = amount;
-        restOfKeys[GraphKey.value(target.asset.name)] = amount * value.price;
+        restOfKeys[GraphKey.balance(target.asset.name)] = value.amount;
+        restOfKeys[GraphKey.value(target.asset.name)] =
+          value.amount * value.price;
       });
 
       return {
-        timestamp: historicalValue.timestamp,
+        timestamp: graphDataPoint.timestamp,
         ...restOfKeys,
       };
     });
   }, [data, config?.targets]);
 
-  const projectionsFormatted = useMemo(() => {
-    if (!data || data.length === 0) return [];
+  const projectionsGraphData = useMemo(() => {
+    if (data.length === 0) return [];
     if (!config?.pid || !config?.targets || !config?.targets.length) return [];
-    const latest = data[data.length - 1];
-    const simulationInput = latest.tokens.map((token) => {
+    let latest = data[data.length - 1].tokens;
+
+    const simulationInput = latest.map((balance) => {
       const targetConfig = config.targets.find(
-        (target) => target.denom === token.denom,
+        (target) => target.denom === balance.denom,
       );
       return {
-        amount: token.amount,
-        price: token.price,
+        amount: balance.amount,
+        price: balance.price,
         target: targetConfig?.percentage ?? 0,
       };
     });
@@ -139,19 +164,17 @@ export const useHistoricalValueGraph = ({
     );
 
     return projections.map((tokenAmounts, i) => {
-      let ts = new UTCDate();
-      ts.setHours(0, 0, 0, 0);
-      ts = addDays(ts, i);
+      const ts = addDays(todayTimestamp, i);
 
       return {
         timestamp: ts.getTime(),
-        ...latest.tokens.reduce(
+        ...latest.reduce(
           (acc, { denom, price }, i) => {
             const asset = config?.targets.find(
               (target) => target.denom === denom,
             )?.asset;
             if (!asset) return acc; // should not happen but just in case
-            const amount = baseToUnit(tokenAmounts[i], asset.decimals);
+            const amount = tokenAmounts[i];
             return {
               ...acc,
               [GraphKey.projectedValue(asset.name)]: amount * price,
@@ -165,9 +188,9 @@ export const useHistoricalValueGraph = ({
   }, [scale, data, config?.targets, config?.pid]);
 
   const allData: GraphData = useMemo(() => {
-    const allData = [...dataFormatted, ...projectionsFormatted];
+    const allData = [...historicalGraphData, ...projectionsGraphData];
     return allData;
-  }, [dataFormatted, projectionsFormatted]);
+  }, [historicalGraphData, projectionsGraphData]);
 
   const yAxisTicks = useMemo(() => {
     if (!allData || !allData.length)
@@ -198,12 +221,6 @@ export const useHistoricalValueGraph = ({
       return yMin + yTickInterval * i;
     });
   }, [allData, keysToGraph]);
-
-  const todayTimestamp = useMemo(() => {
-    const date = new UTCDate();
-    date.setHours(0, 0, 0, 0);
-    return date.getTime();
-  }, []);
 
   return {
     todayTimestamp,

@@ -101,12 +101,8 @@ export const ValueTooltip = ({
                 .filter((k) => k.includes(KeyTag.value))
                 .map((k: string, i: number) => {
                   const denom = k.split(".")[0];
-                  const amount = data[GraphKey.balance(denom)];
-
-                  if (amount === 0 || isNaN(amount)) {
-                    return;
-                  }
-
+                  let amount = data[GraphKey.balance(denom)];
+                  if (isNaN(amount)) amount = 0;
                   const value = data[GraphKey.value(denom)];
                   return (
                     <tr key={`tooltip-${label}-${k}`} className="p-0.5">

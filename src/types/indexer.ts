@@ -74,27 +74,3 @@ export const IndexerHistoricalBalancesResponseSchema = TimestepQuerySchema(
 export type IndexerHistoricalBalancesResponse = z.infer<
   typeof IndexerHistoricalBalancesResponseSchema
 >;
-
-/**
- * historical prices endpoint
- */
-
-export const IndexerPriceSchema = z.object({
-  pair: z.tuple([z.string(), z.string()]),
-  price: z.string(),
-  time: z.string(),
-});
-export type IndexerPrice = z.infer<typeof IndexerPriceSchema>;
-
-export const IndexerHistoricalPricesResponseSchema = z.array(
-  z.object({
-    at: z.string(),
-    blockHeight: z.number(),
-    blockTimeUnixMs: z.number(),
-    value: IndexerPriceSchema.nullable(),
-  }),
-);
-
-export type IndexerHistoricalPricesResponse = z.infer<
-  typeof IndexerHistoricalPricesResponseSchema
->;

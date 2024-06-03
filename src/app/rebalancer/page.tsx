@@ -55,7 +55,6 @@ const RebalancerPage = () => {
   const isHasAccountInput = !!valenceAccount && valenceAccount !== "";
   const isValidAccount =
     isHasAccountInput && loadConfigError !== LOAD_CONFIG_ERROR.INVALID_ACCOUNT;
-
   const accountConfigQuery = useQuery({
     queryKey: [QUERY_KEYS.VALENCE_ACCOUNT_CONFIG, valenceAccount],
     queryFn: async () => {
@@ -90,10 +89,19 @@ const RebalancerPage = () => {
     setColorIndexMap(colorIndexMap);
   }, [targets, setColorIndexMap]);
 
+  const [isRefetchLiveEnabled, setIsRefetchLiveEnabled] = useState(true);
+
   const isFetchLivePortfolioEnabled =
     !!valenceAccount && !!baseDenom && !!targets?.length;
   const livePortfolioQuery = useQuery({
     queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom, targets],
+    retry: (errorCount) => {
+      if (errorCount > 1) {
+        setIsRefetchLiveEnabled(false);
+      }
+      return false;
+    },
+    refetchInterval: isRefetchLiveEnabled ? 10000 : false,
     queryFn: async () =>
       fetchLivePortfolio({
         address: valenceAccount,
@@ -110,6 +118,8 @@ const RebalancerPage = () => {
       baseDenom,
       targets,
     ],
+    refetchInterval: 0, // data is historical, no need to refresh for now
+    retry: 0,
     queryFn: async () => {
       let startDate = new UTCDate();
       startDate.setHours(0, 0, 0, 0);
@@ -136,6 +146,7 @@ const RebalancerPage = () => {
   } = useHistoricalValueGraph({
     data: historicalValuesQuery.data?.values,
     config: accountConfigQuery.data,
+    livePortfolio: livePortfolioQuery.data?.portfolio,
   });
 
   const REBALANCER_NON_USDC_VALUE_ENABLED =
@@ -145,7 +156,10 @@ const RebalancerPage = () => {
   const { portalPosition, overlayRef } = useGraphOverlay(graphRef);
 
   const GraphMessages = () => {
-    if (accountConfigQuery.isLoading || historicalValuesQuery?.isLoading) {
+    if (
+      accountConfigQuery.isLoading ||
+      (historicalValuesQuery?.isLoading && !historicalValuesQuery.data)
+    ) {
       return <StatusBar variant="loading" text="" />;
     }
     if (!isHasAccountInput) {
@@ -166,11 +180,11 @@ const RebalancerPage = () => {
           icon={<FiAlertTriangle />}
         />
       );
-    } else if (historicalValuesQuery?.isError) {
+    } else if (historicalValuesQuery.isError) {
       return (
         <StatusBar
           variant="error"
-          text="Could not load historical data for accout"
+          text="Could not load historical data for account"
           icon={<FiAlertTriangle />}
         />
       );
@@ -320,17 +334,22 @@ const RebalancerPage = () => {
 
           <div className="grow overflow-x-auto bg-valence-white">
             <Table
-              isLoading={livePortfolioQuery.isLoading}
+              isLoading={
+                livePortfolioQuery.isFetching && !livePortfolioQuery.data
+              }
               livePortfolio={livePortfolioQuery.data}
             />
-            {livePortfolioQuery.isError && !loadConfigError && (
-              <StatusBar
-                className="border-0"
-                variant="error"
-                text="Could not load live portfolio"
-                icon={<FiAlertTriangle />}
-              />
-            )}
+            {livePortfolioQuery.isError &&
+              !loadConfigError &&
+              !historicalValuesQuery.isError &&
+              !historicalValuesQuery.isFetching && (
+                <StatusBar
+                  className="border-0"
+                  variant="error"
+                  text="Could not load live portfolio"
+                  icon={<FiAlertTriangle />}
+                />
+              )}
           </div>
         </div>
       </div>

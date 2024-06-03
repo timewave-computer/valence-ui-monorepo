@@ -34,3 +34,9 @@ export const fetchMaybeCached = async (
   const data = await response.json();
   return data;
 };
+
+// managed in https://github.com/timewave-computer/snapper
+export const CACHE_KEYS = {
+  COINGECKO_PRICE: "coingecko-price",
+  COINGECKO_PRICE_HISTORY: "coingecko-price-history",
+};
