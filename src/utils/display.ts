@@ -15,7 +15,7 @@ export const displayUtcTime = (date: Date) => {
       dateStringWithTimezone.length - 3,
     );
 
-    const time = format(date, "hh:mm:ss a");
+    const time = format(date, "hh:mm a");
     return `${time} ${tz}`;
   } catch (e) {
     ErrorHandler.warn(ERROR_MESSAGES.DISPLAY_UTC_TIME_FAIL, e);

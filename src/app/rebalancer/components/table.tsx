@@ -28,7 +28,7 @@ export const Table: React.FC<{
 
   return (
     <>
-      <div className="grid min-w-[668px] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr]">
+      <div className="grid min-w-[668px] grid-cols-[0.5fr_1.5fr_1.5fr_1.5fr_1.5fr_1.5fr]">
         <SortableTableHeader
           label="Ticker"
           sorterKey={SORTER_KEYS.TICKER}
@@ -36,6 +36,7 @@ export const Table: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
+          buttonClassName=" justify-center"
         />
         <SortableTableHeader
           label="Holdings"
@@ -44,7 +45,7 @@ export const Table: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="justify-end text-right"
+          buttonClassName="justify-end "
         />
         <SortableTableHeader
           label="Price"
@@ -53,7 +54,7 @@ export const Table: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="justify-end text-right"
+          buttonClassName="justify-end "
         />
         <SortableTableHeader
           label="USD Value"
@@ -62,7 +63,7 @@ export const Table: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="justify-end text-right"
+          buttonClassName="justify-end "
         />
 
         <SortableTableHeader
@@ -72,7 +73,7 @@ export const Table: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="justify-end text-right"
+          buttonClassName="justify-end"
         />
         <SortableTableHeader
           label="Target"
@@ -81,16 +82,15 @@ export const Table: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="justify-end text-right"
+          buttonClassName="justify-end"
         />
 
         {!isLoading && (
           <>
             {sortedHoldings.length === 0 && <EmptyRow />}
-
             {sortedHoldings.map((holding, index) => (
               <Fragment key={index}>
-                <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
+                <div className="flex flex-row items-center justify-center gap-2 border-b border-valence-black p-4">
                   <div
                     className="h-4 w-4 shrink-0 rounded-full"
                     style={{
@@ -121,13 +121,13 @@ export const Table: React.FC<{
                     maximumFractionDigits: 4,
                   })}
                 </p>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
                   {(holding.distribution * 100).toLocaleString(undefined, {
                     maximumSignificantDigits: 4,
                   })}
                   %
                 </p>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
                   {(holding.target * 100).toLocaleString(undefined, {
                     maximumSignificantDigits: 4,
                   })}
@@ -202,9 +202,8 @@ const SORTERS: Sorter<LiveHolding>[] = [
 
 const EmptyRow = () => (
   <>
-    <div className="flex flex-row items-center gap-2 border-b border-valence-black p-4">
-      <div className="h-4 w-4 shrink-0 rounded-full"></div>
-      <p className="text-sm font-bold">{"-"}</p>
+    <div className="flex flex-row items-center justify-center gap-2 border-b border-valence-black p-4">
+      <p className="text-center text-sm font-bold">{"-"}</p>
     </div>
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
       {"0.00"}
@@ -218,10 +217,10 @@ const EmptyRow = () => (
       {"$0.00"}
     </p>
 
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
       {"0%"}
     </p>
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm">
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
       {"0%"}
     </p>
   </>
@@ -229,19 +228,17 @@ const EmptyRow = () => (
 
 const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
   <>
-    <p className="flex flex-row items-center  border-b border-valence-black p-4 text-left text-sm font-bold">
+    <p className=" flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
+
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
+
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
+
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
+    <p className="flex flex-row items-center  justify-end border-b border-valence-black p-4 text-sm font-bold">
       Total Value
     </p>
-
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
-
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
-
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
-
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm"></p>
-
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right text-sm font-bold">
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm font-bold">
       $
       {total.toLocaleString(undefined, {
         minimumFractionDigits: 4,

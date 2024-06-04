@@ -234,7 +234,6 @@ const RebalancerPage = () => {
                 }
               />
             </div>
-
             <ConfigPanel
               isLoading={accountConfigQuery.isLoading}
               isValidValenceAccount={isValidAccount}
@@ -284,7 +283,6 @@ const RebalancerPage = () => {
               </Overlay>,
               graphRef.current,
             )}
-
           <Graph
             ref={graphRef}
             scale={scale}

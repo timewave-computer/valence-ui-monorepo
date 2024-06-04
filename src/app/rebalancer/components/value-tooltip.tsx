@@ -1,5 +1,5 @@
 import { KeyTag, GraphKey } from "@/app/rebalancer/const/graph";
-import { displayQuantity, displayUtcTime } from "@/utils";
+import { cn, displayQuantity, displayUtcTime } from "@/utils";
 import { TooltipProps } from "recharts";
 import {
   NameType,
@@ -7,6 +7,7 @@ import {
 } from "recharts/types/component/DefaultTooltipContent";
 
 import { ColoredDot } from "@/app/rebalancer/components";
+import { ReactNode } from "react";
 
 export const ValueTooltip = ({
   active,
@@ -44,31 +45,31 @@ export const ValueTooltip = ({
     });
 
   return (
-    <div className="flex flex-col gap-2 border-[0.5px] border-valence-black bg-white p-4">
-      <div className=" ">
+    <div className="flex flex-col gap-3 border-[0.5px] border-valence-black bg-white p-4">
+      <div className="flex items-start justify-between px-2">
         <div className="self-start text-lg font-semibold">
-          {isProjection ? "Projected Balances" : "Balances"}
+          {isProjection ? "Projected" : "Balances"}
         </div>
-        <div className="flex items-end gap-0.5 text-xs">
-          <span>{date.toLocaleDateString()} </span>
+        <div className="flex flex-col items-end gap-0.5 text-xs font-light tracking-tight">
+          <span>
+            {date.toLocaleDateString(undefined, {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}{" "}
+          </span>
           <span>{displayUtcTime(date)}</span>{" "}
         </div>
       </div>
-      <table>
-        <thead>
-          <tr className="p-1">
-            <th className="px-2 text-start" scope="col">
-              Asset
-            </th>
-            <th className="px-2 text-start" scope="col">
-              Amount
-            </th>
-            <th className="px-2 text-start" scope="col">
-              USD Value
-            </th>
-          </tr>
+      <table className="">
+        <thead className="">
+          <TableRow>
+            <HeaderCell>Asset</HeaderCell>
+            <HeaderCell className="text-end">Amount</HeaderCell>
+            <HeaderCell className="text-end">USD Value</HeaderCell>
+          </TableRow>
         </thead>
-        <tbody>
+        <tbody className="">
           {isProjection
             ? keys
                 .filter((k) => k.includes(KeyTag.projectedValue))
@@ -80,21 +81,13 @@ export const ValueTooltip = ({
                   if (isNaN(value)) value = 0;
 
                   return (
-                    <tr key={`tooltip-${label}-${k}`} className="p-0.5">
-                      <th
-                        className={
-                          "flex items-center gap-1 p-0.5 px-2 text-start"
-                        }
-                        scope="row"
-                      >
-                        <ColoredDot i={i} />
-                        <span>{denom}</span>
-                      </th>
-                      <td className="p-0.5 px-2 text-end">
+                    <TableRow key={`tooltip-${label}-${k}`}>
+                      <AssetCell i={i} denom={denom} />
+                      <NumberCell className="text-end">
                         {displayQuantity.format(amount)}
-                      </td>
-                      <td className="p-0.5 px-2 text-end">{`$${displayQuantity.format(value)}`}</td>
-                    </tr>
+                      </NumberCell>
+                      <NumberCell className="text-end">{`$${displayQuantity.format(value)}`}</NumberCell>
+                    </TableRow>
                   );
                 })
             : keys
@@ -105,35 +98,86 @@ export const ValueTooltip = ({
                   if (isNaN(amount)) amount = 0;
                   const value = data[GraphKey.value(denom)];
                   return (
-                    <tr key={`tooltip-${label}-${k}`} className="p-0.5">
-                      <th
-                        className={
-                          "flex items-center gap-1 p-0.5 px-2 text-start"
-                        }
-                        scope="row"
-                      >
-                        <ColoredDot i={i} />
-                        <span>{denom}</span>
-                      </th>
-                      <td className="p-0.5 px-2 text-end">
+                    <TableRow key={`tooltip-${label}-${k}`}>
+                      <AssetCell i={i} denom={denom} />
+                      <NumberCell className="text-end">
                         {displayQuantity.format(amount)}
-                      </td>
-                      <td className="p-0.5 px-2 text-end">{`$${displayQuantity.format(value)}`}</td>
-                    </tr>
+                      </NumberCell>
+                      <NumberCell className="text-end">{`$${displayQuantity.format(value)}`}</NumberCell>
+                    </TableRow>
                   );
                 })}
-          <tr className="p-0.5">
-            <th
-              className={"flex items-center gap-1 p-0.5 px-2 text-start"}
-              scope="row"
-            ></th>
-            <td className="p-0.5 px-2 text-end"></td>
-            <th className="p-0.5 px-2 text-end">
-              {`$${displayQuantity.format(totalValue)}`}
-            </th>
-          </tr>
+          <TableRow className="border-t-[0.5px] border-valence-gray">
+            <HeaderCell className="py-1.5 text-xs">Total</HeaderCell>
+            <TextCell></TextCell>
+            <NumberCell className="text-end">{`$${displayQuantity.format(totalValue)}`}</NumberCell>
+          </TableRow>
         </tbody>
       </table>
     </div>
   );
+};
+
+const AssetCell: React.FC<{ i: number; denom: string }> = ({ i, denom }) => {
+  return (
+    <TextCell
+      className="flex items-center  justify-center gap-1 text-xs"
+      asHeading={true}
+    >
+      <ColoredDot i={i} />
+      <span>{denom}</span>
+    </TextCell>
+  );
+};
+const TableRow: React.FC<{ className?: string; children?: ReactNode }> = ({
+  className,
+  children,
+}) => {
+  return <tr className={cn("", className)}>{children}</tr>;
+};
+
+const HeaderCell: React.FC<{ className?: string; children?: ReactNode }> = ({
+  className,
+  children,
+}) => {
+  return (
+    <th className={cn("px-3 py-0.5 text-xs", className)} scope="col">
+      {children}
+    </th>
+  );
+};
+
+const TextCell: React.FC<{
+  className?: string;
+  children?: ReactNode;
+  asHeading?: boolean;
+}> = ({ className, children, asHeading }) => {
+  const style = cn("text-center py-0.5 text-sm px-3", className);
+  if (asHeading)
+    return (
+      <th className={style} scope="col">
+        {children}
+      </th>
+    );
+
+  return (
+    <td className={style} scope="col">
+      {children}
+    </td>
+  );
+};
+
+const NumberCell: React.FC<{
+  className?: string;
+  children?: ReactNode;
+  asHeading?: boolean;
+}> = ({ children, className, asHeading }) => {
+  const style = cn(" text-center font-mono py-0.5 text-sm px-3", className);
+  if (asHeading)
+    return (
+      <th className={style} scope="row">
+        {children}
+      </th>
+    );
+  return <td className={style}>{children}</td>;
 };
