@@ -27,7 +27,7 @@ export const TooltipWrapper: React.FC<{
 
   return (
     <TooltipProvider>
-      <Tooltip>
+      <Tooltip delayDuration={0}>
         <TooltipTrigger asChild={asChild}>{trigger}</TooltipTrigger>
         <TooltipContent side="right">{content}</TooltipContent>
       </Tooltip>

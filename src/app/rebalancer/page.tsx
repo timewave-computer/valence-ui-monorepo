@@ -1,5 +1,10 @@
 "use client";
-import { Button, Dropdown, TextInput } from "@/components";
+import {
+  Button,
+  DropdownDEPRECATED,
+  DropdownOption,
+  DropdownTextField,
+} from "@/components";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { FeatureFlags, cn } from "@/utils";
@@ -160,10 +165,10 @@ const RebalancerPage = () => {
       accountConfigQuery.isLoading ||
       (historicalValuesQuery?.isLoading && !historicalValuesQuery.data)
     ) {
-      return <StatusBar variant="loading" text="" />;
+      return <StatusBar variant="loading" />;
     }
     if (!isHasAccountInput) {
-      return <StatusBar variant="info" text="Please enter an account" />;
+      return <StatusBar variant="primary" text="Please enter an account" />;
     } else if (loadConfigError === LOAD_CONFIG_ERROR.INVALID_ACCOUNT) {
       return (
         <StatusBar
@@ -216,12 +221,11 @@ const RebalancerPage = () => {
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Rebalancer account</h1>
 
-              <TextInput
-                input={valenceAccount}
-                onChange={setValenceAccount}
+              <DropdownTextField
+                options={FEATURED_ACCOUNTS_OPTIONS}
+                value={valenceAccount}
+                onChange={(value) => setValenceAccount(value)}
                 placeholder="neutron12345..."
-                textClassName="font-mono"
-                containerClassName="w-full"
               />
 
               <TooltipWrapper
@@ -245,7 +249,7 @@ const RebalancerPage = () => {
         <div className="flex grow flex-col overflow-y-auto bg-valence-lightgray text-sm">
           <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
             {REBALANCER_NON_USDC_VALUE_ENABLED && (
-              <Dropdown
+              <DropdownDEPRECATED
                 options={VALUE_BASE_OPTIONS}
                 selected={baseDenom}
                 onSelected={setBaseDenom}
@@ -374,3 +378,25 @@ let DEFAULT_ACCOUNT = "";
 if (process.env.NODE_ENV === "development") {
   DEFAULT_ACCOUNT = process.env.NEXT_PUBLIC_DEFAULT_ACCT ?? "";
 }
+
+const FEATURED_ACCOUNTS_OPTIONS: DropdownOption<string>[] =
+  process.env.NODE_ENV === "development"
+    ? [
+        {
+          label: "Timewave Rebalancer",
+          value:
+            "neutron13pvwjc3ctlv53u9c543h6la8e2cupkwcahe5ujccdc4nwfgann7ss0xynz",
+        },
+        {
+          label: "DEV: Lena DAO Rebalancer",
+          value:
+            "neutron1vw0zuapgkpnq49ffyvkt4s4chy9lnf78s2ezuwwvd95lq065fpes277xkt",
+        },
+      ]
+    : [
+        {
+          label: "Timewave Rebalancer",
+          value:
+            "neutron13pvwjc3ctlv53u9c543h6la8e2cupkwcahe5ujccdc4nwfgann7ss0xynz",
+        },
+      ];

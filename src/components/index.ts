@@ -7,3 +7,5 @@ export * from "./NumberInput";
 export * from "./SortableTokenHeader";
 export * from "./TextInput";
 export * from "./Tooltip";
+export * from "./DropdowTextField";
+export * from "./LoadingIndicator";

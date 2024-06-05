@@ -1,11 +1,6 @@
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { format } from "date-fns";
 
-export const displayQuantity = new Intl.NumberFormat("en-US", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
-
 export const displayUtcTime = (date: Date) => {
   try {
     const dateStringWithTimezone = new Intl.DateTimeFormat("en-US", {
@@ -19,5 +14,29 @@ export const displayUtcTime = (date: Date) => {
     return `${time} ${tz}`;
   } catch (e) {
     ErrorHandler.warn(ERROR_MESSAGES.DISPLAY_UTC_TIME_FAIL, e);
+  }
+};
+
+export const displayNumber = (
+  value: number,
+  { precision }: { precision: number | null },
+): string => {
+  if (value === 0) {
+    return "0.00";
+  }
+  if (!precision) {
+    const decimalPart = value % 1;
+    if (decimalPart === 0) {
+      return value.toFixed(2);
+    } else {
+      return value.toPrecision();
+    }
+  }
+  if (value >= 0.01) {
+    // If the value is greater than or equal to 0.01, format it with two decimal points
+    return value.toFixed(precision);
+  } else {
+    // If the value is less than 0.01, format it with two significant figures
+    return value.toPrecision(precision);
   }
 };

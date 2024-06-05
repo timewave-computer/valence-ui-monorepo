@@ -1,0 +1,21 @@
+.loader {
+  width: 60px;
+  aspect-ratio: 4;
+  --c: #fff 90%, #0000;
+  background: radial-gradient(circle closest-side, var(--c)),
+    radial-gradient(circle closest-side at left 6px top 50%, #ff2a00 90%, #0000),
+    radial-gradient(
+      circle closest-side at right 6px top 50%,
+      #00a3ff 90%,
+      #0000
+    );
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: l4 0.7s infinite alternate;
+}
+@keyframes l4 {
+  to {
+    width: 25px;
+    aspect-ratio: 1;
+  }
+}

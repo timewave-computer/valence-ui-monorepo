@@ -57,6 +57,7 @@ export const TimestepQuerySchema = <T extends ZodType<any, any>>(
 ) => {
   return z.array(
     z.object({
+      at: z.string(),
       value: valueSchema,
       blockHeight: z.number(),
       blockTimeUnixMs: z.number(),

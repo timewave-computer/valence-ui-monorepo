@@ -38,7 +38,7 @@ export type DropdownProps<T extends string> = {
   isDisabled?: boolean;
 };
 
-export const Dropdown = <T extends string>({
+export const DropdownDEPRECATED = <T extends string>({
   options,
   selected,
   onSelected,

@@ -40,7 +40,7 @@ export const useHistoricalValueGraph = ({
 }: HistoricalValueGraphProps): HistoricalValueGraphReturnValue => {
   const [scale, setScale] = useQueryState(
     "scale",
-    parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Year),
+    parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Month),
   );
   const keysToGraph = useMemo(() => {
     let result: string[] = [];
@@ -174,7 +174,7 @@ export const useHistoricalValueGraph = ({
               (target) => target.denom === denom,
             )?.asset;
             if (!asset) return acc; // should not happen but just in case
-            const amount = tokenAmounts[i];
+            const amount = Number(tokenAmounts[i].toFixed(6));
             return {
               ...acc,
               [GraphKey.projectedValue(asset.name)]: amount * price,
@@ -185,7 +185,7 @@ export const useHistoricalValueGraph = ({
         ),
       };
     });
-  }, [scale, data, config?.targets, config?.pid]);
+  }, [todayTimestamp, scale, data, config?.targets, config?.pid]);
 
   const allData: GraphData = useMemo(() => {
     const allData = [...historicalGraphData, ...projectionsGraphData];

@@ -1,5 +1,5 @@
 import { KeyTag, GraphKey } from "@/app/rebalancer/const/graph";
-import { cn, displayQuantity, displayUtcTime } from "@/utils";
+import { cn, displayNumber, displayUtcTime } from "@/utils";
 import { TooltipProps } from "recharts";
 import {
   NameType,
@@ -84,9 +84,9 @@ export const ValueTooltip = ({
                     <TableRow key={`tooltip-${label}-${k}`}>
                       <AssetCell i={i} denom={denom} />
                       <NumberCell className="text-end">
-                        {displayQuantity.format(amount)}
+                        {displayNumber(amount, { precision: null })}
                       </NumberCell>
-                      <NumberCell className="text-end">{`$${displayQuantity.format(value)}`}</NumberCell>
+                      <NumberCell className="text-end">{`$${displayNumber(value, { precision: 2 })}`}</NumberCell>
                     </TableRow>
                   );
                 })
@@ -101,16 +101,16 @@ export const ValueTooltip = ({
                     <TableRow key={`tooltip-${label}-${k}`}>
                       <AssetCell i={i} denom={denom} />
                       <NumberCell className="text-end">
-                        {displayQuantity.format(amount)}
+                        {displayNumber(amount, { precision: null })}
                       </NumberCell>
-                      <NumberCell className="text-end">{`$${displayQuantity.format(value)}`}</NumberCell>
+                      <NumberCell className="text-end">{`$${displayNumber(value, { precision: 2 })}`}</NumberCell>
                     </TableRow>
                   );
                 })}
           <TableRow className="border-t-[0.5px] border-valence-gray">
             <HeaderCell className="py-1.5 text-xs">Total</HeaderCell>
             <TextCell></TextCell>
-            <NumberCell className="text-end">{`$${displayQuantity.format(totalValue)}`}</NumberCell>
+            <NumberCell className="text-end">{`$${displayNumber(totalValue, { precision: 2 })}`}</NumberCell>
           </TableRow>
         </tbody>
       </table>
@@ -121,7 +121,7 @@ export const ValueTooltip = ({
 const AssetCell: React.FC<{ i: number; denom: string }> = ({ i, denom }) => {
   return (
     <TextCell
-      className="flex items-center  justify-center gap-1 text-xs"
+      className="flex items-center  justify-start gap-1 text-xs"
       asHeading={true}
     >
       <ColoredDot i={i} />
@@ -172,7 +172,7 @@ const NumberCell: React.FC<{
   children?: ReactNode;
   asHeading?: boolean;
 }> = ({ children, className, asHeading }) => {
-  const style = cn(" text-center font-mono py-0.5 text-sm px-3", className);
+  const style = cn(" text-center font-mono py-0.5 text-xs px-3", className);
   if (asHeading)
     return (
       <th className={style} scope="row">

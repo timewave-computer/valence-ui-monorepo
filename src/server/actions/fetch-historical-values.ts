@@ -33,7 +33,7 @@ export async function fetchHistoricalValues({
   const historicPrices = await fetchHistoricalPrices(targets);
   const results: FetchHistoricalValuesReturnValue["values"] = [];
   historicBalances.forEach((balance) => {
-    const balanceTimestamp = balance.blockTimeUnixMs;
+    const balanceTimestamp = Number(balance.at);
 
     const tokens: FetchHistoricalValuesReturnValue["values"][0]["tokens"] = [];
     targets.forEach((target) => {

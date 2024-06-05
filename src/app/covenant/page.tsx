@@ -3,7 +3,7 @@
 import {
   Button,
   Checkbox,
-  Dropdown,
+  DropdownDEPRECATED,
   DropdownOption,
   TextInput,
 } from "@/components";
@@ -13,6 +13,7 @@ import Image from "next/image";
 import { FeatureFlags } from "@/utils";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
+import { StatusBar } from "@/components/StatusBar";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -102,9 +103,7 @@ const CovenantPage = () => {
               height: portalPosition.height,
             }}
           >
-            <span className="bg-valence-black px-5 py-3 text-center font-serif text-4xl text-valence-white ">
-              Coming soon
-            </span>
+            <StatusBar text="Coming soon" variant="primary" />
           </Overlay>,
           containerRef?.current,
         )}
@@ -131,7 +130,7 @@ const CovenantPage = () => {
             </p>
 
             <p className="mt-4 font-bold">Covenant type</p>
-            <Dropdown
+            <DropdownDEPRECATED
               options={TYPE_OPTIONS}
               selected={covenantTypeSelection}
               onSelected={setCovenantType}
@@ -140,7 +139,7 @@ const CovenantPage = () => {
             {covenantTypeSelection === "pol" && (
               <div className="mt-2 space-y-2">
                 <p className="font-bold">How many parties?</p>
-                <Dropdown
+                <DropdownDEPRECATED
                   options={POL_TYPE_PARTIES_OPTIONS}
                   selected={numParties}
                   onSelected={setNumParties}
@@ -395,7 +394,7 @@ const Field = ({ field, value, onChange, data }: FieldProps) => {
       ) : field.type === "check" ? (
         <Checkbox checked={!!value} onChange={onChange} />
       ) : field.type === "dropdown" ? (
-        <Dropdown
+        <DropdownDEPRECATED
           options={field.options}
           selected={value}
           onSelected={onChange}

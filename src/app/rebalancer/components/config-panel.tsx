@@ -1,5 +1,5 @@
 "use client";
-import { Dropdown, NumberInput } from "@/components";
+import { DropdownDEPRECATED, NumberInput } from "@/components";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -63,7 +63,7 @@ export const ConfigPanel: React.FC<{
         <TooltipWrapper
           content={<ComingSoonTooltipContent />}
           trigger={
-            <Dropdown
+            <DropdownDEPRECATED
               isDisabled={true}
               isLoading={isLoading}
               options={tokenOptions}
@@ -98,7 +98,7 @@ export const ConfigPanel: React.FC<{
               content={<ComingSoonTooltipContent />}
               trigger={
                 <div className="flex flex-row items-stretch">
-                  <Dropdown
+                  <DropdownDEPRECATED
                     isDisabled={true}
                     isLoading={isLoading}
                     options={tokenOptions}
@@ -137,13 +137,13 @@ export const ConfigPanel: React.FC<{
           {tokenFields.length === 0 && isLoading && (
             <>
               {" "}
-              <Dropdown
+              <DropdownDEPRECATED
                 isLoading={isLoading}
                 options={[]}
                 selected=""
                 onSelected={() => {}}
               />{" "}
-              <Dropdown
+              <DropdownDEPRECATED
                 isLoading={isLoading}
                 options={[]}
                 selected=""
@@ -160,7 +160,7 @@ export const ConfigPanel: React.FC<{
         <TooltipWrapper
           content={<ComingSoonTooltipContent />}
           trigger={
-            <Dropdown
+            <DropdownDEPRECATED
               isDisabled={true}
               isLoading={isLoading}
               options={PID_PRESET_OPTIONS}

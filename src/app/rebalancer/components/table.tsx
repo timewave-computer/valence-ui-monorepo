@@ -4,6 +4,7 @@ import { GraphColor } from "../const/graph";
 import { FetchLivePortfolioReturnValue, LiveHolding } from "@/server/actions";
 import { useAtom } from "jotai";
 import { denomColorIndexMap } from "@/ui-globals";
+import { displayNumber } from "@/utils";
 
 export const Table: React.FC<{
   livePortfolio?: FetchLivePortfolioReturnValue;
@@ -90,7 +91,7 @@ export const Table: React.FC<{
             {sortedHoldings.length === 0 && <EmptyRow />}
             {sortedHoldings.map((holding, index) => (
               <Fragment key={index}>
-                <div className="flex flex-row items-center justify-center gap-2 border-b border-valence-black p-4">
+                <div className="flex flex-row items-center justify-start gap-2 border-b border-valence-black p-4">
                   <div
                     className="h-4 w-4 shrink-0 rounded-full"
                     style={{
@@ -102,36 +103,19 @@ export const Table: React.FC<{
                   <p className="text-sm font-bold">{holding.asset.name}</p>
                 </div>
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  {holding.amount.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  {displayNumber(holding.amount, { precision: null })}
                 </p>
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  $
-                  {holding.price.toLocaleString(undefined, {
-                    minimumFractionDigits: 4,
-                    maximumFractionDigits: 4,
-                  })}
+                  ${displayNumber(holding.price, { precision: 2 })}
                 </p>
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  $
-                  {calcValue(holding).toLocaleString(undefined, {
-                    minimumFractionDigits: 4,
-                    maximumFractionDigits: 4,
-                  })}
+                  ${displayNumber(calcValue(holding), { precision: 2 })}
                 </p>
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  {(holding.distribution * 100).toLocaleString(undefined, {
-                    maximumSignificantDigits: 4,
-                  })}
-                  %
+                  {displayNumber(holding.distribution * 100, { precision: 2 })}%
                 </p>
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  {(holding.target * 100).toLocaleString(undefined, {
-                    maximumSignificantDigits: 4,
-                  })}
-                  %
+                  {displayNumber(holding.target * 100, { precision: 2 })}%
                 </p>
               </Fragment>
             ))}
@@ -239,11 +223,7 @@ const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
       Total Value
     </p>
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm font-bold">
-      $
-      {total.toLocaleString(undefined, {
-        minimumFractionDigits: 4,
-        maximumFractionDigits: 4,
-      })}
+      ${displayNumber(total, { precision: 2 })}
     </p>
   </>
 );
