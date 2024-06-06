@@ -2,6 +2,7 @@ import { ErrorHandler, ERROR_MESSAGES } from "@/const/error";
 import { UTCDate } from "@date-fns/utc";
 import { IndexerUrl } from "@/server/utils";
 import { z } from "zod";
+import { subDays } from "date-fns";
 
 /**
  * for fetching oracle prices from the indexer. Not used currently but here if needed
@@ -13,9 +14,9 @@ export const DEPRECATED_fetchOraclePrices = async (
     baseDenom?: string;
   },
 ): Promise<IndexerOraclePricesResponse> => {
-  const url = IndexerUrl.historicalPrices(denom, {
-    startDate: new UTCDate(),
-    dayRange: 365,
+  const url = IndexerUrl.DEPRECATED_orcaleHistoricPrices(denom, {
+    startDate: subDays(new UTCDate(), 365),
+    endDate: new UTCDate(),
     baseDenom: options?.baseDenom,
   });
   const res = await fetch(url);

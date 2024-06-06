@@ -1,5 +1,4 @@
 import { USDC_DENOM } from "@/const/usdc";
-import { subDays } from "date-fns";
 
 const INDEXER_API_KEY = process.env.INDEXER_API_KEY;
 if (!INDEXER_API_KEY) throw new Error("INDEXER_API_KEY is not set");
@@ -9,12 +8,8 @@ const INDEXER_URL = "https://neutron-mainnet.indexer.daodao.zone";
 
 const timeStep = 24 * 60 * 60 * 1000; // 1 day (in milliseconds)
 
-const getRange = (startDate: Date, dayRange: number) => {
-  startDate.setHours(0, 0, 0, 0);
-  const oneYearAgo = subDays(startDate, dayRange);
-  const start = oneYearAgo.getTime();
-  const end = startDate.getTime();
-  const range = `${start}..${end}`;
+const getRange = (startDate: Date, endDate: Date) => {
+  const range = `${startDate.getTime()}..${endDate.getTime()}`;
   return range;
 };
 
@@ -29,29 +24,29 @@ export class IndexerUrl {
     address: string,
     {
       startDate,
-      dayRange,
+      endDate,
     }: {
       startDate: Date;
-      dayRange: number;
+      endDate: Date;
     },
   ) {
-    const range = getRange(startDate, dayRange);
+    const range = getRange(startDate, endDate);
     return `${INDEXER_URL}/${INDEXER_API_KEY}/wallet/${address}/bank/balances?times=${range}&timeStep=${timeStep}`;
   }
   // by default composes prices in USDC_DENOM
-  static historicalPrices(
+  static DEPRECATED_orcaleHistoricPrices(
     denom: string,
     {
       baseDenom = USDC_DENOM,
       startDate,
-      dayRange,
+      endDate,
     }: {
       baseDenom?: string;
       startDate: Date;
-      dayRange: number;
+      endDate: Date;
     },
   ) {
-    const range = getRange(startDate, dayRange);
+    const range = getRange(startDate, endDate);
     const pair = `${denom},${baseDenom}`; // pair: “untrn,ibc/ABC”
     return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${ORACLE_ADDRESS}/valence/oracle/price?pair=${pair}&times=${range}&timeStep=${timeStep}`;
   }

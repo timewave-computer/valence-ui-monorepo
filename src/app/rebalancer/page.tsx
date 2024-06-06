@@ -31,7 +31,11 @@ import {
 } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import { UTCDate } from "@date-fns/utc";
-import { DenomColorIndexMap, denomColorIndexMap } from "@/ui-globals";
+import {
+  DenomColorIndexMap,
+  denomColorMapAtom,
+  useSetLocalTime,
+} from "@/ui-globals";
 import {
   Scale,
   GraphKey,
@@ -84,7 +88,7 @@ const RebalancerPage = () => {
     () => accountConfigQuery.data?.targets ?? [],
     [accountConfigQuery.data?.targets],
   );
-  const [colorIndexMap, setColorIndexMap] = useAtom(denomColorIndexMap);
+  const [colorIndexMap, setColorIndexMap] = useAtom(denomColorMapAtom);
   useEffect(() => {
     if (!targets.length) return;
     const colorIndexMap: DenomColorIndexMap = {};
@@ -115,26 +119,25 @@ const RebalancerPage = () => {
       }),
     enabled: isFetchLivePortfolioEnabled,
   });
-
+  const { localTime } = useSetLocalTime();
   const historicalValuesQuery = useQuery({
     queryKey: [
       QUERY_KEYS.HISTORICAL_VALUES,
       valenceAccount,
       baseDenom,
       targets,
+      localTime.midnightOneYearAgoUTC,
+      localTime.midnightUTC,
     ],
     refetchInterval: 0, // data is historical, no need to refresh for now
     retry: 0,
     queryFn: async () => {
-      let startDate = new UTCDate();
-      startDate.setHours(0, 0, 0, 0);
-
       return fetchHistoricalValues({
         targets: targets,
         baseDenom: baseDenom,
         address: valenceAccount,
-        startDate: startDate,
-        endDate: startDate, // nothing is done with this yet, its mock data
+        startDate: localTime.midnightOneYearAgoUTC,
+        endDate: localTime.midnightUTC,
       });
     },
     enabled: isValidAccount && !!targets.length,

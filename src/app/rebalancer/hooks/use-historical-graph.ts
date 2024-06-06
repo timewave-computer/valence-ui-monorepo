@@ -1,7 +1,5 @@
 import {
   Scale,
-  scaleTickCount,
-  scaleIntervalSeconds,
   GraphKey,
   KeyTag,
   projectionLength,
@@ -14,12 +12,14 @@ import {
   FetchHistoricalValuesReturnValue,
   FetchLivePortfolioReturnValue,
 } from "@/server/actions";
-import { baseToUnit, simulate } from "@/utils";
+import { simulate } from "@/utils";
 import { useMemo } from "react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import { UTCDate } from "@date-fns/utc";
 import { addDays } from "date-fns";
 import type { GraphData } from "@/app/rebalancer/components/graph";
+import { useAtom } from "jotai";
+import { localTimeAtom } from "@/ui-globals";
 
 type HistoricalValueGraphProps = {
   config?: FetchAccountConfigReturnValue;
@@ -42,6 +42,8 @@ export const useHistoricalValueGraph = ({
     "scale",
     parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Month),
   );
+  const [localTime] = useAtom(localTimeAtom);
+
   const keysToGraph = useMemo(() => {
     let result: string[] = [];
     config?.targets?.forEach((target) => {
@@ -72,25 +74,9 @@ export const useHistoricalValueGraph = ({
     else return rawData[Math.max(0, dataSize - dayCount)]?.timestamp;
   }, [scale, rawData]);
 
-  const xAxisTicks = useMemo(() => {
-    if (!minTimestamp) return [];
-    const tickCount = scaleTickCount[scale];
-    const tickInterval = scaleIntervalSeconds[scale] * 1000;
-
-    return new Array(tickCount).fill(0).map((_, i) => {
-      const timestamp = new UTCDate(minTimestamp + tickInterval * i);
-      if (scale === Scale.Year) {
-        timestamp.setMonth(timestamp.getMonth() + 1); // don't show tick for incomplete first month
-        timestamp.setDate(1);
-      }
-      return timestamp.getTime();
-    });
-  }, [scale, minTimestamp]);
-
   const todayTimestamp = useMemo(() => {
-    const date = new UTCDate();
-    return date.getTime();
-  }, []);
+    return new UTCDate(localTime.now).getTime();
+  }, [localTime.now]);
 
   const data = useMemo(() => {
     if (!minTimestamp || !rawData) return [];
@@ -163,8 +149,11 @@ export const useHistoricalValueGraph = ({
       simulationInput,
     );
 
+    const projectionTimestampStart = localTime.now;
+
     return projections.map((tokenAmounts, i) => {
-      const ts = addDays(todayTimestamp, i);
+      let ts = addDays(projectionTimestampStart, i);
+      if (i > 0) ts.setHours(0, 0, 0, 0);
 
       return {
         timestamp: ts.getTime(),
@@ -185,12 +174,66 @@ export const useHistoricalValueGraph = ({
         ),
       };
     });
-  }, [todayTimestamp, scale, data, config?.targets, config?.pid]);
+  }, [
+    localTime.now,
+    todayTimestamp,
+    scale,
+    data,
+    config?.targets,
+    config?.pid,
+  ]);
 
   const allData: GraphData = useMemo(() => {
     const allData = [...historicalGraphData, ...projectionsGraphData];
     return allData;
   }, [historicalGraphData, projectionsGraphData]);
+
+  /***
+   * Extract timestamps from data to generate ticks (data is already on a specific scale)
+   * for yearly, generate tick for first of each month
+   * for rest (weekly, monthly), generate tick for each day
+   */
+  const xAxisTicks: number[] = useMemo(() => {
+    if (scale === Scale.Year) {
+      let lastMonth: number;
+      const monthTicks = allData
+        .filter((t) => {
+          const ts = new UTCDate(t.timestamp);
+          const month = ts.getUTCMonth();
+          if (month !== lastMonth) {
+            lastMonth = month;
+            return true;
+          }
+          return false;
+        })
+        .map((t) => {
+          const ts = new UTCDate(t.timestamp);
+          ts.setUTCDate(1);
+          return ts.getTime();
+        });
+
+      // Check if the length of the months array is less than 15
+      if (monthTicks.length < 15) {
+        // Calculate the number of months to add
+        const monthsToAdd = 15 - monthTicks.length;
+
+        // Get the first month in the array
+        const firstMonth = monthTicks[0];
+
+        // Add the necessary number of months to the start of the array
+        for (let i = 0; i < monthsToAdd; i++) {
+          const newMonth = new UTCDate(firstMonth);
+          newMonth.setUTCMonth(newMonth.getUTCMonth() - (i + 1));
+          monthTicks.unshift(newMonth.getTime());
+        }
+      }
+      return monthTicks;
+    } else {
+      return allData.map((t) => {
+        return t.timestamp;
+      });
+    }
+  }, [allData, scale]);
 
   const yAxisTicks = useMemo(() => {
     if (!allData || !allData.length)
@@ -216,7 +259,7 @@ export const useHistoricalValueGraph = ({
     const yRange = yMax - yMin;
     const yTickInterval = yRange / yTickCount;
 
-    // adds extra space on top
+    // the +1 adds extra space on top
     return new Array(yTickCount + 1).fill(0).map((_, i) => {
       return yMin + yTickInterval * i;
     });

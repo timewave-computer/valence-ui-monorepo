@@ -21,15 +21,20 @@ export async function fetchHistoricalValues({
   baseDenom: string;
   targets: Array<AccountTarget>;
   address: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
 }): Promise<FetchHistoricalValuesReturnValue> {
   /***
    * 1. fetch historical balances
    * 2. for each denom, fetch historical prices
    * 3. compute values & return in format easy to digest for the graph
    */
-  const historicBalances = await fetchHistoricalBalances(address);
+  const startInUTC = new UTCDate(startDate);
+  const endInUTC = new UTCDate(endDate);
+  const historicBalances = await fetchHistoricalBalances(address, {
+    startDate: startInUTC,
+    endDate: endInUTC,
+  });
   const historicPrices = await fetchHistoricalPrices(targets);
   const results: FetchHistoricalValuesReturnValue["values"] = [];
   historicBalances.forEach((balance) => {
@@ -65,10 +70,11 @@ export async function fetchHistoricalValues({
         price: price,
       });
     });
+    const ts = Number(balance.at);
 
     results.push({
-      timestamp: balance.blockTimeUnixMs,
-      readableDate: new UTCDate(balance.blockTimeUnixMs).toISOString(),
+      timestamp: ts,
+      readableDate: new UTCDate(ts).toISOString(),
       tokens: tokens,
     });
   });
@@ -98,11 +104,12 @@ function findClosestPrice(
 
 export const fetchHistoricalBalances = async (
   address: string,
+  { startDate, endDate }: { startDate: Date; endDate: Date },
 ): Promise<IndexerHistoricalBalancesResponse> => {
   const res = await fetch(
     IndexerUrl.historicalBalances(address, {
-      startDate: new UTCDate(),
-      dayRange: 365,
+      startDate,
+      endDate,
     }),
   );
   if (!res.ok) {

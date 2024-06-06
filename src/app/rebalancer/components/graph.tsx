@@ -58,7 +58,6 @@ export const Graph = forwardRef<HTMLDivElement, GraphProps>(
             tickLine={false}
             axisLine={{ stroke: "white" }}
             className="font-sans text-xs text-valence-black"
-            dy={6}
           />
           <CartesianGrid syncWithTicks stroke="white" />
           {children}
