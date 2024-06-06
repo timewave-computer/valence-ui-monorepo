@@ -5,6 +5,7 @@ import {
   Checkbox,
   DropdownDEPRECATED,
   DropdownOption,
+  MobileOverlay,
   TextInput,
 } from "@/components";
 import { cn } from "@/utils";
@@ -92,10 +93,12 @@ const CovenantPage = () => {
       ref={containerRef}
       className="flex min-h-0 grow flex-col bg-valence-white text-valence-black"
     >
+      <MobileOverlay text="Sorry, Covenants are only available on desktop." />
       {!FeatureFlags.COVENANTS_ENABLED() &&
         containerRef?.current &&
         createPortal(
           <Overlay
+            className="hidden sm:flex"
             ref={overlayRef}
             position={{
               top: portalPosition.top,
@@ -108,7 +111,7 @@ const CovenantPage = () => {
           containerRef?.current,
         )}
 
-      <div className="flex min-h-0 grow flex-row items-stretch">
+      <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
         <div className="flex w-[20rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black pt-4">
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
             <Image

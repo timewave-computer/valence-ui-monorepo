@@ -30,7 +30,7 @@ const HomePage = () => {
   return (
     <main className="h-screen grow overflow-auto bg-valence-white px-4 pt-8 text-valence-black transition-[padding]">
       <div className="mx-auto flex max-w-5xl flex-col">
-        <div className="flex flex-col items-center self-start px-4 pb-8">
+        <div className="hidden flex-col items-center self-start px-4 pb-8 sm:flex">
           <Image
             src="/img/valence_vertical.svg"
             alt="Logo"
@@ -40,7 +40,7 @@ const HomePage = () => {
         </div>
 
         <div className="flex flex-col gap-x-10 md:flex-row">
-          <div className="flex grow basis-0 flex-col border-y border-valence-black px-4 pb-12 pt-4">
+          <div className="flex grow basis-0 flex-col border-b border-valence-black px-4 pb-12 pt-4 md:border-y">
             <h2 className="font-bold">Covenant</h2>
 
             <p className="mt-2">

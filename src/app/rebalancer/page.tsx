@@ -6,7 +6,6 @@ import {
   DropdownTextField,
 } from "@/components";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import { FeatureFlags, cn } from "@/utils";
 import { useQueryState } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
@@ -30,7 +29,6 @@ import {
   useHistoricalValueGraph,
 } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
-import { UTCDate } from "@date-fns/utc";
 import {
   DenomColorIndexMap,
   denomColorMapAtom,
@@ -48,6 +46,8 @@ import { Overlay } from "@/components/Overlay";
 import { StatusBar } from "@/components/StatusBar";
 import { FiAlertTriangle } from "react-icons/fi";
 import { ERROR_CODES, InvalidAccountError } from "@/const/error";
+import { MobileOverlay } from "@/components/MobileOverlay";
+import Image from "next/image";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
@@ -198,10 +198,10 @@ const RebalancerPage = () => {
       );
     }
   };
-
   return (
-    <main className="flex min-h-0 min-w-[px] grow flex-col bg-valence-white text-valence-black">
-      <div className="flex min-h-0 grow flex-row items-stretch">
+    <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
+      <MobileOverlay text="Sorry, the Rebalancer is only available on desktop." />
+      <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
         <div className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black">
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
             <Image
@@ -211,7 +211,6 @@ const RebalancerPage = () => {
               width={236}
               height={140}
             />
-
             <h1 className="text-xl font-bold">Rebalancer</h1>
             <p>
               To get started with the Rebalancer, create a governance proposal
@@ -219,7 +218,6 @@ const RebalancerPage = () => {
               target.
             </p>
           </div>
-
           <div className="flex flex-col gap-6 border-b border-valence-black p-4 pb-8">
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Rebalancer account</h1>
@@ -230,7 +228,6 @@ const RebalancerPage = () => {
                 onChange={(value) => setValenceAccount(value)}
                 placeholder="neutron12345..."
               />
-
               <TooltipWrapper
                 asChild
                 content={<ComingSoonTooltipContent />}
@@ -248,7 +245,6 @@ const RebalancerPage = () => {
             />
           </div>
         </div>
-
         <div className="flex grow flex-col overflow-y-auto bg-valence-lightgray text-sm">
           <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
             {REBALANCER_NON_USDC_VALUE_ENABLED && (
@@ -302,7 +298,6 @@ const RebalancerPage = () => {
                 <ValueTooltip keys={[...keys.values, ...keys.projections]} />
               }
             />
-
             <ReferenceLine x={todayTimestamp} stroke="black" isFront>
               <Label
                 value="Today"
@@ -336,7 +331,6 @@ const RebalancerPage = () => {
               );
             })}
           </Graph>
-
           <div className="grow overflow-x-auto bg-valence-white">
             <Table
               isLoading={
