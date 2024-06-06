@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
 
 export const Nav = () => {
   const path = usePathname();
@@ -16,6 +16,7 @@ export const Nav = () => {
       <a
         className={cn(
           "relative top-[1px] flex flex-row items-center",
+          "transform transition-transform active:scale-95 active:font-extrabold",
           path.startsWith("/covenant") && "font-bold",
         )}
         href="/covenant"
@@ -25,6 +26,7 @@ export const Nav = () => {
       <a
         className={cn(
           "relative top-[1px] flex flex-row items-center",
+          "transform transition-transform active:scale-95 active:font-extrabold",
           path.startsWith("/rebalancer") && "font-bold",
         )}
         href="/rebalancer"
@@ -55,32 +57,31 @@ export const Nav = () => {
         <Links />
       </div>
       <div className="flex sm:hidden">
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger asChild className="outline-none">
+        <Sheet>
+          <SheetTrigger asChild className="outline-none">
             <Button
               variant="secondary"
-              className="transform border-none active:scale-90 "
+              className="transform border-none  transition-transform active:scale-90 "
             >
               <IoMdMenu className="h-6 w-6 " />
             </Button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content asChild>
-              <div className="z-100 flex flex-col gap-2 border border-valence-black bg-valence-white p-4 text-lg">
-                <a
-                  className={cn(
-                    "relative top-[1px] flex flex-row items-center",
-                    path === "/" && "font-bold",
-                  )}
-                  href="/"
-                >
-                  Home
-                </a>
-                <Links />
-              </div>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+          </SheetTrigger>
+
+          <SheetContent>
+            <div className=" flex flex-col gap-8 p-4 text-xl">
+              <a
+                className={cn(
+                  "relative top-[1px] flex transform flex-row items-center transition-transform active:scale-95 active:font-extrabold",
+                  path === "/" && "font-bold",
+                )}
+                href="/"
+              >
+                Home
+              </a>
+              <Links />
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </nav>
   );
