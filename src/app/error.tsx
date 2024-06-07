@@ -31,7 +31,9 @@ export default function Error({
           height={140}
           className="mb-10 self-center"
         />
-        <h2 className="font-mono text-2xl ">Sorry, something went wrong.</h2>
+        <h2 className="font-mono text-2xl text-valence-black ">
+          Sorry, something went wrong.
+        </h2>
         <button
           className="pt-2 font-mono text-valence-blue hover:underline"
           onClick={

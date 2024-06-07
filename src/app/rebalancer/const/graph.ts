@@ -45,7 +45,7 @@ export const scaleTickCount: Record<Scale, number> = {
   // [Scale.Hour]: 60, // per-minute
   // [Scale.Day]: 24, // per-hour
   [Scale.Week]: 7 + projectionLength[Scale.Week], // per day
-  [Scale.Month]: 31 + projectionLength[Scale.Month], // per day
+  [Scale.Month]: 14 + projectionLength[Scale.Month], // per day
   [Scale.Year]: 12 + projectionLength[Scale.Year] / 30, // per month
 };
 export const scaleIntervalSeconds: Record<Scale, number> = {

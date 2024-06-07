@@ -6,6 +6,7 @@ import {
   yTickCount,
   dayCountForScale,
   minTimestampGenerator,
+  scaleTickCount,
 } from "@/app/rebalancer/const/graph";
 import {
   FetchAccountConfigReturnValue,
@@ -16,7 +17,7 @@ import { simulate } from "@/utils";
 import { useMemo } from "react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import { UTCDate } from "@date-fns/utc";
-import { addDays } from "date-fns";
+import { addDays, subDays } from "date-fns";
 import type { GraphData } from "@/app/rebalancer/components/graph";
 import { useAtom } from "jotai";
 import { localTimeAtom } from "@/ui-globals";
@@ -196,7 +197,7 @@ export const useHistoricalValueGraph = ({
   const xAxisTicks: number[] = useMemo(() => {
     if (scale === Scale.Year) {
       let lastMonth: number;
-      const monthTicks = allData
+      const yearTicks = allData
         .filter((t) => {
           const ts = new UTCDate(t.timestamp);
           const month = ts.getUTCMonth();
@@ -213,18 +214,37 @@ export const useHistoricalValueGraph = ({
         });
 
       // Check if the length of the months array is less than 15
-      if (monthTicks.length < 15) {
+      if (yearTicks.length < scaleTickCount[Scale.Year]) {
         // Calculate the number of months to add
-        const monthsToAdd = 15 - monthTicks.length;
+        const monthsToAdd = 15 - yearTicks.length;
 
         // Get the first month in the array
-        const firstMonth = monthTicks[0];
+        const firstMonth = yearTicks[0];
 
         // Add the necessary number of months to the start of the array
         for (let i = 0; i < monthsToAdd; i++) {
           const newMonth = new UTCDate(firstMonth);
           newMonth.setUTCMonth(newMonth.getUTCMonth() - (i + 1));
-          monthTicks.unshift(newMonth.getTime());
+          yearTicks.unshift(newMonth.getTime());
+        }
+      }
+      return yearTicks;
+    } else if (scale === Scale.Month) {
+      // we can only have 20 ticks
+      const monthTicks = allData
+        .filter((_, index) => index % 2 === 0)
+        .map((t) => {
+          return t.timestamp;
+        });
+      // work backwards and pad array with every other day from the last date
+      if (monthTicks.length < scaleTickCount[Scale.Month]) {
+        const first = monthTicks[0];
+        const ticksToAdd = scaleTickCount[Scale.Month] - monthTicks.length;
+        console;
+
+        for (let i = 1; i < ticksToAdd; i++) {
+          const newDate = subDays(new UTCDate(first), i * 2);
+          monthTicks.unshift(newDate.getTime());
         }
       }
       return monthTicks;

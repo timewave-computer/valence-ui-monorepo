@@ -65,6 +65,7 @@ const RebalancerPage = () => {
   const isValidAccount =
     isHasAccountInput && loadConfigError !== LOAD_CONFIG_ERROR.INVALID_ACCOUNT;
   const accountConfigQuery = useQuery({
+    staleTime: 5 * 60 * 1000,
     queryKey: [QUERY_KEYS.VALENCE_ACCOUNT_CONFIG, valenceAccount],
     queryFn: async () => {
       setLoadConfigError(null);
@@ -103,6 +104,7 @@ const RebalancerPage = () => {
   const isFetchLivePortfolioEnabled =
     !!valenceAccount && !!baseDenom && !!targets?.length;
   const livePortfolioQuery = useQuery({
+    staleTime: 60 * 1000,
     queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom, targets],
     retry: (errorCount) => {
       if (errorCount > 1) {
@@ -121,6 +123,7 @@ const RebalancerPage = () => {
   });
   const { localTime } = useSetLocalTime();
   const historicalValuesQuery = useQuery({
+    staleTime: 5 * 60 * 1000,
     queryKey: [
       QUERY_KEYS.HISTORICAL_VALUES,
       valenceAccount,
@@ -164,14 +167,10 @@ const RebalancerPage = () => {
   const { portalPosition, overlayRef } = useGraphOverlay(graphRef);
 
   const GraphMessages = () => {
-    if (
-      accountConfigQuery.isLoading ||
-      (historicalValuesQuery?.isLoading && !historicalValuesQuery.data)
-    ) {
-      return <StatusBar variant="loading" />;
-    }
     if (!isHasAccountInput) {
       return <StatusBar variant="primary" text="Please enter an account" />;
+    } else if (historicalValuesQuery.isPending) {
+      return <StatusBar variant="loading" />;
     } else if (loadConfigError === LOAD_CONFIG_ERROR.INVALID_ACCOUNT) {
       return (
         <StatusBar
@@ -198,6 +197,7 @@ const RebalancerPage = () => {
       );
     }
   };
+
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
       <MobileOverlay text="Sorry, the Rebalancer is only available on desktop." />

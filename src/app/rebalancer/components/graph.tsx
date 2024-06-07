@@ -24,7 +24,7 @@ type GraphProps = {
 export const Graph = forwardRef<HTMLDivElement, GraphProps>(
   ({ xAxisTicks, yAxisTicks, scale, data, children }, ref) => {
     return (
-      <ResponsiveContainer key={scale} height={500} minWidth={600} ref={ref}>
+      <ResponsiveContainer key={scale} height={500} minWidth={824} ref={ref}>
         <LineChart
           data={data}
           margin={{ top: 0, left: 10, right: 0, bottom: 10 }}
