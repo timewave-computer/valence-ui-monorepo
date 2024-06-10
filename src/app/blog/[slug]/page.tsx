@@ -1,0 +1,83 @@
+import { ErrorHandler } from "@/const/error";
+import { getPost } from "@/server/blog/get-posts";
+import { Post } from "@/types/blog";
+import { RouterButton } from "./RouterButton";
+import { FaChevronLeft } from "react-icons/fa";
+import { UTCDate } from "@date-fns/utc";
+import "./article.css";
+import Image from "next/image";
+
+const BlogPost = async ({ params }: { params: { slug: string } }) => {
+  let postData: Post | null = null;
+  let error = null;
+
+  try {
+    postData = await getPost(params.slug);
+  } catch (e) {
+    ErrorHandler.makeError("Error loading blog post", e, { throw: false });
+    error = true;
+  }
+
+  if (error || !postData)
+    return (
+      <main className="flex grow flex-col items-center bg-white px-4 py-8">
+        <div className="flex-1 "></div>{" "}
+        {/* This div will take up 1/4 of the space */}
+        <div className="flex flex-[3] flex-col items-center p-6 text-center">
+          {" "}
+          {/* This div will take up 3/4 of the space */}
+          <Image
+            src="/img/hero.svg"
+            alt="Valence illustration"
+            width={140}
+            height={140}
+            className="mb-10 self-center"
+          />
+          <h2 className="font-mono text-2xl text-valence-black ">
+            Sorry, there was a problem loading this post.
+          </h2>
+          <RouterButton
+            options={{ refresh: true }}
+            className="pt-2 font-mono text-valence-blue hover:underline"
+          >
+            Try a refresh?
+          </RouterButton>
+          <RouterButton
+            options={{ back: true }}
+            className="pt-2 font-mono text-valence-black hover:underline"
+          >
+            Go back
+          </RouterButton>
+        </div>
+      </main>
+    );
+
+  return (
+    <main className="flex grow flex-col items-center bg-white px-4 py-8">
+      <div className="flex max-w-[660px] grow flex-col gap-4">
+        <RouterButton
+          options={{ back: true }}
+          className="group flex items-center gap-2 self-start text-valence-gray hover:text-valence-black"
+        >
+          <FaChevronLeft className="h-4 w-4 transition-all group-hover:-translate-x-0.5 " />
+
+          <span className="text-sm font-medium tracking-tight"> Go Back</span>
+        </RouterButton>
+        <section className="pb-4">
+          <span className="text-sm">
+            {new UTCDate(postData.frontMatter.date).toLocaleDateString()}
+          </span>
+
+          <h1 className="font-serif text-4xl font-bold">
+            {postData.frontMatter.title}
+          </h1>
+          <span className="pt-1">By {postData.frontMatter.author}</span>
+        </section>
+
+        {<article dangerouslySetInnerHTML={{ __html: postData.content }} />}
+      </div>
+    </main>
+  );
+};
+
+export default BlogPost;

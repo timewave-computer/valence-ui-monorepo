@@ -1,0 +1,37 @@
+/* BLOG POSTS STYLING */
+article {
+  @apply flex max-w-[680px] flex-col gap-3 font-sans;
+}
+article > h1 {
+  @apply font-serif text-2xl font-bold;
+}
+article > h2 {
+  @apply font-serif text-xl font-bold;
+}
+
+article > em {
+  @apply italic;
+}
+article > p {
+  @apply text-lg;
+}
+
+article > ul {
+  @apply flex list-disc flex-col gap-2 pl-3;
+}
+
+article > ol {
+  @apply flex list-decimal flex-col gap-2 pl-4;
+}
+
+article > p > img {
+  @apply mx-auto w-3/4;
+}
+
+article > p > a {
+  @apply text-valence-blue hover:underline focus:underline;
+}
+
+article > p > img + em {
+  @apply flex justify-center text-center  text-sm not-italic;
+}

@@ -7,32 +7,44 @@ import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
 
+const shouldHightlightItem = (href: string, path: string) => {
+  if (href === "/")
+    return path === "/"; // special case for home
+  else return path.startsWith(href);
+};
+
+const NavLink = ({
+  href,
+  label,
+  path,
+}: {
+  href: string;
+  label: string;
+  path: string;
+}) => {
+  return (
+    <a
+      key={`nav-${href}`}
+      className={cn(
+        "relative top-[1px] flex flex-row items-center",
+        shouldHightlightItem(href, path) && "font-bold",
+        "transform transition-transform active:scale-95",
+      )}
+      href={href}
+    >
+      {label}
+    </a>
+  );
+};
+
 export const Nav = () => {
   const path = usePathname();
 
-  const Links = () => (
+  const links = (
     <>
-      {" "}
-      <a
-        className={cn(
-          "relative top-[1px] flex flex-row items-center",
-          "transform transition-transform active:scale-95 active:font-extrabold",
-          path.startsWith("/covenant") && "font-bold",
-        )}
-        href="/covenant"
-      >
-        Covenant
-      </a>
-      <a
-        className={cn(
-          "relative top-[1px] flex flex-row items-center",
-          "transform transition-transform active:scale-95 active:font-extrabold",
-          path.startsWith("/rebalancer") && "font-bold",
-        )}
-        href="/rebalancer"
-      >
-        Rebalancer
-      </a>
+      <NavLink href="/covenant" label="Covenant" path={path} />
+      <NavLink href="/rebalancer" label="Rebalancer" path={path} />
+      <NavLink href="/blog" label="Blog" path={path} />
     </>
   );
 
@@ -53,9 +65,7 @@ export const Nav = () => {
           height={38}
         />
       </a>
-      <div className=" hidden w-0 flex-row gap-8 sm:flex">
-        <Links />
-      </div>
+      <div className="hidden flex-row gap-8 sm:flex">{links}</div>
       <div className="flex sm:hidden">
         <Sheet>
           <SheetTrigger asChild className="outline-none">
@@ -69,16 +79,9 @@ export const Nav = () => {
 
           <SheetContent>
             <div className=" flex flex-col gap-8 p-4 text-xl">
-              <a
-                className={cn(
-                  "relative top-[1px] flex transform flex-row items-center transition-transform active:scale-95 active:font-extrabold",
-                  path === "/" && "font-bold",
-                )}
-                href="/"
-              >
-                Home
-              </a>
-              <Links />
+              {/* special case for mobile */}
+              <NavLink href="/" label="Home" path={path} />
+              {links}
             </div>
           </SheetContent>
         </Sheet>

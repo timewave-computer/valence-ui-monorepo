@@ -1,32 +1,9 @@
-"use client";
-
-import { Button, TextInput } from "@/components";
+import { Button, Footer } from "@/components";
 import { LinkText } from "@/components/LinkText";
-import { useState } from "react";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
-import { useMutation } from "@tanstack/react-query";
-import { submitSubscribe } from "@/server/actions/submit-subscribe";
 
 const HomePage = () => {
-  const [email, setEmail] = useState("");
-  const [showSubscribe, setShowSubscribe] = useState(true);
-  const [showSubmitError, setShowSubmitError] = useState(false);
-
-  const subscribeMutation = useMutation({
-    mutationKey: ["subscribe", email],
-    mutationFn: () => submitSubscribe(email),
-    onMutate: () => {
-      setShowSubmitError(false);
-      setEmail("");
-      setShowSubscribe(false);
-    },
-    onError: () => {
-      setShowSubscribe(true);
-      setShowSubmitError(true);
-    },
-  });
-
   return (
     <main className="h-screen grow overflow-auto bg-valence-white px-4 pt-8 text-valence-black transition-[padding]">
       <div className="mx-auto flex max-w-5xl flex-col">
@@ -107,7 +84,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-x-10 md:flex-row">
+        <div className="flex flex-col gap-x-10 border-b  border-valence-black md:flex-row  ">
           <div className="flex grow basis-0 flex-col justify-between md:gap-20">
             <h2 className="px-6 py-8 font-serif text-[3rem] leading-[0.9] sm:text-[4.5rem]">
               Creating tools for crypto-native institutions
@@ -121,7 +98,7 @@ const HomePage = () => {
               className="mb-10 self-center md:hidden"
             />
 
-            <div className="flex flex-col border-y border-valence-black px-4 pb-16 pt-8">
+            <div className="flex flex-col  border-t border-valence-black px-4 pb-16 pt-8">
               <h2 className="font-bold">Interchain Guild</h2>
 
               <p className="mt-2">
@@ -151,62 +128,7 @@ const HomePage = () => {
             />
           </div>
         </div>
-
-        <div className="flex flex-col-reverse gap-x-10 text-sm md:flex-row">
-          <div className="flex grow basis-0 flex-col justify-between gap-y-10 p-4">
-            <div className="flex flex-col gap-4">
-              <p>
-                Timewave increases the scope and scale of interoperability
-                between crypto-native organizations.
-              </p>
-
-              <a
-                href="https://twitter.com/timewavelabs"
-                target="_blank"
-                rel="noreferrer"
-              >
-                @timewavelabs
-              </a>
-            </div>
-
-            <p>2024</p>
-          </div>
-
-          <div className="flex grow basis-0 flex-col justify-between gap-4 border-b border-valence-black p-4 md:border-b-0 md:border-t">
-            <div className="flex flex-col gap-4">
-              {showSubscribe ? (
-                <>
-                  {" "}
-                  <p>Sign up for our newsletter</p>
-                  <div className="flex flex-row items-stretch">
-                    <TextInput
-                      input={email}
-                      onChange={setEmail}
-                      containerClassName="!border-valence-black border-r-0 w-full max-w-xs"
-                    />
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        subscribeMutation.mutate();
-                      }}
-                    >
-                      Subscribe
-                    </Button>
-                  </div>
-                  {showSubmitError && (
-                    <div className="text-valence-red">
-                      Failed to submit email. Please try again later
-                    </div>
-                  )}
-                </>
-              ) : (
-                <p>Subscribed!</p>
-              )}
-            </div>
-
-            <p>hello at timewave.computer</p>
-          </div>
-        </div>
+        <Footer />
       </div>
     </main>
   );

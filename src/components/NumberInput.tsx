@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/utils";
 import { useRef } from "react";
 import { BsDash, BsPlus } from "react-icons/bs";

@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { BsCheck2, BsChevronDown } from "react-icons/bs";

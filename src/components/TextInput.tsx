@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/utils";
 import { useRef } from "react";
 import { BsPencilSquare } from "react-icons/bs";
@@ -49,14 +50,14 @@ export const TextInput = ({
   return (
     <div
       className={cn(
-        "relative flex flex-row items-center gap-4 w-[12rem] cursor-text",
-        style !== "ghost" && "py-2 px-3 border border-valence-mediumgray",
+        "relative flex w-[12rem] cursor-text flex-row items-center gap-4",
+        style !== "ghost" && "border border-valence-mediumgray px-3 py-2",
         containerClassName,
       )}
       onClick={() => ref.current?.focus()}
     >
       {!!label && (
-        <div className="flex flex-row items-center border-r border-valence-mediumgray -my-2 py-2 pr-2 basis-0 grow">
+        <div className="-my-2 flex grow basis-0 flex-row items-center border-r border-valence-mediumgray py-2 pr-2">
           <p>{label}</p>
         </div>
       )}
@@ -65,7 +66,7 @@ export const TextInput = ({
         ref={ref}
         type="text"
         className={cn(
-          "flex flex-row gap-2 items-center text-valence-black outline-none z-[1] bg-transparent min-w-0 w-full basis-0 grow",
+          "z-[1] flex w-full min-w-0 grow basis-0 flex-row items-center gap-2 bg-transparent text-valence-black outline-none",
           textClassName,
         )}
         value={input}
@@ -76,7 +77,7 @@ export const TextInput = ({
       {!input && !!placeholder && (
         <div
           className={cn(
-            "absolute left-0 top-0 bottom-0 z-0",
+            "absolute bottom-0 left-0 top-0 z-0",
             style !== "ghost" && "p-2 pl-3",
           )}
         >

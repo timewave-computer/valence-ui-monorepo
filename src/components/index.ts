@@ -10,3 +10,4 @@ export * from "./Tooltip";
 export * from "./DropdowTextField";
 export * from "./LoadingIndicator";
 export * from "./MobileOverlay";
+export * from "./Footer";

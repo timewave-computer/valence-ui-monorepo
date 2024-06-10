@@ -45,9 +45,13 @@ export class ErrorHandler {
     console.warn(warnText);
   }
 
-  static makeError(text: string, error?: unknown) {
+  static makeError(
+    text: string,
+    error?: unknown,
+    options: { throw?: boolean } = { throw: true },
+  ) {
     const errorText = error ? this.constructText(text, error) : text;
     console.log(errorText);
-    return new Error(errorText);
+    if (options?.throw) throw new Error(errorText);
   }
 }
