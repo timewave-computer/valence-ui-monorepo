@@ -40,6 +40,10 @@ export type NumberInputProps = {
    * Disable the input
    */
   isDisabled?: boolean;
+  /***
+   * placeholder text
+   */
+  placeholder?: string;
 };
 
 export const NumberInput = ({
@@ -52,6 +56,7 @@ export const NumberInput = ({
   unit,
   hidePlusMinus,
   isDisabled,
+  placeholder,
 }: NumberInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
 
@@ -87,6 +92,7 @@ export const NumberInput = ({
           disabled={isDisabled}
           ref={ref}
           type="number"
+          placeholder={placeholder}
           className={cn(
             "z-10 flex w-[50%] flex-row items-center gap-2 bg-transparent text-center text-valence-black outline-none",
             textClassName,
@@ -100,6 +106,7 @@ export const NumberInput = ({
             className={cn(
               "pointer-events-none absolute right-2 select-none text-valence-black",
               textClassName,
+              placeholder && "opacity-50",
             )}
           >
             {unit}

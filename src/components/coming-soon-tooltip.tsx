@@ -1,7 +1,7 @@
 /***
  * Util class to display coming soon. Lots of redudant code, so this should make things easier to read
  */
-
+"use client";
 import {
   LinkText,
   Tooltip,
@@ -14,9 +14,10 @@ import { useEffect, useState } from "react";
 
 export const TooltipWrapper: React.FC<{
   content: React.ReactNode;
-  trigger: React.ReactNode;
+  children: React.ReactNode;
   asChild?: boolean;
-}> = ({ content, trigger, asChild }) => {
+  sideOffset?: number;
+}> = ({ content, asChild, children, sideOffset }) => {
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -24,14 +25,16 @@ export const TooltipWrapper: React.FC<{
 
   // pacify server side hydration errors
   if (!isClient) {
-    return <>{trigger}</>;
+    return <>{children}</>;
   }
 
   return (
     <TooltipProvider>
       <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild={asChild}>{trigger}</TooltipTrigger>
-        <TooltipContent side="right">{content}</TooltipContent>
+        <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
+        <TooltipContent sideOffset={sideOffset} side="right">
+          {content}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
@@ -41,8 +44,8 @@ export const ComingSoonTooltipContent = () => (
   <div className=" max-w-56">
     <p className="text-lg font-bold">Coming soon.</p>
     <p className="text-balance">
-      Contact <LinkText href={X_URL}>{X_HANDLE}</LinkText> to access these
-      features.
+      Contact <LinkText href={X_URL}>{X_HANDLE}</LinkText> to access this
+      feature.
     </p>
   </div>
 );

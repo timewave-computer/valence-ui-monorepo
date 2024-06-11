@@ -84,7 +84,7 @@ export const DropdownTextField = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: isOpen ? 1 : 0 }}
           transition={{ duration: 0.05, ease: "easeInOut" }}
-          className="absolute left-0 right-0 top-[calc(100%-1px)] z-10 flex flex-col border border-valence-mediumgray bg-gray-100 transition-all"
+          className="absolute left-0 right-0 top-[calc(100%-1px)] z-20 flex flex-col border border-valence-mediumgray bg-gray-100 transition-all"
         >
           {options.map((option) => {
             return (

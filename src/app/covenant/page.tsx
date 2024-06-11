@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Button,
   Checkbox,
@@ -8,14 +7,11 @@ import {
   MobileOverlay,
   TextInput,
 } from "@/components";
-import { cn } from "@/utils";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { FeatureFlags, cn } from "@/utils";
+import { ReactNode, useState } from "react";
 import Image from "next/image";
-import { FeatureFlags } from "@/utils";
-import { createPortal } from "react-dom";
-import { Overlay } from "@/components/Overlay";
-import { StatusBar } from "@/components/StatusBar";
 import { X_HANDLE } from "@/const/socials";
+import { ComingSoonTooltipContent, TooltipWrapper } from "@/components";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -43,7 +39,7 @@ const CovenantPage = () => {
   );
 
   const [bothPartiesData, setBothPartiesData] = useState<Record<string, any>>(
-    {},
+    PLACEHOLDER_BOTH_PARTIES_DATA,
   );
 
   const json = JSON.stringify(
@@ -56,62 +52,9 @@ const CovenantPage = () => {
     2,
   );
 
-  /***
-   * Overlay logic
-   */
-  const containerRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  // for repositioning based on container
-  const [portalPosition, setPortalPosition] = useState({
-    top: 0,
-    left: 0,
-    height: 0,
-  });
-
-  // this is needed to trigger a re-render to populate refs
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    // take position of container, to place overlay appropriately
-    if (containerRef.current && overlayRef.current) {
-      const target = containerRef.current.getBoundingClientRect();
-
-      const top = target.top;
-      const left = target.left;
-      const height = target.height;
-
-      setPortalPosition({ top, left, height });
-    }
-  }, [isClient, setPortalPosition]);
-
   return (
-    <main
-      ref={containerRef}
-      className="flex min-h-0 grow flex-col bg-valence-white text-valence-black"
-    >
+    <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
       <MobileOverlay text="Sorry, Covenants are only available on desktop." />
-      {!FeatureFlags.COVENANTS_ENABLED() &&
-        containerRef?.current &&
-        createPortal(
-          <Overlay
-            className="hidden sm:flex"
-            ref={overlayRef}
-            position={{
-              top: portalPosition.top,
-              left: portalPosition.left,
-              height: portalPosition.height,
-            }}
-          >
-            <StatusBar text="Coming soon" variant="primary" />
-          </Overlay>,
-          containerRef?.current,
-        )}
-
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
         <div className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black pt-4">
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
@@ -134,12 +77,22 @@ const CovenantPage = () => {
             </p>
 
             <p className="mt-4 font-bold">Covenant type</p>
-            <DropdownDEPRECATED
-              options={TYPE_OPTIONS}
-              selected={covenantTypeSelection}
-              onSelected={setCovenantType}
-            />
-
+            {FeatureFlags.COVENANTS_TOGGLE_ENABLED() ? (
+              <DropdownDEPRECATED
+                options={TYPE_OPTIONS}
+                selected={covenantTypeSelection}
+                onSelected={setCovenantType}
+              />
+            ) : (
+              <TooltipWrapper content={<ComingSoonTooltipContent />}>
+                <DropdownDEPRECATED
+                  isDisabled={true}
+                  options={TYPE_OPTIONS}
+                  selected={covenantTypeSelection}
+                  onSelected={setCovenantType}
+                />
+              </TooltipWrapper>
+            )}
             {covenantTypeSelection === "pol" && (
               <div className="mt-2 space-y-2">
                 <p className="font-bold">How many parties?</p>
@@ -151,12 +104,22 @@ const CovenantPage = () => {
               </div>
             )}
 
-            <Button className="mt-6" onClick={() => {}} disabled>
-              Propose
-            </Button>
+            <TooltipWrapper asChild content={<ComingSoonTooltipContent />}>
+              <Button className="mt-6" onClick={() => {}} disabled>
+                Propose
+              </Button>
+            </TooltipWrapper>
           </div>
 
-          <div className="flex grow flex-col items-stretch">
+          <div className="relative flex grow flex-col items-stretch">
+            <TooltipWrapper
+              sideOffset={10}
+              asChild
+              content={<ComingSoonTooltipContent />}
+            >
+              <div className="absolute z-10 flex h-full w-full flex-col bg-valence-gray/40  " />
+            </TooltipWrapper>
+
             <div className="flex flex-col gap-5 border-l-8 border-l-valence-red p-4 pb-8">
               <div className="flex flex-row items-center gap-2">
                 <div className="h-5 w-5 rounded-sm bg-valence-red"></div>
@@ -969,35 +932,25 @@ const COVENANT_TYPES: Record<
     ],
     makeContractText: (a, b, both) => {
       const aName = a.name || "Party A";
+      const bName = "TODO";
       const aSource =
         CHAIN_ID_OPTIONS.find(({ value }) => value === a.chainId)?.label ||
         a.chainId;
-
-      const bName = b.name || "Party B";
-      const bSource =
-        CHAIN_ID_OPTIONS.find(({ value }) => value === b.chainId)?.label ||
-        a.chainId;
-
       return (
         <>
           <h1 className="text-xl font-bold">I. Summary</h1>
 
           <p>
-            <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
-            <BFieldRenderer>{bName}</BFieldRenderer> propose to enter into a
-            two-party liquidity sharing Covenant with each other.
+            <AFieldRenderer>{aName}</AFieldRenderer> proposes to enter into a
+            one-party liquidity sharing Covenant.
           </p>
 
           <p>
             <AFieldRenderer>{aName}</AFieldRenderer> will contribute{" "}
             <AFieldRenderer>
-              {a.amount} {a.denom?.native}
+              {a.amount} {a.denom?.native}.
             </AFieldRenderer>
-            , and <BFieldRenderer>{bName}</BFieldRenderer> will contribute{" "}
-            <BFieldRenderer>
-              {b.amount} {b.denom?.native}
-            </BFieldRenderer>
-            . All assets will be used to provide liquidity on the{" "}
+            All assets will be used to provide liquidity on the{" "}
             <BothFieldRenderer>
               {both.liquidityDestination?.pool}
             </BothFieldRenderer>{" "}
@@ -1032,24 +985,6 @@ const COVENANT_TYPES: Record<
             directed to <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>{" "}
             on <AFieldRenderer>{aSource}</AFieldRenderer>.
           </p>
-
-          <h2 className="text-lg font-semibold">
-            B. <BFieldRenderer>{bName}</BFieldRenderer> Details
-          </h2>
-
-          <p>
-            <BFieldRenderer>{bName}</BFieldRenderer> will send{" "}
-            <BFieldRenderer>
-              {b.amount} {b.denom?.native}
-            </BFieldRenderer>{" "}
-            to the Covenant for liquidity provisioning. The Covenant will hold
-            the liquidity provider (LP) tokens that result from providing
-            liquidity. When the time comes to return any assets to{" "}
-            <BFieldRenderer>{bName}</BFieldRenderer>, those assets will be
-            directed to <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>{" "}
-            on <BFieldRenderer>{bSource}</BFieldRenderer>.
-          </p>
-
           <h2 className="text-lg font-semibold">C. Deposit Deadline</h2>
 
           {!both.depositDeadlineStrategy ||
@@ -1060,7 +995,7 @@ const COVENANT_TYPES: Record<
             </p>
           ) : (
             <p>
-              Both parties have until{" "}
+              The party has until{" "}
               <BothFieldRenderer>
                 {both.depositDeadline?.time}
               </BothFieldRenderer>{" "}
@@ -1072,8 +1007,6 @@ const COVENANT_TYPES: Record<
               party&apos;s return address.{" "}
               <AFieldRenderer>{aName}</AFieldRenderer>&apos;s return address is{" "}
               <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer>, and{" "}
-              <BFieldRenderer>{bName}</BFieldRenderer>&apos;s return address is{" "}
-              <BFieldRenderer>{b.returnedAssetDest}</BFieldRenderer>.
             </p>
           )}
 
@@ -1088,10 +1021,7 @@ const COVENANT_TYPES: Record<
           <p>
             The address authorized to withdraw{" "}
             <AFieldRenderer>{aName}</AFieldRenderer>&apos;s assets is{" "}
-            <AFieldRenderer>{a.neutronAddress}</AFieldRenderer>, and the address
-            authorized to withdraw <BFieldRenderer>{bName}</BFieldRenderer>
-            &apos;s assets is{" "}
-            <BFieldRenderer>{b.neutronAddress}</BFieldRenderer>.
+            <AFieldRenderer>{a.neutronAddress}</AFieldRenderer>.
           </p>
 
           <h2 className="text-lg font-semibold">E. Destination</h2>
@@ -1228,9 +1158,7 @@ const COVENANT_TYPES: Record<
             delta. If no resolution is made within{" "}
             <BothFieldRenderer>{both.lpRetryDays}</BothFieldRenderer> days, the
             Covenant will return <AFieldRenderer>{aName}</AFieldRenderer>&apos;s
-            assets to <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
-            <BFieldRenderer>{bName}</BFieldRenderer>&apos;s assets to{" "}
-            <BFieldRenderer>{bName}</BFieldRenderer>.
+            assets to <AFieldRenderer>{aName}</AFieldRenderer>.
           </p>
 
           <h2 className="text-lg font-semibold">J. Fallback split</h2>
@@ -1242,9 +1170,7 @@ const COVENANT_TYPES: Record<
             holders. In the event that unforeseen assets accrue within the
             Covenant,{" "}
             <BothFieldRenderer>{both.fallbackSplit}</BothFieldRenderer>% will be
-            directed to <AFieldRenderer>{aName}</AFieldRenderer>, and the
-            remaining assets will be directed to{" "}
-            <BFieldRenderer>{bName}</BFieldRenderer>.
+            directed to <AFieldRenderer>{aName}</AFieldRenderer>.
           </p>
 
           <h2 className="text-lg font-semibold">K. Emergency administrator</h2>
@@ -1905,4 +1831,14 @@ const PLACEHOLDER_PARTY_B_DATA = {
   denom: {
     native: "NTRN",
   },
+  liquidityDestination: "NTRN/ATOM",
+};
+
+const PLACEHOLDER_BOTH_PARTIES_DATA = {
+  liquidityDestination: {
+    pool: "NTRN/ATOM",
+    dex: "ASTROPORT",
+  },
+  lpHoldDays: 30,
+  acceptableRatioDelta: 10,
 };
