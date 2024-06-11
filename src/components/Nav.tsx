@@ -29,7 +29,7 @@ const NavLink = ({
         "relative top-[1px] flex flex-row items-center",
         shouldHightlightItem(href, path) && "font-bold",
         "transition-all focus:font-bold", // mobile,
-        "sm:focus:font-normal",
+        "md:focus:font-normal",
       )}
       href={href}
     >
@@ -54,8 +54,8 @@ export const Nav = () => {
       className={cn(
         "flex min-h-[3.25rem] flex-row items-center border-b border-valence-black bg-valence-white px-4 text-valence-black",
         "justify-between gap-2 ", // mobile
-        "sm:justify-start  sm:gap-8 ",
-        path === "/" && "flex sm:hidden",
+        "md:justify-start  md:gap-8 ",
+        path === "/" && "flex md:hidden",
       )}
     >
       <a className="" href="/">
@@ -66,8 +66,8 @@ export const Nav = () => {
           height={38}
         />
       </a>
-      <div className="hidden flex-row gap-8 sm:flex">{links}</div>
-      <div className="flex sm:hidden">
+      <div className="hidden flex-row gap-8 md:flex">{links}</div>
+      <div className="flex md:hidden">
         <Sheet>
           <SheetTrigger asChild className="outline-none">
             <Button

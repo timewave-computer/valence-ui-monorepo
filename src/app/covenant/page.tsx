@@ -10,7 +10,7 @@ import {
 import { FeatureFlags, cn } from "@/utils";
 import { ReactNode, useState } from "react";
 import Image from "next/image";
-import { X_HANDLE } from "@/const/socials";
+import { VALENCE_DOMAIN, X_HANDLE } from "@/const/socials";
 import { ComingSoonTooltipContent, TooltipWrapper } from "@/components";
 
 const CovenantPage = () => {
@@ -694,8 +694,8 @@ const COVENANT_TYPES: Record<
           <h1 className="text-xl font-bold">III. Next Steps</h1>
 
           <p>
-            This proposal was automatically generated at timewave.computer.
-            Reach out if you have any questions or feature requests: {X_HANDLE}.
+            This proposal was automatically generated at {VALENCE_DOMAIN}. Reach
+            out if you have any questions or feature requests: {X_HANDLE}.
           </p>
         </>
       );
@@ -1189,8 +1189,8 @@ const COVENANT_TYPES: Record<
           <h1 className="text-xl font-bold">III. Next Steps</h1>
 
           <p>
-            This proposal was automatically generated at timewave.computer.
-            Reach out if you have any questions or feature requests: {X_HANDLE}
+            This proposal was automatically generated at {VALENCE_DOMAIN}. Reach
+            out if you have any questions or feature requests: {X_HANDLE}
           </p>
         </>
       );
@@ -1776,8 +1776,8 @@ const COVENANT_TYPES: Record<
           <h1 className="text-xl font-bold">III. Next Steps</h1>
 
           <p>
-            This proposal was automatically generated at timewave.computer.
-            Reach out if you have any questions or feature requests: {X_HANDLE}
+            This proposal was automatically generated at {VALENCE_DOMAIN}. Reach
+            out if you have any questions or feature requests: {X_HANDLE}
           </p>
         </>
       );

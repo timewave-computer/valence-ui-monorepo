@@ -9,7 +9,7 @@ const buttonVariants = cva("text-center py-1.5 px-2  transition-colors", {
       primary:
         "bg-valence-black text-valence-white border border-valence-black focus:bg-valence-white focus:text-valence-black focus:border-valence-black",
       secondary:
-        "bg-valence-white text-valence-black border border-valence-black  ",
+        "bg-valence-white text-valence-black border border-valence-black hover:bg-valence-black transition-all hover:text-valence-white  ",
     },
     disabled: {
       true: "!bg-valence-gray  !border-valence-gray !text-valence-white !opacity-50",

@@ -128,18 +128,16 @@ const RebalancerPage = () => {
   const GraphMessages = () => {
     if (!isHasAccountInput) {
       return <StatusBar variant="primary" text="Please enter an account" />;
-    } else if (historicalValuesQuery.isPending) {
+    } else if (historicalValuesQuery.isLoading) {
       return <StatusBar variant="loading" />;
-    } else if (accountConfigQuery.error === LOAD_CONFIG_ERROR.INVALID_ACCOUNT) {
-      return (
+    } else if (accountConfigQuery.isError) {
+      return accountConfigQuery.error === LOAD_CONFIG_ERROR.INVALID_ACCOUNT ? (
         <StatusBar
           variant="error"
-          text="Invalid account"
+          text="Invalid rebalancer account"
           icon={<FiAlertTriangle />}
         />
-      );
-    } else if (accountConfigQuery.error === LOAD_CONFIG_ERROR.API_ERROR) {
-      return (
+      ) : (
         <StatusBar
           variant="error"
           text="Could not fetch account"

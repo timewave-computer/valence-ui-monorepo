@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import { submitSubscribe } from "@/server/actions/submit-subscribe";
 import Link from "next/link";
-import { X_URL } from "@/const/socials";
+import { GITHUB_URL, X_URL } from "@/const/socials";
 
 export const Footer = () => {
   const [email, setEmail] = useState("");
@@ -87,7 +87,7 @@ export const Footer = () => {
         </a>
 
         <a
-          href="https://github.com/timewave-computer"
+          href={GITHUB_URL}
           target="_blank"
           rel="noreferrer"
           className="hover:underline"
