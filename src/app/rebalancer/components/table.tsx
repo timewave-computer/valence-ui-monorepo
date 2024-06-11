@@ -1,9 +1,7 @@
 import { SortableTableHeader, Sorter } from "@/components";
 import { Fragment, useMemo, useState } from "react";
-import { GraphColor } from "../const/graph";
+import { SymbolColors } from "@/app/rebalancer/const/graph";
 import { FetchLivePortfolioReturnValue, LiveHolding } from "@/server/actions";
-import { useAtom } from "jotai";
-import { denomColorMapAtom } from "@/ui-globals";
 import { displayNumber } from "@/utils";
 
 export const Table: React.FC<{
@@ -12,7 +10,6 @@ export const Table: React.FC<{
 }> = ({ livePortfolio, isLoading }) => {
   const [sorterKey, setSorter] = useState<string>(SORTER_KEYS.VALUE);
   const [sortAscending, setSortAscending] = useState(true);
-  const [colorIndexMap] = useAtom(denomColorMapAtom);
   const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
   const sortedHoldings = livePortfolio?.portfolio?.length
     ? [...livePortfolio.portfolio].sort((a, b) =>
@@ -95,9 +92,7 @@ export const Table: React.FC<{
                   <div
                     className="h-4 w-4 shrink-0 rounded-full"
                     style={{
-                      backgroundColor: GraphColor.get(
-                        colorIndexMap[holding.denom],
-                      ),
+                      backgroundColor: SymbolColors.get(holding.asset.symbol),
                     }}
                   ></div>
                   <p className="text-sm font-bold">{holding.asset.name}</p>

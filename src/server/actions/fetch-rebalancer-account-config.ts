@@ -13,7 +13,7 @@ import {
   RawTarget,
 } from "@/types/indexer";
 
-export async function fetchValenceAccountConfiguration({
+export async function fetchRebalancerAccountConfiguration({
   address,
 }: {
   address: string;

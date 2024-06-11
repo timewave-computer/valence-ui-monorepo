@@ -11,3 +11,4 @@ export * from "./DropdowTextField";
 export * from "./LoadingIndicator";
 export * from "./MobileOverlay";
 export * from "./Footer";
+export * from "./LinkText";

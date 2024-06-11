@@ -8,33 +8,25 @@ import React from "react";
 export const dotVariants = cva("h-2 w-2 rounded-full", {
   variants: {
     variant: {
-      0: "bg-graph-red",
-      1: "bg-graph-blue",
-      2: "bg-graph-pink",
-      3: "bg-graph-green",
-      4: "bg-graph-orange",
-      5: "bg-graph-brown",
-      6: "bg-graph-gray",
-      7: "bg-graph-yellow",
-      8: "bg-graph-purple",
-      9: "bg-graph-teal",
+      "#FF2A00": "bg-graph-red",
+      "#00A3FF": "bg-graph-blue",
+      "#EA80D1": "bg-graph-pink",
+      "#4EBB5B": "bg-graph-green",
+      "#FFBC57": "bg-graph-orange",
+      "#800000": "bg-graph-brown",
+      "#BABABA": "bg-graph-gray",
+      "#C2C600": "bg-graph-yellow",
+      "#8476DE": "bg-graph-purple",
+      "#17CFCF": "bg-graph-teal",
     },
   },
   defaultVariants: {
-    variant: 1,
+    variant: "#FF2A00",
   },
 });
 
-export interface DotProps extends React.HTMLAttributes<HTMLDivElement> {
-  i: number;
-}
+export interface DotProps extends VariantProps<typeof dotVariants> {}
 
-export const ColoredDot = ({ i }: DotProps) => {
-  let variant: VariantProps<typeof dotVariants>["variant"];
-  if (i <= 9) {
-    variant = i as VariantProps<typeof dotVariants>["variant"];
-  } else {
-    variant = ((i - 1) % 10) + 1; // get circular index
-  }
+export const ColoredDot = ({ variant }: DotProps) => {
   return <div className={cn(dotVariants({ variant }))} />;
 };

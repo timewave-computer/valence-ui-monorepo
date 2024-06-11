@@ -3,11 +3,13 @@
  */
 
 import {
+  LinkText,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components";
+import { X_HANDLE, X_URL } from "@/const/socials";
 import { useEffect, useState } from "react";
 
 export const TooltipWrapper: React.FC<{
@@ -39,15 +41,8 @@ export const ComingSoonTooltipContent = () => (
   <div className=" max-w-56">
     <p className="text-lg font-bold">Coming soon.</p>
     <p className="text-balance">
-      Contact{" "}
-      <a
-        href="https://x.com/TimewaveLabs"
-        target="_blank"
-        className="text-valence-blue transition-all hover:underline"
-      >
-        @Timewavelabs
-      </a>{" "}
-      if you or your DAO want early access to the Rebalancer.
+      Contact <LinkText href={X_URL}>{X_HANDLE}</LinkText> to access these
+      features.
     </p>
   </div>
 );

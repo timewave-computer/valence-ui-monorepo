@@ -44,6 +44,9 @@ dependencies:
   jotai:
     specifier: ^2.8.1
     version: 2.8.1(@types/react@18.3.1)(react@18.3.1)
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   next:
     specifier: 14.0.4
     version: 14.0.4(react-dom@18.3.1)(react@18.3.1)
@@ -88,6 +91,9 @@ devDependencies:
   "@tanstack/eslint-plugin-query":
     specifier: ^5.32.1
     version: 5.32.1(eslint@8.57.0)(typescript@5.4.5)
+  "@types/lodash":
+    specifier: ^4.17.5
+    version: 4.17.5
   "@types/node":
     specifier: ^20
     version: 20.12.7
@@ -1402,6 +1408,13 @@ packages:
     resolution:
       {
         integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==,
+      }
+    dev: true
+
+  /@types/lodash@4.17.5:
+    resolution:
+      {
+        integrity: sha512-MBIOHVZqVqgfro1euRDWX7OO0fBVUUMrN6Pwm8LQsz8cWhEpihlvR70ENj3f40j58TNxZaWv2ndSkInykNBBJw==,
       }
     dev: true
 

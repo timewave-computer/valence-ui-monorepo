@@ -28,7 +28,8 @@ const NavLink = ({
       className={cn(
         "relative top-[1px] flex flex-row items-center",
         shouldHightlightItem(href, path) && "font-bold",
-        "transform transition-transform active:scale-95",
+        "transition-all focus:font-bold", // mobile,
+        "sm:focus:font-normal",
       )}
       href={href}
     >

@@ -1,6 +1,6 @@
 "use server";
 import { UTCDate } from "@date-fns/utc";
-import { AccountTarget } from "@/server/actions/fetch-valence-account-config";
+import { AccountTarget } from "@/server/actions";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { CACHE_KEYS, IndexerUrl, fetchMaybeCached } from "@/server/utils";
 import { USDC_DENOM } from "@/const/usdc";

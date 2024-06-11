@@ -9,7 +9,7 @@ import {
 } from "@/server/utils";
 import { OriginAsset } from "@/types/ibc";
 import { z } from "zod";
-import { FetchAccountConfigReturnValue } from "@/server/actions/fetch-valence-account-config";
+import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { baseToUnit } from "@/utils";
 import { IndexerUrl } from "@/server/utils";
 import { IndexerFundsInAuctionSchema } from "@/types/indexer";

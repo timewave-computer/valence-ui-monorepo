@@ -15,6 +15,7 @@ import { FeatureFlags } from "@/utils";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
 import { StatusBar } from "@/components/StatusBar";
+import { X_HANDLE } from "@/const/socials";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -112,7 +113,7 @@ const CovenantPage = () => {
         )}
 
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
-        <div className="flex w-[20rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black pt-4">
+        <div className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black pt-4">
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
             <Image
               className="mb-6 mt-8"
@@ -731,8 +732,7 @@ const COVENANT_TYPES: Record<
 
           <p>
             This proposal was automatically generated at timewave.computer.
-            Reach out if you have any questions or feature requests:
-            @timewavelabs.
+            Reach out if you have any questions or feature requests: {X_HANDLE}.
           </p>
         </>
       );
@@ -1264,8 +1264,7 @@ const COVENANT_TYPES: Record<
 
           <p>
             This proposal was automatically generated at timewave.computer.
-            Reach out if you have any questions or feature requests:
-            @timewavelabs.
+            Reach out if you have any questions or feature requests: {X_HANDLE}
           </p>
         </>
       );
@@ -1852,8 +1851,7 @@ const COVENANT_TYPES: Record<
 
           <p>
             This proposal was automatically generated at timewave.computer.
-            Reach out if you have any questions or feature requests:
-            @timewavelabs.
+            Reach out if you have any questions or feature requests: {X_HANDLE}
           </p>
         </>
       );

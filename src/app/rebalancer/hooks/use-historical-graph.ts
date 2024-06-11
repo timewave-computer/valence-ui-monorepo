@@ -175,14 +175,7 @@ export const useHistoricalValueGraph = ({
         ),
       };
     });
-  }, [
-    localTime.now,
-    todayTimestamp,
-    scale,
-    data,
-    config?.targets,
-    config?.pid,
-  ]);
+  }, [localTime.now, scale, data, config?.targets, config?.pid]);
 
   const allData: GraphData = useMemo(() => {
     const allData = [...historicalGraphData, ...projectionsGraphData];

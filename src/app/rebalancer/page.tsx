@@ -5,16 +5,15 @@ import {
   DropdownOption,
   DropdownTextField,
 } from "@/components";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useMemo, useRef, useState } from "react";
 import { FeatureFlags, cn } from "@/utils";
 import { useQueryState } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchHistoricalValues,
-  fetchValenceAccountConfiguration,
+  fetchRebalancerAccountConfiguration,
   fetchLivePortfolio,
 } from "@/server/actions";
-import { useAtom } from "jotai";
 import {
   Graph,
   Table,
@@ -29,16 +28,12 @@ import {
   useHistoricalValueGraph,
 } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
-import {
-  DenomColorIndexMap,
-  denomColorMapAtom,
-  useSetLocalTime,
-} from "@/ui-globals";
+import { useSetLocalTime } from "@/ui-globals";
 import {
   Scale,
   GraphKey,
-  GraphColor,
   LOAD_CONFIG_ERROR,
+  SymbolColors,
 } from "@/app/rebalancer/const";
 import { USDC_DENOM } from "@/const/usdc";
 import { createPortal } from "react-dom";
@@ -46,14 +41,15 @@ import { Overlay } from "@/components/Overlay";
 import { StatusBar } from "@/components/StatusBar";
 import { FiAlertTriangle } from "react-icons/fi";
 import { ERROR_CODES, InvalidAccountError } from "@/const/error";
-import { MobileOverlay } from "@/components/MobileOverlay";
+import { MobileOverlay, LinkText } from "@/components";
 import Image from "next/image";
+import { X_HANDLE, X_URL } from "@/const/socials";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
     defaultValue: USDC_DENOM,
   });
-  const [valenceAccount, setValenceAccount] = useQueryState("account", {
+  const [account, setAccount] = useQueryState("account", {
     defaultValue: DEFAULT_ACCOUNT,
   });
 
@@ -61,17 +57,17 @@ const RebalancerPage = () => {
   const [loadConfigError, setLoadConfigError] =
     useState<null | LOAD_CONFIG_ERROR>(null);
 
-  const isHasAccountInput = !!valenceAccount && valenceAccount !== "";
+  const isHasAccountInput = !!account && account !== "";
   const isValidAccount =
     isHasAccountInput && loadConfigError !== LOAD_CONFIG_ERROR.INVALID_ACCOUNT;
   const accountConfigQuery = useQuery({
     staleTime: 5 * 60 * 1000,
-    queryKey: [QUERY_KEYS.VALENCE_ACCOUNT_CONFIG, valenceAccount],
+    queryKey: [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, account],
     queryFn: async () => {
       setLoadConfigError(null);
       try {
-        return await fetchValenceAccountConfiguration({
-          address: valenceAccount,
+        return await fetchRebalancerAccountConfiguration({
+          address: account,
         });
       } catch (e) {
         // have to do it this way because server action -> client loses context of erorr instance
@@ -89,23 +85,14 @@ const RebalancerPage = () => {
     () => accountConfigQuery.data?.targets ?? [],
     [accountConfigQuery.data?.targets],
   );
-  const [colorIndexMap, setColorIndexMap] = useAtom(denomColorMapAtom);
-  useEffect(() => {
-    if (!targets.length) return;
-    const colorIndexMap: DenomColorIndexMap = {};
-    targets.map((target, i) => {
-      colorIndexMap[target.denom] = i;
-    });
-    setColorIndexMap(colorIndexMap);
-  }, [targets, setColorIndexMap]);
 
   const [isRefetchLiveEnabled, setIsRefetchLiveEnabled] = useState(true);
 
   const isFetchLivePortfolioEnabled =
-    !!valenceAccount && !!baseDenom && !!targets?.length;
+    !!account && !!baseDenom && !!targets?.length;
   const livePortfolioQuery = useQuery({
     staleTime: 60 * 1000,
-    queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, valenceAccount, baseDenom, targets],
+    queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, account, baseDenom, targets],
     retry: (errorCount) => {
       if (errorCount > 1) {
         setIsRefetchLiveEnabled(false);
@@ -115,7 +102,7 @@ const RebalancerPage = () => {
     refetchInterval: isRefetchLiveEnabled ? 10000 : false,
     queryFn: async () =>
       fetchLivePortfolio({
-        address: valenceAccount,
+        address: account,
         baseDenom: baseDenom,
         targets: targets,
       }),
@@ -126,7 +113,7 @@ const RebalancerPage = () => {
     staleTime: 5 * 60 * 1000,
     queryKey: [
       QUERY_KEYS.HISTORICAL_VALUES,
-      valenceAccount,
+      account,
       baseDenom,
       targets,
       localTime.midnightOneYearAgoUTC,
@@ -138,7 +125,7 @@ const RebalancerPage = () => {
       return fetchHistoricalValues({
         targets: targets,
         baseDenom: baseDenom,
-        address: valenceAccount,
+        address: account,
         startDate: localTime.midnightOneYearAgoUTC,
         endDate: localTime.midnightUTC,
       });
@@ -211,11 +198,10 @@ const RebalancerPage = () => {
               width={236}
               height={140}
             />
-            <h1 className="text-xl font-bold">Rebalancer</h1>
+            <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
             <p>
-              To get started with the Rebalancer, create a governance proposal
-              to deposit funds into a Rebalancer account with a portfolio
-              target.
+              Contact <LinkText href={X_URL}>{X_HANDLE}</LinkText> if you or
+              your DAO want early access to the Rebalancer.
             </p>
           </div>
           <div className="flex flex-col gap-6 border-b border-valence-black p-4 pb-8">
@@ -224,8 +210,8 @@ const RebalancerPage = () => {
 
               <DropdownTextField
                 options={FEATURED_ACCOUNTS_OPTIONS}
-                value={valenceAccount}
-                onChange={(value) => setValenceAccount(value)}
+                value={account}
+                onChange={(value) => setAccount(value)}
                 placeholder="neutron12345..."
               />
               <TooltipWrapper
@@ -240,7 +226,7 @@ const RebalancerPage = () => {
             </div>
             <ConfigPanel
               isLoading={accountConfigQuery.isLoading}
-              isValidValenceAccount={isValidAccount}
+              isValidAccount={isValidAccount}
               config={accountConfigQuery.data}
             />
           </div>
@@ -309,21 +295,20 @@ const RebalancerPage = () => {
             {accountConfigQuery?.data?.targets.map((target) => {
               const valuekey = GraphKey.value(target.asset.name);
               const projectionKey = GraphKey.projectedValue(target.asset.name);
-              const colorIndex = colorIndexMap[target.denom];
               return (
                 <Fragment key={`line-${target.denom}`}>
                   <Line
                     dataKey={valuekey}
                     type="monotone"
                     dot={false}
-                    stroke={GraphColor.get(colorIndex)}
+                    stroke={SymbolColors.get(target.asset.symbol)}
                     isAnimationActive={false}
                   />
                   <Line
                     dataKey={projectionKey}
                     type="monotone"
                     dot={false}
-                    stroke={GraphColor.get(colorIndex)}
+                    stroke={SymbolColors.get(target.asset.symbol)}
                     isAnimationActive={false}
                     strokeDasharray="3 3"
                   />

@@ -1,5 +1,5 @@
 export const QUERY_KEYS = {
-  VALENCE_ACCOUNT_CONFIG: "valence-account-config",
+  REBALANCER_ACCOUNT_CONFIG: "rebalancer-account-config",
   LIVE_PORTFOLIO: "live-portfolio",
   HISTORICAL_VALUES: "historical-values",
 };

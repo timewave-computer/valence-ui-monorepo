@@ -21,11 +21,11 @@ const HomePage = () => {
             <h2 className="font-bold">Covenant</h2>
 
             <p className="mt-2">
-              Covenants enable trust minimized agreements among digital
-              organizations across any chain. Lend protocol-owned assets to
-              other protocols for a fee, or create protocol-to-protocol
-              liquidity sharing agreements to jointly improve execution quality
-              and strengthen economic integration between two token communities.
+              Covenants enable trust-minimized agreements between crypto-native
+              organizations. Use Covenants to lend protocol-owned assets to
+              other protocols for a fee or create protocol-to-protocol liquidity
+              sharing agreements. Covenants improve execution quality and
+              strengthen economic integration between token communities.
             </p>
 
             <Button variant="secondary" asChild>
@@ -55,10 +55,11 @@ const HomePage = () => {
 
             <p className="mt-2">
               The Rebalancer enables automated balance sheet and treasury
-              management for any blockchains, protocols, and decentralized
-              applications. Use the Rebalancer to efficiently convert tokens for
-              scheduled payments or manage your digital organization&apos;s
-              asset portfolio.
+              management. Use the Rebalancer to efficiently convert tokens for
+              scheduled payments or manage your digital organization’s asset
+              portfolio. The Rebalancer is custom-built to address the needs of
+              blockchains, protocols, and decentralized autonomous
+              organizations.
             </p>
 
             <Button variant="secondary" asChild>

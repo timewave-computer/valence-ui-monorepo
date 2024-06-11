@@ -12,9 +12,9 @@ import {
 
 export const ConfigPanel: React.FC<{
   config?: FetchAccountConfigReturnValue;
-  isValidValenceAccount: boolean;
+  isValidAccount: boolean;
   isLoading?: boolean;
-}> = ({ config, isValidValenceAccount, isLoading }) => {
+}> = ({ config, isValidAccount, isLoading }) => {
   const { setValue, watch, control } = useForm<RebalancerConfig>({
     defaultValues: {
       pidPreset: "default",
@@ -28,7 +28,7 @@ export const ConfigPanel: React.FC<{
     })) ?? [];
 
   useEffect(() => {
-    if (!isValidValenceAccount || !config) {
+    if (!isValidAccount || !config) {
       // clear
       setValue("tokens", []);
       setValue("baseToken", "");
@@ -45,7 +45,7 @@ export const ConfigPanel: React.FC<{
       setValue("baseToken", config.baseDenom);
       setValue("pidPreset", "default");
     }
-  }, [setValue, config, isValidValenceAccount]);
+  }, [setValue, config, isValidAccount]);
 
   const {
     fields: tokenFields,
@@ -58,25 +58,8 @@ export const ConfigPanel: React.FC<{
   return (
     <>
       <div className="flex flex-col gap-3">
-        <p className="font-bold">Base token</p>
-
-        <TooltipWrapper
-          content={<ComingSoonTooltipContent />}
-          trigger={
-            <DropdownDEPRECATED
-              isDisabled={true}
-              isLoading={isLoading}
-              options={tokenOptions}
-              selected={watch("baseToken")}
-              onSelected={(value) => setValue("baseToken", value)}
-            />
-          }
-        />
-      </div>
-
-      <div className="flex flex-col gap-3">
         <div className="flex flex-row items-center justify-between">
-          <p className="font-bold">Tokens</p>
+          <p className="font-bold">Asset Targets</p>
           <button
             disabled={true}
             className="flex flex-row items-center justify-center"
@@ -155,7 +138,7 @@ export const ConfigPanel: React.FC<{
       </div>
 
       <div className="flex flex-col gap-3">
-        <p className="font-bold">P/I/D Preset</p>
+        <p className="font-bold">Rebalance Speed</p>
 
         <TooltipWrapper
           content={<ComingSoonTooltipContent />}
@@ -166,6 +149,23 @@ export const ConfigPanel: React.FC<{
               options={PID_PRESET_OPTIONS}
               selected={watch("pidPreset")}
               onSelected={(value) => setValue("pidPreset", value)}
+            />
+          }
+        />
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <p className="font-bold">Base token</p>
+
+        <TooltipWrapper
+          content={<ComingSoonTooltipContent />}
+          trigger={
+            <DropdownDEPRECATED
+              isDisabled={true}
+              isLoading={isLoading}
+              options={tokenOptions}
+              selected={watch("baseToken")}
+              onSelected={(value) => setValue("baseToken", value)}
             />
           }
         />

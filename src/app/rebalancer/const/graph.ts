@@ -1,5 +1,8 @@
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
+import _ from "lodash";
+import { ErrorHandler } from "@/const/error";
+import { fnv1aHash } from "@/utils";
 
 export enum Scale {
   // these two are disabled for now, we only have historical day 1x per day
@@ -91,30 +94,49 @@ export const minTimestampGenerator = (startValue: number, dayCount: number) => {
   return subDays(date, dayCount).getTime();
 };
 
-export class GraphColor {
-  // this only applied to lines. modal dots are controlled via CVA
-  // if changing one, must change colored dot component as well
-  static COLORS = [
-    "#FF2A00",
-    "#00A3FF",
-    "#EA80D1",
-    "#4EBB5B",
-    "#FFBC57",
-    "#800000",
-    "#BABABA",
-    "#C2C600",
-    "#8476DE",
-    "#17CFCF",
-  ];
+export const yTickCount = 11;
 
-  static get(i: number) {
-    if (i < this.COLORS.length) {
-      return this.COLORS[i];
-    } else {
-      let circularI = ((i - 1) % this.COLORS.length) + 1;
-      return this.COLORS[circularI];
+const COLORS = [
+  "#FF2A00", // red
+  "#00A3FF", // blue
+  "#EA80D1", // pink
+  "#4EBB5B", // green
+  "#FFBC57", // orange
+  "#800000", // brown
+  "#BABABA", // gray
+  "#C2C600", // yellow
+  "#8476DE", // purple
+  "#17CFCF", // teal
+] as const;
+
+export type GraphColor = (typeof COLORS)[number];
+
+// these are the 'supported' colors for assets. colors are hardcoded
+export class SymbolColors {
+  private static ASSET_COLORS: Record<string, GraphColor> = {
+    NTRN: COLORS[0], // red
+    USDC: COLORS[1], // usdc
+    ATOM: COLORS[2], // pink
+    NEWT: COLORS[3], // green
+  };
+
+  private static UNASSINGED_COLORS = COLORS.slice(_.size(this.ASSET_COLORS));
+
+  private static getUnassignedColor(value: string) {
+    // deterministically select an unassigned color
+    const hash = fnv1aHash(value);
+    const index = Number(hash % BigInt(this.UNASSINGED_COLORS.length));
+    return this.UNASSINGED_COLORS[index];
+  }
+
+  static get(symbol: string): GraphColor {
+    if (symbol in this.ASSET_COLORS) {
+      return this.ASSET_COLORS[symbol] as (typeof COLORS)[0];
+    }
+    // if not 'supported' color, deterministally assign a color
+    else {
+      ErrorHandler.warn(`No color assigned for symbol ${symbol}`);
+      return this.getUnassignedColor(symbol);
     }
   }
 }
-
-export const yTickCount = 11;

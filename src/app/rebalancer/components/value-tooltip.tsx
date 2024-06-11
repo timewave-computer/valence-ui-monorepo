@@ -1,4 +1,4 @@
-import { KeyTag, GraphKey } from "@/app/rebalancer/const/graph";
+import { KeyTag, GraphKey, SymbolColors } from "@/app/rebalancer/const/graph";
 import { cn, displayNumber, displayUtcTime } from "@/utils";
 import { TooltipProps } from "recharts";
 import {
@@ -74,15 +74,15 @@ export const ValueTooltip = ({
             ? keys
                 .filter((k) => k.includes(KeyTag.projectedValue))
                 .map((k: string, i: number) => {
-                  const denom = k.split(".")[0];
-                  let amount = data[GraphKey.projectedAmount(denom)];
+                  const symbol = k.split(".")[0];
+                  let amount = data[GraphKey.projectedAmount(symbol)];
                   if (isNaN(amount)) amount = 0;
-                  let value = data[GraphKey.projectedValue(denom)];
+                  let value = data[GraphKey.projectedValue(symbol)];
                   if (isNaN(value)) value = 0;
 
                   return (
                     <TableRow key={`tooltip-${label}-${k}`}>
-                      <AssetCell i={i} denom={denom} />
+                      <AssetCell i={i} symbol={symbol} />
                       <NumberCell className="text-end">
                         {displayNumber(amount, { precision: null })}
                       </NumberCell>
@@ -93,13 +93,13 @@ export const ValueTooltip = ({
             : keys
                 .filter((k) => k.includes(KeyTag.value))
                 .map((k: string, i: number) => {
-                  const denom = k.split(".")[0];
-                  let amount = data[GraphKey.balance(denom)];
+                  const symbol = k.split(".")[0];
+                  let amount = data[GraphKey.balance(symbol)];
                   if (isNaN(amount)) amount = 0;
-                  const value = data[GraphKey.value(denom)];
+                  const value = data[GraphKey.value(symbol)];
                   return (
                     <TableRow key={`tooltip-${label}-${k}`}>
-                      <AssetCell i={i} denom={denom} />
+                      <AssetCell i={i} symbol={symbol} />
                       <NumberCell className="text-end">
                         {displayNumber(amount, { precision: null })}
                       </NumberCell>
@@ -118,14 +118,14 @@ export const ValueTooltip = ({
   );
 };
 
-const AssetCell: React.FC<{ i: number; denom: string }> = ({ i, denom }) => {
+const AssetCell: React.FC<{ i: number; symbol: string }> = ({ i, symbol }) => {
   return (
     <TextCell
       className="flex items-center  justify-start gap-1 text-xs"
       asHeading={true}
     >
-      <ColoredDot i={i} />
-      <span>{denom}</span>
+      <ColoredDot variant={SymbolColors.get(symbol)} />
+      <span>{symbol}</span>
     </TextCell>
   );
 };

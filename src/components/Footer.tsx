@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import { submitSubscribe } from "@/server/actions/submit-subscribe";
 import Link from "next/link";
+import { X_URL } from "@/const/socials";
 
 export const Footer = () => {
   const [email, setEmail] = useState("");
@@ -77,7 +78,7 @@ export const Footer = () => {
 
       <div className="col-span-1 col-start-2 row-start-2 flex flex-col gap-2 ">
         <a
-          href="https://x.com/ValenceZone"
+          href={X_URL}
           target="_blank"
           rel="noreferrer"
           className="hover:underline"
