@@ -128,7 +128,10 @@ const RebalancerPage = () => {
   const GraphMessages = () => {
     if (!isHasAccountInput) {
       return <StatusBar variant="primary" text="Please enter an account" />;
-    } else if (historicalValuesQuery.isLoading) {
+    } else if (
+      accountConfigQuery.isLoading ||
+      historicalValuesQuery.isLoading
+    ) {
       return <StatusBar variant="loading" />;
     } else if (accountConfigQuery.isError) {
       return accountConfigQuery.error === LOAD_CONFIG_ERROR.INVALID_ACCOUNT ? (
@@ -154,7 +157,6 @@ const RebalancerPage = () => {
       );
     }
   };
-
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
       <MobileOverlay text="Sorry, the Rebalancer is only available on desktop." />
@@ -198,11 +200,20 @@ const RebalancerPage = () => {
                   key={thisScale}
                   className={cn(
                     "flex cursor-pointer flex-col items-center justify-center text-base",
+                    accountConfigQuery.isError || historicalValuesQuery.isError
+                      ? "cursor-not-allowed"
+                      : "",
                     scale === thisScale
                       ? "text-valence-black"
                       : "text-valence-gray",
                   )}
-                  onClick={() => setScale(thisScale as Scale)}
+                  onClick={() => {
+                    if (
+                      !accountConfigQuery.isError &&
+                      !historicalValuesQuery.isError
+                    )
+                      setScale(thisScale as Scale);
+                  }}
                 >
                   <p>1{thisScale.toUpperCase()}</p>
                 </div>

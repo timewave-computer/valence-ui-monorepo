@@ -4,14 +4,17 @@ import {
   Checkbox,
   DropdownDEPRECATED,
   DropdownOption,
+  LinkText,
   MobileOverlay,
   TextInput,
 } from "@/components";
 import { FeatureFlags, cn } from "@/utils";
 import { ReactNode, useState } from "react";
 import Image from "next/image";
-import { VALENCE_DOMAIN, X_HANDLE } from "@/const/socials";
+import { VALENCE_DOMAIN, X_HANDLE, X_URL } from "@/const/socials";
 import { ComingSoonTooltipContent, TooltipWrapper } from "@/components";
+import { UTCDate } from "@date-fns/utc";
+import { addDays } from "date-fns";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -52,11 +55,38 @@ const CovenantPage = () => {
     2,
   );
 
+  // used to track when hovering over scrollable side panel
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+
+  // to track cursor when it moves
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    setCursorPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const [isPanelHovered, setIsPanelHovered] = useState(false);
+  const [delayHandler, setDelayHandler] = useState<number | null>(null);
+
+  // hack to keep tooltip open when moving mouse towards it
+  const debouncedMouseEnter = () => {
+    setIsPanelHovered(true);
+    if (delayHandler !== null) clearTimeout(delayHandler);
+  };
+  const debouncedMouseLeave = () => {
+    setDelayHandler(
+      window.setTimeout(() => {
+        setIsPanelHovered(false);
+      }, 100),
+    );
+  };
+
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
       <MobileOverlay text="Sorry, Covenants are only available on desktop." />
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
-        <div className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black pt-4">
+        <div
+          onPointerMove={handlePointerMove}
+          className="flex w-[24rem]  shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black pt-4"
+        >
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
             <Image
               className="mb-6 mt-8"
@@ -66,14 +96,11 @@ const CovenantPage = () => {
               height={144}
             />
 
-            <h1 className="text-xl font-bold">Covenant</h1>
+            <h1 className="text-xl font-bold">Covenant (beta)</h1>
 
             <p>
-              To begin, select the type of Covenant you are interested in
-              creating, and set the Covenant parameters. Pressing
-              &quot;Propose&quot; will deploy a smart contract with the Covenant
-              terms and create the governance proposal(s) required to complete
-              the Covenant.
+              Contact <LinkText href={X_URL}>{X_HANDLE}</LinkText> if your
+              crypto-native organization wants early access to Covenants.
             </p>
 
             <p className="mt-4 font-bold">Covenant type</p>
@@ -84,7 +111,10 @@ const CovenantPage = () => {
                 onSelected={setCovenantType}
               />
             ) : (
-              <TooltipWrapper content={<ComingSoonTooltipContent />}>
+              <TooltipWrapper
+                sideOffset={28}
+                content={<ComingSoonTooltipContent />}
+              >
                 <DropdownDEPRECATED
                   isDisabled={true}
                   options={TYPE_OPTIONS}
@@ -104,7 +134,11 @@ const CovenantPage = () => {
               </div>
             )}
 
-            <TooltipWrapper asChild content={<ComingSoonTooltipContent />}>
+            <TooltipWrapper
+              sideOffset={28}
+              asChild
+              content={<ComingSoonTooltipContent />}
+            >
               <Button className="mt-6" onClick={() => {}} disabled>
                 Propose
               </Button>
@@ -112,13 +146,12 @@ const CovenantPage = () => {
           </div>
 
           <div className="relative flex grow flex-col items-stretch">
-            <TooltipWrapper
-              sideOffset={10}
-              asChild
-              content={<ComingSoonTooltipContent />}
-            >
-              <div className="absolute z-10 flex h-full w-full flex-col bg-valence-gray/40  " />
-            </TooltipWrapper>
+            <div
+              onMouseMove={debouncedMouseEnter}
+              onMouseEnter={debouncedMouseEnter}
+              onMouseLeave={debouncedMouseLeave}
+              className="absolute z-20 flex h-full w-full flex-col bg-valence-gray/40  "
+            />
 
             <div className="flex flex-col gap-5 border-l-8 border-l-valence-red p-4 pb-8">
               <div className="flex flex-row items-center gap-2">
@@ -206,7 +239,22 @@ const CovenantPage = () => {
           </div>
         </div>
 
-        <div className="flex grow flex-col bg-valence-lightgray">
+        <div className="relative flex grow flex-col bg-valence-lightgray">
+          {isPanelHovered && (
+            <div
+              style={{
+                top: `${cursorPosition.y - 88}px`, // assign height of tooltip dynamically
+              }}
+              className={cn(
+                "z-5 absolute left-[10px] flex w-64 grow border-[0.5px]",
+                "animate-in  fade-in-0 zoom-in-95 border-valence-black bg-valence-white p-4 drop-shadow-md",
+              )}
+              onMouseEnter={debouncedMouseEnter}
+              onMouseLeave={debouncedMouseLeave}
+            >
+              <ComingSoonTooltipContent />
+            </div>
+          )}
           <div className="flex flex-row items-stretch justify-between border-b border-valence-black">
             <div className="flex flex-row items-stretch">
               <div
@@ -230,27 +278,30 @@ const CovenantPage = () => {
             </div>
 
             <div className="flex flex-row items-stretch">
-              <div
-                className="flex cursor-pointer flex-col items-center justify-center p-4 text-base"
-                onClick={() => {
-                  navigator.clipboard.writeText(json);
-                }}
-              >
-                <p>Copy text</p>
-              </div>
-              <div
-                className="flex cursor-pointer flex-col items-center justify-center p-4 text-base"
-                onClick={() => {}}
-              >
-                <p>Download</p>
-              </div>
+              {contractDisplayMode === "json" && (
+                <div
+                  className="flex cursor-pointer flex-col items-center justify-center p-4 text-base"
+                  onClick={() => {
+                    navigator.clipboard.writeText(json);
+                  }}
+                >
+                  <p>Copy JSON</p>
+                </div>
+              )}
+              {contractDisplayMode === "contract" && (
+                <div className="flex cursor-pointer flex-col items-center justify-center p-4 text-base">
+                  <a target="_blank" download href="/ntrn-atom-swap.txt">
+                    Download
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
           <div
             className={cn(
               "flex grow flex-col overflow-y-auto text-valence-black",
-              contractDisplayMode === "json" ? "font-mono" : "font-serif",
+              contractDisplayMode === "json" ? "!font-mono" : "font-serif",
             )}
           >
             {contractDisplayMode === "json" ? (
@@ -571,7 +622,7 @@ const COVENANT_TYPES: Record<
             if: (data) => data?.depositDeadlineStrategy === "time",
             key: "time",
             type: "text",
-            placeholder: "2024-02-15 12:00:00 +0000",
+            placeholder: "Today",
           },
         ],
       },
@@ -1829,16 +1880,37 @@ const PLACEHOLDER_PARTY_B_DATA = {
     "neutron1g5pwy6uvlzqsqacux9en725l62g9zc0r3ufqtqz8kdcrcfl7649s0qhk06",
   amount: "8,264.153855",
   denom: {
-    native: "NTRN",
+    native: "ATOM",
+    neutronIbc:
+      "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
   },
-  liquidityDestination: "NTRN/ATOM",
+  channelIds: {
+    hostToNeutron: "channel-569",
+    neutronToHost: "channel-1",
+  },
+  fromNeutronConnection: "connection-809",
+  ibcTransferTimeout: "7200",
 };
 
 const PLACEHOLDER_BOTH_PARTIES_DATA = {
-  liquidityDestination: {
-    pool: "NTRN/ATOM",
-    dex: "ASTROPORT",
+  // commented out values are for pools, not swap
+  // liquidityDestination: {
+  //   pool: "NTRN/ATOM",
+  //   dex: "ASTROPORT",
+  // },
+  // lpHoldDays: 30,
+  // acceptableRatioDelta: 10,
+  covenantName: "NTRN/ATOM Swap",
+  depositDeadlineStrategy: "time",
+  clockTickMaxGas: 50,
+  depositDeadline: {
+    time: new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(addDays(new UTCDate(), 30)),
   },
-  lpHoldDays: 30,
-  acceptableRatioDelta: 10,
 };

@@ -94,7 +94,7 @@ export const SidePanel: React.FC<{
 
       <div className="relative flex grow flex-col border-b border-valence-black ">
         <TooltipWrapper
-          sideOffset={10}
+          sideOffset={8}
           asChild
           content={<ComingSoonTooltipContent />}
         >

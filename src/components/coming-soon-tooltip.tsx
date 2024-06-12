@@ -31,8 +31,15 @@ export const TooltipWrapper: React.FC<{
   return (
     <TooltipProvider>
       <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
-        <TooltipContent sideOffset={sideOffset} side="right">
+        <TooltipTrigger onClick={(e) => e.preventDefault()} asChild={asChild}>
+          {children}
+        </TooltipTrigger>
+        <TooltipContent
+          align="start"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          sideOffset={sideOffset}
+          side="right"
+        >
           {content}
         </TooltipContent>
       </Tooltip>
