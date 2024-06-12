@@ -9,11 +9,11 @@ import {
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-
 import { BsPlus, BsX } from "react-icons/bs";
 import { ComingSoonTooltipContent, TooltipWrapper } from "@/components";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
+import { useEdgeConfig } from "@/hooks";
 
 export const SidePanel: React.FC<{
   account: string;
@@ -26,6 +26,7 @@ export const SidePanel: React.FC<{
     QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG,
     account,
   ]);
+  const { data } = useEdgeConfig();
 
   const { setValue, watch, control } = useForm<RebalancerConfig>({
     defaultValues: {
@@ -75,7 +76,9 @@ export const SidePanel: React.FC<{
           <h1 className="font-bold">Rebalancer account</h1>
 
           <DropdownTextField
-            options={FEATURED_ACCOUNTS_OPTIONS}
+            options={
+              data?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS
+            }
             value={account}
             onChange={(value) => setAccount(value)}
             placeholder="neutron12345..."
@@ -98,7 +101,7 @@ export const SidePanel: React.FC<{
           asChild
           content={<ComingSoonTooltipContent />}
         >
-          <div className="absolute z-10 flex h-full w-full flex-col bg-valence-gray/40  " />
+          <div className="absolute z-10 flex h-full w-full flex-col bg-valence-black/25  " />
         </TooltipWrapper>
 
         <div className="flex flex-col  gap-6 p-4 pb-8 ">
@@ -256,24 +259,9 @@ export type Token = {
   percent: string;
 };
 
-const FEATURED_ACCOUNTS_OPTIONS: DropdownOption<string>[] =
-  process.env.NODE_ENV === "development"
-    ? [
-        {
-          label: "Timewave Rebalancer",
-          value:
-            "neutron13pvwjc3ctlv53u9c543h6la8e2cupkwcahe5ujccdc4nwfgann7ss0xynz",
-        },
-        {
-          label: "DEV: Lena DAO Rebalancer",
-          value:
-            "neutron1vw0zuapgkpnq49ffyvkt4s4chy9lnf78s2ezuwwvd95lq065fpes277xkt",
-        },
-      ]
-    : [
-        {
-          label: "Timewave Rebalancer",
-          value:
-            "neutron13pvwjc3ctlv53u9c543h6la8e2cupkwcahe5ujccdc4nwfgann7ss0xynz",
-        },
-      ];
+export const DEFAULT_FEATURED_ACCOUNTS: DropdownOption<string>[] = [
+  {
+    label: "Timewave Rebalancer",
+    value: "neutron13pvwjc3ctlv53u9c543h6la8e2cupkwcahe5ujccdc4nwfgann7ss0xynz",
+  },
+];

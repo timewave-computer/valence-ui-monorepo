@@ -150,7 +150,7 @@ const CovenantPage = () => {
               onMouseMove={debouncedMouseEnter}
               onMouseEnter={debouncedMouseEnter}
               onMouseLeave={debouncedMouseLeave}
-              className="absolute z-20 flex h-full w-full flex-col bg-valence-gray/40  "
+              className="absolute z-20 flex h-full w-full flex-col bg-valence-black/25 "
             />
 
             <div className="flex flex-col gap-5 border-l-8 border-l-valence-red p-4 pb-8">
@@ -301,7 +301,7 @@ const CovenantPage = () => {
           <div
             className={cn(
               "flex grow flex-col overflow-y-auto text-valence-black",
-              contractDisplayMode === "json" ? "!font-mono" : "font-serif",
+              contractDisplayMode === "json" ? "font-mono" : "font-serif",
             )}
           >
             {contractDisplayMode === "json" ? (

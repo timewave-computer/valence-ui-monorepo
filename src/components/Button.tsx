@@ -12,7 +12,7 @@ const buttonVariants = cva("text-center py-1.5 px-2  transition-colors", {
         "bg-valence-white text-valence-black border border-valence-black hover:bg-valence-black transition-all hover:text-valence-white  ",
     },
     disabled: {
-      true: "!bg-valence-gray  !border-valence-gray !text-valence-white !opacity-50",
+      true: "!bg-valence-gray  !border-valence-gray !text-valence-black !opacity-50",
     },
   },
   defaultVariants: {

@@ -92,7 +92,8 @@ export const DropdownDEPRECATED = <T extends string>({
           className={cn(
             "flex h-full w-full min-w-[12rem] flex-row items-center justify-between gap-6 border border-valence-mediumgray bg-valence-white p-2 pl-3",
             isPlaceholder ? "text-valence-gray" : "text-valence-black",
-            isDisabled && "border-valence-gray bg-valence-lightgray",
+            isDisabled &&
+              "border-valence-gray bg-valence-lightgray text-valence-gray",
             containerClassName,
           )}
           onClick={() => setVisible(!visible)}
