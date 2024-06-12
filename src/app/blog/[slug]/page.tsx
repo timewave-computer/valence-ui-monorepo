@@ -57,18 +57,18 @@ const BlogPost = async ({ params }: { params: { slug: string } }) => {
       <div className="flex max-w-[660px] grow flex-col gap-4">
         <RouterButton
           options={{ back: true }}
-          className="group flex items-center gap-2 self-start text-valence-gray hover:text-valence-black"
+          className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
         >
-          <FaChevronLeft className="h-4 w-4 transition-all group-hover:-translate-x-0.5 " />
+          <FaChevronLeft className="h-4 w-4 transition-all  " />
 
-          <span className="text-sm font-medium tracking-tight"> Go Back</span>
+          <span className="text-sm font-medium tracking-tight "> Go Back</span>
         </RouterButton>
         <section className="pb-4">
           <span className="text-sm">
             {new UTCDate(postData.frontMatter.date).toLocaleDateString()}
           </span>
 
-          <h1 className="font-serif text-4xl font-bold">
+          <h1 className="py-2 font-serif text-4xl font-semibold">
             {postData.frontMatter.title}
           </h1>
           <span className="pt-1">By {postData.frontMatter.author}</span>

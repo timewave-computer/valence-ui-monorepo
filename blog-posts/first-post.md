@@ -1,6 +1,5 @@
 ---
 title: "Building a blog on Next JS"
-author: "Lena Mikhaylova"
 date: 2024-06-07 11:32:00 -0400
 ---
 

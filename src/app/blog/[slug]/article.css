@@ -3,10 +3,10 @@ article {
   @apply flex max-w-[680px] flex-col gap-3 font-sans;
 }
 article > h1 {
-  @apply font-serif text-2xl font-bold;
+  @apply pt-2 font-serif text-2xl font-semibold;
 }
 article > h2 {
-  @apply font-serif text-xl font-bold;
+  @apply pt-1 font-serif text-xl font-semibold;
 }
 
 article > em {
@@ -25,7 +25,7 @@ article > ol {
 }
 
 article > p > img {
-  @apply mx-auto w-3/4;
+  @apply mx-auto;
 }
 
 article > p > a {
@@ -33,5 +33,5 @@ article > p > a {
 }
 
 article > p > img + em {
-  @apply flex justify-center text-center  text-sm not-italic;
+  @apply flex justify-center py-2  text-center text-sm not-italic;
 }

@@ -30,14 +30,12 @@ export const getSortedPosts = (): PostList => {
     const slug = fileName.replace(/\.md$/, "");
     const fileContents = fs.readFileSync(fullPath, "utf8");
     let frontMatter: PostFrontMatter;
-    let content: string;
     try {
-      ({ frontMatter, content } = validatePost(fileContents));
-      const preview = content.split("\n").find((line) => line.trim() !== "");
+      ({ frontMatter } = validatePost(fileContents));
 
       allPosts.push({
         slug,
-        preview: preview || "",
+        preview: frontMatter.description,
         ...frontMatter,
       });
     } catch (e) {
