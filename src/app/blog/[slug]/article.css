@@ -16,6 +16,10 @@ article > p {
   @apply text-lg;
 }
 
+article > p > strong {
+  @apply font-semibold;
+}
+
 article > ul {
   @apply flex list-disc flex-col gap-2 pl-3;
 }

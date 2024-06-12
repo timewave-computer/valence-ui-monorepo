@@ -13,7 +13,8 @@ import { UTCDate } from "@date-fns/utc";
 import { compareDesc } from "date-fns";
 import { ErrorHandler } from "@/const/error";
 
-const postsDirectory = path.join(process.cwd(), "blog-posts");
+const POSTS_PATH = "blog-posts/published";
+const postsDirectory = path.join(process.cwd(), POSTS_PATH);
 
 const validatePost = (fileContents: string) => {
   const { data, content } = matter(fileContents);
@@ -22,7 +23,7 @@ const validatePost = (fileContents: string) => {
 };
 
 export const getSortedPosts = (): PostList => {
-  const postsDirectory = path.join(process.cwd(), "blog-posts");
+  const postsDirectory = path.join(process.cwd(), POSTS_PATH);
   const fileNames = fs.readdirSync(postsDirectory);
   const allPosts: PostList = [];
   fileNames.forEach((fileName) => {

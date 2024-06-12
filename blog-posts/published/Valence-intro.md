@@ -41,7 +41,7 @@ For example, Neutron and Stargaze recently engaged in a two-party POL deal where
 
 # How Valence Works
 
-**Today**
+## Today
 
 Valence is already one of the most complex applications written with IBC. Valence extensively uses interchain accounts (ICAs), Polytone, CosmWasm, and packet forward middleware to enable Cosmos chain governance modules or DAO DAO DAOs to autonomously orchestrate multichain workflows. Valence packages these sets of technologies into two subprotocols: Covenants and Rebalancer.
 
@@ -49,7 +49,7 @@ Covenants are a way for crypto-native organizations to transact with each other 
 
 The Rebalancer is a balance sheet management solution custom-built for crypto-native organizations. Anyone can use the Rebalancer to set a desired portfolio (e.g., 90% native token, 10% USDC), steadily rebalance to that desired portfolio over time, and maintain that portfolio until advised otherwise. The Rabalancer can also efficiently swap AVS assets into the restaking protocol’s native asset.
 
-**Soon**
+## Soon
 
 Valence will expand to service Bitcoin layer 2 (L2), Ethereum protocol, and Solana dApps, allowing Cosmos applications to enter into agreements with strategic partners in neighboring ecosystems. Valence will achieve this level of chain abstraction by supplementing its IBC-based workflow with an intent system specifically designed for crypto-native organizations. Protocols will be able to express intents to engage in economic activity, which Valence will then route to an auction for solvers to bid on the right to execute. Intents can be combined with application-specific messages or IBC orchestration to enrich the scope of protocol interaction.
 
