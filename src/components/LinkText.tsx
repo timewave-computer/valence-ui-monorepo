@@ -16,15 +16,7 @@ export const LinkText = ({
   openInNewTab ??= href.startsWith("http");
 
   return openInNewTab ? (
-    <a
-      href={href}
-      className={cn(
-        "text-valence-blue transition-all hover:underline",
-        className,
-      )}
-      target="_blank"
-      rel="noreferrer"
-    >
+    <a href={href} className={cn(className)} target="_blank" rel="noreferrer">
       {children}
     </a>
   ) : (

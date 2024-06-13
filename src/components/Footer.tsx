@@ -39,8 +39,8 @@ export const Footer = () => {
       <div className="col-span-1  col-start-1 justify-between">
         <div className="flex flex-col gap-4">
           <p>
-            We architect institutions to bring long-term alignment across the
-            interchain.
+            Valence enables long-term alignment among internet-native
+            institutions.
           </p>
         </div>
       </div>

@@ -43,7 +43,7 @@ export const Nav = () => {
 
   const links = (
     <>
-      <NavLink href="/covenant" label="Covenant" path={path} />
+      <NavLink href="/covenants" label="Covenants" path={path} />
       <NavLink href="/rebalancer" label="Rebalancer" path={path} />
       <NavLink href="/blog" label="Blog" path={path} />
     </>

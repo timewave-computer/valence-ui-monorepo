@@ -33,7 +33,7 @@ article > p > img {
 }
 
 article > p > a {
-  @apply text-valence-blue hover:underline focus:underline;
+  @apply border-valence-blue text-valence-blue hover:border-b focus:border-b;
 }
 
 article > p > img + em {

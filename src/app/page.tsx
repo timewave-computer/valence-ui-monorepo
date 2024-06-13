@@ -34,7 +34,7 @@ const HomePage = () => {
           >
             <LinkText
               className="mt-2 flex flex-row items-center gap-1.5 self-start"
-              href="/covenant"
+              href="/covenants"
             >
               Create a Covenant
               <HiMiniArrowRight className="h-4 w-4" />

@@ -172,8 +172,14 @@ const RebalancerPage = () => {
             />
             <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
             <p>
-              Contact <LinkText href={X_URL}>{X_HANDLE}</LinkText> if you or
-              your DAO want early access to the Rebalancer.
+              Contact{" "}
+              <LinkText
+                className="border-valence-black text-valence-black hover:border-b"
+                href={X_URL}
+              >
+                {X_HANDLE}
+              </LinkText>{" "}
+              if you or your DAO want early access to the Rebalancer.
             </p>
           </div>
 

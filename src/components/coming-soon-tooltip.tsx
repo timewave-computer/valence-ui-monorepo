@@ -49,10 +49,16 @@ export const TooltipWrapper: React.FC<{
 
 export const ComingSoonTooltipContent = () => (
   <div className=" max-w-56">
-    <p className="text-lg font-bold">Coming soon.</p>
-    <p className="text-balance">
-      Contact <LinkText href={X_URL}>{X_HANDLE}</LinkText> to access this
-      feature.
+    <p className="text-xl font-bold">Coming soon.</p>
+    <p className="text-balance pt-2">
+      Contact{" "}
+      <LinkText
+        className="border-valence-black text-valence-black hover:border-b"
+        href={X_URL}
+      >
+        {X_HANDLE}
+      </LinkText>{" "}
+      to access this feature.
     </p>
   </div>
 );
