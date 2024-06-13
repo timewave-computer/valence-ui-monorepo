@@ -159,7 +159,7 @@ const RebalancerPage = () => {
   };
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
-      <MobileOverlay text="Sorry, the Rebalancer is only available on desktop." />
+      <MobileOverlay text="The Rebalancer is only available on desktop." />
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
         <div className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black">
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">

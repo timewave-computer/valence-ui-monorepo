@@ -81,7 +81,7 @@ const CovenantPage = () => {
 
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
-      <MobileOverlay text="Sorry, Covenants are only available on desktop." />
+      <MobileOverlay text="Covenants are only available on desktop." />
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
         <div
           onPointerMove={handlePointerMove}

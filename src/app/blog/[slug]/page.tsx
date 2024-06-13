@@ -34,7 +34,7 @@ const BlogPost = async ({ params }: { params: { slug: string } }) => {
             className="mb-10 self-center"
           />
           <h2 className="font-mono text-2xl text-valence-black ">
-            Sorry, there was a problem loading this post.
+            There was a problem loading this post.
           </h2>
           <RouterButton
             options={{ refresh: true }}

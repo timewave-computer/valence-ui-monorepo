@@ -18,7 +18,7 @@ const HomePage = () => {
 
         <div className="flex flex-col gap-x-10  md:grid md:grid-cols-2">
           <h2 className="col-start-1 row-start-1 border-black  px-4 font-bold md:border-t md:pt-4">
-            Covenant
+            Covenants
           </h2>
           <p className="col-start-1 row-start-2 p-4 pt-2">
             Covenants enable trust-minimized agreements between crypto-native

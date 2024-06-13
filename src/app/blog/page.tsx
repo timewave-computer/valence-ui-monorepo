@@ -37,7 +37,7 @@ const BlogHome = async () => {
             className="mb-10 self-center"
           />
           <h2 className="font-mono text-2xl text-valence-black ">
-            Sorry, there was a problem loading the blog.
+            There was a problem loading the blog.
           </h2>
           <RouterButton
             options={{ refresh: true }}

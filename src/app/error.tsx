@@ -32,7 +32,7 @@ export default function Error({
           className="mb-10 self-center"
         />
         <h2 className="font-mono text-2xl text-valence-black ">
-          Sorry, something went wrong.
+          Something went wrong.
         </h2>
         <button
           className="pt-2 font-mono text-valence-blue hover:underline"
