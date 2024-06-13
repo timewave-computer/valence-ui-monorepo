@@ -1,6 +1,8 @@
 ---
 title: "Building a blog on Next JS"
 date: 2024-06-07 11:32:00 -0400
+author: test
+description: Consectetur enim adipisicing excepteur consectetur
 ---
 
 Anim in Lorem laboris sit proident nisi officia non culpa laboris esse sint. Minim in ipsum dolore exercitation consectetur enim adipisicing excepteur consectetur laboris proident irure. Laboris anim nulla mollit aute ad incididunt ullamco Lorem cupidatat sunt quis elit. Cupidatat dolore ex quis voluptate cupidatat qui aliqua do dolor. Elit cupidatat ex incididunt consectetur aliqua amet. Proident duis duis aliquip minim eiusmod anim cillum eu sunt duis voluptate laborum. Ullamco quis est occaecat culpa consequat cillum reprehenderit ut.

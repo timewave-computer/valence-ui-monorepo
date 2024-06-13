@@ -127,7 +127,7 @@ const HomePage = () => {
             />
           </div>
         </div>
-        <Footer />
+        <Footer className="p-4 pb-12" />
       </div>
     </main>
   );

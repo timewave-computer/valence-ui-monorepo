@@ -7,8 +7,11 @@ import { useMutation } from "@tanstack/react-query";
 import { submitSubscribe } from "@/server/actions/submit-subscribe";
 import Link from "next/link";
 import { GITHUB_URL, X_URL } from "@/const/socials";
+import { cn } from "@/utils";
 
-export const Footer = () => {
+export const Footer = (
+  { className }: { className?: string } = { className: "" },
+) => {
   const [email, setEmail] = useState("");
   const [showSubscribe, setShowSubscribe] = useState(true);
   const [showSubmitError, setShowSubmitError] = useState(false);
@@ -28,14 +31,21 @@ export const Footer = () => {
   });
 
   return (
-    <div className="flex flex-col gap-x-10 gap-y-5  p-4 pb-12 text-sm md:grid md:grid-cols-2">
-      <Image
-        className=" col-span-1 col-start-1   flex-col justify-between"
-        src="/img/valence_horizontal.svg"
-        alt="Valence illustration"
-        width={132}
-        height={40}
-      />
+    <div
+      className={cn(
+        "flex flex-col gap-x-10 gap-y-5 text-sm md:grid md:grid-cols-2",
+        className,
+      )}
+    >
+      <Link href={"/"}>
+        <Image
+          className="col-span-1 col-start-1   flex-col justify-between"
+          src="/img/valence_horizontal.svg"
+          alt="Valence illustration"
+          width={110}
+          height={38}
+        />
+      </Link>
       <div className="col-span-1  col-start-1 justify-between">
         <div className="flex flex-col gap-4">
           <p>
@@ -98,7 +108,7 @@ export const Footer = () => {
           blog
         </Link>
       </div>
-      <div className=" col-span-1 col-start-2 row-start-3 self-start font-light tracking-tight md:self-end">
+      <div className=" col-span-1 col-start-2 row-start-3 self-start  md:self-end">
         <p>© 2024 Timewave </p>
       </div>
     </div>
