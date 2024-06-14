@@ -5,9 +5,15 @@ import { RouterButton } from "./RouterButton";
 import { FaChevronLeft } from "react-icons/fa";
 import { UTCDate } from "@date-fns/utc";
 import "./article.css";
-import Image from "next/image";
 
-const BlogPost = async ({ params }: { params: { slug: string } }) => {
+const BlogPost = async ({
+  params,
+}: {
+  params: {
+    slug: string;
+    allowGoBack?: boolean; // this is temporary
+  };
+}) => {
   let postData: Post | null = null;
   let error = null;
 
@@ -43,14 +49,16 @@ const BlogPost = async ({ params }: { params: { slug: string } }) => {
 
   return (
     <div className="min-h-1/2 flex grow flex-col gap-4 pb-20">
-      <RouterButton
-        options={{ back: true }}
-        className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
-      >
-        <FaChevronLeft className="h-4 w-4 transition-all  " />
+      {params.allowGoBack && (
+        <RouterButton
+          options={{ back: true }}
+          className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
+        >
+          <FaChevronLeft className="h-4 w-4 transition-all  " />
 
-        <span className="text-sm font-medium tracking-tight "> Go Back</span>
-      </RouterButton>
+          <span className="text-sm font-medium tracking-tight "> Go Back</span>
+        </RouterButton>
+      )}
       <section className="pb-4">
         <span className="text-sm">
           {new UTCDate(postData.frontMatter.date).toLocaleDateString()}

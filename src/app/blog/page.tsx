@@ -3,17 +3,21 @@ import { getSortedPosts } from "@/server/blog/get-posts";
 import { PostList } from "@/types/blog";
 import { UTCDate } from "@date-fns/utc";
 import Link from "next/link";
-import Image from "next/image";
 import { RouterButton } from "./[slug]/RouterButton";
+import BlogPost from "./[slug]/page";
 
 const trimContent = (content: string) => {
   if (content.length > 200) {
     return content.slice(0, 200) + "...";
   } else return content;
 };
+
 const BlogHome = async () => {
   let posts: PostList = [];
   let error = null;
+
+  // temporary, we only have 1 post
+  return <BlogPost params={{ slug: "Valence-Purpose", allowGoBack: false }} />;
 
   try {
     posts = getSortedPosts();
