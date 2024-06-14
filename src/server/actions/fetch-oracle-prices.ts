@@ -8,13 +8,13 @@ import { subDays } from "date-fns";
  * for fetching oracle prices from the indexer. Not used currently but here if needed
  */
 
-export const DEPRECATED_fetchOraclePrices = async (
+export const fetchOraclePrices = async (
   denom: string,
   options?: {
     baseDenom?: string;
   },
 ): Promise<IndexerOraclePricesResponse> => {
-  const url = IndexerUrl.DEPRECATED_orcaleHistoricPrices(denom, {
+  const url = IndexerUrl.orcaleHistoricPrices(denom, {
     startDate: subDays(new UTCDate(), 365),
     endDate: new UTCDate(),
     baseDenom: options?.baseDenom,

@@ -34,7 +34,7 @@ export class IndexerUrl {
     return `${INDEXER_URL}/${INDEXER_API_KEY}/wallet/${address}/bank/balances?times=${range}&timeStep=${timeStep}`;
   }
   // by default composes prices in USDC_DENOM
-  static DEPRECATED_orcaleHistoricPrices(
+  static orcaleHistoricPrices(
     denom: string,
     {
       baseDenom = USDC_DENOM,

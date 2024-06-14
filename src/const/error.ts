@@ -25,7 +25,7 @@ export class InvalidAccountError extends Error {
 }
 
 export class ErrorHandler {
-  private static constructText(text: string, error: unknown) {
+  static constructText(text: string, error: unknown) {
     let errorMessage = "";
     // handle all weird cases of errors
     if (error instanceof Error) errorMessage = error.message;

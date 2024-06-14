@@ -2,14 +2,22 @@
 import { UTCDate } from "@date-fns/utc";
 import { AccountTarget } from "@/server/actions";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
-import { CACHE_KEYS, IndexerUrl, fetchMaybeCached } from "@/server/utils";
+import {
+  CACHE_KEYS,
+  IndexerUrl,
+  fetchMaybeCached,
+  findClosestCoingeckoPrice,
+} from "@/server/utils";
 import { USDC_DENOM } from "@/const/usdc";
 import {
   IndexerHistoricalBalancesResponse,
   IndexerHistoricalBalancesResponseSchema,
 } from "@/types/indexer";
-import { z } from "zod";
 import { baseToUnit } from "@/utils";
+import {
+  CoinGeckoHistoricPrices,
+  CoinGeckoHistoricPricesSchema,
+} from "@/types/coingecko";
 
 export async function fetchHistoricalValues({
   address,
@@ -51,7 +59,7 @@ export async function fetchHistoricalValues({
         ErrorHandler.warn(`No historic prices found for ${target.denom}`);
         return;
       }
-      price = findClosestPrice(balanceTimestamp, pricesForDenom);
+      price = findClosestCoingeckoPrice(balanceTimestamp, pricesForDenom);
       if (!price) {
         // should not happen BUT just in case
         ErrorHandler.warn(`No prices found for ${target.denom}`);
@@ -83,23 +91,6 @@ export async function fetchHistoricalValues({
     baseDenom: USDC_DENOM,
     values: results,
   };
-}
-
-// Helper function to find the price with the closest timestamp
-function findClosestPrice(
-  balanceTimestamp: number,
-  prices: Array<CoinGeckoHistoricPrice>,
-): number {
-  if (prices.length === 0) {
-    ErrorHandler.warn("No prices found for denom");
-    return 0;
-  }
-  const sorted = prices.sort(
-    (a, b) =>
-      Math.abs(balanceTimestamp - Number(a[0])) - // prices are in form [timestamp, price]  [ 1714611745449, 1.0007257446162172 ],
-      Math.abs(balanceTimestamp - Number(b[0])),
-  );
-  return sorted[0][1]; // take first element, extract price
 }
 
 export const fetchHistoricalBalances = async (
@@ -162,17 +153,6 @@ export const fetchHistoricalPrices = async (
   const prices = validated.data;
   return prices;
 };
-
-const CoinGeckoHistoricPriceSchema = z.tuple([z.number(), z.number()]); // [timestamp, price]
-type CoinGeckoHistoricPrice = z.infer<typeof CoinGeckoHistoricPriceSchema>;
-
-const CoinGeckoHistoricPricesSchema = z.array(
-  z.object({
-    coinGeckoId: z.string(),
-    prices: z.array(CoinGeckoHistoricPriceSchema),
-  }),
-);
-type CoinGeckoHistoricPrices = z.infer<typeof CoinGeckoHistoricPricesSchema>;
 
 export type FetchHistoricalValuesReturnValue = {
   baseDenom: string;

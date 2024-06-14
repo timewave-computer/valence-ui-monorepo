@@ -1,17 +1,17 @@
 "use server";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
-import { CACHE_KEYS } from "@/server/utils/ui-api-cache";
 import {
+  IndexerUrl,
   fetchMaybeCached,
   getStargateClient,
   isFulfilled,
   isRejected,
+  CACHE_KEYS,
 } from "@/server/utils";
 import { OriginAsset } from "@/types/ibc";
 import { z } from "zod";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { baseToUnit } from "@/utils";
-import { IndexerUrl } from "@/server/utils";
 import { IndexerFundsInAuctionSchema } from "@/types/indexer";
 
 export async function fetchLivePortfolio({
