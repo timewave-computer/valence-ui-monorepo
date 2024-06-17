@@ -1,16 +1,16 @@
 ---
-title: "Introducing Valence Protocol"
+title: "Introducing Valence"
 date: 2024-06-12 11:32:00 -0400
 author: "Timewave"
-description: "Why Valence Matters"
+description: "Setting the stage for long-term, permissionless collaboration"
 ---
 
-Crypto is the medium upon which society will build the next generation of digital institutions. Valence’s purpose is to maximize long-term, permissionless collaboration by increasing the scope and scale of these digital institutions.
+Crypto is the medium through which society will produce the next generation of digital institutions. Valence's purpose is to maximize long-term, permissionless collaboration by empowering these new institutions.
 
-By its nature, digitization reduces fidelity. Thus, digital protocols are inherently limited in what they can express. Limited expressibility reduces the degree to which a protocol can represent its constituents. 
+Digitization, by its nature, is a reduction of fidelity. Reduction is simultaneously a strength and a limitation of digital institutions. Simplicity engenders robustness, while constrained expression also bounds the institutional behavior that protocols can model.
 
-Constituents are better served by protocols that are specifically designed to account for the context of their communities. Through bottom-up coordination around shared goals, many high-context protocols can achieve greater scale than fewer low-context monoliths.
+For this reason, digital institutions should be specifically designed to account for the context of their constituents in order to be represent their local interests. Scale is then a matter of increasing the capacity for protocols to coordinate together around shared goals and build institutional power from bottom-up.
 
-There are already a variety of projects that bridge messages and security between protocols. Valence bridges economics and politics between protocols. To achieve this economic and political bridging, Valence enables protocol-to-protocol lending because lending has the capacity to build trust and generate positive-sum outcomes.
+Today bridges are designed to facilitate the permissionless transport of messages or security among protocols. Valence is a new kind of symbolic bridge, a tool that enables the free flow of economic and political capital toward shared ends. Long-term, permissionless collaboration begins with the will to trust. Credit is unique in its power to build trust over time—and so Valence takes its first step with protocol-to-protocol lending.
 
-Join us in building the network economy: [@ValenceZone](https://x.com/ValenceZone)
+Join us in creating the network economy: [@ValenceZone](https://x.com/ValenceZone)
