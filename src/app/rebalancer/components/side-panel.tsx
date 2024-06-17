@@ -7,21 +7,28 @@ import {
   NumberInput,
 } from "@/components";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { BsPlus, BsX } from "react-icons/bs";
-import { ComingSoonTooltipContent, TooltipWrapper } from "@/components";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useEdgeConfig } from "@/hooks";
-import { cn } from "@/utils";
 
 export const SidePanel: React.FC<{
   account: string;
   setAccount: (s: string) => void;
   isLoading: boolean;
   isValidAccount: boolean;
-}> = ({ account, setAccount, isLoading, isValidAccount }) => {
+  debouncedMouseEnter: () => void;
+  debouncedMouseLeave: () => void;
+}> = ({
+  account,
+  setAccount,
+  isLoading,
+  isValidAccount,
+  debouncedMouseEnter,
+  debouncedMouseLeave,
+}) => {
   const queryClient = useQueryClient();
   const config = queryClient.getQueryData<FetchAccountConfigReturnValue>([
     QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG,
@@ -70,45 +77,8 @@ export const SidePanel: React.FC<{
     name: "tokens",
   });
 
-  // used to track when hovering over scrollable side panel
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-
-  // to track cursor when it moves
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    setCursorPosition({ x: event.clientX, y: event.clientY });
-  };
-
-  const [isPanelHovered, setIsPanelHovered] = useState(false);
-  const [delayHandler, setDelayHandler] = useState<number | null>(null); // hack to keep tooltip open when moving mouse towards it
-  const debouncedMouseEnter = () => {
-    setIsPanelHovered(true);
-    if (delayHandler !== null) clearTimeout(delayHandler);
-  };
-  const debouncedMouseLeave = () => {
-    setDelayHandler(
-      window.setTimeout(() => {
-        setIsPanelHovered(false);
-      }, 100),
-    );
-  };
-
   return (
     <>
-      {isPanelHovered && (
-        <div
-          onMouseEnter={debouncedMouseEnter}
-          onMouseLeave={debouncedMouseLeave}
-          style={{
-            top: `${cursorPosition.y - 88}px`, // assign height of tooltip dynamically
-          }}
-          className={cn(
-            "absolute left-[392px] z-50 flex w-64 grow border-[0.5px]",
-            "animate-in  fade-in-0 zoom-in-95 border-valence-black bg-valence-white p-4 drop-shadow-md",
-          )}
-        >
-          <ComingSoonTooltipContent />
-        </div>
-      )}
       <div className="flex flex-col  gap-6 border-b border-valence-black p-4 pb-8">
         <div className="flex flex-col gap-2">
           <h1 className="font-bold">Rebalancer account</h1>
@@ -121,22 +91,21 @@ export const SidePanel: React.FC<{
             onChange={(value) => setAccount(value)}
             placeholder="neutron12345..."
           />
-          <TooltipWrapper
-            sideOffset={24}
-            asChild
-            content={<ComingSoonTooltipContent />}
+
+          <Button
+            onMouseMove={debouncedMouseEnter}
+            onMouseEnter={debouncedMouseEnter}
+            onMouseLeave={debouncedMouseLeave}
+            className="mt-2"
+            onClick={() => {}}
+            disabled
           >
-            <Button className="mt-2" onClick={() => {}} disabled>
-              Connect wallet
-            </Button>
-          </TooltipWrapper>
+            Connect wallet
+          </Button>
         </div>
       </div>
 
-      <div
-        onPointerMove={handlePointerMove}
-        className="relative flex grow flex-col border-b  border-valence-black"
-      >
+      <div className="relative flex grow flex-col border-b  border-valence-black">
         <div
           onMouseMove={debouncedMouseEnter}
           onMouseEnter={debouncedMouseEnter}

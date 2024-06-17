@@ -35,7 +35,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        disabled={disabled} // keep it here for accessibilty but style is handled in CVA
+        // commented out for now to render disabled tooltip
+        // disabled={disabled} // keep it here for accessibilty but style is handled in CVA
         className={cn(buttonVariants({ disabled, variant, className }))}
         ref={ref}
         {...props}

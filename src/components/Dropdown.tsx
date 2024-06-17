@@ -47,7 +47,8 @@ export const DropdownDEPRECATED = <T extends string>({
   containerClassName,
   isLoading,
   isDisabled,
-}: DropdownProps<T>) => {
+  ...props
+}: DropdownProps<T> & React.HTMLAttributes<HTMLDivElement>) => {
   const [visible, setVisible] = useState(false);
 
   const selectedOption = selected
@@ -77,7 +78,7 @@ export const DropdownDEPRECATED = <T extends string>({
   }, []);
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative" ref={containerRef} {...props}>
       {isLoading ? (
         <button
           disabled={true}

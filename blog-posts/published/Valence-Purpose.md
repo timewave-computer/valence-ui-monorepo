@@ -5,6 +5,8 @@ author: "Timewave"
 description: "Setting the stage for long-term, permissionless collaboration"
 ---
 
+![Image](/img/blog/intro_post_graphic.png)
+
 Crypto is the medium through which society will produce the next generation of digital institutions. Valence's purpose is to maximize long-term, permissionless collaboration by empowering these new institutions.
 
 Digitization, by its nature, is a reduction of fidelity. Reduction is simultaneously a strength and a limitation of digital institutions. Simplicity engenders robustness, while constrained expression also bounds the institutional behavior that protocols can model.

@@ -34,6 +34,8 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0);
+/* Hide scrollbar for all elements */
+::-webkit-scrollbar {
+  width: 0; /* For vertical scrollbars */
+  height: 0; /* For horizontal scrollbars */
 }

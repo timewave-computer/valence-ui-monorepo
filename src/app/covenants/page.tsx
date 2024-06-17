@@ -9,7 +9,7 @@ import { FeatureFlags, cn } from "@/utils";
 import { useState } from "react";
 import Image from "next/image";
 import { X_HANDLE, X_URL } from "@/const/socials";
-import { ComingSoonTooltipContent, TooltipWrapper } from "@/components";
+import { ComingSoonTooltipContent } from "@/components";
 import { UTCDate } from "@date-fns/utc";
 import { addDays } from "date-fns";
 import { Field, COVENANT_TYPES } from "@/app/covenants/components";
@@ -67,18 +67,19 @@ const CovenantPage = () => {
     setCursorPosition({ x: event.clientX, y: event.clientY });
   };
 
-  const [isPanelHovered, setIsPanelHovered] = useState(false);
+  const [isDisabledElementHovered, setIsDisabledElementHovered] =
+    useState(false);
   const [delayHandler, setDelayHandler] = useState<number | null>(null);
 
   // hack to keep tooltip open when moving mouse towards it
   const debouncedMouseEnter = () => {
-    setIsPanelHovered(true);
+    setIsDisabledElementHovered(true);
     if (delayHandler !== null) clearTimeout(delayHandler);
   };
   const debouncedMouseLeave = () => {
     setDelayHandler(
       window.setTimeout(() => {
-        setIsPanelHovered(false);
+        setIsDisabledElementHovered(false);
       }, 100),
     );
   };
@@ -89,7 +90,7 @@ const CovenantPage = () => {
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
         <div
           onPointerMove={handlePointerMove}
-          className="flex w-[24rem]  shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black pt-4"
+          className="  flex  w-[24rem] shrink-0  flex-col items-stretch overflow-hidden overflow-y-auto  border-r border-valence-black pt-4"
         >
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
             <Image
@@ -134,17 +135,15 @@ const CovenantPage = () => {
                 }}
               />
             ) : (
-              <TooltipWrapper
-                sideOffset={28}
-                content={<ComingSoonTooltipContent />}
-              >
-                <DropdownDEPRECATED
-                  isDisabled={true}
-                  options={TYPE_OPTIONS}
-                  selected={covenantTypeSelection}
-                  onSelected={setCovenantType}
-                />
-              </TooltipWrapper>
+              <DropdownDEPRECATED
+                onMouseMove={debouncedMouseEnter}
+                onMouseEnter={debouncedMouseEnter}
+                onMouseLeave={debouncedMouseLeave}
+                isDisabled={true}
+                options={TYPE_OPTIONS}
+                selected={covenantTypeSelection}
+                onSelected={setCovenantType}
+              />
             )}
             {covenantTypeSelection === "pol" && (
               <div className="mt-2 space-y-2">
@@ -157,15 +156,16 @@ const CovenantPage = () => {
               </div>
             )}
 
-            <TooltipWrapper
-              sideOffset={28}
-              asChild
-              content={<ComingSoonTooltipContent />}
+            <Button
+              disabled
+              onMouseMove={debouncedMouseEnter}
+              onMouseEnter={debouncedMouseEnter}
+              onMouseLeave={debouncedMouseLeave}
+              className="mt-6"
+              onClick={() => {}}
             >
-              <Button className="mt-6" onClick={() => {}} disabled>
-                Connect wallet
-              </Button>
-            </TooltipWrapper>
+              Connect wallet
+            </Button>
           </div>
 
           <div className="relative flex grow flex-col items-stretch">
@@ -262,8 +262,8 @@ const CovenantPage = () => {
           </div>
         </div>
 
-        <div className="relative flex grow flex-col bg-valence-lightgray">
-          {isPanelHovered && (
+        <div className="relative flex grow flex-col  bg-valence-lightgray">
+          {isDisabledElementHovered && (
             <div
               style={{
                 top: `${cursorPosition.y - 88}px`, // assign height of tooltip dynamically

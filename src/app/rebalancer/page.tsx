@@ -1,5 +1,5 @@
 "use client";
-import { DropdownDEPRECATED } from "@/components";
+import { ComingSoonTooltipContent, DropdownDEPRECATED } from "@/components";
 import { Fragment, useMemo, useRef, useState } from "react";
 import { FeatureFlags, cn } from "@/utils";
 import { useQueryState } from "nuqs";
@@ -157,11 +157,54 @@ const RebalancerPage = () => {
       );
     }
   };
+
+  // used to track when hovering over scrollable side panel
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+
+  // to track cursor when it moves
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    setCursorPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const [isDisabledElementHovered, setIsDisabledElementHovered] =
+    useState(false);
+  const [delayHandler, setDelayHandler] = useState<number | null>(null); // hack to keep tooltip open when moving mouse towards it
+  const debouncedMouseEnter = () => {
+    setIsDisabledElementHovered(true);
+    if (delayHandler !== null) clearTimeout(delayHandler);
+  };
+  const debouncedMouseLeave = () => {
+    setDelayHandler(
+      window.setTimeout(() => {
+        setIsDisabledElementHovered(false);
+      }, 100),
+    );
+  };
+
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
       <MobileOverlay text="The Rebalancer is only available on desktop." />
+      {isDisabledElementHovered && (
+        <div
+          onMouseEnter={debouncedMouseEnter}
+          onMouseLeave={debouncedMouseLeave}
+          style={{
+            top: `${cursorPosition.y - 88}px`, // assign height of tooltip dynamically
+          }}
+          className={cn(
+            "absolute left-[392px] z-50 flex w-64 grow border-[0.5px]",
+            "animate-in  fade-in-0 zoom-in-95 border-valence-black bg-valence-white p-4 drop-shadow-md",
+          )}
+        >
+          <ComingSoonTooltipContent />
+        </div>
+      )}
+
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
-        <div className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black">
+        <div
+          onPointerMove={handlePointerMove}
+          className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black"
+        >
           <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
             <Image
               className="mb-6 mt-8"
@@ -188,6 +231,8 @@ const RebalancerPage = () => {
             setAccount={setAccount}
             isValidAccount={isValidAccount}
             isLoading={accountConfigQuery?.isLoading}
+            debouncedMouseEnter={debouncedMouseEnter}
+            debouncedMouseLeave={debouncedMouseLeave}
           />
         </div>
         <div className="flex grow flex-col overflow-y-auto bg-valence-lightgray text-sm">
