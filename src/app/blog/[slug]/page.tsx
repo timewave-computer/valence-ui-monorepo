@@ -64,13 +64,13 @@ const BlogPost = async ({
           {new UTCDate(postData.frontMatter.date).toLocaleDateString()}
         </span>
 
-        <h1 className="py-2 font-serif text-4xl font-semibold">
+        <h1 className="py-2 font-serif text-4xl font-medium">
           {postData.frontMatter.title}
         </h1>
         <span className="pt-1">By {postData.frontMatter.author}</span>
       </section>
 
-      {<article dangerouslySetInnerHTML={{ __html: postData.content }} />}
+      <article dangerouslySetInnerHTML={{ __html: postData.content }} />
     </div>
   );
 };

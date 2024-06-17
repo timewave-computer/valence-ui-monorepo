@@ -7,13 +7,14 @@ import {
   NumberInput,
 } from "@/components";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { BsPlus, BsX } from "react-icons/bs";
 import { ComingSoonTooltipContent, TooltipWrapper } from "@/components";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useEdgeConfig } from "@/hooks";
+import { cn } from "@/utils";
 
 export const SidePanel: React.FC<{
   account: string;
@@ -69,8 +70,45 @@ export const SidePanel: React.FC<{
     name: "tokens",
   });
 
+  // used to track when hovering over scrollable side panel
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+
+  // to track cursor when it moves
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    setCursorPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const [isPanelHovered, setIsPanelHovered] = useState(false);
+  const [delayHandler, setDelayHandler] = useState<number | null>(null); // hack to keep tooltip open when moving mouse towards it
+  const debouncedMouseEnter = () => {
+    setIsPanelHovered(true);
+    if (delayHandler !== null) clearTimeout(delayHandler);
+  };
+  const debouncedMouseLeave = () => {
+    setDelayHandler(
+      window.setTimeout(() => {
+        setIsPanelHovered(false);
+      }, 100),
+    );
+  };
+
   return (
     <>
+      {isPanelHovered && (
+        <div
+          onMouseEnter={debouncedMouseEnter}
+          onMouseLeave={debouncedMouseLeave}
+          style={{
+            top: `${cursorPosition.y - 88}px`, // assign height of tooltip dynamically
+          }}
+          className={cn(
+            "absolute left-[392px] z-50 flex w-64 grow border-[0.5px]",
+            "animate-in  fade-in-0 zoom-in-95 border-valence-black bg-valence-white p-4 drop-shadow-md",
+          )}
+        >
+          <ComingSoonTooltipContent />
+        </div>
+      )}
       <div className="flex flex-col  gap-6 border-b border-valence-black p-4 pb-8">
         <div className="flex flex-col gap-2">
           <h1 className="font-bold">Rebalancer account</h1>
@@ -95,14 +133,16 @@ export const SidePanel: React.FC<{
         </div>
       </div>
 
-      <div className="relative flex grow flex-col border-b border-valence-black ">
-        <TooltipWrapper
-          sideOffset={8}
-          asChild
-          content={<ComingSoonTooltipContent />}
-        >
-          <div className="absolute z-10 flex h-full w-full flex-col bg-valence-black/25  " />
-        </TooltipWrapper>
+      <div
+        onPointerMove={handlePointerMove}
+        className="relative flex grow flex-col border-b  border-valence-black"
+      >
+        <div
+          onMouseMove={debouncedMouseEnter}
+          onMouseEnter={debouncedMouseEnter}
+          onMouseLeave={debouncedMouseLeave}
+          className="absolute z-10 flex h-full w-full flex-col bg-valence-black/25"
+        />
 
         <div className="flex flex-col  gap-6 p-4 pb-8 ">
           <div className="flex flex-col gap-3">

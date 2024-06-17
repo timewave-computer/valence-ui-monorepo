@@ -17,7 +17,7 @@ const HomePage = () => {
         </div>
 
         <div className="flex flex-col gap-x-10  md:grid md:grid-cols-2">
-          <h2 className="col-start-1 row-start-1 border-black  px-4 font-bold md:border-t md:pt-4">
+          <h2 className="col-start-1 row-start-1 border-black  px-4 text-lg font-semibold md:border-t md:pt-4">
             Covenants
           </h2>
           <p className="col-start-1 row-start-2 p-4 pt-2">
@@ -49,7 +49,7 @@ const HomePage = () => {
           />
           <div className=" col-start-1 row-start-5 mt-12 border-b border-black" />
 
-          <h2 className="col-start-2 row-start-1 border-black px-4 pt-4 font-bold md:border-t">
+          <h2 className="col-start-2 row-start-1 border-black px-4 pt-4 text-lg font-semibold md:border-t">
             Rebalancer
           </h2>
           <p className="col-start-2 row-start-2 p-4 pt-2">
@@ -98,7 +98,7 @@ const HomePage = () => {
             />
 
             <div className="flex flex-col  border-t border-valence-black px-4 pb-16 pt-8">
-              <h2 className="font-bold">Interchain Guild</h2>
+              <h2 className="text-lg font-semibold">Interchain Guild</h2>
 
               <p className="mt-2">
                 Free and open source software is the foundation of crypto-native

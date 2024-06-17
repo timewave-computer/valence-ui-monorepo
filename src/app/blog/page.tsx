@@ -51,7 +51,7 @@ const BlogHome = async () => {
               {new UTCDate(post.date).toLocaleDateString()}
             </span>
 
-            <h1 className="py-2 font-serif text-4xl font-semibold hover:underline">
+            <h1 className="py-2 font-serif text-4xl font-medium hover:underline">
               {post.title}
             </h1>
 

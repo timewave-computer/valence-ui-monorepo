@@ -55,7 +55,7 @@ export const Footer = (
         </div>
       </div>
 
-      <div className="col-span-1 col-start-1 flex flex-col gap-4">
+      <div className="col-span-1 col-start-1 flex flex-col gap-2">
         {showSubscribe ? (
           <>
             {" "}

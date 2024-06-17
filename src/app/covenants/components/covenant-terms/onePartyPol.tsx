@@ -1,11 +1,12 @@
 import { CHAIN_ID_OPTIONS } from "@/app/covenants/const";
-import { VALENCE_DOMAIN, X_HANDLE } from "@/const/socials";
+import { VALENCE_DOMAIN, X_HANDLE, X_URL } from "@/const/socials";
 import {
   AFieldRenderer,
   BFieldRenderer,
   BothFieldRenderer,
 } from "@/app/covenants/components";
 import { CovenantFields } from ".";
+import { LinkText } from "@/components";
 
 export const onePartyPol: CovenantFields = {
   parties: 1,
@@ -482,7 +483,11 @@ export const onePartyPol: CovenantFields = {
 
         <p>
           This proposal was automatically generated at {VALENCE_DOMAIN}. Reach
-          out if you have any questions or feature requests: {X_HANDLE}
+          out if you have any questions or feature requests:{" "}
+          <LinkText className="hover:underline" href={X_URL}>
+            {X_HANDLE}
+          </LinkText>
+          .
         </p>
       </>
     );
