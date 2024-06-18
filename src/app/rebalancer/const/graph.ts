@@ -18,6 +18,7 @@ export enum KeyTag {
   value = ".value",
   projectedValue = ".projected-value",
   projectedAmount = ".projected-amount",
+  targetValue = ".target-value",
 }
 
 export class GraphKey {
@@ -33,6 +34,9 @@ export class GraphKey {
   }
   static projectedAmount(denom: string) {
     return `${denom}${KeyTag.projectedAmount}`;
+  }
+  static targetValue(denom: string) {
+    return `${denom}${KeyTag.targetValue}`;
   }
 }
 
@@ -140,3 +144,15 @@ export class SymbolColors {
     }
   }
 }
+
+export const targetLabelIndex: Record<Scale, (length: number) => number> = {
+  [Scale.Week]: (length) => {
+    return Math.min(1, length);
+  },
+  [Scale.Month]: (length) => {
+    return Math.min(2, length);
+  },
+  [Scale.Year]: (length) => {
+    return Math.min(15, length);
+  },
+};

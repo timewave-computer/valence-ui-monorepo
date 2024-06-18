@@ -1,8 +1,7 @@
 "use client";
 import { ComingSoonTooltipContent, DropdownDEPRECATED } from "@/components";
-import { Fragment, useMemo, useRef, useState } from "react";
-import { FeatureFlags, cn } from "@/utils";
-import { useQueryState } from "nuqs";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
 import { fetchHistoricalValues, fetchLivePortfolio } from "@/server/actions";
 import {
@@ -33,6 +32,9 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { MobileOverlay, LinkText } from "@/components";
 import Image from "next/image";
 import { X_HANDLE, X_URL } from "@/const/socials";
+import { FeatureFlags } from "@/const/flags";
+import { cn } from "@/utils";
+import { useFeatureFlag } from "@/hooks";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
@@ -119,8 +121,9 @@ const RebalancerPage = () => {
     livePortfolio: livePortfolioQuery.data?.portfolio,
   });
 
-  const REBALANCER_NON_USDC_VALUE_ENABLED =
-    FeatureFlags.REBALANCER_NON_USDC_VALUE_ENABLED();
+  const REBALANCER_NON_USDC_VALUE_ENABLED = useFeatureFlag(
+    FeatureFlags.REBALANCER_NONUSDC_VALUE,
+  );
 
   const graphRef = useRef<HTMLDivElement>(null);
   const { portalPosition, overlayRef } = useGraphOverlay(graphRef);
@@ -181,6 +184,15 @@ const RebalancerPage = () => {
     );
   };
 
+  const isGraphTargetsEnabled = useFeatureFlag(
+    FeatureFlags.REBALANCER_GRAPH_TARGETS,
+  );
+
+  const [showTargets, setShowTargets] = useQueryState(
+    "showTargets",
+    parseAsBoolean,
+  );
+
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
       <MobileOverlay text="The Rebalancer is only available on desktop." />
@@ -235,7 +247,7 @@ const RebalancerPage = () => {
             debouncedMouseLeave={debouncedMouseLeave}
           />
         </div>
-        <div className="flex grow flex-col overflow-y-auto bg-valence-lightgray text-sm">
+        <div className="flex grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
           <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
             {REBALANCER_NON_USDC_VALUE_ENABLED && (
               <DropdownDEPRECATED
@@ -270,6 +282,15 @@ const RebalancerPage = () => {
                 </div>
               ))}
             </div>
+            {isGraphTargetsEnabled && (
+              <button
+                disabled={!graphData.length}
+                className={cn(!graphData.length && "cursor-not-allowed")}
+                onClick={() => setShowTargets(!showTargets)}
+              >
+                {showTargets ? "Hide Targets" : "Show Targets"}
+              </button>
+            )}
           </div>
           {graphRef?.current &&
             GraphMessages() &&
@@ -297,32 +318,54 @@ const RebalancerPage = () => {
                 <ValueTooltip keys={[...keys.values, ...keys.projections]} />
               }
             />
-            <ReferenceLine x={todayTimestamp} stroke="black" isFront>
-              <Label
-                value="Today"
-                position="insideTopLeft"
-                style={{ fill: "black" }}
-                offset={10}
-              />
-            </ReferenceLine>
+
             {accountConfigQuery?.data?.targets.map((target) => {
               const valuekey = GraphKey.value(target.asset.name);
               const projectionKey = GraphKey.projectedValue(target.asset.name);
+              const targetKey = GraphKey.targetValue(target.asset.name);
               return (
                 <Fragment key={`line-${target.denom}`}>
+                  <ReferenceLine
+                    key={`label-target-${target.denom}`}
+                    x={todayTimestamp}
+                    stroke="black"
+                    isFront
+                  >
+                    <Label
+                      value="Today"
+                      position="insideTopLeft"
+                      style={{ fill: "black" }}
+                      offset={10}
+                    />
+                  </ReferenceLine>
                   <Line
                     dataKey={valuekey}
                     type="monotone"
                     dot={false}
+                    strokeWidth={showTargets && isGraphTargetsEnabled ? 1.7 : 1}
                     stroke={SymbolColors.get(target.asset.symbol)}
                     isAnimationActive={false}
                   />
+                  {isGraphTargetsEnabled && showTargets && (
+                    <>
+                      <Line
+                        dataKey={targetKey}
+                        type="monotone"
+                        dot={false}
+                        stroke={SymbolColors.get(target.asset.symbol)}
+                        strokeWidth={0.7}
+                        isAnimationActive={false}
+                        strokeDasharray="2 2 2"
+                      />
+                    </>
+                  )}
                   <Line
                     dataKey={projectionKey}
                     type="monotone"
                     dot={false}
                     stroke={SymbolColors.get(target.asset.symbol)}
                     isAnimationActive={false}
+                    strokeWidth={showTargets && isGraphTargetsEnabled ? 1.7 : 1}
                     strokeDasharray="3 3"
                   />
                 </Fragment>

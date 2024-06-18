@@ -50,6 +50,7 @@ export const useHistoricalValueGraph = ({
     config?.targets?.forEach((target) => {
       result.push(GraphKey.value(target.asset.name));
       result.push(GraphKey.projectedValue(target.asset.name));
+      result.push(GraphKey.targetValue(target.asset.name));
     });
     return result;
   }, [config?.targets]);
@@ -105,7 +106,9 @@ export const useHistoricalValueGraph = ({
 
   const historicalGraphData: GraphData = useMemo(() => {
     return data.map((graphDataPoint) => {
-      const restOfKeys: { [key: string]: number } = {};
+      const balances: { [key: string]: number } = {};
+      const values: { [key: string]: number } = {};
+      const targetValues: { [key: string]: number } = {};
       config?.targets.forEach((target) => {
         const value = graphDataPoint.tokens.find(
           (t) => t.denom === target.denom,
@@ -114,14 +117,24 @@ export const useHistoricalValueGraph = ({
           // should not happen but handle it just in case
           return;
         }
-        restOfKeys[GraphKey.balance(target.asset.name)] = value.amount;
-        restOfKeys[GraphKey.value(target.asset.name)] =
-          value.amount * value.price;
+
+        // write target value for each asset
+        balances[GraphKey.balance(target.asset.name)] = value.amount;
+        values[GraphKey.value(target.asset.name)] = value.amount * value.price;
       });
 
+      const totalValue = Object.values(values).reduce((acc, value: number) => {
+        return acc + value;
+      });
+      config?.targets.forEach((target) => {
+        targetValues[GraphKey.targetValue(target.asset.name)] =
+          totalValue * target.percentage;
+      });
       return {
         timestamp: graphDataPoint.timestamp,
-        ...restOfKeys,
+        ...values,
+        ...balances,
+        ...targetValues,
       };
     });
   }, [data, config?.targets]);
@@ -130,6 +143,9 @@ export const useHistoricalValueGraph = ({
     if (data.length === 0) return [];
     if (!config?.pid || !config?.targets || !config?.targets.length) return [];
     let latest = data[data.length - 1].tokens;
+    const lastTotalValue = latest.reduce((acc, { amount, price }) => {
+      return acc + amount * price;
+    }, 0);
 
     const simulationInput = latest.map((balance) => {
       const targetConfig = config.targets.find(
@@ -160,15 +176,17 @@ export const useHistoricalValueGraph = ({
         timestamp: ts.getTime(),
         ...latest.reduce(
           (acc, { denom, price }, i) => {
-            const asset = config?.targets.find(
+            const target = config?.targets.find(
               (target) => target.denom === denom,
-            )?.asset;
-            if (!asset) return acc; // should not happen but just in case
+            );
+            if (!target) return acc; // should not happen but just in case
             const amount = Number(tokenAmounts[i].toFixed(6));
             return {
               ...acc,
-              [GraphKey.projectedValue(asset.name)]: amount * price,
-              [GraphKey.projectedAmount(asset.name)]: amount,
+              [GraphKey.projectedValue(target.asset.name)]: amount * price,
+              [GraphKey.projectedAmount(target.asset.name)]: amount,
+              [GraphKey.targetValue(target.asset.name)]:
+                lastTotalValue * target.percentage,
             };
           },
           {} as Record<string, number>,

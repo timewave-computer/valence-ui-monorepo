@@ -5,7 +5,7 @@ import {
   LinkText,
   MobileOverlay,
 } from "@/components";
-import { FeatureFlags, cn } from "@/utils";
+import { cn } from "@/utils";
 import { useState } from "react";
 import Image from "next/image";
 import { X_HANDLE, X_URL } from "@/const/socials";
@@ -20,6 +20,9 @@ import {
   ContractDisplayMode,
   POL_TYPE_PARTIES_OPTIONS,
 } from "@/app/covenants/const";
+
+import { FeatureFlags } from "@/const/flags";
+import { useFeatureFlag } from "@/hooks";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -84,6 +87,8 @@ const CovenantPage = () => {
     );
   };
 
+  const canViewPol = useFeatureFlag(FeatureFlags.COVENANTS_VIEW_POL);
+
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
       <MobileOverlay text="Covenants are only available on desktop." />
@@ -116,7 +121,7 @@ const CovenantPage = () => {
             </p>
 
             <p className="mt-4 font-bold">Covenant type</p>
-            {FeatureFlags.COVENANTS_TOGGLE_ENABLED() ? (
+            {canViewPol ? (
               <DropdownDEPRECATED
                 options={TYPE_OPTIONS}
                 selected={covenantTypeSelection}
