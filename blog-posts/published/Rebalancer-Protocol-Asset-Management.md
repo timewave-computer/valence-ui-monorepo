@@ -32,14 +32,14 @@ The Rebalancer will be available in the coming weeks on IBC-connected chains, as
 
 The Rebalancer is composed of two key components: the Portfolio Computer and the Auction. Any account on any IBC-connected chain that has an ICA controller or Polytone can use the Rebalancer.
 
-![Figure 1](/img/blog/rebalancer-figure-1.png)
+![Figure 1](/img/blog/rebalancer-figure1-white.png)
 _Figure 1. The Rebalancer is built using the CosmWasm stack. It is composed of two key components, the Portfolio Computer and the Auction systems._
 
 ## Portfolio Computer
 
 The Portfolio Computer, described in Figure 2, is a control loop mechanism that uses feedback to periodically compute orders. The Portfolio Computer is triggered at every Rebalancing interval. It issues a correction based on proportional, integral, and derivative (PID) terms relative to the calculated error. The output of the control loop can optionally be clamped to limit large orders. Protocols set the tuning constants (Kp, Ki, Kd) when the contract is configured and they can continue to update the settings while the Rebalancer contract is active.
 
-![Figure 2](/img/blog/rebalancer-figure-2.png)
+![Figure 2](/img/blog/rebalancer-figure2-white.png)
 _Figure 2. Portfolio Computer_
 
 Once created, protocols can adjust the Rebalancer in the following ways:
@@ -54,7 +54,7 @@ The Auction system allows the creation of multiple simultaneous Dutch auctions. 
 
 Auctions start at the conclusion of every rebalancing interval and last for the length of the configured auction window. During this window, the price for the asset descends until market makers purchase the assets or the asset reserve price is reached, whichever comes first. Once an auction receives a winning bid, the order is executed and payments are returned back to portfolio accounts pro rata by volume.
 
-![Figure 3](/img/blog/rebalancer-figure-3.png)
+![Figure 3](/img/blog/rebalancer-figure3-white.png)
 _Figure 3. Auction system with A auctions receiving aggregated orders from P portfolios._
 
 # Conclusion
