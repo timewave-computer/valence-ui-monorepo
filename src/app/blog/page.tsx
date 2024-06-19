@@ -16,9 +16,6 @@ const BlogHome = async () => {
   let posts: PostList = [];
   let error = null;
 
-  // temporary, we only have 1 post
-  return <BlogPost params={{ slug: "Valence-Purpose", allowGoBack: false }} />;
-
   try {
     posts = getSortedPosts();
   } catch (e) {
