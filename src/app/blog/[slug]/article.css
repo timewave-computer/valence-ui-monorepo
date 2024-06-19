@@ -3,10 +3,10 @@ article {
   @apply flex max-w-[680px] flex-col gap-3 font-sans;
 }
 article > h1 {
-  @apply pt-2 font-serif text-2xl font-semibold;
+  @apply pt-2 font-serif text-2xl font-medium;
 }
 article > h2 {
-  @apply pt-1 font-serif text-xl font-semibold;
+  @apply pt-1 font-serif text-xl font-medium;
 }
 
 article > em {
@@ -29,13 +29,17 @@ article > ol {
 }
 
 article > p > img {
-  @apply mx-auto;
+  @apply mx-auto pt-3;
 }
 
 article > p > a {
   @apply border-valence-blue text-valence-blue hover:border-b focus:border-b;
 }
 
-article > p > img + em {
-  @apply flex justify-center py-2  text-center text-sm not-italic;
+article > p > img {
+  @apply flex justify-center py-2 text-center;
+}
+
+article > p > em {
+  @apply flex justify-center pb-2 pt-1 text-center text-xs not-italic;
 }

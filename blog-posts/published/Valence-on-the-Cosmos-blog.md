@@ -1,7 +1,6 @@
 ---
 title: "Valence on the Cosmos Blog"
 date: 2024-06-18 03:00:00 -0700
-author: Timewave
 description: A fully developed vision for the interchain involves more than just a network of many sovereign blockchains — it is a rich economy where interoperability allows crypto-native organizations to engage in commerce. Valence aims to do just that by increasing the scope and scale of what crypto-native organizations can do together.
 ---
 

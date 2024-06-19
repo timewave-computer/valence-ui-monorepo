@@ -47,7 +47,7 @@ const BlogPost = async ({
     );
 
   return (
-    <div className="min-h-1/2 flex grow flex-col gap-4 pb-20">
+    <div className="min-h-1/2 flex grow flex-col gap-2 pb-20">
       <RouterButton
         options={{ back: true }}
         className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
@@ -56,7 +56,7 @@ const BlogPost = async ({
 
         <span className="text-sm font-medium tracking-tight "> Go Back</span>
       </RouterButton>
-      <section className="pb-4">
+      <section>
         <span className="text-sm">
           {new UTCDate(postData.frontMatter.date).toLocaleDateString()}
         </span>
@@ -64,7 +64,6 @@ const BlogPost = async ({
         <h1 className="py-2 font-serif text-4xl font-medium">
           {postData.frontMatter.title}
         </h1>
-        <span className="pt-1">By {postData.frontMatter.author}</span>
       </section>
 
       <article dangerouslySetInnerHTML={{ __html: postData.content }} />

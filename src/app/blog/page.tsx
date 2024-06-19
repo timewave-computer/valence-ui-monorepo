@@ -51,10 +51,7 @@ const BlogHome = async () => {
             <h1 className="py-2 font-serif text-4xl font-medium hover:underline">
               {post.title}
             </h1>
-
-            <span className="pt-1">By {post.author}</span>
-
-            <p className="pt-4 text-lg">{trimContent(post.preview)}</p>
+            <p className="text-lg">{trimContent(post.preview)}</p>
           </section>
         </Link>
       ))}

@@ -1,7 +1,6 @@
 ---
 title: "Introducing Valence"
 date: 2024-06-12 11:32:00 -0400
-author: "Timewave"
 description: "Crypto is the medium through which society will produce the next generation of digital institutions. Valence's purpose is to maximize long-term, permissionless collaboration by empowering these new institutions."
 ---
 

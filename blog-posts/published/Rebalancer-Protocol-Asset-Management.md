@@ -1,7 +1,6 @@
 ---
 title: "Rebalancer: Protocol Asset Management"
 date: 2024-06-19 10:11:00 -0700
-author: "Timewave"
 description: Valence’s Rebalancer is a way for crypto-native organizations — such as protocol,s blockchains, dApps, rollups, and DAOs — to trustlessly manage their balance sheets.
 ---
 

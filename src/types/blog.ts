@@ -3,7 +3,6 @@ import { z } from "zod";
 export const PostFrontMatterSchema = z.object({
   title: z.string(),
   date: z.string(),
-  author: z.string(),
   description: z.string(),
 });
 
