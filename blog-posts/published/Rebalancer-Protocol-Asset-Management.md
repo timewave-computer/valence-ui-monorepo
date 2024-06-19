@@ -42,9 +42,9 @@ _Figure 2. Portfolio Computer_
 
 Once created, protocols can adjust the Rebalancer in the following ways:
 
-Creating a portfolio with a given configuration
-Updating a portfolio’s configuration
-Creating a one-time order to be added on to the Auction (e.g., to convert an extra x% of assets in to stablecoins)
+- Creating a portfolio with a given configuration
+- Updating a portfolio’s configuration
+- Creating a one-time order to be added on to the Auction (e.g., to convert an extra x% of assets in to stablecoins)
 
 # Auction
 
