@@ -48,9 +48,9 @@ export const useHistoricalValueGraph = ({
   const keysToGraph = useMemo(() => {
     let result: string[] = [];
     config?.targets?.forEach((target) => {
-      result.push(GraphKey.value(target.asset.name));
+      result.push(GraphKey.historicalValue(target.asset.name));
       result.push(GraphKey.projectedValue(target.asset.name));
-      result.push(GraphKey.targetValue(target.asset.name));
+      result.push(GraphKey.historicalTargetValue(target.asset.name));
     });
     return result;
   }, [config?.targets]);
@@ -119,15 +119,16 @@ export const useHistoricalValueGraph = ({
         }
 
         // write target value for each asset
-        balances[GraphKey.balance(target.asset.name)] = value.amount;
-        values[GraphKey.value(target.asset.name)] = value.amount * value.price;
+        balances[GraphKey.historicalAmount(target.asset.name)] = value.amount;
+        values[GraphKey.historicalValue(target.asset.name)] =
+          value.amount * value.price;
       });
 
       const totalValue = Object.values(values).reduce((acc, value: number) => {
         return acc + value;
       });
       config?.targets.forEach((target) => {
-        targetValues[GraphKey.targetValue(target.asset.name)] =
+        targetValues[GraphKey.historicalTargetValue(target.asset.name)] =
           totalValue * target.percentage;
       });
       return {
@@ -185,7 +186,7 @@ export const useHistoricalValueGraph = ({
               ...acc,
               [GraphKey.projectedValue(target.asset.name)]: amount * price,
               [GraphKey.projectedAmount(target.asset.name)]: amount,
-              [GraphKey.targetValue(target.asset.name)]:
+              [GraphKey.projectedTargetValue(target.asset.name)]:
                 lastTotalValue * target.percentage,
             };
           },
@@ -301,7 +302,7 @@ export const useHistoricalValueGraph = ({
     graphData: allData,
     keys: {
       projections: keysToGraph.filter((k) => k.includes(KeyTag.projectedValue)),
-      values: keysToGraph.filter((k) => k.includes(KeyTag.value)),
+      values: keysToGraph.filter((k) => k.includes(KeyTag.historicalValue)),
     },
     xAxisTicks,
     yAxisTicks,

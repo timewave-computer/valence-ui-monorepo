@@ -86,7 +86,7 @@ const HomePage = () => {
         <div className="flex flex-col gap-x-10 border-b  border-valence-black md:flex-row  ">
           <div className="flex grow basis-0 flex-col justify-between md:gap-20">
             <h2 className="px-6 py-8 font-serif text-[3rem] leading-[0.9] md:text-[4.5rem]">
-              Creating tools for crypto-native institutions
+              Tools for long-term, permissionless collaboration
             </h2>
 
             <Image

@@ -20,9 +20,8 @@ import {
   ContractDisplayMode,
   POL_TYPE_PARTIES_OPTIONS,
 } from "@/app/covenants/const";
-
-import { FeatureFlags } from "@/const/flags";
-import { useFeatureFlag } from "@/hooks";
+import { FeatureFlags } from "@/const/feature-flags";
+import { useFeatureFlag } from "@/context/feature-flags-provider";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =

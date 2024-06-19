@@ -1,7 +1,7 @@
 "use client";
 import { ComingSoonTooltipContent, DropdownDEPRECATED } from "@/components";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { parseAsBoolean, useQueryState } from "nuqs";
+import { Fragment, useMemo, useRef, useState } from "react";
+import { useQueryState } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
 import { fetchHistoricalValues, fetchLivePortfolio } from "@/server/actions";
 import {
@@ -23,6 +23,7 @@ import {
   GraphKey,
   LOAD_CONFIG_ERROR,
   SymbolColors,
+  GraphStyles,
 } from "@/app/rebalancer/const";
 import { USDC_DENOM } from "@/const/usdc";
 import { createPortal } from "react-dom";
@@ -32,9 +33,9 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { MobileOverlay, LinkText } from "@/components";
 import Image from "next/image";
 import { X_HANDLE, X_URL } from "@/const/socials";
-import { FeatureFlags } from "@/const/flags";
+import { FeatureFlags } from "@/const/feature-flags";
 import { cn } from "@/utils";
-import { useFeatureFlag } from "@/hooks";
+import { useFeatureFlag } from "@/context/feature-flags-provider";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
@@ -188,10 +189,7 @@ const RebalancerPage = () => {
     FeatureFlags.REBALANCER_GRAPH_TARGETS,
   );
 
-  const [showTargets, setShowTargets] = useQueryState(
-    "showTargets",
-    parseAsBoolean,
-  );
+  const [showTargets, setShowTargets] = useState(false);
 
   return (
     <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
@@ -320,9 +318,16 @@ const RebalancerPage = () => {
             />
 
             {accountConfigQuery?.data?.targets.map((target) => {
-              const valuekey = GraphKey.value(target.asset.name);
-              const projectionKey = GraphKey.projectedValue(target.asset.name);
-              const targetKey = GraphKey.targetValue(target.asset.name);
+              const historicalValue = GraphKey.historicalValue(
+                target.asset.name,
+              );
+              const projectedValue = GraphKey.projectedValue(target.asset.name);
+              const historicalTarget = GraphKey.historicalTargetValue(
+                target.asset.name,
+              );
+              const projectedTarget = GraphKey.projectedTargetValue(
+                target.asset.name,
+              );
               return (
                 <Fragment key={`line-${target.denom}`}>
                   <ReferenceLine
@@ -339,34 +344,44 @@ const RebalancerPage = () => {
                     />
                   </ReferenceLine>
                   <Line
-                    dataKey={valuekey}
+                    dataKey={historicalValue}
                     type="monotone"
                     dot={false}
-                    strokeWidth={showTargets && isGraphTargetsEnabled ? 1.7 : 1}
+                    strokeWidth={GraphStyles.width.regular}
                     stroke={SymbolColors.get(target.asset.symbol)}
                     isAnimationActive={false}
+                    strokeDasharray={GraphStyles.lineStyle.solid}
                   />
                   {isGraphTargetsEnabled && showTargets && (
                     <>
                       <Line
-                        dataKey={targetKey}
+                        dataKey={historicalTarget}
                         type="monotone"
                         dot={false}
                         stroke={SymbolColors.get(target.asset.symbol)}
-                        strokeWidth={0.7}
+                        strokeWidth={GraphStyles.width.thin}
                         isAnimationActive={false}
-                        strokeDasharray="2 2 2"
+                        strokeDasharray={GraphStyles.lineStyle.dotted}
+                      />
+                      <Line
+                        dataKey={projectedTarget}
+                        type="monotone"
+                        dot={false}
+                        stroke={SymbolColors.get(target.asset.symbol)}
+                        strokeWidth={GraphStyles.width.thin}
+                        isAnimationActive={false}
+                        strokeDasharray={GraphStyles.lineStyle.dashed}
                       />
                     </>
                   )}
                   <Line
-                    dataKey={projectionKey}
+                    dataKey={projectedValue}
                     type="monotone"
                     dot={false}
                     stroke={SymbolColors.get(target.asset.symbol)}
                     isAnimationActive={false}
-                    strokeWidth={showTargets && isGraphTargetsEnabled ? 1.7 : 1}
-                    strokeDasharray="3 3"
+                    strokeWidth={GraphStyles.width.regular}
+                    strokeDasharray={GraphStyles.lineStyle.dashed}
                   />
                 </Fragment>
               );

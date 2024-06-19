@@ -8,6 +8,7 @@ import React from "react";
 export const dotVariants = cva("h-2 w-2 rounded-full", {
   variants: {
     variant: {
+      placeholder: "bg-transparent",
       "#FF2A00": "bg-graph-red",
       "#00A3FF": "bg-graph-blue",
       "#EA80D1": "bg-graph-pink",

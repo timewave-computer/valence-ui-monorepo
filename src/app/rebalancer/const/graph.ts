@@ -14,20 +14,21 @@ export enum Scale {
 }
 
 export enum KeyTag {
-  balance = ".bal",
-  value = ".value",
+  historicalAmount = ".historical-amount",
+  historicalValue = ".historical-value",
   projectedValue = ".projected-value",
   projectedAmount = ".projected-amount",
-  targetValue = ".target-value",
+  historicalTargetValue = ".historical-target-value",
+  projectedTargetValue = ".projected-target-value",
 }
 
 export class GraphKey {
-  static balance(denom: string) {
-    return `${denom}${KeyTag.balance}`;
+  static historicalAmount(denom: string) {
+    return `${denom}${KeyTag.historicalAmount}`;
   }
 
-  static value(denom: string) {
-    return `${denom}${KeyTag.value}`;
+  static historicalValue(denom: string) {
+    return `${denom}${KeyTag.historicalValue}`;
   }
   static projectedValue(denom: string) {
     return `${denom}${KeyTag.projectedValue}`;
@@ -35,8 +36,11 @@ export class GraphKey {
   static projectedAmount(denom: string) {
     return `${denom}${KeyTag.projectedAmount}`;
   }
-  static targetValue(denom: string) {
-    return `${denom}${KeyTag.targetValue}`;
+  static historicalTargetValue(denom: string) {
+    return `${denom}${KeyTag.historicalTargetValue}`;
+  }
+  static projectedTargetValue(denom: string) {
+    return `${denom}${KeyTag.projectedTargetValue}`;
   }
 }
 
@@ -154,5 +158,17 @@ export const targetLabelIndex: Record<Scale, (length: number) => number> = {
   },
   [Scale.Year]: (length) => {
     return Math.min(15, length);
+  },
+};
+
+export const GraphStyles = {
+  width: {
+    regular: 1.7,
+    thin: 0.7,
+  },
+  lineStyle: {
+    dashed: "4",
+    solid: "",
+    dotted: "2 2",
   },
 };

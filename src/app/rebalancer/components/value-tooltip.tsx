@@ -30,14 +30,14 @@ export const ValueTooltip = ({
     .filter((k) => {
       return isProjection
         ? k.includes(KeyTag.projectedValue)
-        : k.includes(KeyTag.value);
+        : k.includes(KeyTag.historicalValue);
     })
     .map((k) => {
       const denom = k.split(".")[0];
 
       const value = isProjection
         ? Number(data[GraphKey.projectedValue(denom)])
-        : Number(data[GraphKey.value(denom)]);
+        : Number(data[GraphKey.historicalValue(denom)]);
       return value;
     })
     .reduce((acc: number, value: number) => {
@@ -64,7 +64,7 @@ export const ValueTooltip = ({
       <table className="">
         <thead className="">
           <TableRow>
-            <HeaderCell>Asset</HeaderCell>
+            <AssetCell placeholderDot={true} symbol="Asset" />
             <HeaderCell className="text-end">Amount</HeaderCell>
             <HeaderCell className="text-end">USD Value</HeaderCell>
           </TableRow>
@@ -73,7 +73,7 @@ export const ValueTooltip = ({
           {isProjection
             ? keys
                 .filter((k) => k.includes(KeyTag.projectedValue))
-                .map((k: string, i: number) => {
+                .map((k: string) => {
                   const symbol = k.split(".")[0];
                   let amount = data[GraphKey.projectedAmount(symbol)];
                   if (isNaN(amount)) amount = 0;
@@ -82,7 +82,7 @@ export const ValueTooltip = ({
 
                   return (
                     <TableRow key={`tooltip-${label}-${k}`}>
-                      <AssetCell i={i} symbol={symbol} />
+                      <AssetCell symbol={symbol} />
                       <NumberCell className="text-end">
                         {displayNumber(amount, { precision: null })}
                       </NumberCell>
@@ -91,15 +91,15 @@ export const ValueTooltip = ({
                   );
                 })
             : keys
-                .filter((k) => k.includes(KeyTag.value))
+                .filter((k) => k.includes(KeyTag.historicalValue))
                 .map((k: string, i: number) => {
                   const symbol = k.split(".")[0];
-                  let amount = data[GraphKey.balance(symbol)];
+                  let amount = data[GraphKey.historicalAmount(symbol)];
                   if (isNaN(amount)) amount = 0;
-                  const value = data[GraphKey.value(symbol)];
+                  const value = data[GraphKey.historicalValue(symbol)];
                   return (
                     <TableRow key={`tooltip-${label}-${k}`}>
-                      <AssetCell i={i} symbol={symbol} />
+                      <AssetCell symbol={symbol} />
                       <NumberCell className="text-end">
                         {displayNumber(amount, { precision: null })}
                       </NumberCell>
@@ -108,7 +108,7 @@ export const ValueTooltip = ({
                   );
                 })}
           <TableRow className="border-t-[0.5px] border-valence-gray">
-            <HeaderCell className="py-1.5 text-xs">Total</HeaderCell>
+            <AssetCell placeholderDot={true} symbol="Total" />
             <TextCell></TextCell>
             <NumberCell className="text-end">{`$${displayNumber(totalValue, { precision: 2 })}`}</NumberCell>
           </TableRow>
@@ -118,13 +118,21 @@ export const ValueTooltip = ({
   );
 };
 
-const AssetCell: React.FC<{ i: number; symbol: string }> = ({ i, symbol }) => {
+const AssetCell: React.FC<{ symbol: string; placeholderDot?: boolean }> = ({
+  symbol,
+  placeholderDot = false,
+}) => {
   return (
     <TextCell
       className="flex items-center  justify-start gap-1 text-xs"
       asHeading={true}
     >
-      <ColoredDot variant={SymbolColors.get(symbol)} />
+      {placeholderDot ? (
+        <ColoredDot variant="placeholder" />
+      ) : (
+        <ColoredDot variant={SymbolColors.get(symbol)} />
+      )}
+
       <span>{symbol}</span>
     </TextCell>
   );
