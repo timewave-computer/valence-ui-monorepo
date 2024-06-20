@@ -52,9 +52,7 @@ export const IndexerRebalancerConfigResponseSchema = z.object({
 /***
  * Time series util
  */
-export const TimestepQuerySchema = <T extends ZodType<any, any>>(
-  valueSchema: T,
-) => {
+const TimestepQuerySchema = <T extends ZodType<any, any>>(valueSchema: T) => {
   return z.array(
     z.object({
       at: z.string(),
@@ -74,4 +72,20 @@ export const IndexerHistoricalBalancesResponseSchema = TimestepQuerySchema(
 
 export type IndexerHistoricalBalancesResponse = z.infer<
   typeof IndexerHistoricalBalancesResponseSchema
+>;
+
+export const HistoricalTargetSchema = z.object({
+  denom: z.string(),
+  percentage: z.string(),
+  min_balance: z.string().nullable(),
+  last_input: z.string().nullable(),
+  last_i: z.string(),
+});
+
+export const IndexerHistoricalTargetsResponseSchema = TimestepQuerySchema(
+  z.array(HistoricalTargetSchema).nullable(),
+);
+
+export type IndexerHistoricalTargetsResponse = z.infer<
+  typeof IndexerHistoricalTargetsResponseSchema
 >;

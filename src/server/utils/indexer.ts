@@ -20,6 +20,13 @@ export class IndexerUrl {
   static fundsInAuction(address: string) {
     return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${address}/valence/account/fundsInAuction`;
   }
+  static historicalTargets(
+    address: string,
+    { startDate, endDate }: { startDate: Date; endDate: Date },
+  ) {
+    const range = getRange(startDate, endDate);
+    return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${address}/valence/account/rebalancerTargets?times=${range}&timeStep=${timeStep}`;
+  }
   static historicalBalances(
     address: string,
     {

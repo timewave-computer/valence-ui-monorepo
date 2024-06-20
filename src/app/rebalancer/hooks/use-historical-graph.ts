@@ -21,11 +21,13 @@ import { addDays, subDays } from "date-fns";
 import type { GraphData } from "@/app/rebalancer/components/graph";
 import { useAtom } from "jotai";
 import { localTimeAtom } from "@/ui-globals";
+import { IndexerHistoricalTargetsResponse } from "@/types/indexer";
 
 type HistoricalValueGraphProps = {
   config?: FetchAccountConfigReturnValue;
   data?: FetchHistoricalValuesReturnValue["values"];
   livePortfolio?: FetchLivePortfolioReturnValue["portfolio"];
+  historicalTargets?: FetchHistoricalValuesReturnValue["historicalTargets"];
 };
 
 /***
@@ -38,6 +40,7 @@ export const useHistoricalValueGraph = ({
   data: rawData,
   config,
   livePortfolio,
+  historicalTargets,
 }: HistoricalValueGraphProps): HistoricalValueGraphReturnValue => {
   const [scale, setScale] = useQueryState(
     "scale",
@@ -127,9 +130,21 @@ export const useHistoricalValueGraph = ({
       const totalValue = Object.values(values).reduce((acc, value: number) => {
         return acc + value;
       });
+
+      let historicalTargetsForTimestamp = findClosestHistoricalTargetsTimestamp(
+        graphDataPoint.timestamp,
+        historicalTargets,
+      );
+
       config?.targets.forEach((target) => {
-        targetValues[GraphKey.historicalTargetValue(target.asset.name)] =
-          totalValue * target.percentage;
+        const percentage = Number(
+          historicalTargetsForTimestamp?.find((t) => t.denom === target.denom)
+            ?.percentage,
+        );
+        if (percentage) {
+          targetValues[GraphKey.historicalTargetValue(target.asset.name)] =
+            totalValue * percentage;
+        }
       });
       return {
         timestamp: graphDataPoint.timestamp,
@@ -323,3 +338,27 @@ type HistoricalValueGraphReturnValue = {
   };
   setScale: (s: Scale) => void;
 };
+
+export function findClosestHistoricalTargetsTimestamp(
+  balanceTimestamp: number,
+  historicalTargets?: IndexerHistoricalTargetsResponse,
+): IndexerHistoricalTargetsResponse[number]["value"] | null {
+  if (!historicalTargets || historicalTargets.length === 0) {
+    return null;
+  }
+
+  let closest = historicalTargets[0];
+  let smallestDiff = Math.abs(
+    balanceTimestamp - Number(historicalTargets[0].at),
+  );
+
+  for (let i = 1; i < historicalTargets.length; i++) {
+    const diff = Math.abs(balanceTimestamp - Number(historicalTargets[i].at));
+    if (diff < smallestDiff) {
+      smallestDiff = diff;
+      closest = historicalTargets[i];
+    }
+  }
+
+  return closest.value;
+}

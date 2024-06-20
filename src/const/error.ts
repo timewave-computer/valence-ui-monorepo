@@ -10,6 +10,7 @@ export const ERROR_MESSAGES = {
   INDEXER_FUNDS_IN_AUCTION_ERROR: "Failed to fetch funds in auction",
   INDEXER_HISTORICAL_BALANCES_ERROR: "Failed to fetch historical balances",
   INDEXER_HISTORICAL_PRICES_ERROR: "Failed to fetch historical prices",
+  INDEXER_HISTORICAL_TARGETS_ERROR: "Failed to fetch historical targets",
 };
 
 // here for parsing specific errors in the client. server actions -> client loses context of error instance

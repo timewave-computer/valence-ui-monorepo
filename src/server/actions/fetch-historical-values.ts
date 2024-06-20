@@ -1,6 +1,6 @@
 "use server";
 import { UTCDate } from "@date-fns/utc";
-import { AccountTarget } from "@/server/actions";
+import { AccountTarget, fetchHistoricalTargets } from "@/server/actions";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import {
   CACHE_KEYS,
@@ -12,6 +12,7 @@ import { USDC_DENOM } from "@/const/usdc";
 import {
   IndexerHistoricalBalancesResponse,
   IndexerHistoricalBalancesResponseSchema,
+  IndexerHistoricalTargetsResponse,
 } from "@/types/indexer";
 import { baseToUnit } from "@/utils";
 import {
@@ -39,6 +40,13 @@ export async function fetchHistoricalValues({
    */
   const startInUTC = new UTCDate(startDate);
   const endInUTC = new UTCDate(endDate);
+
+  const historicalTargets = await fetchHistoricalTargets({
+    address,
+    startDate,
+    endDate,
+  });
+
   const historicBalances = await fetchHistoricalBalances(address, {
     startDate: startInUTC,
     endDate: endInUTC,
@@ -90,6 +98,7 @@ export async function fetchHistoricalValues({
   return {
     baseDenom: USDC_DENOM,
     values: results,
+    historicalTargets,
   };
 }
 
@@ -156,6 +165,7 @@ export const fetchHistoricalPrices = async (
 
 export type FetchHistoricalValuesReturnValue = {
   baseDenom: string;
+  historicalTargets: IndexerHistoricalTargetsResponse;
   values: Array<{
     timestamp: number;
     readableDate: string;

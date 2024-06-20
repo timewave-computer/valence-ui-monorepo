@@ -40,7 +40,7 @@ const BlogHome = async () => {
     );
 
   return (
-    <div className="min-h-1/2 flex grow flex-col items-start gap-12 pb-24">
+    <div className="min-h-1/2 flex grow flex-col items-start gap-12 pb-24 pt-7">
       {posts.map((post) => (
         <Link key={`blog-post-${post.slug}`} href={`/blog/${post.slug}`}>
           <section className="">

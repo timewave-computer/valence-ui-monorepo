@@ -3,7 +3,11 @@ import { ComingSoonTooltipContent, DropdownDEPRECATED } from "@/components";
 import { Fragment, useMemo, useRef, useState } from "react";
 import { useQueryState } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
-import { fetchHistoricalValues, fetchLivePortfolio } from "@/server/actions";
+import {
+  fetchHistoricalTargets,
+  fetchHistoricalValues,
+  fetchLivePortfolio,
+} from "@/server/actions";
 import {
   Graph,
   Table,
@@ -83,6 +87,7 @@ const RebalancerPage = () => {
       }),
     enabled: isFetchLivePortfolioEnabled,
   });
+
   const { localTime } = useSetLocalTime();
   const historicalValuesQuery = useQuery({
     staleTime: 5 * 60 * 1000,
@@ -120,6 +125,7 @@ const RebalancerPage = () => {
     data: historicalValuesQuery.data?.values,
     config: accountConfigQuery.data,
     livePortfolio: livePortfolioQuery.data?.portfolio,
+    historicalTargets: historicalValuesQuery.data?.historicalTargets,
   });
 
   const REBALANCER_NON_USDC_VALUE_ENABLED = useFeatureFlag(
@@ -283,7 +289,10 @@ const RebalancerPage = () => {
             {isGraphTargetsEnabled && (
               <button
                 disabled={!graphData.length}
-                className={cn(!graphData.length && "cursor-not-allowed")}
+                className={cn(
+                  "text-sm",
+                  !graphData.length && "cursor-not-allowed text-valence-gray",
+                )}
                 onClick={() => setShowTargets(!showTargets)}
               >
                 {showTargets ? "Hide Targets" : "Show Targets"}
@@ -361,7 +370,7 @@ const RebalancerPage = () => {
                         stroke={SymbolColors.get(target.asset.symbol)}
                         strokeWidth={GraphStyles.width.thin}
                         isAnimationActive={false}
-                        strokeDasharray={GraphStyles.lineStyle.dotted}
+                        strokeDasharray={GraphStyles.lineStyle.solid}
                       />
                       <Line
                         dataKey={projectedTarget}
@@ -370,7 +379,7 @@ const RebalancerPage = () => {
                         stroke={SymbolColors.get(target.asset.symbol)}
                         strokeWidth={GraphStyles.width.thin}
                         isAnimationActive={false}
-                        strokeDasharray={GraphStyles.lineStyle.dashed}
+                        strokeDasharray={GraphStyles.lineStyle.solid}
                       />
                     </>
                   )}
@@ -381,7 +390,7 @@ const RebalancerPage = () => {
                     stroke={SymbolColors.get(target.asset.symbol)}
                     isAnimationActive={false}
                     strokeWidth={GraphStyles.width.regular}
-                    strokeDasharray={GraphStyles.lineStyle.dashed}
+                    strokeDasharray={GraphStyles.lineStyle.dotted}
                   />
                 </Fragment>
               );
