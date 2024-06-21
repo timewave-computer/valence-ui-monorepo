@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import { submitSubscribe } from "@/server/actions/submit-subscribe";
 import Link from "next/link";
-import { GITHUB_URL, X_URL } from "@/const/socials";
+import { GITHUB_URL, VALENCE_DESCRIPTION, X_URL } from "@/const/socials";
 import { cn } from "@/utils";
 
 export const Footer = (
@@ -48,10 +48,7 @@ export const Footer = (
       </Link>
       <div className="col-span-1  col-start-1 justify-between">
         <div className="flex flex-col gap-4">
-          <p>
-            Valence enables long-term alignment among internet-native
-            institutions.
-          </p>
+          <p>{VALENCE_DESCRIPTION}</p>
         </div>
       </div>
 

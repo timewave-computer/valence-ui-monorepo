@@ -7,12 +7,17 @@ import { ReactQueryProvider } from "@/context";
 import { Provider as JotaiProvider } from "jotai";
 import { FeatureFlags } from "@/const/feature-flags";
 import { FeatureFlagsProvider } from "@/context/feature-flags-provider";
+import { VALENCE_DESCRIPTION } from "@/const/socials";
+
+const ABSOLUTE_URL = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : "https://valence.zone";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Valence",
-  description: "",
+  description: VALENCE_DESCRIPTION,
 };
 
 export default function RootLayout({
@@ -26,6 +31,14 @@ export default function RootLayout({
       <JotaiProvider>
         <FeatureFlagsProvider flags={flags}>
           <html lang="en">
+            <meta property="description" content={VALENCE_DESCRIPTION} />
+            <meta property="og:site_name" content="Valence" />
+            <meta property="og:description" content={VALENCE_DESCRIPTION} />
+            <meta property="og:url" content={ABSOLUTE_URL} />
+            <meta
+              property="twitter:description"
+              content={VALENCE_DESCRIPTION}
+            ></meta>
             <body
               className={cn(
                 inter.className,
@@ -33,7 +46,6 @@ export default function RootLayout({
               )}
             >
               <Nav />
-
               {children}
             </body>
           </html>
