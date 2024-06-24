@@ -12,6 +12,10 @@ A UI for the various Valence services, built in Next.JS
   - `jotai` for globals, when useState no longer 'ergonomic'
   - `zustand` for 'state machines'. Use when necessary for more complex state manipulation or modifiyng data outside of react
 
+## Preview Env & Feature Flags
+
+In addition to commit-level previews in vercel, we also have a long-standing 'robot/preview' branch that stays up to date with main via github workflows. This branch is deployed with preview environment variables, and lets us view features that are enabled on in preview.
+
 ## Linting
 
 Linting happens automatically on commit.
