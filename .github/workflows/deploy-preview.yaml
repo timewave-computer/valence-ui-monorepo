@@ -5,7 +5,7 @@ on:
     branches:
       - main
 jobs:
-  rebase-preview:
+  DeployToStaging:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,6 +28,6 @@ jobs:
           git rebase main
 
       - name: Push changes
-        run: git push origin preview --force
+        run: git push origin robot/preview --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
