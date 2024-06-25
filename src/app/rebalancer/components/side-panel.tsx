@@ -79,30 +79,28 @@ export const SidePanel: React.FC<{
 
   return (
     <>
-      <div className="flex flex-col  gap-6 border-b border-valence-black p-4 pb-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="font-bold">Rebalancer account</h1>
+      <div className="flex flex-col gap-2 border-b border-valence-black p-4 ">
+        <h1 className="font-bold">Rebalancer account</h1>
 
-          <DropdownTextField
-            options={
-              data?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS
-            }
-            value={account}
-            onChange={(value) => setAccount(value)}
-            placeholder="neutron12345..."
-          />
+        <DropdownTextField
+          options={
+            data?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS
+          }
+          value={account}
+          onChange={(value) => setAccount(value)}
+          placeholder="neutron12345..."
+        />
 
-          <Button
-            onMouseMove={debouncedMouseEnter}
-            onMouseEnter={debouncedMouseEnter}
-            onMouseLeave={debouncedMouseLeave}
-            className="mt-2"
-            onClick={() => {}}
-            disabled
-          >
-            Connect wallet
-          </Button>
-        </div>
+        <Button
+          onMouseMove={debouncedMouseEnter}
+          onMouseEnter={debouncedMouseEnter}
+          onMouseLeave={debouncedMouseLeave}
+          className="mt-2"
+          onClick={() => {}}
+          disabled
+        >
+          Connect wallet
+        </Button>
       </div>
 
       <div className="relative flex grow flex-col border-b  border-valence-black">

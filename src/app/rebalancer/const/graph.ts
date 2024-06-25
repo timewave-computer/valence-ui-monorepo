@@ -164,11 +164,10 @@ export const targetLabelIndex: Record<Scale, (length: number) => number> = {
 export const GraphStyles = {
   width: {
     regular: 1.4,
-    thin: 0.3,
+    thin: 0.45,
   },
   lineStyle: {
-    dashed: "4",
     solid: "",
-    dotted: "2 2",
+    dotted: "3 3",
   },
 };

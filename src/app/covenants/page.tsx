@@ -94,9 +94,9 @@ const CovenantPage = () => {
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
         <div
           onPointerMove={handlePointerMove}
-          className="  flex  w-[24rem] shrink-0  flex-col items-stretch overflow-hidden overflow-y-auto  border-r border-valence-black pt-4"
+          className="  flex  w-[24rem] shrink-0  flex-col items-stretch overflow-hidden overflow-y-auto  border-r border-valence-black"
         >
-          <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-8">
+          <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-4">
             <Image
               className="mb-6 mt-8"
               src="/img/covenant.svg"
@@ -165,7 +165,7 @@ const CovenantPage = () => {
               onMouseMove={debouncedMouseEnter}
               onMouseEnter={debouncedMouseEnter}
               onMouseLeave={debouncedMouseLeave}
-              className="mt-6"
+              className="mt-2"
               onClick={() => {}}
             >
               Connect wallet

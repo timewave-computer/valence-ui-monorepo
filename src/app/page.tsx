@@ -85,7 +85,7 @@ const HomePage = () => {
 
         <div className="flex flex-col gap-x-10 border-b  border-valence-black md:flex-row  ">
           <div className="flex grow basis-0 flex-col justify-between md:gap-20">
-            <h2 className="px-6 py-8 font-serif text-[3rem] leading-[0.9] md:text-[4.5rem]">
+            <h2 className="text-balance px-6 py-8 font-serif text-[3rem] leading-[0.9] md:text-[4.7rem]">
               Tools for long-term, permissionless collaboration
             </h2>
 
