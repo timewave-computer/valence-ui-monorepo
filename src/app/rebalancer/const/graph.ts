@@ -23,24 +23,24 @@ export enum KeyTag {
 }
 
 export class GraphKey {
-  static historicalAmount(denom: string) {
-    return `${denom}${KeyTag.historicalAmount}`;
+  static historicalAmount(symbol: string) {
+    return `${symbol}${KeyTag.historicalAmount}`;
   }
 
-  static historicalValue(denom: string) {
-    return `${denom}${KeyTag.historicalValue}`;
+  static historicalValue(symbol: string) {
+    return `${symbol}${KeyTag.historicalValue}`;
   }
-  static projectedValue(denom: string) {
-    return `${denom}${KeyTag.projectedValue}`;
+  static projectedValue(symbol: string) {
+    return `${symbol}${KeyTag.projectedValue}`;
   }
-  static projectedAmount(denom: string) {
-    return `${denom}${KeyTag.projectedAmount}`;
+  static projectedAmount(symbol: string) {
+    return `${symbol}${KeyTag.projectedAmount}`;
   }
-  static historicalTargetValue(denom: string) {
-    return `${denom}${KeyTag.historicalTargetValue}`;
+  static historicalTargetValue(symbol: string) {
+    return `${symbol}${KeyTag.historicalTargetValue}`;
   }
-  static projectedTargetValue(denom: string) {
-    return `${denom}${KeyTag.projectedTargetValue}`;
+  static projectedTargetValue(symbol: string) {
+    return `${symbol}${KeyTag.projectedTargetValue}`;
   }
 }
 

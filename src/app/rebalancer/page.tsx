@@ -263,8 +263,10 @@ const RebalancerPage = () => {
                   key={thisScale}
                   className={cn(
                     "flex cursor-pointer flex-col items-center justify-center text-base",
-                    accountConfigQuery.isError || historicalValuesQuery.isError
-                      ? "cursor-not-allowed"
+                    accountConfigQuery.isError ||
+                      historicalValuesQuery.isError ||
+                      historicalValuesQuery.isLoading
+                      ? "cursor-not-allowed text-valence-gray"
                       : "",
                     scale === thisScale
                       ? "text-valence-black"
@@ -273,7 +275,8 @@ const RebalancerPage = () => {
                   onClick={() => {
                     if (
                       !accountConfigQuery.isError &&
-                      !historicalValuesQuery.isError
+                      !historicalValuesQuery.isError &&
+                      !historicalValuesQuery.isLoading
                     )
                       setScale(thisScale as Scale);
                   }}
@@ -363,6 +366,7 @@ const RebalancerPage = () => {
                         dataKey={historicalTarget}
                         type="monotone"
                         dot={false}
+                        activeDot={false}
                         stroke={SymbolColors.get(target.asset.symbol)}
                         strokeWidth={GraphStyles.width.thin}
                         isAnimationActive={false}
@@ -372,6 +376,7 @@ const RebalancerPage = () => {
                         dataKey={projectedTarget}
                         type="monotone"
                         dot={false}
+                        activeDot={false}
                         stroke={SymbolColors.get(target.asset.symbol)}
                         strokeWidth={GraphStyles.width.thin}
                         isAnimationActive={false}
