@@ -8,6 +8,7 @@ import { Provider as JotaiProvider } from "jotai";
 import { FeatureFlags } from "@/const/feature-flags";
 import { FeatureFlagsProvider } from "@/context/feature-flags-provider";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,23 +37,26 @@ export default function RootLayout({
 }) {
   const flags = getFeatureFlags();
   return (
-    <ReactQueryProvider>
-      <JotaiProvider>
-        <FeatureFlagsProvider flags={flags}>
-          <html lang="en">
-            <body
-              className={cn(
-                inter.className,
-                "flex max-h-screen min-h-screen flex-col text-valence-black",
-              )}
-            >
-              <Nav />
-              {children}
-            </body>
-          </html>
-        </FeatureFlagsProvider>
-      </JotaiProvider>
-    </ReactQueryProvider>
+    <>
+      <Analytics />
+      <ReactQueryProvider>
+        <JotaiProvider>
+          <FeatureFlagsProvider flags={flags}>
+            <html lang="en">
+              <body
+                className={cn(
+                  inter.className,
+                  "flex max-h-screen min-h-screen flex-col text-valence-black",
+                )}
+              >
+                <Nav />
+                {children}
+              </body>
+            </html>
+          </FeatureFlagsProvider>
+        </JotaiProvider>
+      </ReactQueryProvider>
+    </>
   );
 }
 
