@@ -5,14 +5,39 @@ import { RouterButton } from "./RouterButton";
 import { FaChevronLeft } from "react-icons/fa";
 import { UTCDate } from "@date-fns/utc";
 import "./article.css";
+import { ABSOLUTE_URL, X_HANDLE } from "@/const/socials";
+import { Metadata, ResolvingMetadata } from "next";
 
-const BlogPost = async ({
-  params,
-}: {
+type BlogPostProps = {
   params: {
     slug: string;
   };
-}) => {
+};
+export async function generateMetadata(
+  { params: { slug } }: BlogPostProps,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const frontmatter = (await getPost(slug)).frontMatter;
+
+  return {
+    title: frontmatter.title,
+    description: frontmatter.description,
+    openGraph: {
+      siteName: frontmatter.title,
+      description: frontmatter.description,
+      url: `${ABSOLUTE_URL}/blog/${slug}`,
+      images: ["/img/opengraph/valence-horizontal-og.png"],
+    },
+    twitter: {
+      creator: X_HANDLE,
+      card: "summary",
+      images: ["/img/opengraph/valence-vertical-og.png"],
+      description: frontmatter.description,
+    },
+  };
+}
+
+const BlogPost = async ({ params }: BlogPostProps) => {
   let postData: Post | null = null;
   let error = null;
 

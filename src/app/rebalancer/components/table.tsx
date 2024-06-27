@@ -16,7 +16,6 @@ export const Table: React.FC<{
         sorter.sort(a, b, sortAscending),
       )
     : [];
-
   const totalValue = useMemo(() => {
     const total = livePortfolio?.portfolio.reduce((acc, holding) => {
       return acc + calcValue(holding);
@@ -126,8 +125,11 @@ export const Table: React.FC<{
   );
 };
 
-function doCompare<T extends string>(a: T, b: T, ascending: boolean) {
+function compareStrings<T extends string>(a: T, b: T, ascending: boolean) {
   return ascending ? a.localeCompare(b) : b.localeCompare(a);
+}
+function compareNumbers<T extends number>(a: T, b: T, ascending: boolean) {
+  return ascending ? a - b : b - a;
 }
 
 function calcValue(holding: LiveHolding) {
@@ -147,35 +149,32 @@ const SORTERS: Sorter<LiveHolding>[] = [
   {
     key: SORTER_KEYS.TICKER,
     sort: (a, b, ascending) =>
-      doCompare(a.asset?.name ?? "", b.asset?.name ?? "", ascending),
+      compareStrings(a.asset?.name ?? "", b.asset?.name ?? "", ascending),
   },
   {
     key: SORTER_KEYS.HOLDINGS,
-    sort: (a, b, ascending) =>
-      doCompare(String(a.amount), String(b.amount), ascending),
+    sort: (a, b, ascending) => compareNumbers(a.amount, b.amount, ascending),
   },
   {
     key: SORTER_KEYS.PRICE,
 
-    sort: (a, b, ascending) =>
-      doCompare(String(a.price), String(b.price), ascending),
+    sort: (a, b, ascending) => compareNumbers(a.price, b.price, ascending),
   },
   {
     key: SORTER_KEYS.VALUE,
 
     sort: (a, b, ascending) =>
-      doCompare(String(calcValue(a)), String(calcValue(b)), ascending),
+      compareNumbers(calcValue(a), calcValue(b), ascending),
   },
   {
     key: SORTER_KEYS.DISTRIBUTION,
 
     sort: (a, b, ascending) =>
-      doCompare(String(a.distribution), String(b.distribution), ascending),
+      compareNumbers(a.distribution, b.distribution, ascending),
   },
   {
     key: SORTER_KEYS.TARGET,
-    sort: (a, b, ascending) =>
-      doCompare(String(a.target), String(b.target), ascending),
+    sort: (a, b, ascending) => compareNumbers(a.target, b.target, ascending),
   },
 ];
 

@@ -4,12 +4,30 @@ import { PostList } from "@/types/blog";
 import { UTCDate } from "@date-fns/utc";
 import Link from "next/link";
 import { RouterButton } from "./[slug]/RouterButton";
-import BlogPost from "./[slug]/page";
+import { Metadata } from "next";
+import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
 
 const trimContent = (content: string) => {
   if (content.length > 200) {
     return content.slice(0, 200) + "...";
   } else return content;
+};
+
+export const metadata: Metadata = {
+  title: "Valence Blog",
+  description: VALENCE_DESCRIPTION,
+  openGraph: {
+    siteName: "Valence Blog",
+    description: VALENCE_DESCRIPTION,
+    url: `${ABSOLUTE_URL}/blog`,
+    images: ["/img/opengraph/valence-horizontal-og.png"],
+  },
+  twitter: {
+    creator: X_HANDLE,
+    card: "summary",
+    images: ["/img/opengraph/valence-vertical-og.png"],
+    description: VALENCE_DESCRIPTION,
+  },
 };
 
 const BlogHome = async () => {
