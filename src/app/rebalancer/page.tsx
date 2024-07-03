@@ -17,7 +17,6 @@ import {
   useHistoricalValueGraph,
 } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
-import { useSetLocalTime } from "@/ui-globals";
 import {
   Scale,
   GraphKey,
@@ -36,6 +35,8 @@ import { X_HANDLE, X_URL } from "@/const/socials";
 import { FeatureFlags } from "@/const/feature-flags";
 import { cn } from "@/utils";
 import { useFeatureFlag } from "@/context/feature-flags-provider";
+import { UTCDate } from "@date-fns/utc";
+import { subDays } from "date-fns";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
@@ -84,26 +85,21 @@ const RebalancerPage = () => {
     enabled: isFetchLivePortfolioEnabled,
   });
 
-  const { localTime } = useSetLocalTime();
   const historicalValuesQuery = useQuery({
     staleTime: 5 * 60 * 1000,
-    queryKey: [
-      QUERY_KEYS.HISTORICAL_VALUES,
-      account,
-      baseDenom,
-      targets,
-      localTime.midnightOneYearAgoUTC,
-      localTime.midnightUTC,
-    ],
+    queryKey: [QUERY_KEYS.HISTORICAL_VALUES, account, baseDenom, targets],
     refetchInterval: 0, // data is historical, no need to refresh for now
     retry: 0,
     queryFn: async () => {
+      const midnightUTC = new UTCDate(new UTCDate().setHours(0, 0, 0, 0));
+      const startDate = subDays(midnightUTC, 365);
+      const endDate = midnightUTC;
       return fetchHistoricalValues({
         targets: targets,
         baseDenom: baseDenom,
         address: account,
-        startDate: localTime.midnightOneYearAgoUTC,
-        endDate: localTime.midnightUTC,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
       });
     },
     enabled: isValidAccount && !!targets.length,
@@ -186,10 +182,6 @@ const RebalancerPage = () => {
       }, 100),
     );
   };
-
-  const isGraphTargetsEnabled = useFeatureFlag(
-    FeatureFlags.REBALANCER_GRAPH_TARGETS,
-  );
 
   const [showTargets, setShowTargets] = useState(false);
 
@@ -285,18 +277,17 @@ const RebalancerPage = () => {
                 </div>
               ))}
             </div>
-            {isGraphTargetsEnabled && (
-              <button
-                disabled={!graphData.length}
-                className={cn(
-                  "text-sm",
-                  !graphData.length && "cursor-not-allowed text-valence-gray",
-                )}
-                onClick={() => setShowTargets(!showTargets)}
-              >
-                {showTargets ? "Hide Targets" : "Show Targets"}
-              </button>
-            )}
+
+            <button
+              disabled={!graphData.length}
+              className={cn(
+                "text-sm",
+                !graphData.length && "cursor-not-allowed text-valence-gray",
+              )}
+              onClick={() => setShowTargets(!showTargets)}
+            >
+              {showTargets ? "Hide Targets" : "Show Targets"}
+            </button>
           </div>
           {graphRef?.current &&
             GraphMessages() &&
@@ -360,7 +351,7 @@ const RebalancerPage = () => {
                     isAnimationActive={false}
                     strokeDasharray={GraphStyles.lineStyle.solid}
                   />
-                  {isGraphTargetsEnabled && showTargets && (
+                  {showTargets && (
                     <>
                       <Line
                         dataKey={historicalTarget}

@@ -19,8 +19,6 @@ import { parseAsStringEnum, useQueryState } from "nuqs";
 import { UTCDate } from "@date-fns/utc";
 import { addDays, subDays } from "date-fns";
 import type { GraphData } from "@/app/rebalancer/components/graph";
-import { useAtom } from "jotai";
-import { localTimeAtom } from "@/ui-globals";
 import { IndexerHistoricalTargetsResponse } from "@/types/indexer";
 
 type HistoricalValueGraphProps = {
@@ -46,7 +44,6 @@ export const useHistoricalValueGraph = ({
     "scale",
     parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Month),
   );
-  const [localTime] = useAtom(localTimeAtom);
 
   const keysToGraph = useMemo(() => {
     let result: string[] = [];
@@ -79,9 +76,7 @@ export const useHistoricalValueGraph = ({
     else return rawData[Math.max(0, dataSize - dayCount)]?.timestamp;
   }, [scale, rawData]);
 
-  const todayTimestamp = useMemo(() => {
-    return new UTCDate(localTime.now).getTime();
-  }, [localTime.now]);
+  const localTimeNow = new UTCDate(new Date()).getTime();
 
   const data = useMemo(() => {
     if (!minTimestamp || !rawData) return [];
@@ -92,8 +87,8 @@ export const useHistoricalValueGraph = ({
     let lastItem = filtered[filtered.length - 1];
     if (livePortfolio) {
       lastItem = {
-        timestamp: todayTimestamp,
-        readableDate: new UTCDate(todayTimestamp).toISOString(),
+        timestamp: localTimeNow,
+        readableDate: new UTCDate(localTimeNow).toISOString(),
         tokens: livePortfolio.map((balance) => {
           return {
             denom: balance.denom,
@@ -105,7 +100,7 @@ export const useHistoricalValueGraph = ({
       filtered.push(lastItem);
     }
     return filtered;
-  }, [rawData, livePortfolio, todayTimestamp, minTimestamp]);
+  }, [rawData, livePortfolio, localTimeNow, minTimestamp]);
 
   const historicalGraphData: GraphData = useMemo(() => {
     return data.map((graphDataPoint) => {
@@ -182,14 +177,22 @@ export const useHistoricalValueGraph = ({
       simulationInput,
     );
 
-    const projectionTimestampStart = localTime.now;
+    const utcMidnight = new UTCDate().setHours(0, 0, 0, 0);
 
+    let ts: number;
     return projections.map((tokenAmounts, i) => {
-      let ts = addDays(projectionTimestampStart, i);
-      if (i > 0) ts.setHours(0, 0, 0, 0);
+      // first point is 'right now today',showing current amounts, technically not a projection
+      if (i === 0) {
+        const now = new Date();
+        ts = new UTCDate(now).getTime();
+      }
+      if (i > 0) {
+        // tick by UTC midnight
+        ts = addDays(utcMidnight, i).getTime();
+      }
 
       return {
-        timestamp: ts.getTime(),
+        timestamp: ts,
         ...latest.reduce(
           (acc, { denom, price }, i) => {
             const target = config?.targets.find(
@@ -209,7 +212,7 @@ export const useHistoricalValueGraph = ({
         ),
       };
     });
-  }, [localTime.now, scale, data, config?.targets, config?.pid]);
+  }, [localTimeNow, scale, data, config?.targets, config?.pid]);
 
   const allData: GraphData = useMemo(() => {
     const allData = [...historicalGraphData, ...projectionsGraphData];
@@ -313,7 +316,7 @@ export const useHistoricalValueGraph = ({
   }, [allData, keysToGraph]);
 
   return {
-    todayTimestamp,
+    todayTimestamp: localTimeNow,
     graphData: allData,
     keys: {
       projections: keysToGraph.filter((k) => k.includes(KeyTag.projectedValue)),

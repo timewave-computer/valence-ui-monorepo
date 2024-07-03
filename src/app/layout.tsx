@@ -8,7 +8,6 @@ import { Provider as JotaiProvider } from "jotai";
 import { FeatureFlags } from "@/const/feature-flags";
 import { FeatureFlagsProvider } from "@/context/feature-flags-provider";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
-import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,7 +37,6 @@ export default function RootLayout({
   const flags = getFeatureFlags();
   return (
     <>
-      <Analytics />
       <ReactQueryProvider>
         <JotaiProvider>
           <FeatureFlagsProvider flags={flags}>

@@ -32,7 +32,6 @@ export async function fetchLivePortfolio({
       amount: Number(b.amount),
     };
   });
-
   // get coingecko ID for each target & fetch prices
   const coinGeckoIds =
     targets
