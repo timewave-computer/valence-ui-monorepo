@@ -148,7 +148,7 @@ export const useHistoricalValueGraph = ({
         ...targetValues,
       };
     });
-  }, [data, config?.targets]);
+  }, [data, historicalTargets, config?.targets]);
 
   const projectionsGraphData = useMemo(() => {
     if (data.length === 0) return [];
@@ -212,7 +212,7 @@ export const useHistoricalValueGraph = ({
         ),
       };
     });
-  }, [localTimeNow, scale, data, config?.targets, config?.pid]);
+  }, [scale, data, config?.targets, config?.pid]);
 
   const allData: GraphData = useMemo(() => {
     const allData = [...historicalGraphData, ...projectionsGraphData];

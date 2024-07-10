@@ -13,6 +13,7 @@ import { BsPlus, BsX } from "react-icons/bs";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useEdgeConfig } from "@/hooks";
+import { DEFAULT_FEATURED_ACCOUNTS } from "@/app/rebalancer/const";
 
 export const SidePanel: React.FC<{
   account: string;
@@ -265,10 +266,3 @@ export type Token = {
   denom: string;
   percent: string;
 };
-
-export const DEFAULT_FEATURED_ACCOUNTS: DropdownOption<string>[] = [
-  {
-    label: "Timewave Rebalancer",
-    value: "neutron13pvwjc3ctlv53u9c543h6la8e2cupkwcahe5ujccdc4nwfgann7ss0xynz",
-  },
-];

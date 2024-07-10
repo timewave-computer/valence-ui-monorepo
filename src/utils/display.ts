@@ -40,3 +40,9 @@ export const displayNumber = (
     return value.toPrecision(precision);
   }
 };
+
+export const displayAddress = (address: string) => {
+  if (!address.length) {
+    return "";
+  } else return `${address.slice(0, 10)}...${address.slice(-4)}`;
+};

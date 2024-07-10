@@ -9,6 +9,7 @@ import {
   Table,
   ValueTooltip,
   SidePanel,
+  SidePanelV2,
 } from "@/app/rebalancer/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
@@ -120,8 +121,12 @@ const RebalancerPage = () => {
     historicalTargets: historicalValuesQuery.data?.historicalTargets,
   });
 
-  const REBALANCER_NON_USDC_VALUE_ENABLED = useFeatureFlag(
+  const isNonUsdValueEnabled = useFeatureFlag(
     FeatureFlags.REBALANCER_NONUSDC_VALUE,
+  );
+
+  const isCreateRebalancerEnabled = useFeatureFlag(
+    FeatureFlags.REBALANCER_CREATE,
   );
 
   const graphRef = useRef<HTMLDivElement>(null);
@@ -204,44 +209,52 @@ const RebalancerPage = () => {
         </div>
       )}
 
-      <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
-        <div
-          onPointerMove={handlePointerMove}
-          className="flex w-[24rem] shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black"
-        >
-          <div className="flex flex-col gap-2 border-valence-black px-4">
-            <Image
-              className="mb-6 mt-8"
-              src="/img/rebalancer.svg"
-              alt="Rebalancer illustration"
-              width={236}
-              height={140}
-            />
-            <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
-            <p>
-              Contact{" "}
-              <LinkText
-                className="border-valence-black text-valence-black hover:border-b"
-                href={X_URL}
-              >
-                {X_HANDLE}
-              </LinkText>{" "}
-              if you or your DAO want early access to the Rebalancer.
-            </p>
-          </div>
-
-          <SidePanel
+      <div className="hidden min-h-0 grow flex-row sm:flex">
+        {isCreateRebalancerEnabled ? (
+          <SidePanelV2
+            isLoading={accountConfigQuery.isLoading}
             account={account}
             setAccount={setAccount}
-            isValidAccount={isValidAccount}
-            isLoading={accountConfigQuery?.isLoading}
-            debouncedMouseEnter={debouncedMouseEnter}
-            debouncedMouseLeave={debouncedMouseLeave}
           />
-        </div>
+        ) : (
+          <div
+            onPointerMove={handlePointerMove}
+            className="flex w-96 shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black"
+          >
+            <div className="flex flex-col gap-2 border-valence-black px-4">
+              <Image
+                className="mb-6 mt-8"
+                src="/img/rebalancer.svg"
+                alt="Rebalancer illustration"
+                width={236}
+                height={140}
+              />
+              <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
+              <p>
+                Contact{" "}
+                <LinkText
+                  className="border-valence-black text-valence-black hover:border-b"
+                  href={X_URL}
+                >
+                  {X_HANDLE}
+                </LinkText>{" "}
+                if you or your DAO want early access to the Rebalancer.
+              </p>
+            </div>
+
+            <SidePanel
+              account={account}
+              setAccount={setAccount}
+              isValidAccount={isValidAccount}
+              isLoading={accountConfigQuery?.isLoading}
+              debouncedMouseEnter={debouncedMouseEnter}
+              debouncedMouseLeave={debouncedMouseLeave}
+            />
+          </div>
+        )}
         <div className="flex grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
           <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
-            {REBALANCER_NON_USDC_VALUE_ENABLED && (
+            {isNonUsdValueEnabled && (
               <DropdownDEPRECATED
                 options={VALUE_BASE_OPTIONS}
                 selected={baseDenom}
