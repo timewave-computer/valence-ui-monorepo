@@ -33,9 +33,8 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { MobileOverlay, LinkText } from "@/components";
 import Image from "next/image";
 import { X_HANDLE, X_URL } from "@/const/socials";
-import { FeatureFlags } from "@/const/feature-flags";
+import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { cn } from "@/utils";
-import { useFeatureFlag } from "@/context/feature-flags-provider";
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
 
@@ -355,6 +354,7 @@ const RebalancerPage = () => {
                       offset={10}
                     />
                   </ReferenceLine>
+
                   <Line
                     dataKey={historicalValue}
                     type="monotone"

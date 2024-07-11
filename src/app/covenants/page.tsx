@@ -5,7 +5,7 @@ import {
   LinkText,
   MobileOverlay,
 } from "@/components";
-import { cn } from "@/utils";
+import { FeatureFlags, cn, useFeatureFlag } from "@/utils";
 import { useState } from "react";
 import Image from "next/image";
 import { X_HANDLE, X_URL } from "@/const/socials";
@@ -20,8 +20,6 @@ import {
   ContractDisplayMode,
   POL_TYPE_PARTIES_OPTIONS,
 } from "@/app/covenants/const";
-import { FeatureFlags } from "@/const/feature-flags";
-import { useFeatureFlag } from "@/context/feature-flags-provider";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =

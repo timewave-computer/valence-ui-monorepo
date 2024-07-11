@@ -1,11 +1,13 @@
 "use client";
 
-import { cn } from "@/utils";
+import { cn, displayAddress } from "@/utils";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
+import { useWallet } from "@/hooks";
+import * as Popover from "@radix-ui/react-popover";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -40,6 +42,7 @@ const NavLink = ({
 
 export const Nav = () => {
   const path = usePathname();
+  const { isConnected, disconnect, address } = useWallet();
 
   const links = (
     <>
@@ -52,21 +55,48 @@ export const Nav = () => {
   return (
     <nav
       className={cn(
-        "flex min-h-[3.25rem] flex-row items-center border-b border-valence-black bg-valence-white px-4 text-valence-black",
-        "justify-between gap-2 ", // mobile
-        "md:justify-start  md:gap-8 ",
+        "flex min-h-[3.25rem] flex-row items-center justify-between border-b border-valence-black bg-valence-white px-4 text-valence-black",
         path === "/" && "flex md:hidden",
       )}
     >
-      <a className="" href="/">
-        <Image
-          src="/img/valence_horizontal.svg"
-          alt="Logo"
-          width={110}
-          height={38}
-        />
-      </a>
-      <div className="hidden flex-row gap-8 md:flex">{links}</div>
+      <div className="flex items-center gap-2 md:gap-8">
+        <a className="" href="/">
+          <Image
+            src="/img/valence_horizontal.svg"
+            alt="Logo"
+            width={110}
+            height={38}
+          />
+        </a>
+        <div className="hidden flex-row gap-8 md:flex">{links}</div>
+      </div>
+
+      {isConnected && address && (
+        <Popover.Root>
+          <Popover.Trigger>
+            <div
+              className={cn(
+                "valence-border-black border-[1px] border-valence-black px-1.5 py-1 font-mono text-sm",
+                "hidden md:flex", // hide on mobile
+              )}
+            >
+              {displayAddress(address)}
+            </div>
+          </Popover.Trigger>
+
+          <Popover.Content
+            sideOffset={0}
+            className="z-50 flex flex-col border border-valence-black bg-valence-white p-4 shadow-md"
+          >
+            <Popover.Arrow />
+
+            <Button onClick={() => disconnect()} variant="secondary">
+              Disconnect
+            </Button>
+          </Popover.Content>
+        </Popover.Root>
+      )}
+
       <div className="flex md:hidden">
         <Sheet>
           <SheetTrigger asChild className="outline-none">

@@ -1,7 +1,7 @@
 import { Button, LinkText, TextInput, Label } from "@/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { X_HANDLE, X_URL } from "@/const/socials";
-import { useEdgeConfig } from "@/hooks";
+import { useEdgeConfig, useWallet } from "@/hooks";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { cn, displayAddress } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,6 +9,7 @@ import Image from "next/image";
 import { DEFAULT_FEATURED_ACCOUNTS } from "@/app/rebalancer/const";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const SidePanelV2: React.FC<{
   account: string;
@@ -30,12 +31,14 @@ const Brand: React.FC<{
   account: string;
   setAccount: (s: string) => void;
 }> = ({ account, setAccount }) => {
-  const isConnected = false;
+  const { connect, isConnected, disconnect, isConnecting, address } =
+    useWallet();
+
   return (
     <div className=" flex flex-col items-stretch gap-4 border-b   border-valence-black p-4">
       <div className="flex flex-row  items-center gap-4 border-valence-black">
         <Image
-          className="max-h-20"
+          className="max-h-20 w-auto"
           src="/img/rebalancer.svg"
           alt="Rebalancer illustration"
           width={134}
@@ -56,9 +59,18 @@ const Brand: React.FC<{
         </div>
       </div>
       <div className="flex flex-col gap-2">
+        {isConnecting && <Button variant="secondary">Connecting</Button>}
         {!isConnected && (
           <>
-            <Button variant="primary"> Connect Wallet</Button>
+            <Button
+              onClick={async () => {
+                await connect();
+              }}
+              variant="primary"
+            >
+              {" "}
+              Connect Wallet
+            </Button>
             <p className="text-center text-sm">
               Connect your wallet to start rebalancing funds.
             </p>
@@ -145,16 +157,16 @@ const AccountDetails: React.FC<{ account: string; isLoading: boolean }> = ({
       </div>
       <div className="flex flex-col gap-2 text-sm">
         <div className="flex items-center justify-between ">
-          <span className="text-xs font-medium">Owner</span>
-          <span className="font-mono text-xs font-light">not implemented</span>
+          <span className="text-sm font-medium">Owner</span>
+          <span className=" text-sm font-light">not implemented</span>
         </div>
         <div className="items-top flex justify-between text-sm ">
-          <span className="text-xs font-medium">Targets</span>
+          <span className="text-sm font-medium">Targets</span>
           <div className="flex flex-col">
             {config?.targets.map((target) => (
               <span
                 key={`details-target-${target.asset.symbol}`}
-                className="font-mono text-xs font-light"
+                className=" text-sm font-light"
               >
                 {target.percentage * 100}% {target.asset.symbol}
               </span>
@@ -162,8 +174,8 @@ const AccountDetails: React.FC<{ account: string; isLoading: boolean }> = ({
           </div>
         </div>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-xs font-medium">Rebalance Speed</span>
-          <span className="font-mono text-xs font-light">
+          <span className="text-sm font-medium">Rebalance Speed</span>
+          <span className=" text-sm font-light">
             {Number(config?.pid?.p) * 100}%
           </span>
         </div>
@@ -177,12 +189,39 @@ const DiscoverPanel: React.FC<{
   setAccount: (s: string) => void;
 }> = ({ account, setAccount }) => {
   const { data: edgeConfig } = useEdgeConfig();
+  const { isConnected } = useWallet();
   const featuredAccounts =
     edgeConfig?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS;
+
+  const router = useRouter();
 
   return (
     <div className="flex flex-col  items-stretch gap-2 border-b border-valence-black p-4">
       <h1 className="font-bold">Discover</h1>
+      {isConnected && (
+        <div
+          onClick={() => {}}
+          className={cn(
+            " border border-valence-black transition-all",
+            "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
+          )}
+        >
+          <div className="flex flex-col gap-2 ">
+            <span className=" text-pretty">
+              No rebalancer found for this wallet.
+            </span>
+            <Button
+              onClick={() => {
+                router.push("/rebalancer/create");
+              }}
+              className="w-fit"
+              variant="primary"
+            >
+              Start rebalancing funds
+            </Button>
+          </div>
+        </div>
+      )}
       <div>
         {featuredAccounts.map((option, i) => {
           const isLastElement = i === featuredAccounts.length - 1;
@@ -203,16 +242,10 @@ const DiscoverPanel: React.FC<{
               )}
             >
               <div className="flex flex-row justify-between gap-2 ">
-                <span className=" text-pretty font-mono">{option.label}</span>
+                <span className=" text-pretty">{option.label}</span>
 
                 <Label text="Featured" />
               </div>
-              <span
-                className={cn(
-                  "overflow-hidden overflow-ellipsis whitespace-nowrap font-mono text-xs text-valence-gray",
-                  account === option.value && "text-valence-lightgray",
-                )}
-              ></span>
             </div>
           );
         })}
