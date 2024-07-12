@@ -14,3 +14,4 @@ export * from "./Footer";
 export * from "./LinkText";
 export * from "./coming-soon-tooltip";
 export * from "./Label";
+export * from "./RouterButton";

@@ -4,6 +4,7 @@ import {
   REBALANCER_DESCRIPTION,
   X_HANDLE,
 } from "@/const/socials";
+import { MobileOverlay } from "@/components";
 export const metadata: Metadata = {
   title: "Rebalancer",
   description: REBALANCER_DESCRIPTION,
@@ -26,5 +27,10 @@ export default function RebalancerLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <main className="flex grow flex-col bg-valence-white text-valence-black">
+      <MobileOverlay text="The Rebalancer is only available on desktop." />
+      <div className="hidden grow sm:flex">{children}</div>
+    </main>
+  );
 }

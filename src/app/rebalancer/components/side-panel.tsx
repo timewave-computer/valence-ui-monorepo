@@ -2,35 +2,44 @@
 import {
   Button,
   DropdownDEPRECATED,
-  DropdownOption,
   DropdownTextField,
   NumberInput,
 } from "@/components";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { BsPlus, BsX } from "react-icons/bs";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useEdgeConfig } from "@/hooks";
-import { DEFAULT_FEATURED_ACCOUNTS } from "@/app/rebalancer/const";
+import {
+  DEFAULT_ACCOUNT,
+  DEFAULT_FEATURED_ACCOUNTS,
+  accountAtom,
+} from "@/app/rebalancer/const";
+import { useAtom } from "jotai";
+import { useQueryState } from "nuqs";
 
 export const SidePanel: React.FC<{
-  account: string;
-  setAccount: (s: string) => void;
   isLoading: boolean;
   isValidAccount: boolean;
   debouncedMouseEnter: () => void;
   debouncedMouseLeave: () => void;
 }> = ({
-  account,
-  setAccount,
   isLoading,
   isValidAccount,
   debouncedMouseEnter,
   debouncedMouseLeave,
 }) => {
   const queryClient = useQueryClient();
+  const [accountUrlParam, setAccountUrlParam] = useQueryState("account", {
+    defaultValue: DEFAULT_ACCOUNT,
+  });
+  const [account, setAccount] = useAtom(accountAtom);
+  useMemo(() => {
+    setAccount(accountUrlParam);
+  }, [setAccount, accountUrlParam]);
+
   const config = queryClient.getQueryData<FetchAccountConfigReturnValue>([
     QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG,
     account,
@@ -88,7 +97,7 @@ export const SidePanel: React.FC<{
             data?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS
           }
           value={account}
-          onChange={(value) => setAccount(value)}
+          onChange={(value) => setAccountUrlParam(value)}
           placeholder="neutron12345..."
         />
 

@@ -26,6 +26,7 @@ type HistoricalValueGraphProps = {
   data?: FetchHistoricalValuesReturnValue["values"];
   livePortfolio?: FetchLivePortfolioReturnValue["portfolio"];
   historicalTargets?: FetchHistoricalValuesReturnValue["historicalTargets"];
+  scale?: Scale;
 };
 
 /***
@@ -39,12 +40,8 @@ export const useHistoricalValueGraph = ({
   config,
   livePortfolio,
   historicalTargets,
+  scale = Scale.Month,
 }: HistoricalValueGraphProps): HistoricalValueGraphReturnValue => {
-  const [scale, setScale] = useQueryState(
-    "scale",
-    parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Month),
-  );
-
   const keysToGraph = useMemo(() => {
     let result: string[] = [];
     config?.targets?.forEach((target) => {
@@ -324,8 +321,6 @@ export const useHistoricalValueGraph = ({
     },
     xAxisTicks,
     yAxisTicks,
-    scale,
-    setScale,
   };
 };
 
@@ -334,12 +329,10 @@ type HistoricalValueGraphReturnValue = {
   graphData: GraphData;
   xAxisTicks: number[];
   yAxisTicks: number[];
-  scale: Scale;
   keys: {
     projections: string[];
     values: string[];
   };
-  setScale: (s: Scale) => void;
 };
 
 export function findClosestHistoricalTargetsTimestamp(

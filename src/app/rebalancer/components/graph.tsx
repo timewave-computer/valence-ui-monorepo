@@ -1,3 +1,4 @@
+"use client";
 import { ReactNode, forwardRef } from "react";
 import {
   CartesianGrid,

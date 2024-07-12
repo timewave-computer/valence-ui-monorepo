@@ -1,3 +1,4 @@
+"use client";
 import { Button, LinkText, TextInput, Label } from "@/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { X_HANDLE, X_URL } from "@/const/socials";
@@ -6,23 +7,32 @@ import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { cn, displayAddress } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { DEFAULT_FEATURED_ACCOUNTS } from "@/app/rebalancer/const";
+import { DEFAULT_FEATURED_ACCOUNTS, accountAtom } from "@/app/rebalancer/const";
 import * as HoverCard from "@radix-ui/react-hover-card";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
+import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
+import { useAtom } from "jotai";
 
 export const SidePanelV2: React.FC<{
-  account: string;
-  setAccount: (s: string) => void;
   isLoading: boolean;
-}> = ({ account, setAccount, isLoading }) => {
+}> = ({ isLoading }) => {
+  const [accountUrlParam, setAccountUrlParam] = useQueryState("account", {
+    defaultValue: DEFAULT_ACCOUNT,
+  });
+  const [account, setAccount] = useAtom(accountAtom);
+  useMemo(() => {
+    setAccount(accountUrlParam);
+  }, [setAccount, accountUrlParam]);
+
   return (
     <div className="flex w-96 shrink-0 flex-col overflow-hidden overflow-y-auto border-r border-valence-black">
-      <Brand account={account} setAccount={setAccount} />
+      <Brand account={account} setAccount={setAccountUrlParam} />
       {!!account && account.length && (
         <AccountDetails isLoading={isLoading} account={account} />
       )}
-      <DiscoverPanel account={account} setAccount={setAccount} />
+      <DiscoverPanel account={account} />
     </div>
   );
 };
@@ -31,8 +41,7 @@ const Brand: React.FC<{
   account: string;
   setAccount: (s: string) => void;
 }> = ({ account, setAccount }) => {
-  const { connect, isConnected, disconnect, isConnecting, address } =
-    useWallet();
+  const { connect, isConnected, isConnecting, address } = useWallet();
 
   return (
     <div className=" flex flex-col items-stretch gap-4 border-b   border-valence-black p-4">
@@ -118,7 +127,12 @@ const AccountDetails: React.FC<{ account: string; isLoading: boolean }> = ({
 
   if (isLoading)
     return (
-      <div className="h-[160px] border-b  border-valence-black p-4">
+      <div className="flex h-[160px] flex-col gap-2 border-b border-valence-black p-4">
+        <div className="flex flex-row justify-between">
+          {" "}
+          <h1 className="font-bold">Rebalancer account</h1>
+          <span className=" h-full w-2/5 animate-pulse bg-valence-lightgray"></span>{" "}
+        </div>
         <div className="h-full w-full animate-pulse bg-valence-lightgray" />
       </div>
     );
@@ -186,14 +200,15 @@ const AccountDetails: React.FC<{ account: string; isLoading: boolean }> = ({
 
 const DiscoverPanel: React.FC<{
   account: string;
-  setAccount: (s: string) => void;
-}> = ({ account, setAccount }) => {
+}> = ({ account }) => {
   const { data: edgeConfig } = useEdgeConfig();
-  const { isConnected } = useWallet();
+  const { isConnected, address } = useWallet();
+
   const featuredAccounts =
     edgeConfig?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS;
 
   const router = useRouter();
+  const [scale] = useAtom(scaleAtom);
 
   return (
     <div className="flex flex-col  items-stretch gap-2 border-b border-valence-black p-4">
@@ -202,7 +217,7 @@ const DiscoverPanel: React.FC<{
         <div
           onClick={() => {}}
           className={cn(
-            " border border-valence-black transition-all",
+            " border border-valence-gray transition-all",
             "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
           )}
         >
@@ -212,7 +227,7 @@ const DiscoverPanel: React.FC<{
             </span>
             <Button
               onClick={() => {
-                router.push("/rebalancer/create");
+                router.push(`/rebalancer/create/${address}`);
               }}
               className="w-fit"
               variant="primary"
@@ -230,10 +245,12 @@ const DiscoverPanel: React.FC<{
             <div
               key={`discover-${option.value}`}
               onClick={() => {
-                setAccount(option.value);
+                router.push(
+                  `/rebalancer?account=${option.value}&scale=${scale}`,
+                );
               }}
               className={cn(
-                "border-l border-r border-t border-valence-black transition-all",
+                "border-l border-r border-t border-valence-gray transition-all",
                 isLastElement && "border-b",
                 "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
                 account === option.value &&

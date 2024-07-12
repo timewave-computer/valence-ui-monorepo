@@ -1,3 +1,4 @@
+"use client";
 import { SortableTableHeader, Sorter } from "@/components";
 import { Fragment, useMemo, useState } from "react";
 import { SymbolColors } from "@/app/rebalancer/const/graph";

@@ -48,7 +48,7 @@ export default function RootLayout({
                 <body
                   className={cn(
                     inter.className,
-                    "flex max-h-screen min-h-screen flex-col text-valence-black",
+                    "flex max-h-screen min-h-screen grow flex-col text-valence-black",
                   )}
                 >
                   <Nav />

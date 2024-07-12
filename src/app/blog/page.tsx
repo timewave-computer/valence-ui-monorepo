@@ -3,7 +3,7 @@ import { getSortedPosts } from "@/server/blog/get-posts";
 import { PostList } from "@/types/blog";
 import { UTCDate } from "@date-fns/utc";
 import Link from "next/link";
-import { RouterButton } from "./[slug]/RouterButton";
+import { RouterButton } from "@/components";
 import { Metadata } from "next";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
 

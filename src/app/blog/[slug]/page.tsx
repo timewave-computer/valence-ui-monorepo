@@ -1,7 +1,7 @@
 import { ErrorHandler } from "@/const/error";
 import { getPost } from "@/server/blog/get-posts";
 import { Post } from "@/types/blog";
-import { RouterButton } from "./RouterButton";
+import { RouterButton } from "@/components";
 import { FaChevronLeft } from "react-icons/fa";
 import { UTCDate } from "@date-fns/utc";
 import "./article.css";

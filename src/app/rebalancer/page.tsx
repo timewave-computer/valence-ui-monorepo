@@ -1,7 +1,7 @@
 "use client";
 import { ComingSoonTooltipContent, DropdownDEPRECATED } from "@/components";
-import { Fragment, useMemo, useRef, useState } from "react";
-import { useQueryState } from "nuqs";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { parseAsStringEnum, useQueryState } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
 import { fetchHistoricalValues, fetchLivePortfolio } from "@/server/actions";
 import {
@@ -24,30 +24,30 @@ import {
   LOAD_CONFIG_ERROR,
   SymbolColors,
   GraphStyles,
+  scaleAtom,
+  accountAtom,
 } from "@/app/rebalancer/const";
 import { USDC_DENOM } from "@/const/usdc";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
 import { StatusBar } from "@/components/StatusBar";
 import { FiAlertTriangle } from "react-icons/fi";
-import { MobileOverlay, LinkText } from "@/components";
+import { LinkText } from "@/components";
 import Image from "next/image";
 import { X_HANDLE, X_URL } from "@/const/socials";
 import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { cn } from "@/utils";
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
+import { useAtom } from "jotai";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
     defaultValue: USDC_DENOM,
   });
-  const [account, setAccount] = useQueryState("account", {
-    defaultValue: DEFAULT_ACCOUNT,
-  });
 
+  const [account] = useAtom(accountAtom);
   const isHasAccountInput = !!account && account !== "";
-
   const accountConfigQuery = useAccountConfigQuery({
     account,
     enabled: isHasAccountInput,
@@ -105,20 +105,23 @@ const RebalancerPage = () => {
     enabled: isValidAccount && !!targets.length,
   });
 
-  const {
-    scale,
-    setScale,
-    xAxisTicks,
-    yAxisTicks,
-    graphData,
-    keys,
-    todayTimestamp,
-  } = useHistoricalValueGraph({
-    data: historicalValuesQuery.data?.values,
-    config: accountConfigQuery.data,
-    livePortfolio: livePortfolioQuery.data?.portfolio,
-    historicalTargets: historicalValuesQuery.data?.historicalTargets,
-  });
+  const [scaleUrlParam, setScaleUrlParam] = useQueryState(
+    "scale",
+    parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Month),
+  );
+  const [scale, setScale] = useAtom(scaleAtom);
+  useEffect(() => {
+    setScale(scaleUrlParam);
+  }, [setScale, scaleUrlParam]);
+
+  const { xAxisTicks, yAxisTicks, graphData, keys, todayTimestamp } =
+    useHistoricalValueGraph({
+      data: historicalValuesQuery.data?.values,
+      config: accountConfigQuery.data,
+      livePortfolio: livePortfolioQuery.data?.portfolio,
+      historicalTargets: historicalValuesQuery.data?.historicalTargets,
+      scale,
+    });
 
   const isNonUsdValueEnabled = useFeatureFlag(
     FeatureFlags.REBALANCER_NONUSDC_VALUE,
@@ -190,8 +193,7 @@ const RebalancerPage = () => {
   const [showTargets, setShowTargets] = useState(false);
 
   return (
-    <main className="flex min-h-0 grow flex-col bg-valence-white text-valence-black">
-      <MobileOverlay text="The Rebalancer is only available on desktop." />
+    <div className="flex grow flex-row">
       {isDisabledElementHovered && (
         <div
           onMouseEnter={debouncedMouseEnter}
@@ -208,221 +210,211 @@ const RebalancerPage = () => {
         </div>
       )}
 
-      <div className="hidden min-h-0 grow flex-row sm:flex">
-        {isCreateRebalancerEnabled ? (
-          <SidePanelV2
-            isLoading={accountConfigQuery.isLoading}
-            account={account}
-            setAccount={setAccount}
-          />
-        ) : (
-          <div
-            onPointerMove={handlePointerMove}
-            className="flex w-96 shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black"
-          >
-            <div className="flex flex-col gap-2 border-valence-black px-4">
-              <Image
-                className="mb-6 mt-8"
-                src="/img/rebalancer.svg"
-                alt="Rebalancer illustration"
-                width={236}
-                height={140}
-              />
-              <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
-              <p>
-                Contact{" "}
-                <LinkText
-                  className="border-valence-black text-valence-black hover:border-b"
-                  href={X_URL}
-                >
-                  {X_HANDLE}
-                </LinkText>{" "}
-                if you or your DAO want early access to the Rebalancer.
-              </p>
-            </div>
-
-            <SidePanel
-              account={account}
-              setAccount={setAccount}
-              isValidAccount={isValidAccount}
-              isLoading={accountConfigQuery?.isLoading}
-              debouncedMouseEnter={debouncedMouseEnter}
-              debouncedMouseLeave={debouncedMouseLeave}
+      {isCreateRebalancerEnabled ? (
+        <SidePanelV2 isLoading={accountConfigQuery.isLoading} />
+      ) : (
+        <div
+          onPointerMove={handlePointerMove}
+          className="flex w-96 shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black"
+        >
+          <div className="flex flex-col gap-2 border-valence-black px-4">
+            <Image
+              className="mb-6 mt-8"
+              src="/img/rebalancer.svg"
+              alt="Rebalancer illustration"
+              width={236}
+              height={140}
             />
-          </div>
-        )}
-        <div className="flex grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
-          <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
-            {isNonUsdValueEnabled && (
-              <DropdownDEPRECATED
-                options={VALUE_BASE_OPTIONS}
-                selected={baseDenom}
-                onSelected={setBaseDenom}
-              />
-            )}
-
-            <div className="flex flex-row items-center gap-8 pr-2">
-              {scales.map((thisScale) => (
-                <div
-                  key={thisScale}
-                  className={cn(
-                    "flex cursor-pointer flex-col items-center justify-center text-base",
-                    accountConfigQuery.isError ||
-                      historicalValuesQuery.isError ||
-                      historicalValuesQuery.isLoading
-                      ? "cursor-not-allowed text-valence-gray"
-                      : "",
-                    scale === thisScale
-                      ? "text-valence-black"
-                      : "text-valence-gray",
-                  )}
-                  onClick={() => {
-                    if (
-                      !accountConfigQuery.isError &&
-                      !historicalValuesQuery.isError &&
-                      !historicalValuesQuery.isLoading
-                    )
-                      setScale(thisScale as Scale);
-                  }}
-                >
-                  <p>1{thisScale.toUpperCase()}</p>
-                </div>
-              ))}
-            </div>
-
-            <button
-              disabled={!graphData.length}
-              className={cn(
-                "text-sm",
-                !graphData.length && "cursor-not-allowed text-valence-gray",
-              )}
-              onClick={() => setShowTargets(!showTargets)}
-            >
-              {showTargets ? "Hide Targets" : "Show Targets"}
-            </button>
-          </div>
-          {graphRef?.current &&
-            GraphMessages() &&
-            createPortal(
-              <Overlay
-                className={cn("overflow-hidden bg-transparent opacity-0")}
-                position={portalPosition}
-                ref={overlayRef}
+            <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
+            <p>
+              Contact{" "}
+              <LinkText
+                className="border-valence-black text-valence-black hover:border-b"
+                href={X_URL}
               >
-                <div className="flex flex-col justify-center gap-6">
-                  <GraphMessages />
-                </div>
-              </Overlay>,
-              graphRef.current,
-            )}
-          <Graph
-            ref={graphRef}
-            scale={scale}
-            xAxisTicks={xAxisTicks}
-            yAxisTicks={yAxisTicks}
-            data={graphData}
-          >
-            <Tooltip
-              content={
-                <ValueTooltip keys={[...keys.values, ...keys.projections]} />
-              }
-            />
-
-            {accountConfigQuery?.data?.targets.map((target) => {
-              const historicalValue = GraphKey.historicalValue(
-                target.asset.name,
-              );
-              const projectedValue = GraphKey.projectedValue(target.asset.name);
-              const historicalTarget = GraphKey.historicalTargetValue(
-                target.asset.name,
-              );
-              const projectedTarget = GraphKey.projectedTargetValue(
-                target.asset.name,
-              );
-              return (
-                <Fragment key={`line-${target.denom}`}>
-                  <ReferenceLine
-                    key={`label-target-${target.denom}`}
-                    x={todayTimestamp}
-                    stroke="black"
-                    isFront
-                  >
-                    <Label
-                      value="Today"
-                      position="insideTopLeft"
-                      style={{ fill: "black" }}
-                      offset={10}
-                    />
-                  </ReferenceLine>
-
-                  <Line
-                    dataKey={historicalValue}
-                    type="monotone"
-                    dot={false}
-                    strokeWidth={GraphStyles.width.regular}
-                    stroke={SymbolColors.get(target.asset.symbol)}
-                    isAnimationActive={false}
-                    strokeDasharray={GraphStyles.lineStyle.solid}
-                  />
-                  {showTargets && (
-                    <>
-                      <Line
-                        dataKey={historicalTarget}
-                        type="monotone"
-                        dot={false}
-                        activeDot={false}
-                        stroke={SymbolColors.get(target.asset.symbol)}
-                        strokeWidth={GraphStyles.width.thin}
-                        isAnimationActive={false}
-                        strokeDasharray={GraphStyles.lineStyle.solid}
-                      />
-                      <Line
-                        dataKey={projectedTarget}
-                        type="monotone"
-                        dot={false}
-                        activeDot={false}
-                        stroke={SymbolColors.get(target.asset.symbol)}
-                        strokeWidth={GraphStyles.width.thin}
-                        isAnimationActive={false}
-                        strokeDasharray={GraphStyles.lineStyle.solid}
-                      />
-                    </>
-                  )}
-                  <Line
-                    dataKey={projectedValue}
-                    type="monotone"
-                    dot={false}
-                    stroke={SymbolColors.get(target.asset.symbol)}
-                    isAnimationActive={false}
-                    strokeWidth={GraphStyles.width.regular}
-                    strokeDasharray={GraphStyles.lineStyle.dotted}
-                  />
-                </Fragment>
-              );
-            })}
-          </Graph>
-          <div className="grow overflow-x-auto bg-valence-white">
-            <Table
-              isLoading={
-                livePortfolioQuery.isFetching && !livePortfolioQuery.data
-              }
-              livePortfolio={livePortfolioQuery.data}
-            />
-            {livePortfolioQuery.isError &&
-              !accountConfigQuery.isError &&
-              !historicalValuesQuery.isError &&
-              !historicalValuesQuery.isFetching && (
-                <StatusBar
-                  className="border-0"
-                  variant="error"
-                  text="Could not load live portfolio"
-                  icon={<FiAlertTriangle />}
-                />
-              )}
+                {X_HANDLE}
+              </LinkText>{" "}
+              if you or your DAO want early access to the Rebalancer.
+            </p>
           </div>
+
+          <SidePanel
+            isValidAccount={isValidAccount}
+            isLoading={accountConfigQuery?.isLoading}
+            debouncedMouseEnter={debouncedMouseEnter}
+            debouncedMouseLeave={debouncedMouseLeave}
+          />
+        </div>
+      )}
+      <div className="flex grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
+        <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
+          {isNonUsdValueEnabled && (
+            <DropdownDEPRECATED
+              options={VALUE_BASE_OPTIONS}
+              selected={baseDenom}
+              onSelected={setBaseDenom}
+            />
+          )}
+
+          <div className="flex flex-row items-center gap-8 pr-2">
+            {scales.map((thisScale) => (
+              <div
+                key={thisScale}
+                className={cn(
+                  "flex cursor-pointer flex-col items-center justify-center text-base",
+                  accountConfigQuery.isError ||
+                    historicalValuesQuery.isError ||
+                    historicalValuesQuery.isLoading
+                    ? "cursor-not-allowed text-valence-gray"
+                    : "",
+                  scale === thisScale
+                    ? "text-valence-black"
+                    : "text-valence-gray",
+                )}
+                onClick={() => {
+                  if (
+                    !accountConfigQuery.isError &&
+                    !historicalValuesQuery.isError &&
+                    !historicalValuesQuery.isLoading
+                  )
+                    setScaleUrlParam(thisScale as Scale);
+                }}
+              >
+                <p>1{thisScale.toUpperCase()}</p>
+              </div>
+            ))}
+          </div>
+
+          <button
+            disabled={!graphData.length}
+            className={cn(
+              "text-sm",
+              !graphData.length && "cursor-not-allowed text-valence-gray",
+            )}
+            onClick={() => setShowTargets(!showTargets)}
+          >
+            {showTargets ? "Hide Targets" : "Show Targets"}
+          </button>
+        </div>
+        {graphRef?.current &&
+          GraphMessages() &&
+          createPortal(
+            <Overlay
+              className={cn("overflow-hidden bg-transparent opacity-0")}
+              position={portalPosition}
+              ref={overlayRef}
+            >
+              <div className="flex flex-col justify-center gap-6">
+                <GraphMessages />
+              </div>
+            </Overlay>,
+            graphRef.current,
+          )}
+        <Graph
+          ref={graphRef}
+          scale={scale}
+          xAxisTicks={xAxisTicks}
+          yAxisTicks={yAxisTicks}
+          data={graphData}
+        >
+          <Tooltip
+            content={
+              <ValueTooltip keys={[...keys.values, ...keys.projections]} />
+            }
+          />
+
+          {accountConfigQuery?.data?.targets.map((target) => {
+            const historicalValue = GraphKey.historicalValue(target.asset.name);
+            const projectedValue = GraphKey.projectedValue(target.asset.name);
+            const historicalTarget = GraphKey.historicalTargetValue(
+              target.asset.name,
+            );
+            const projectedTarget = GraphKey.projectedTargetValue(
+              target.asset.name,
+            );
+            return (
+              <Fragment key={`line-${target.denom}`}>
+                <ReferenceLine
+                  key={`label-target-${target.denom}`}
+                  x={todayTimestamp}
+                  stroke="black"
+                  isFront
+                >
+                  <Label
+                    value="Today"
+                    position="insideTopLeft"
+                    style={{ fill: "black" }}
+                    offset={10}
+                  />
+                </ReferenceLine>
+
+                <Line
+                  dataKey={historicalValue}
+                  type="monotone"
+                  dot={false}
+                  strokeWidth={GraphStyles.width.regular}
+                  stroke={SymbolColors.get(target.asset.symbol)}
+                  isAnimationActive={false}
+                  strokeDasharray={GraphStyles.lineStyle.solid}
+                />
+                {showTargets && (
+                  <>
+                    <Line
+                      dataKey={historicalTarget}
+                      type="monotone"
+                      dot={false}
+                      activeDot={false}
+                      stroke={SymbolColors.get(target.asset.symbol)}
+                      strokeWidth={GraphStyles.width.thin}
+                      isAnimationActive={false}
+                      strokeDasharray={GraphStyles.lineStyle.solid}
+                    />
+                    <Line
+                      dataKey={projectedTarget}
+                      type="monotone"
+                      dot={false}
+                      activeDot={false}
+                      stroke={SymbolColors.get(target.asset.symbol)}
+                      strokeWidth={GraphStyles.width.thin}
+                      isAnimationActive={false}
+                      strokeDasharray={GraphStyles.lineStyle.solid}
+                    />
+                  </>
+                )}
+                <Line
+                  dataKey={projectedValue}
+                  type="monotone"
+                  dot={false}
+                  stroke={SymbolColors.get(target.asset.symbol)}
+                  isAnimationActive={false}
+                  strokeWidth={GraphStyles.width.regular}
+                  strokeDasharray={GraphStyles.lineStyle.dotted}
+                />
+              </Fragment>
+            );
+          })}
+        </Graph>
+        <div className="grow overflow-x-auto bg-valence-white">
+          <Table
+            isLoading={
+              livePortfolioQuery.isFetching && !livePortfolioQuery.data
+            }
+            livePortfolio={livePortfolioQuery.data}
+          />
+          {livePortfolioQuery.isError &&
+            !accountConfigQuery.isError &&
+            !historicalValuesQuery.isError &&
+            !historicalValuesQuery.isFetching && (
+              <StatusBar
+                className="border-0"
+                variant="error"
+                text="Could not load live portfolio"
+                icon={<FiAlertTriangle />}
+              />
+            )}
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
