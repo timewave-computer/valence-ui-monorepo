@@ -1,10 +1,5 @@
 "use client";
-import {
-  Button,
-  DropdownDEPRECATED,
-  DropdownTextField,
-  NumberInput,
-} from "@/components";
+import { Button, Dropdown, DropdownTextField, NumberInput } from "@/components";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { useEffect, useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -144,7 +139,7 @@ export const SidePanel: React.FC<{
                   key={`tokens-${id}`}
                   className="flex flex-row items-stretch"
                 >
-                  <DropdownDEPRECATED
+                  <Dropdown
                     isLoading={isLoading}
                     options={tokenOptions}
                     selected={watch(`tokens.${index}.denom`)}
@@ -178,13 +173,13 @@ export const SidePanel: React.FC<{
               {tokenFields.length === 0 && isLoading && (
                 <>
                   {" "}
-                  <DropdownDEPRECATED
+                  <Dropdown
                     isLoading={isLoading}
                     options={[]}
                     selected=""
                     onSelected={() => {}}
                   />{" "}
-                  <DropdownDEPRECATED
+                  <Dropdown
                     isLoading={isLoading}
                     options={[]}
                     selected=""
@@ -195,7 +190,7 @@ export const SidePanel: React.FC<{
               {/* dummy component for empty state */}
               {tokenFields.length === 0 && !isLoading && (
                 <div className="flex flex-row items-stretch">
-                  <DropdownDEPRECATED
+                  <Dropdown
                     isLoading={isLoading}
                     options={tokenOptions}
                     selected=""
@@ -227,7 +222,7 @@ export const SidePanel: React.FC<{
 
           <div className="flex flex-col gap-3">
             <p className="font-bold">Rebalance Speed</p>
-            <DropdownDEPRECATED
+            <Dropdown
               isLoading={isLoading}
               options={PID_PRESET_OPTIONS}
               selected={watch("pidPreset")}
@@ -237,7 +232,7 @@ export const SidePanel: React.FC<{
 
           <div className="flex flex-col gap-3">
             <p className="font-bold">Base token</p>
-            <DropdownDEPRECATED
+            <Dropdown
               isLoading={isLoading}
               options={tokenOptions}
               selected={watch("baseToken")}

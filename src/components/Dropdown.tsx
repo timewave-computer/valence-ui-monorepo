@@ -37,9 +37,13 @@ export type DropdownProps<T extends string> = {
    * Disable the input
    */
   isDisabled?: boolean;
+  /***
+   * Option to limit what is shown
+   */
+  availableOptions?: DropdownOption<T>[];
 };
 
-export const DropdownDEPRECATED = <T extends string>({
+export const Dropdown = <T extends string>({
   options,
   selected,
   onSelected,
@@ -47,6 +51,7 @@ export const DropdownDEPRECATED = <T extends string>({
   containerClassName,
   isLoading,
   isDisabled,
+  availableOptions,
   ...props
 }: DropdownProps<T> & React.HTMLAttributes<HTMLDivElement>) => {
   const [visible, setVisible] = useState(false);
@@ -76,6 +81,8 @@ export const DropdownDEPRECATED = <T extends string>({
     window.addEventListener("click", onClick);
     return () => window.removeEventListener("click", onClick);
   }, []);
+
+  const dropdownOptions = availableOptions ? availableOptions : options;
 
   return (
     <div className="relative" ref={containerRef} {...props}>
@@ -107,7 +114,7 @@ export const DropdownDEPRECATED = <T extends string>({
 
       {visible && (
         <div className="absolute left-0 right-0 top-[calc(100%-1px)] z-10 flex flex-col border border-valence-mediumgray bg-gray-100">
-          {options.map((option, index) => (
+          {dropdownOptions.map((option, index) => (
             <button
               key={option.value}
               className={cn(

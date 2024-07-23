@@ -12,7 +12,7 @@ import { OriginAsset } from "@/types/ibc";
 import { z } from "zod";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { baseToUnit } from "@/utils";
-import { IndexerFundsInAuctionSchema } from "@/types/indexer";
+import { IndexerFundsInAuctionSchema } from "@/types/rebalancer";
 
 export async function fetchLivePortfolio({
   address,

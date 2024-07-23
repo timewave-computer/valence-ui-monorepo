@@ -1,5 +1,13 @@
 import { ZodType, z } from "zod";
 
+const TargetOverrideStrategySchema = z.union([
+  z.literal("proportional"),
+  z.literal("priority"),
+]);
+
+export type TargetOverrideStrategy = z.infer<
+  typeof TargetOverrideStrategySchema
+>;
 /***
  * funds in auction endpoint
  */
@@ -41,10 +49,7 @@ export const IndexerRebalancerConfigResponseSchema = z.object({
   // When last rebalance happened in milliseconds
   last_rebalance: z.string().optional().nullable(),
   // The override strategy if we have a conflict from different parameters
-  target_override_strategy: z.union([
-    z.literal("proportional"),
-    z.literal("priority"),
-  ]),
+  target_override_strategy: TargetOverrideStrategySchema,
   // If the account is currently paused or not
   is_paused: z.boolean(),
 });

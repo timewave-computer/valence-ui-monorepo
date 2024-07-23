@@ -1,5 +1,5 @@
 "use client";
-import { ComingSoonTooltipContent, DropdownDEPRECATED } from "@/components";
+import { ComingSoonTooltipContent, Dropdown } from "@/components";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
@@ -249,7 +249,7 @@ const RebalancerPage = () => {
       <div className="flex grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
         <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
           {isNonUsdValueEnabled && (
-            <DropdownDEPRECATED
+            <Dropdown
               options={VALUE_BASE_OPTIONS}
               selected={baseDenom}
               onSelected={setBaseDenom}

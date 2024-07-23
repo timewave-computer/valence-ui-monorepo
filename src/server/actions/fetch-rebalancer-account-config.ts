@@ -11,7 +11,7 @@ import { OriginAsset } from "@/types/ibc";
 import {
   IndexerRebalancerConfigResponseSchema,
   RawTarget,
-} from "@/types/indexer";
+} from "@/types/rebalancer";
 
 export async function fetchRebalancerAccountConfiguration({
   address,

@@ -1,6 +1,5 @@
 export * from "./Button";
 export * from "./Checkbox";
-export * from "./Dropdown";
 export * from "./Header";
 export * from "./Nav";
 export * from "./NumberInput";
@@ -15,3 +14,5 @@ export * from "./LinkText";
 export * from "./coming-soon-tooltip";
 export * from "./Label";
 export * from "./RouterButton";
+export * from "./Dropdown";
+export * from "./IconButton";

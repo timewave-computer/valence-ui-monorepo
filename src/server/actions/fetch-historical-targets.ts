@@ -5,7 +5,7 @@ import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import {
   IndexerHistoricalTargetsResponse,
   IndexerHistoricalTargetsResponseSchema,
-} from "@/types/indexer";
+} from "@/types/rebalancer";
 
 export async function fetchHistoricalTargets({
   address,

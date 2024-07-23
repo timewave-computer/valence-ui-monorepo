@@ -1,9 +1,4 @@
-import {
-  Checkbox,
-  DropdownDEPRECATED,
-  DropdownOption,
-  TextInput,
-} from "@/components";
+import { Checkbox, Dropdown, DropdownOption, TextInput } from "@/components";
 import { cn } from "@/utils";
 
 export type Field = {
@@ -79,7 +74,7 @@ export const Field = ({ field, value, onChange, data }: FieldProps) => {
       ) : field.type === "check" ? (
         <Checkbox checked={!!value} onChange={onChange} />
       ) : field.type === "dropdown" ? (
-        <DropdownDEPRECATED
+        <Dropdown
           options={field.options}
           selected={value}
           onSelected={onChange}

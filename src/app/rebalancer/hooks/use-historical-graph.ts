@@ -19,7 +19,7 @@ import { parseAsStringEnum, useQueryState } from "nuqs";
 import { UTCDate } from "@date-fns/utc";
 import { addDays, subDays } from "date-fns";
 import type { GraphData } from "@/app/rebalancer/components/graph";
-import { IndexerHistoricalTargetsResponse } from "@/types/indexer";
+import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 
 type HistoricalValueGraphProps = {
   config?: FetchAccountConfigReturnValue;

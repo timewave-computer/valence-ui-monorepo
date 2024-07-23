@@ -1,10 +1,5 @@
 "use client";
-import {
-  Button,
-  DropdownDEPRECATED,
-  LinkText,
-  MobileOverlay,
-} from "@/components";
+import { Button, Dropdown, LinkText, MobileOverlay } from "@/components";
 import { FeatureFlags, cn, useFeatureFlag } from "@/utils";
 import { useState } from "react";
 import Image from "next/image";
@@ -119,7 +114,7 @@ const CovenantPage = () => {
 
             <p className="mt-4 font-bold">Covenant type</p>
             {canViewPol ? (
-              <DropdownDEPRECATED
+              <Dropdown
                 options={TYPE_OPTIONS}
                 selected={covenantTypeSelection}
                 onSelected={(e) => {
@@ -137,7 +132,7 @@ const CovenantPage = () => {
                 }}
               />
             ) : (
-              <DropdownDEPRECATED
+              <Dropdown
                 onMouseMove={debouncedMouseEnter}
                 onMouseEnter={debouncedMouseEnter}
                 onMouseLeave={debouncedMouseLeave}
@@ -150,7 +145,7 @@ const CovenantPage = () => {
             {covenantTypeSelection === "pol" && (
               <div className="mt-2 space-y-2">
                 <p className="font-bold">How many parties?</p>
-                <DropdownDEPRECATED
+                <Dropdown
                   options={POL_TYPE_PARTIES_OPTIONS}
                   selected={numParties}
                   onSelected={setNumParties}

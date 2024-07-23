@@ -5,7 +5,17 @@ import React from "react";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
-const Tooltip = TooltipPrimitive.Root;
+const Tooltip: React.FC<
+  { children: React.ReactNode } & React.ComponentPropsWithoutRef<
+    typeof TooltipPrimitive.Root
+  >
+> = ({ children, ...props }) => {
+  return (
+    <TooltipProvider>
+      <TooltipPrimitive.Root {...props}>{children}</TooltipPrimitive.Root>
+    </TooltipProvider>
+  );
+};
 
 const TooltipTrigger = TooltipPrimitive.Trigger;
 
@@ -26,4 +36,4 @@ const TooltipContent = React.forwardRef<
 ));
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
+export { Tooltip, TooltipTrigger, TooltipContent };

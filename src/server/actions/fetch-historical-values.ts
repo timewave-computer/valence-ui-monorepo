@@ -13,7 +13,7 @@ import {
   IndexerHistoricalBalancesResponse,
   IndexerHistoricalBalancesResponseSchema,
   IndexerHistoricalTargetsResponse,
-} from "@/types/indexer";
+} from "@/types/rebalancer";
 import { baseToUnit } from "@/utils";
 import {
   CoinGeckoHistoricPrices,

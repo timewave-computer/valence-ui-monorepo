@@ -68,23 +68,7 @@ const Brand: React.FC<{
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        {isConnecting && <Button variant="secondary">Connecting</Button>}
-        {!isConnected && (
-          <>
-            <Button
-              onClick={async () => {
-                await connect();
-              }}
-              variant="primary"
-            >
-              {" "}
-              Connect Wallet
-            </Button>
-            <p className="text-center text-sm">
-              Connect your wallet to start rebalancing funds.
-            </p>
-          </>
-        )}
+        <ConnectWalletButton />
       </div>
 
       <div className="flex flex-col gap-2  ">
@@ -269,4 +253,28 @@ const DiscoverPanel: React.FC<{
       </div>
     </div>
   );
+};
+
+const ConnectWalletButton: React.FC = () => {
+  const { connect, isConnected, isConnecting } = useWallet();
+
+  if (isConnecting) return <Button variant="secondary">Connecting</Button>;
+  else if (!isConnected)
+    return (
+      <>
+        <Button
+          onClick={async () => {
+            await connect();
+          }}
+          variant="primary"
+        >
+          {" "}
+          Connect Wallet
+        </Button>
+        <p className="text-center text-sm">
+          Connect your wallet to start rebalancing funds.
+        </p>
+      </>
+    );
+  else return null;
 };
