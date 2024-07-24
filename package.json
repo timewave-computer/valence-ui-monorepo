@@ -7,10 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "codegen": "rm -rf ./src/codegen/ && ts-node ./scripts/codegen.ts"
   },
   "dependencies": {
     "@chain-registry/client": "^1.33.0",
+    "@cosmjs/cosmwasm-stargate": "^0.32.4",
+    "@cosmjs/encoding": "^0.32.4",
+    "@cosmjs/proto-signing": "^0.32.4",
     "@cosmjs/stargate": "^0.32.3",
     "@cosmos-kit/core": "^2.13.1",
     "@cosmos-kit/keplr": "^2.12.2",
@@ -49,6 +53,7 @@
   },
   "devDependencies": {
     "@chain-registry/types": "^0.30.0",
+    "@cosmwasm/ts-codegen": "^1.11.1",
     "@tanstack/eslint-plugin-query": "^5.32.1",
     "@types/lodash": "^4.17.5",
     "@types/node": "^20",
@@ -64,6 +69,7 @@
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   },
   "lint-staged": {
