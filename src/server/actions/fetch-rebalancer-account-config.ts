@@ -4,7 +4,7 @@ import {
   ErrorHandler,
   InvalidAccountError,
 } from "@/const/error";
-import { NEUTRON_CHAIN_ID } from "@/const/neutron";
+import { DEFAULT_CHAIN } from "@/const/chains";
 import { getOriginAssets, IndexerUrl } from "@/server/utils";
 
 import { OriginAsset } from "@/types/ibc";
@@ -35,7 +35,7 @@ export async function fetchRebalancerAccountConfiguration({
     targets.map((target) => {
       return {
         denom: target.denom,
-        chain_id: NEUTRON_CHAIN_ID,
+        chain_id: DEFAULT_CHAIN.chain_id,
       };
     }),
   );

@@ -44,7 +44,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
   try {
     postData = await getPost(params.slug);
   } catch (e) {
-    ErrorHandler.makeError("Error loading blog post", e, { throw: false });
+    ErrorHandler.makeError("Error loading blog post", e);
     error = true;
   }
 

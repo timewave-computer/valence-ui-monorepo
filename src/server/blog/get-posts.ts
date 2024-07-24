@@ -40,7 +40,7 @@ export const getSortedPosts = (): PostList => {
         ...frontMatter,
       });
     } catch (e) {
-      ErrorHandler.makeError("Error parsing post", e, { throw: false });
+      ErrorHandler.makeError("Error parsing post", e);
     }
   });
   return allPosts.sort((a, b) => {

@@ -14,7 +14,7 @@ import {
   IndexerHistoricalBalancesResponseSchema,
   IndexerHistoricalTargetsResponse,
 } from "@/types/rebalancer";
-import { baseToUnit } from "@/utils";
+import { microToBase } from "@/utils";
 import {
   CoinGeckoHistoricPrices,
   CoinGeckoHistoricPricesSchema,
@@ -78,7 +78,7 @@ export async function fetchHistoricalValues({
         denom: target.denom,
         amount:
           target.denom in balance.value
-            ? baseToUnit(
+            ? microToBase(
                 Number(balance.value[target.denom]),
                 target.asset.decimals,
               )

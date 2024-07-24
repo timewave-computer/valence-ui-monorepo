@@ -9,7 +9,7 @@ import {
   fetchOraclePrices,
 } from "@/server/actions/fetch-oracle-prices";
 import { findClosestCoingeckoPrice } from "@/server/utils";
-import { baseToUnit } from "@/utils";
+import { microToBase } from "@/utils";
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
 import { NextResponse } from "next/server";
@@ -62,7 +62,7 @@ export async function GET(req: Request) {
       const name = target.asset.name;
 
       // get closest price to timestmap
-      let denomBalance = baseToUnit(balance.value[targetDenom], decimals);
+      let denomBalance = microToBase(balance.value[targetDenom], decimals);
       denomBalance = isNaN(denomBalance) ? 0 : denomBalance;
       const balanceTimestamp = balance.blockTimeUnixMs;
       const coingeckoPricesForDenom =

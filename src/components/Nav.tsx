@@ -42,7 +42,7 @@ const NavLink = ({
 
 export const Nav = () => {
   const path = usePathname();
-  const { isConnected, disconnect, address } = useWallet();
+  const { isWalletConnected, disconnect, address } = useWallet();
 
   const links = (
     <>
@@ -71,7 +71,7 @@ export const Nav = () => {
         <div className="hidden flex-row gap-8 md:flex">{links}</div>
       </div>
 
-      {isConnected && address && (
+      {isWalletConnected && address && (
         <Popover.Root>
           <Popover.Trigger>
             <div

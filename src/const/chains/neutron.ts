@@ -360,5 +360,3 @@ const registeredNeutron = chains.find(
 export const NEUTRON_CHAIN: Chain = registeredNeutron
   ? registeredNeutron
   : NEUTRON_DEFAULT;
-
-export const NEUTRON_CHAIN_ID = NEUTRON_CHAIN.chain_id;

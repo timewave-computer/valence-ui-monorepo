@@ -11,6 +11,10 @@ export const ERROR_MESSAGES = {
   INDEXER_HISTORICAL_BALANCES_ERROR: "Failed to fetch historical balances",
   INDEXER_HISTORICAL_PRICES_ERROR: "Failed to fetch historical prices",
   INDEXER_HISTORICAL_TARGETS_ERROR: "Failed to fetch historical targets",
+
+  // create rebalancer
+  CREATE_REBALANCER_CODE_ID_ERROR:
+    "Failed to create rebalancer, could not fetch code details for",
 };
 
 // here for parsing specific errors in the client. server actions -> client loses context of error instance
@@ -46,13 +50,9 @@ export class ErrorHandler {
     console.warn(warnText);
   }
 
-  static makeError(
-    text: string,
-    error?: unknown,
-    options: { throw?: boolean } = { throw: true },
-  ) {
+  static makeError(text: string, error?: unknown) {
     const errorText = error ? this.constructText(text, error) : text;
     console.log(errorText);
-    if (options?.throw) throw new Error(errorText);
+    return new Error(errorText);
   }
 }

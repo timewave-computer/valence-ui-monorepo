@@ -41,8 +41,6 @@ const Brand: React.FC<{
   account: string;
   setAccount: (s: string) => void;
 }> = ({ account, setAccount }) => {
-  const { connect, isConnected, isConnecting, address } = useWallet();
-
   return (
     <div className=" flex flex-col items-stretch gap-4 border-b   border-valence-black p-4">
       <div className="flex flex-row  items-center gap-4 border-valence-black">
@@ -186,7 +184,7 @@ const DiscoverPanel: React.FC<{
   account: string;
 }> = ({ account }) => {
   const { data: edgeConfig } = useEdgeConfig();
-  const { isConnected, address } = useWallet();
+  const { isWalletConnected, address } = useWallet();
 
   const featuredAccounts =
     edgeConfig?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS;
@@ -197,7 +195,7 @@ const DiscoverPanel: React.FC<{
   return (
     <div className="flex flex-col  items-stretch gap-2 border-b border-valence-black p-4">
       <h1 className="font-bold">Discover</h1>
-      {isConnected && (
+      {isWalletConnected && (
         <div
           onClick={() => {}}
           className={cn(
@@ -256,10 +254,11 @@ const DiscoverPanel: React.FC<{
 };
 
 const ConnectWalletButton: React.FC = () => {
-  const { connect, isConnected, isConnecting } = useWallet();
+  const { connect, isWalletConnected, isWalletConnecting } = useWallet();
 
-  if (isConnecting) return <Button variant="secondary">Connecting</Button>;
-  else if (!isConnected)
+  if (isWalletConnecting)
+    return <Button variant="secondary">Connecting</Button>;
+  else if (!isWalletConnected)
     return (
       <>
         <Button

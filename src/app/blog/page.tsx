@@ -37,7 +37,7 @@ const BlogHome = async () => {
   try {
     posts = getSortedPosts();
   } catch (e) {
-    ErrorHandler.makeError("Error loading blog posts", e, { throw: false });
+    ErrorHandler.makeError("Error loading blog posts", e);
     error = true;
   }
   if (error)

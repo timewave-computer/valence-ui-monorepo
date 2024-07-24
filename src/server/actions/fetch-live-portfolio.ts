@@ -11,7 +11,7 @@ import {
 import { OriginAsset } from "@/types/ibc";
 import { z } from "zod";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
-import { baseToUnit } from "@/utils";
+import { microToBase } from "@/utils";
 import { IndexerFundsInAuctionSchema } from "@/types/rebalancer";
 
 export async function fetchLivePortfolio({
@@ -58,7 +58,7 @@ export async function fetchLivePortfolio({
       price = coinGeckoPrices[coinGeckoId];
     }
 
-    const formattedAmount = baseToUnit(amount, traceAsset.decimals);
+    const formattedAmount = microToBase(amount, traceAsset.decimals);
     portfolioWithoutDistribution.push({
       denom,
       target: target.percentage,

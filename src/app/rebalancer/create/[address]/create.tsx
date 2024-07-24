@@ -8,7 +8,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { CreateRebalancerCopy } from "../copy";
 import { BsPlus, BsX } from "react-icons/bs";
 import { useEffect } from "react";
-
+import { makeTransactionMessages } from "@/utils";
 type CreateRebalancerPageProps = {
   ownerAddress: string;
 };
@@ -17,7 +17,7 @@ export default function CreateRebalancerPage({
   ownerAddress,
 }: CreateRebalancerPageProps) {
   const router = useRouter();
-  const { address } = useWallet();
+  const { address, getSigningStargateClient, getCosmWasmClient } = useWallet();
 
   const { setValue, watch, control, register } = useForm<CreateRebalancerForm>({
     defaultValues: {
@@ -45,6 +45,32 @@ export default function CreateRebalancerPage({
   useEffect(() => {
     console.log("watchAllFields", watchAllFields);
   }, [watchAllFields]);
+
+  const handleCreateRebalancer = async () => {
+    /***
+     * on execute, generate the following messages:
+     * - instantiate valence account (generated deterministically)
+     * - send funds to account
+     * - register account with rebalancer (with config)
+     */
+
+    // should not happen but here to make typescript happy
+    if (!address) return;
+    const cwClient = await getCosmWasmClient();
+
+    const messages = await makeTransactionMessages({
+      cosmwasmClient: cwClient,
+      creatorAddress: address,
+    });
+
+    // const signer = await getSigningStargateClient();
+
+    // const result = await signer.signAndBroadcast(
+    //    address,
+    //   messages,
+    //   'auto'
+    // )
+  };
 
   // TODO: put this back, just here to make development smoother
   // if (!isConnected) return redirect("/rebalancer");
@@ -178,6 +204,8 @@ export default function CreateRebalancerPage({
         <aside className="col-span-2"></aside>
       </section>
       <Button disabled>Review</Button>
+
+      <Button onClick={handleCreateRebalancer}>Create</Button>
     </div>
   );
 }
