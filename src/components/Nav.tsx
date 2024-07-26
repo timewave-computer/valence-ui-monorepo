@@ -6,7 +6,7 @@ import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
-import { useWallet } from "@/hooks";
+import { useChainContext, useDisconnect, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
 
 const shouldHightlightItem = (href: string, path: string) => {
@@ -42,7 +42,9 @@ const NavLink = ({
 
 export const Nav = () => {
   const path = usePathname();
-  const { isWalletConnected, disconnect, address } = useWallet();
+  const { chain, isWalletConnected } = useChainContext();
+  const disconnect = useDisconnect();
+  const { address } = useWallet();
 
   const links = (
     <>
@@ -86,9 +88,17 @@ export const Nav = () => {
 
           <Popover.Content
             sideOffset={0}
-            className="z-50 flex flex-col border border-valence-black bg-valence-white p-4 shadow-md"
+            className="z-50 flex flex-col items-center gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all"
           >
             <Popover.Arrow />
+            <div className="flex flex-col items-center gap-1">
+              <span className="h-fit bg-valence-mediumgray px-1.5 py-0.5 text-xs text-valence-black ">
+                {chain.chain_id}
+              </span>
+              <span className="w-fit max-w-32 break-words text-center font-mono text-xs font-light tracking-tight">
+                {address}
+              </span>
+            </div>
 
             <Button onClick={() => disconnect()} variant="secondary">
               Disconnect

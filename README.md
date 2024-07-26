@@ -30,3 +30,7 @@ pnpm lint-staged
 # lint everything
 pnpm exec prettier . --write
 ```
+
+## Connect to testnet
+
+By default the UI connects to `neutron-1`. In development, you can set the `NEXT_PUBLIC_CHAIN_ID` environment variable to `pion-1` to connect to neutron testnet. This is the only other chain connection that is supported currently.

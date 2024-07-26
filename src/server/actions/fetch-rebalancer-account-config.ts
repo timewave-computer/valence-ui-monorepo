@@ -4,7 +4,7 @@ import {
   ErrorHandler,
   InvalidAccountError,
 } from "@/const/error";
-import { DEFAULT_CHAIN } from "@/const/chains";
+import { chainConfig } from "@/const/config";
 import { getOriginAssets, IndexerUrl } from "@/server/utils";
 
 import { OriginAsset } from "@/types/ibc";
@@ -35,7 +35,7 @@ export async function fetchRebalancerAccountConfiguration({
     targets.map((target) => {
       return {
         denom: target.denom,
-        chain_id: DEFAULT_CHAIN.chain_id,
+        chain_id: chainConfig.chain.chain_id,
       };
     }),
   );

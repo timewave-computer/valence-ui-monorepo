@@ -8,7 +8,7 @@ import {
   fetchMaybeCached,
   findClosestCoingeckoPrice,
 } from "@/server/utils";
-import { USDC_DENOM } from "@/const/usdc";
+import { USDC_DENOM } from "@/const/chain-data";
 import {
   IndexerHistoricalBalancesResponse,
   IndexerHistoricalBalancesResponseSchema,

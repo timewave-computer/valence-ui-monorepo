@@ -27,7 +27,7 @@ import {
   scaleAtom,
   accountAtom,
 } from "@/app/rebalancer/const";
-import { USDC_DENOM } from "@/const/usdc";
+import { USDC_DENOM } from "@/const/chain-data";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
 import { StatusBar } from "@/components/StatusBar";

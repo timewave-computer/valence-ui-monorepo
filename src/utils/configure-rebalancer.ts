@@ -1,18 +1,16 @@
-import type { Coin, EncodeObject } from "@cosmjs/proto-signing";
+import type { EncodeObject } from "@cosmjs/proto-signing";
 import { CosmWasmClient, instantiate2Address } from "@cosmjs/cosmwasm-stargate";
 import { fromHex, toUtf8 } from "@cosmjs/encoding";
-import { DEFAULT_CHAIN } from "@/const/chains";
-import { CodeIds } from "@/const/code-ids";
+import { chainConfig } from "@/const/config";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { InstantiateMsg as ValenceAccountInstatiateMessage } from "@/codegen/Account.types";
-import { USDC_DENOM } from "@/const/usdc";
+import { USDC_DENOM } from "@/const/chain-data";
 import { baseToMicroDenomString } from "./denom-math";
 import { RebalancerData } from "@/codegen/Rebalancer.types";
 import { MsgInstantiateContract2 } from "@/types/cosmos";
 
 const VALENCE_INSTANTIATE_2_SALT = "valence-instantiate-2";
-const CODE_ID = CodeIds.Account;
-const SERVICES_MANAGER_ADDRESS = "neutron/services_manager"; // this is a placeholder, replace with actual address
+const SERVICES_MANAGER_ADDRESS = chainConfig.addresses.servicesManager;
 
 export const makeTransactionMessages = async ({
   creatorAddress,
@@ -21,6 +19,7 @@ export const makeTransactionMessages = async ({
   creatorAddress: string;
   cosmwasmClient: CosmWasmClient;
 }) => {
+  const CODE_ID = chainConfig.codeIds.Account;
   // Load checksum of the contract code.
   const codeDetails = await cosmwasmClient.getCodeDetails(CODE_ID);
   if (!codeDetails) {
@@ -34,7 +33,7 @@ export const makeTransactionMessages = async ({
     fromHex(codeDetails.checksum),
     creatorAddress,
     toUtf8(VALENCE_INSTANTIATE_2_SALT),
-    DEFAULT_CHAIN.bech32_prefix,
+    chainConfig.chain.bech32_prefix,
   );
 
   const instatiateMessage: ValenceAccountInstatiateMessage = {

@@ -1,14 +1,15 @@
 "use client";
 import { Button, Dropdown, IconButton } from "@/components";
-import { USDC_DENOM } from "@/const/usdc";
-import { useWallet } from "@/hooks";
+import { USDC_DENOM } from "@/const/chain-data";
+import { useChainContext, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { redirect, useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { CreateRebalancerCopy } from "../copy";
 import { BsPlus, BsX } from "react-icons/bs";
-import { useEffect } from "react";
+import { Fragment } from "react";
 import { makeTransactionMessages } from "@/utils";
+import { chainConfig } from "@/const/config";
 type CreateRebalancerPageProps = {
   ownerAddress: string;
 };
@@ -17,8 +18,8 @@ export default function CreateRebalancerPage({
   ownerAddress,
 }: CreateRebalancerPageProps) {
   const router = useRouter();
-  const { address, getSigningStargateClient, getCosmWasmClient } = useWallet();
-
+  const { getCosmWasmClient, getSigningStargateClient } = useChainContext();
+  const { address } = useWallet();
   const { setValue, watch, control, register } = useForm<CreateRebalancerForm>({
     defaultValues: {
       assets: [{ startingAmount: 0 }, { startingAmount: 0 }],
@@ -42,9 +43,6 @@ export default function CreateRebalancerPage({
     name: "assets",
   });
   const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
-  useEffect(() => {
-    console.log("watchAllFields", watchAllFields);
-  }, [watchAllFields]);
 
   const handleCreateRebalancer = async () => {
     /***
@@ -56,6 +54,7 @@ export default function CreateRebalancerPage({
 
     // should not happen but here to make typescript happy
     if (!address) return;
+
     const cwClient = await getCosmWasmClient();
 
     const messages = await makeTransactionMessages({
@@ -63,7 +62,7 @@ export default function CreateRebalancerPage({
       creatorAddress: address,
     });
 
-    // const signer = await getSigningStargateClient();
+    const signer = await getSigningStargateClient();
 
     // const result = await signer.signAndBroadcast(
     //    address,
@@ -132,9 +131,9 @@ export default function CreateRebalancerPage({
             />
           </div>
 
-          {assetFields.map((field, index) => {
+          {assetFields.map((field, index: number) => {
             return (
-              <>
+              <Fragment key={`asset-select-row-${index}`}>
                 <div role="gridcell" className="w-full">
                   <Dropdown
                     containerClassName="min-w-0 w-full gap-2" // need to set min w to override default style. will remove later
@@ -174,7 +173,7 @@ export default function CreateRebalancerPage({
                     }}
                   />
                 </div>
-              </>
+              </Fragment>
             );
           })}
         </div>
@@ -212,8 +211,9 @@ export default function CreateRebalancerPage({
 
 // TODO: needs to be actual denom
 const ENABLED_SYMBOLS = ["NTRN", "USDC", "ATOM", "NEWT"];
-const AssetOptions =
-  ENABLED_SYMBOLS.map((symbol) => ({
-    label: symbol,
-    value: symbol + "-denom",
-  })) ?? [];
+const AssetOptions = chainConfig.supportedAssets.map((asset) => {
+  return {
+    label: asset.symbol,
+    value: asset.denom,
+  };
+});

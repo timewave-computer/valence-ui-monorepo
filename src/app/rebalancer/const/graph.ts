@@ -3,6 +3,7 @@ import { subDays } from "date-fns";
 import _ from "lodash";
 import { ErrorHandler } from "@/const/error";
 import { fnv1aHash } from "@/utils";
+import { chainConfig } from "@/const/config";
 
 export enum Scale {
   // these two are disabled for now, we only have historical day 1x per day
@@ -120,26 +121,32 @@ const COLORS = [
 export type GraphColor = (typeof COLORS)[number];
 
 // these are the 'supported' colors for assets. colors are hardcoded
-export class SymbolColors {
-  private static ASSET_COLORS: Record<string, GraphColor> = {
-    NTRN: COLORS[0], // red
-    USDC: COLORS[1], // usdc
-    ATOM: COLORS[2], // pink
-    NEWT: COLORS[3], // green
-  };
+// todo: make this dynamic
 
-  private static UNASSINGED_COLORS = COLORS.slice(_.size(this.ASSET_COLORS));
+class SymbolColorsClass {
+  private assetColors: Record<string, GraphColor>;
+  private unassignedColors: GraphColor[];
 
-  private static getUnassignedColor(value: string) {
-    // deterministically select an unassigned color
-    const hash = fnv1aHash(value);
-    const index = Number(hash % BigInt(this.UNASSINGED_COLORS.length));
-    return this.UNASSINGED_COLORS[index];
+  constructor() {
+    const colorMap: Record<string, GraphColor> = {};
+    chainConfig.supportedAssets.forEach((asset, i) => {
+      colorMap[asset.symbol] = COLORS[i];
+    });
+    this.assetColors = colorMap;
+    this.unassignedColors = COLORS.slice(_.size(colorMap));
   }
 
-  static get(symbol: string): GraphColor {
-    if (symbol in this.ASSET_COLORS) {
-      return this.ASSET_COLORS[symbol] as (typeof COLORS)[0];
+  private getUnassignedColor(value: string) {
+    // deterministically select an unassigned color
+    const hash = fnv1aHash(value);
+    const index = Number(hash % BigInt(this.unassignedColors.length));
+    return this.unassignedColors[index];
+  }
+
+  public get(symbol: string): GraphColor {
+    const assetColors = this.assetColors;
+    if (symbol in assetColors) {
+      return assetColors[symbol] as (typeof COLORS)[0];
     }
     // if not 'supported' color, deterministally assign a color
     else {
@@ -148,6 +155,8 @@ export class SymbolColors {
     }
   }
 }
+
+export const SymbolColors = new SymbolColorsClass();
 
 export const targetLabelIndex: Record<Scale, (length: number) => number> = {
   [Scale.Week]: (length) => {

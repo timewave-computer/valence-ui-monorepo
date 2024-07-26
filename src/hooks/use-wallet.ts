@@ -1,11 +1,33 @@
 "use client";
 
-import { DEFAULT_CHAIN } from "@/const/chains";
+import { chainConfig } from "@/const/config";
 import { useChain } from "@cosmos-kit/react-lite";
 
-export const useWallet = () => {
-  const chainContext = useChain(DEFAULT_CHAIN.chain_name, false);
-  const wallet = chainContext.walletRepo.wallets[0]; // just keplr for now
+export const useChainContext = () => {
+  // chain set in the env, for now
+  const chainContext = useChain(chainConfig.chain.chain_name, false);
+  return chainContext;
+};
 
-  return wallet;
+export const useWallet = () => {
+  const chainContext = useChainContext();
+  if (!chainContext.chainWallet) {
+    const noWallet = {
+      // populate these so we do not destructure from undefined object, if there is no wallet connected
+      address: undefined,
+    };
+    return noWallet;
+  }
+
+  return chainContext.chainWallet;
+};
+
+export const useConnect = () => {
+  const chainContext = useChain(chainConfig.chain.chain_name, false);
+  return chainContext.walletRepo.wallets[0].connect;
+};
+
+export const useDisconnect = () => {
+  const chainContext = useChain(chainConfig.chain.chain_name, false);
+  return chainContext.walletRepo.wallets[0].disconnect;
 };

@@ -7,13 +7,10 @@ import { BsPlus, BsX } from "react-icons/bs";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useEdgeConfig } from "@/hooks";
-import {
-  DEFAULT_ACCOUNT,
-  DEFAULT_FEATURED_ACCOUNTS,
-  accountAtom,
-} from "@/app/rebalancer/const";
+import { DEFAULT_ACCOUNT, accountAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { useQueryState } from "nuqs";
+import { chainConfig } from "@/const/config";
 
 export const SidePanel: React.FC<{
   isLoading: boolean;
@@ -88,9 +85,7 @@ export const SidePanel: React.FC<{
         <h1 className="font-bold">Rebalancer account</h1>
 
         <DropdownTextField
-          options={
-            data?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS
-          }
+          options={chainConfig.featuredAccounts}
           value={account}
           onChange={(value) => setAccountUrlParam(value)}
           placeholder="neutron12345..."

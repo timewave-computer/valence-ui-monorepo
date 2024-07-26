@@ -2,18 +2,19 @@
 import { Button, LinkText, TextInput, Label } from "@/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { X_HANDLE, X_URL } from "@/const/socials";
-import { useEdgeConfig, useWallet } from "@/hooks";
+import { useChainContext, useConnect, useEdgeConfig } from "@/hooks";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { cn, displayAddress } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { DEFAULT_FEATURED_ACCOUNTS, accountAtom } from "@/app/rebalancer/const";
+import { accountAtom } from "@/app/rebalancer/const";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
+import { chainConfig } from "@/const/config";
 
 export const SidePanelV2: React.FC<{
   isLoading: boolean;
@@ -183,11 +184,8 @@ const AccountDetails: React.FC<{ account: string; isLoading: boolean }> = ({
 const DiscoverPanel: React.FC<{
   account: string;
 }> = ({ account }) => {
-  const { data: edgeConfig } = useEdgeConfig();
-  const { isWalletConnected, address } = useWallet();
-
-  const featuredAccounts =
-    edgeConfig?.featured_rebalancer_accounts ?? DEFAULT_FEATURED_ACCOUNTS;
+  const { isWalletConnected, address } = useChainContext();
+  const featuredAccounts = chainConfig.featuredAccounts;
 
   const router = useRouter();
   const [scale] = useAtom(scaleAtom);
@@ -220,6 +218,9 @@ const DiscoverPanel: React.FC<{
         </div>
       )}
       <div>
+        {featuredAccounts.length === 0 && (
+          <p className="pt-2 text-sm">No featured accounts to show.</p>
+        )}
         {featuredAccounts.map((option, i) => {
           const isLastElement = i === featuredAccounts.length - 1;
 
@@ -254,8 +255,9 @@ const DiscoverPanel: React.FC<{
 };
 
 const ConnectWalletButton: React.FC = () => {
-  const { connect, isWalletConnected, isWalletConnecting } = useWallet();
+  const { isWalletConnected, isWalletConnecting } = useChainContext();
 
+  const connect = useConnect();
   if (isWalletConnecting)
     return <Button variant="secondary">Connecting</Button>;
   else if (!isWalletConnected)

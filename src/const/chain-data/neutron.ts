@@ -1,5 +1,6 @@
 import { Chain } from "@chain-registry/types";
 import { chains } from "chain-registry";
+
 const NEUTRON_DEFAULT: Chain = {
   $schema: "../chain.schema.json",
   chain_name: "neutron",
