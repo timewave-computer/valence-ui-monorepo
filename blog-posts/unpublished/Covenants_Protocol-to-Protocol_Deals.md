@@ -1,101 +1,79 @@
 ---
-title: "Covenants: Protocol-to-Protocol Deals"
-date: 2024-06-20 11:32:00 -0400
+title: "4 Ways that Protocol-Owned Liquidity Adds Value Across the Interchain"
+date: 2024-07-29 13:39:00 -0400
 author: test
-description: Valence’s Covenant system is a way for protocols—such as blockchains, dApps, rollups, and DAOs—to transact with other protocols in a programmatic, trust-minimized way. This post will explore the roadblocks inhibiting protocol-to-protocol deals, how protocols can benefit from using the Covenant system, and the kinds of liquidity sharing deal structures that the Covenant system unlocks.
+description: This blog post will build up the concept of “liquidity,” describe how it relates to protocol-owned liquidity (POL), and explain four ways your crypto-native community can benefit from POL today. 
 ---
 
-![Covenant Header](/img/blog/covenant-bw.png)
+This blog post will build up the concept of “liquidity,” describe how it relates to protocol-owned liquidity (POL), and explain four ways your crypto-native community can benefit from POL today. 
 
-# Introducing Covenants
+# What is Liquidity
  
-Valence’s Covenant system is a way for protocols—such as blockchains, dApps, rollups, and DAOs—to transact with other protocols in a programmatic, trust-minimized way. This post will explore the roadblocks inhibiting protocol-to-protocol deals, how protocols can benefit from using the Covenant system, and the kinds of liquidity sharing deal structures that the Covenant system unlocks.
+In order to understand  "liquidity," we’ll first want to define "price impact" and “rate impact.” 
 
-Informal audited the v1 Covenant library and Oak Security has now completed an audit of the v2 Covenant system, alongside our extensive suite of end-to-end testing. At the time of writing two Covenants have been deployed to production, Nolus–Neutron and Stargaze–Neutron, with more to be announced in the coming weeks. The Covenant system is now production-ready for any protocol with Interchain Accounts or Polytone to initiate a cross-chain liquidity deal.
+*Price impact* is the change in asset price directly caused by a trade. For example, if you have 2 apples and the market price is $1/apple, you might think your apples are worth $2. However, after selling the first apple, if the next buyer is only willing to pay $0.98, after selling both apples you would only receive a total of $1.98, thereby causing a 1% price impact ($0.02/2.00 = 1%). 
 
-# Roadblocks to closing protocol-to-protocol deals
+*Rate impact* is a similar concept applied to the change in interest rates caused by a loan. Like trading markets, lending markets are governed by supply and demand. As the demand for loans increases relative to supply, the interest rate rises, and vice versa. For example, if the current interest rate on a lending protocol is 5% and you want to borrow $100K, you may think you could borrow the full $100K with $5K interest payments. However, if the rate for the first $50K you borrow is 5% and the rate for the second $50K is 6%, you would actually have to pay $5.5K annually.
 
-Without the Covenant system, the only way for one protocol to transact with another is to use a trusted multisig. These multisigs cause [issues on numerous fronts](https://x.com/TimewaveLabs/status/1765437257492922808), including deal friction, administrative risk, and operational overhead. Mostly importantly, multisigs are unable to respond to events in realtime, which precludes the introduction of automated contractual terms and limits the possibilities for algorithmic monetary policies.
+Now we're ready to discuss liquidity. An asset’s liquidity is a function of how much price impact would be incurred by trading that asset or rate impact would be incurred by borrowing/lending that asset. The smaller the price impact or rate impact, the deeper the liquidity. 
 
-Multisigs for protocol-to-protocol deals are at best only a temporary stopgap. Covenants are the long-term solution because they eliminate the need for trusted third parties.
+# What is Protocol-Owned Liquidity
 
-# The benefits of protocol-to-protocol deals
+In addition to the usual sources of liquidity, such as individuals, market makers, and investment firms, protocols can also be a source of liquidity. Protocol-owned liquidity (POL) is a term used to describe situations where protocols provide liquidity in such a way that the protocol continues to own the liquidity it provides. 
 
-While protocols can use the Covenant system for simple transactions, such as a token swap or OTC deal, the key feature of the Covenant system is the ability for protocols to lend protocol-owned liquidity (POL) to other protocols. Protocol-to-protocol liquidity lending has a number of important benefits:
+For examples of POL in action, see the “Structuring protocol-to-protocol liquidity deals” section from our earlier blog post [here](https://www.valence.zone/blog/Covenants_Protocol-to-Protocol_Deals). 
 
-**1. Increases amount of liquidity:** Getting liquidity from protocols is a net-new source of liquidity. More liquidity means more trade volume can occur with less price impact, which makes it easier for larger investors to participate. Liquidity begets liquidity.
+# 4 Ways that POL Can Help Your Crypto-Native Community Today
 
-**2. Increases quality of liquidity:** Sourcing liquidity from other protocols can also increase the quality of liquidity. Off-chain actors often have incentives that are misaligned with those of the protocol, whereas protocol counterparties with a stake in the ecosystem have greater alignment to ensure the collective ecosystem thrives.
+There are a variety of ways POL can benefit developing protocol ecosystems. While this list isn’t exhaustive, here are four important dimensions of growth. 
 
-**3. Enables alliance formation:** If two protocols have competing products, they are likely to engage in zero-sum, or potentially negative-sum, activity. A liquidity sharing deal between protocols can reduce the incentive to engage in destructive activity and instead enable both parties to focus on positive-sum activity.
+## 1. Increase decentralized exchange (DEX) liquidity
 
-**4. Creates an environment for innovation:** Protocol-to-protocol deals are cutting edge. By closing deals with other protocols, protocols demonstrate sophistication, technical capability, and ecosystem alignment, which can help the protocol attract talent, capital, and integrations.
- 
-# Structuring protocol-to-protocol liquidity deals
+Traders want to trade on the DEX in which they will receive the best price execution. The DEX with the most liquidity will be able to offer the best price execution because more liquidity means less price impact per trade on a dollar-for-dollar basis. 
 
-The Covenant system provides various ways to structure protocol-to-protocol liquidity deals, including the following:
+Additionally, providers of liquidity (LPers) want to provide liquidity on the DEX in which they will generate the most fees and incur the smallest loss versus rebalancing ([LVR](https://members.delphidigital.io/learn/loss-versus-rebalancing-lvr)). The DEX with the most liquidity will attract more traders, and therefore generate more fees. In general, LPers on the DEX with the most liquidity will incur the least LVR since it will have the lowest price impact per trade. 
 
-## Unilateral POL
-
-A protocol may wish to deepen liquidity between its native token and the liquid staked versions of its token. To do so, the protocol could convert a portion of its native token to a liquid staked version of that token and pair that liquid staked version with the native token on a DEX.
-
-This unilateral POL is what the Cosmos Hub is doing with proposition [800](https://wallet.keplr.app/chains/cosmos-hub/proposals/800). It allocated 450,000 ATOM to strengthen the ATOM:stATOM pool on Astroport by converting about half of the ATOM into stATOM and pairing the stATOM with ATOM on Astroport. The Hub further deepened liquid staked pairs by passing proposition [853](https://www.mintscan.io/cosmos/proposals/853) (600,000 ATOM to strengthen the ATOM:stkATOM pool on Astroport) and proposition [858](https://www.mintscan.io/cosmos/proposals/858) (900,000 ATOM to strengthen the ATOM:stATOM pool on Osmosis).
+Since DEXs compete with each other to have the most liquidity, they benefit from sourcing liquidity from as many places as possible, including protocols. By sourcing POL, DEXs increase pool depth, which minimizes price impact for traders, inducing more transaction volume, resulting in more fees for LPs, creating a virtuous cycle of attracting more liquidity. 
 
 ![Covenant Figure 1](/img/blog/covenant-fig-1.png)
 _Figure 1. Flow of funds for Cosmos Hub proposition 800._
 
-The Covenant system currently supports liquid staking with Stride and Persistence, and will soon support additional liquid staking and liquid restaking protocols. If you are developing a liquid staking or liquid restaking protocol and want to integrate, [get in touch](https://x.com/ValenceZone). 
+2. Increase lending protocol liquidity
 
-## Bilateral POL on one DEX
+Borrowers want to borrow from the protocol that offers them the largest loans with the smallest amount of collateral at the lowest cost. The lending protocol with the most liquidity will be able to offer the best terms because more capital available for borrowing means less rate impact per borrow on a dollar-for-dollar basis.
 
-Two protocols may mutually wish to deepen the liquidity between their native tokens on a single DEX. To do so, they could each pass governance proposals to commit their native tokens to the deal and pair the tokens on a DEX.
+Additionally, lenders want to lend to the protocol that will generate them the highest risk-adjusted returns. The lending protocol with the most liquidity will attract more borrowers, thus generating more fees.  More fee revenue accruing to the protocol enables reinvesting into features that will increase risk-adjusted returns, such as an insurance fund.
 
-This bilateral POL agreement on one DEX is what Neutron and ApolloDAO are accomplishing together with Proposition [A-33](https://governance.neutron.org/proposals/A/33). According to this deal, Neutron contributes $500K worth of its native token NTRN and ApolloDAO contributes $500K worth of its native token APOLLO to provide a total of $1M worth of liquidity support for the NTRN:APOLLO token pair on the Astroport DEX. 
+Since lending protocols compete with each other for borrowable liquidity, they benefit from sourcing liquidity from as many places as possible, including protocols. By sourcing POL, lending protocols increase their liquidity, decreasing rate impact, this attracts more borrowers, resulting in more fees, which again creates a virtuous cycle of attracting more liquidity.
 
-![Covenant Figure 2](/img/blog/covenant-fig-2.png)
-_Figure 2. Flow of funds for Neutron liquidity deal with ApolloDAO via Proposition A-33._
+![Covenant Figure 1](/img/blog/covenant-fig-1.png)
+_Figure 1. Flow of funds for Cosmos Hub proposition 800._
 
-The Covenant system currently supports dealmaking between up to two parties at a time. The Covenant system can support deals with three or more parties by adding additional governance proposals. 
+## 3. Increase native token value by charging interest for POL
 
-## Bilateral POL on more than one DEX
+Since DeFi protocols across all of crypto are competing for liquidity, protocols have an opportunity to monetize the demand for their POL by charging interest on lent POL. If the interest rate is denominated in the same token as the POL, the interest payment will automatically generate upward price pressure on the token because borrowers would have to buy the token in order to meet their interest payments.   
 
-Two protocols may mutually wish to deepen the liquidity between their native tokens on two different DEXs. The desire for two DEXes often occurs when each party has a native DEX that they want to support. To do so, they could each pass governance proposals to commit their native tokens to the deal, use a fraction of the funds to pair on one DEX, and use the remaining funds to pair the other DEX.
+For example, a protocol could make $100M worth of its native token available for borrowing by a specific pool on a whitelisted DEX. The protocol charges a 1% fixed interest rate denominated in their native token. If the DEX were to borrow the full $100M, it would have to buy $1M worth of the POL lender’s native token by the end of the year in order to service the loan’s interest payments, thereby increasing the protocol’s token’s value by generating $1M in net-new purchases of the token. 
 
-This bilateral POL on more than one DEX is what Neutron and MantaDAO are doing together with Proposition [A-32](https://governance.neutron.org/proposals/A/32). According to this deal, Neutron contributes $150K worth of NTRN and MantaDAO contributes $150K worth of MANTA to provide $150K worth of liquidity support to the NTRN:MANTA pair on the Astroport DEX **AND** $150K worth of liquidity support to the NTRN:MANTA pair on the Kujira’s DEX FIN. 
+![Covenant Figure 1](/img/blog/covenant-fig-1.png)
+_Figure 1. Flow of funds for Cosmos Hub proposition 800._
 
-![Covenant Figure 3](/img/blog/covenant-fig-3.png)
-_Figure 3. Flow of funds for Neutron liquidity deal with MantaDAO via Proposition A-32._
+## 4. Increase ecosystem attractiveness
 
-The Covenant system currently supports supplying liquidity on two DEXs: Astroport (on Neutron) and Osmosis. The Covenant system can support deals with two or more DEXs by adding additional governance proposals. Covenants will soon support additional DeFi protocols, including lending protocols. If you are a member of a DeFi protocol that wants to integrate, [get in touch](https://x.com/ValenceZone). 
- 
-# Advanced features supported by the Covenant system
+Crypto projects have many options when it comes to which blockchain to build on, where to derive security (e.g. staking, restaking), and which ecosystem to develop within. Apart from the tech and the vibes, the primary reason a new crypto project would choose to align with one ecosystem over the other is the amount of liquidity and users the new protocol expects to attract via alignment with that ecosystem. Rather than leaving the amount of liquidity to chance, protocols seeking to attract new projects could offer POL to those new projects for free, or at low cost. Unlike grants that often result in complete liquidation and maximum downward price pressure, POL remains owned by the protocol providing the liquidity loan, which makes it a capital efficient means of attracting new projects. 
 
-## Price fluctuation tolerance
+For example, say a new actively validated service (AVS) may be choosing between EigenLayer and Babylon as potential security providers. If EigenLayer (or an LRT within the EigenLayer ecosystem) were to supplement the security contract by offering POL paired with the AVS’s native token, the AVS will take into consideration the day-1 liquidity and price support their token will receive into their selection of security vendor.
 
-It takes time to pass the governance propositions necessary for on-chain protocol-to-protocol liquidity deals and the price of tokens can fluctuate between the initial proposal and the final approval. The Covenant system enables protocols to set an acceptable price deviation upfront and have the deal go through so long as the price deviation is within the acceptable range. If the price deviates outside the acceptable range, the protocols would need to pass new propositions that account for the new price.
+# How to Start Deploying Protocol Liquidity
 
-## Deposit duration
+## Easy mode: Rebalancer
 
-A protocol may commit to doing a deal with another protocol, but may not want the other protocol to have the option to commit to the deal at any point in the future. The Covenant system enables protocols to set a deposit duration whereby the parties have a fixed number of days to commit their portion of the capital before the deal expires. If one protocol sends its tokens in time and the other does not send its tokens in time, the protocol that sent its tokens is refunded.
+Striking a liquidity deal as a decentralized protocol can be difficult. If you are concerned that your protocol’s community is not sufficiently aligned to find agreeable terms with an external party, one relatively easy first step is to cultivate internal alignment by working together on a strategy for managing your protocol’s treasury. Valence’s [Rebalancer](https://www.valence.zone/blog/Rebalancer-Protocol-Asset-Management) gives protocols an extremely simple entry point for cross-chain asset management.
 
-## Lockup duration
+The Rebalancer is live on mainnet today in private beta. Get in touch if you are interested in gaining early access: [@ValenceZone](https://x.com/ValenceZone)
 
-The protocols involved in the deal may want a guarantee that neither protocol can withdraw their liquidity for a minimum amount of time. The Covenant system enables protocols to set minimum lockup durations to guarantee that the liquidity will remain there for that minimum amount of time. Once the duration is reached, either party may withdraw their share of the deal.
+## Advanced mode: Covenants
 
-## Ragequit fee
+If you are ready to strike a POL deal with an external party, you can close protocol-to-protocol deals without intermediary multisigs by using Valence’s [Covenant](https://www.valence.zone/blog/Covenants_Protocol-to-Protocol_Deals) system. 
 
-When a minimum lockup duration is set, the parties to the deal may want to have the ability to withdraw their liquidity early in return for paying a fee. The Covenant system enables protocols to set ragequit fees whereby the ragequitting party pays a predetermined fee to the non-ragequitting party in return for the ragequitting party’s early exit.
-
-## Liquidity ownership
-
-When two protocols enter into a bilateral POL deal, the Covenant system enables choosing between “side-based” and “share-based” ownership. With side-based ownership, the protocol owns 100% of the token denomination it contributes and 0% of the counterparty’s token. With share-based ownership, each protocol owns a fixed percentage of the tokens it contributes, while the counterparty owns the remainder. By selecting side-based ownership, protocols can eliminate the concern that they are shorting their own token. By selecting share-based ownership, protocols can guarantee that they will bear the burden of LVR equally.
-
-## Ownership split
-
-One protocol may wish to be paid in return for providing liquidity to the other protocol. The Covenant system enables protocols in a bilateral POL deal to set custom ownership splits that apply regardless of whether the deal is side-based or share-based. For example, if one protocol puts in 100 USDC and the other protocol puts in $100 USD-worth of its native token in a share-based deal, the default split would be 50% each. However, the protocols could agree upon entry that the split would be 60:40 in favor of the protocol providing the USDC upon exit.
-
-**One can expect the charging of interest on lent protocol-owned liquidity to become an increasingly common deal provision. Valence will soon have a range of facilities to enable more sophisticated loan terms.**
-
-# Conclusion
-
-Despite the meaningful hurdles that protocols have had to overcome to enter into deals with other protocols, protocol-to-protocol dealmaking is accelerating because the significant benefits of these deals outweigh the high costs. With the Covenant system now eliminating many of these challenges and protocol-to-protocol liquidity lending becoming increasingly popular, Valence can help protocols collaborate even more effectively with one another. If you are a member of a protocol that is interested in deepening the liquidity of your token; strengthening the DeFi activity around your token; or integrating your liquid staking, liquid restaking token, DEX, or other DeFi protocol with our product suite, send a dm to [@ValenceZone](https://x.com/ValenceZone).
+Covenants are live on mainnet today in private beta. Get in touch if you are interested in gaining early access: [@ValenceZone](https://x.com/ValenceZone)
