@@ -6,7 +6,7 @@ description: Valence’s Rebalancer is a way for crypto-native organizations —
 
 ![Rebalancer Header](/img/blog/rebalancer2.png)
 
-# Introduction
+# Introducting the Rebalancer
 
 Valence’s Rebalancer is a way for protocols — such as blockchains, dApps, rollups, and DAOs — to trustlessly manage their balance sheets. Audited by Oak Security, a beta version of the Rebalancer is live on mainnet and managing assets for early partners. This post will explore the structural disadvantages that protocols face when managing assets, how the Rebalancer addresses those disadvantages, and how the Rebalancer works under the hood.
 
