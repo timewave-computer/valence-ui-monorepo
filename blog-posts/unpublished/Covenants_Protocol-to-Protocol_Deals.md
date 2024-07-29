@@ -35,8 +35,8 @@ Additionally, providers of liquidity (LPers) want to provide liquidity on the DE
 
 Since DEXs compete with each other to have the most liquidity, they benefit from sourcing liquidity from as many places as possible, including protocols. By sourcing POL, DEXs increase pool depth, which minimizes price impact for traders, inducing more transaction volume, resulting in more fees for LPs, creating a virtuous cycle of attracting more liquidity. 
 
-![Covenant Figure 1](/img/blog/covenant-fig-1.png)
-_Figure 1. Flow of funds for Cosmos Hub proposition 800._
+![Example 1](/img/blog/4-reasons-1.png)
+_Figure 1. Virtuous cycle of POL provisioned to a DEX_
 
 2. Increase lending protocol liquidity
 
@@ -46,8 +46,8 @@ Additionally, lenders want to lend to the protocol that will generate them the h
 
 Since lending protocols compete with each other for borrowable liquidity, they benefit from sourcing liquidity from as many places as possible, including protocols. By sourcing POL, lending protocols increase their liquidity, decreasing rate impact, this attracts more borrowers, resulting in more fees, which again creates a virtuous cycle of attracting more liquidity.
 
-![Covenant Figure 1](/img/blog/covenant-fig-1.png)
-_Figure 1. Flow of funds for Cosmos Hub proposition 800._
+![Example 2](/img/blog/4-reasons-2.png)
+_Figure 2. Virtuous cycle of POL provisioned to a lending protocol_
 
 ## 3. Increase native token value by charging interest for POL
 
@@ -55,8 +55,8 @@ Since DeFi protocols across all of crypto are competing for liquidity, protocols
 
 For example, a protocol could make $100M worth of its native token available for borrowing by a specific pool on a whitelisted DEX. The protocol charges a 1% fixed interest rate denominated in their native token. If the DEX were to borrow the full $100M, it would have to buy $1M worth of the POL lender’s native token by the end of the year in order to service the loan’s interest payments, thereby increasing the protocol’s token’s value by generating $1M in net-new purchases of the token. 
 
-![Covenant Figure 1](/img/blog/covenant-fig-1.png)
-_Figure 1. Flow of funds for Cosmos Hub proposition 800._
+![Example 3](/img/blog/4-reasons-3.png)
+_Figure 3. How lending POL leads to increased token price_
 
 ## 4. Increase ecosystem attractiveness
 
@@ -66,13 +66,13 @@ For example, say a new actively validated service (AVS) may be choosing between 
 
 # How to Start Deploying Protocol Liquidity
 
-## Easy mode: Rebalancer
+## Easy Mode: Rebalancer
 
 Striking a liquidity deal as a decentralized protocol can be difficult. If you are concerned that your protocol’s community is not sufficiently aligned to find agreeable terms with an external party, one relatively easy first step is to cultivate internal alignment by working together on a strategy for managing your protocol’s treasury. Valence’s [Rebalancer](https://www.valence.zone/blog/Rebalancer-Protocol-Asset-Management) gives protocols an extremely simple entry point for cross-chain asset management.
 
 The Rebalancer is live on mainnet today in private beta. Get in touch if you are interested in gaining early access: [@ValenceZone](https://x.com/ValenceZone)
 
-## Advanced mode: Covenants
+## Advanced Mode: Covenants
 
 If you are ready to strike a POL deal with an external party, you can close protocol-to-protocol deals without intermediary multisigs by using Valence’s [Covenant](https://www.valence.zone/blog/Covenants_Protocol-to-Protocol_Deals) system. 
 
