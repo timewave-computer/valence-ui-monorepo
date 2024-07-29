@@ -29,7 +29,7 @@ article > ol {
 }
 
 article > p > img {
-  @apply mx-auto pt-3;
+  @apply mx-auto max-h-[360px] pt-3;
 }
 
 article > p > a {
