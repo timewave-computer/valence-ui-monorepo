@@ -38,7 +38,7 @@ Since DEXs compete with each other to have the most liquidity, they benefit from
 ![Example 1](/img/blog/4-reasons-1.png)
 _Figure 1. Virtuous cycle of POL provisioned to a DEX_
 
-2. Increase lending protocol liquidity
+## 2. Increase lending protocol liquidity
 
 Borrowers want to borrow from the protocol that offers them the largest loans with the smallest amount of collateral at the lowest cost. The lending protocol with the most liquidity will be able to offer the best terms because more capital available for borrowing means less rate impact per borrow on a dollar-for-dollar basis.
 
