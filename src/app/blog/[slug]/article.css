@@ -3,10 +3,12 @@ article {
   @apply flex max-w-[680px] flex-col gap-3 font-sans;
 }
 article > h1 {
-  @apply pt-2 font-serif text-2xl font-medium;
+  @apply pt-5 font-serif text-2xl font-medium;
+  line-height: 1.6;
 }
 article > h2 {
-  @apply pt-1 font-serif text-xl font-medium;
+  @apply pt-4 font-serif text-xl font-medium;
+  line-height: 1.4;
 }
 
 article > em {
