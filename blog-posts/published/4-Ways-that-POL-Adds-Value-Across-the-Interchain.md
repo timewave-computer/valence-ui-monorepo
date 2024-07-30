@@ -31,7 +31,7 @@ There are a variety of ways POL can benefit developing protocol ecosystems. Whil
 
 Traders want to trade on the DEX in which they will receive the best price execution. The DEX with the most liquidity will be able to offer the best price execution because more liquidity means less price impact per trade on a dollar-for-dollar basis. 
 
-Additionally, providers of liquidity (LPers) want to provide liquidity on the DEX in which they will generate the most fees and incur the smallest loss versus rebalancing ([LVR](https://members.delphidigital.io/learn/loss-versus-rebalancing-lvr)). The DEX with the most liquidity will attract more traders, and therefore generate more fees. In general, LPers on the DEX with the most liquidity will incur the least LVR since it will have the lowest price impact per trade. 
+Additionally, providers of liquidity (LPers) want to provide liquidity on the DEX in which they will generate the most fees. The DEX with the most liquidity will attract more traders, and therefore generate more fees.
 
 Since DEXs compete with each other to have the most liquidity, they benefit from sourcing liquidity from as many places as possible, including protocols. By sourcing POL, DEXs increase pool depth, which minimizes price impact for traders, inducing more transaction volume, resulting in more fees for LPs, creating a virtuous cycle of attracting more liquidity. 
 
