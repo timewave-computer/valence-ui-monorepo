@@ -1,6 +1,5 @@
 "use client";
 import { Button, Dropdown, IconButton } from "@/components";
-import { USDC_DENOM } from "@/const/chain-data";
 import { useChainContext, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { redirect, useRouter } from "next/navigation";
@@ -18,13 +17,23 @@ export default function CreateRebalancerPage({
   ownerAddress,
 }: CreateRebalancerPageProps) {
   const router = useRouter();
-  const { getCosmWasmClient, getSigningStargateClient } = useChainContext();
+  const { getCosmWasmClient, getSigningStargateClient, isWalletConnected } =
+    useChainContext();
   const { address } = useWallet();
   const { setValue, watch, control, register } = useForm<CreateRebalancerForm>({
     defaultValues: {
       assets: [{ startingAmount: 0 }, { startingAmount: 0 }],
-      baseTokenDenom: USDC_DENOM,
-      targets: [],
+      baseTokenDenom: chainConfig.defaultBaseTokenDenom,
+      targets: [
+        {
+          targetDenom: chainConfig.supportedAssets[0].denom,
+          targetAmount: 0.1,
+        },
+        {
+          targetDenom: chainConfig.supportedAssets[1].denom,
+          targetAmount: 0.9,
+        },
+      ],
       pid: {
         p: 0.2,
         i: 0,
@@ -42,6 +51,7 @@ export default function CreateRebalancerPage({
     control,
     name: "assets",
   });
+
   const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
 
   const handleCreateRebalancer = async () => {
@@ -56,23 +66,25 @@ export default function CreateRebalancerPage({
     if (!address) return;
 
     const cwClient = await getCosmWasmClient();
+    console.log("inputs", watchAllFields);
 
     const messages = await makeTransactionMessages({
       cosmwasmClient: cwClient,
       creatorAddress: address,
+      config: watchAllFields,
     });
+    console.log("messages", messages);
 
     const signer = await getSigningStargateClient();
 
-    // const result = await signer.signAndBroadcast(
-    //    address,
-    //   messages,
-    //   'auto'
-    // )
+    const result = await signer.signAndBroadcast(address, messages, "auto");
+    console.log("RESULT", result);
   };
 
-  // TODO: put this back, just here to make development smoother
-  // if (!isConnected) return redirect("/rebalancer");
+  // disable page is wallet not connected. dont do in development because its annoying on reload
+  if (!isWalletConnected && process.env.NODE_ENV !== "development")
+    return redirect("/rebalancer");
+
   // temporary, can remove when support added for DAO actions
   if (ownerAddress !== address) return redirect("/rebalancer");
 
@@ -119,13 +131,16 @@ export default function CreateRebalancerPage({
           >
             <IconButton
               Icon={BsPlus}
-              disabled={assetFields.length === ENABLED_SYMBOLS.length}
+              disabled={
+                assetFields.length === chainConfig.supportedAssets.length
+              }
               onClick={() => {
                 addAsset({ startingAmount: 0 });
               }}
               disabledTooltip={
                 <div className="">
-                  Maximum number of enabled assets reached.
+                  Maximum of {chainConfig.supportedAssets.length} assets
+                  supported
                 </div>
               }
             />
@@ -210,7 +225,6 @@ export default function CreateRebalancerPage({
 }
 
 // TODO: needs to be actual denom
-const ENABLED_SYMBOLS = ["NTRN", "USDC", "ATOM", "NEWT"];
 const AssetOptions = chainConfig.supportedAssets.map((asset) => {
   return {
     label: asset.symbol,

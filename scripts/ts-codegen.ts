@@ -1,0 +1,47 @@
+import codegen from "@cosmwasm/ts-codegen";
+
+codegen
+  // @ts-ignore
+  .default({
+    contracts: [
+      { name: "Account", dir: "contract-schema/account/schema" },
+      { name: "Rebalancer", dir: "contract-schema/rebalancer/schema" },
+    ],
+    outPath: "src/codegen/ts-codegen",
+    // options are completely optional ;)
+    options: {
+      bundle: {
+        bundleFile: "index.ts",
+        scope: "contracts",
+      },
+      types: {
+        enabled: true,
+      },
+      client: {
+        enabled: false,
+      },
+      reactQuery: {
+        enabled: false, // for now
+        optionalClient: true,
+        version: "v4",
+        mutations: true,
+        queryKeys: true,
+        queryFactory: true,
+      },
+      recoil: {
+        enabled: false,
+      },
+      messageComposer: {
+        enabled: false,
+      },
+      messageBuilder: {
+        enabled: false,
+      },
+      useContractsHook: {
+        enabled: false,
+      },
+    },
+  })
+  .then(() => {
+    console.log("✨ all done!");
+  });

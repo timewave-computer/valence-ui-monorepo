@@ -106,7 +106,9 @@ export const Dropdown = <T extends string>({
           )}
           onClick={() => setVisible(!visible)}
         >
-          {selectedOption?.label ?? placeholder}
+          <span className="max-w-3/4 overflow-hidden">
+            {selectedOption?.label ?? placeholder}
+          </span>
 
           <BsChevronDown className="h-4 w-4 shrink-0" />
         </button>

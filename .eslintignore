@@ -1,0 +1,4 @@
+# .eslintignore
+
+# Ignore all files in the src/protobuf/codegen directory
+src/protobuf/codegen/*

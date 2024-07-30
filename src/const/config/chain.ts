@@ -2,7 +2,7 @@ import { NEUTRON_CHAIN } from "@/const/chain-data/neutron";
 import { assets } from "chain-registry";
 import { NEUTRON_TESTNET_CHAIN } from "@/const/chain-data/neutrontestnet";
 import { AssetList, Chain } from "@chain-registry/types";
-import { supportedAssets } from "@/const/chain-data";
+import { supportedAssets, USDC_DENOM } from "@/const/chain-data";
 import { getFeaturedAccounts } from "@/const/config/featured";
 
 export type CodeIdsType = {
@@ -31,7 +31,12 @@ type SupportedChainConfig = {
     oracle: string;
     servicesManager: string;
   };
+  defaultBaseTokenDenom: string;
   featuredAccounts: FeaturedAccount[];
+  serviceFee: {
+    denom: string;
+    amount: number;
+  };
 };
 
 const isSupportedChainId = (id: string): id is SupportedChainId =>
@@ -65,6 +70,11 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
         "neutron1gantvpnat0la8kkkzrnj48d5d8wxdjllh5r2w4r2hcrpwy00s69quypupa",
     },
     featuredAccounts: getFeaturedAccounts("neutron-1", process.env.NODE_ENV),
+    defaultBaseTokenDenom: USDC_DENOM,
+    serviceFee: {
+      denom: "untrn",
+      amount: 1,
+    },
   },
   "pion-1": {
     chain: NEUTRON_TESTNET_CHAIN,
@@ -90,6 +100,11 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
         "neutron13ncggwefau3xla04vlugy20meap7g7a9lf2d2sxwgwvgr9mnn3yqkpjzs6",
     },
     featuredAccounts: getFeaturedAccounts("pion-1", process.env.NODE_ENV),
+    defaultBaseTokenDenom: "untrn",
+    serviceFee: {
+      denom: "untrn",
+      amount: 0.001,
+    },
   },
 };
 
