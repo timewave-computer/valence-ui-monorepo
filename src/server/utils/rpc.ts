@@ -6,7 +6,7 @@ if (!NEUTRON_RPC) throw new Error("Please provide COSMOS_RPC_URL");
 
 const RpcConfig: Record<SupportedChainId, string> = {
   "neutron-1": NEUTRON_RPC,
-  "pion-1": "https://pion-rpc.polkachu.com/",
+  "pion-1": "https://rpc-falcron.pion-1.ntrn.tech",
 };
 
 export const getStargateClient = async (rpc?: string) => {

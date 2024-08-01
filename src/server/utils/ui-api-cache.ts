@@ -14,21 +14,20 @@ export const fetchMaybeCached = async (
   queryName: string,
   args: { [r: string]: any },
 ): Promise<unknown> => {
-  const response = await fetch(
-    API_CACHE_URL + "/q/" + queryName + "?" + new URLSearchParams(args),
-    {
-      cache: "no-store",
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
+  const url =
+    API_CACHE_URL + "/q/" + queryName + "?" + new URLSearchParams(args);
+  const response = await fetch(url, {
+    cache: "no-store",
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
     },
-  );
+  });
 
   if (!response.ok) {
     throw ErrorHandler.makeError(
-      `${ERROR_MESSAGES.CACHED_QUERY_FAIL} for args ${JSON.stringify(args)}: ${response.status}, ${response.statusText}`,
+      `${ERROR_MESSAGES.CACHED_QUERY_FAIL} for url ${url}: ${response.status}, ${response.statusText}`,
     );
   }
   const data = await response.json();

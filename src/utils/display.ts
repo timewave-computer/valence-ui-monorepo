@@ -46,3 +46,17 @@ export const displayAddress = (address: string) => {
     return "";
   } else return `${address.slice(0, 10)}...${address.slice(-4)}`;
 };
+
+export const displayValue = ({
+  value,
+  symbol,
+}: {
+  value: string;
+  symbol: string;
+}) => {
+  if (symbol === "USDC") {
+    return `$${value}`;
+  } else {
+    return `${value} ${symbol}`;
+  }
+};

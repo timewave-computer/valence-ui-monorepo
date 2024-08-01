@@ -33,7 +33,9 @@ export class ErrorHandler {
   static constructText(text: string, error: unknown) {
     let errorMessage = "";
     // handle all weird cases of errors
-    if (error instanceof Error) errorMessage = error.message;
+    if (error instanceof TypeError) {
+      errorMessage = JSON.stringify(error);
+    } else if (error instanceof Error) errorMessage = error.message;
     else if (
       error &&
       typeof error === "object" &&

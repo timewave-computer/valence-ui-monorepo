@@ -219,7 +219,9 @@ const DiscoverPanel: React.FC<{
       )}
       <div>
         {featuredAccounts.length === 0 && (
-          <p className="pt-2 text-sm">No featured accounts to show.</p>
+          <p className="pt-2 text-sm">
+            No featured accounts to show for {chainConfig.chain.pretty_name}.
+          </p>
         )}
         {featuredAccounts.map((option, i) => {
           const isLastElement = i === featuredAccounts.length - 1;
@@ -258,8 +260,7 @@ const ConnectWalletButton: React.FC = () => {
   const { isWalletConnected, isWalletConnecting } = useChainContext();
 
   const connect = useConnect();
-  if (isWalletConnecting)
-    return <Button variant="secondary">Connecting</Button>;
+  if (isWalletConnecting) return <Button disabled={true}>Connecting</Button>;
   else if (!isWalletConnected)
     return (
       <>

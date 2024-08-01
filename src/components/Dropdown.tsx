@@ -98,7 +98,7 @@ export const Dropdown = <T extends string>({
         <button
           disabled={isLoading || isDisabled}
           className={cn(
-            "flex h-full w-full min-w-[12rem] flex-row items-center justify-between gap-6 border border-valence-mediumgray bg-valence-white p-2 pl-3",
+            "flex h-full w-full min-w-[12rem] flex-row items-center justify-between gap-6 border border-valence-mediumgray bg-valence-white p-2 pl-3 font-mono",
             isPlaceholder ? "text-valence-gray" : "text-valence-black",
             isDisabled &&
               "border-valence-gray bg-valence-lightgray text-valence-gray",
@@ -115,12 +115,12 @@ export const Dropdown = <T extends string>({
       )}
 
       {visible && (
-        <div className="absolute left-0 right-0 top-[calc(100%-1px)] z-10 flex flex-col border border-valence-mediumgray bg-gray-100">
+        <div className="absolute left-0 right-0 top-[calc(100%-1px)] z-10 flex flex-col border border-valence-mediumgray bg-gray-100 font-mono">
           {dropdownOptions.map((option, index) => (
             <button
               key={option.value}
               className={cn(
-                "hover flex flex-row items-center justify-between gap-6 p-2 pl-3",
+                "flex flex-row items-center justify-between gap-6 p-2 pl-3 hover:bg-valence-lightgray",
                 index < options.length - 1 &&
                   "border-b border-valence-mediumgray",
               )}

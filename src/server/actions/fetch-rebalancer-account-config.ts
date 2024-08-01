@@ -5,13 +5,14 @@ import {
   InvalidAccountError,
 } from "@/const/error";
 import { chainConfig } from "@/const/config";
-import { getOriginAssets, IndexerUrl } from "@/server/utils";
+import { IndexerUrl } from "@/server/utils";
 
 import { OriginAsset } from "@/types/ibc";
 import {
   IndexerRebalancerConfigResponseSchema,
   RawTarget,
 } from "@/types/rebalancer";
+import { fetchOriginAssets } from "@/server/actions";
 
 export async function fetchRebalancerAccountConfiguration({
   address,
@@ -31,7 +32,7 @@ export async function fetchRebalancerAccountConfiguration({
   const config = IndexerRebalancerConfigResponseSchema.parse(data);
   const { targets, base_denom, pid } = config;
 
-  const originAssets = await getOriginAssets(
+  const originAssets = await fetchOriginAssets(
     targets.map((target) => {
       return {
         denom: target.denom,

@@ -39,3 +39,7 @@ input[type="number"]::-webkit-outer-spin-button {
   width: 0; /* For vertical scrollbars */
   height: 0; /* For horizontal scrollbars */
 }
+
+/* * {
+  border:0.5px solid blue;
+} */

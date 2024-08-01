@@ -1,2 +1,2 @@
 export * from "./indexer";
-export * from "./create";
+export * from "./create-rebalancer";

@@ -6,20 +6,19 @@ import { chainConfig } from "@/const/config";
 import { SignerOptions, WalletModalProps } from "@cosmos-kit/core";
 import { AminoTypes, GasPrice } from "@cosmjs/stargate";
 import { GeneratedType, Registry } from "@cosmjs/proto-signing";
-import {
-  cosmosAminoConverters,
-  cosmwasmAminoConverters,
-  cosmwasmProtoRegistry,
-} from "@/codegen/telescope";
+/***
+ * only the small amount of types we need, extracted from telescope codegen
+ */
+import { SMOL_registry } from "@/app/smol_telescope/proto-registry";
+import { SMOL_AminoConverter } from "@/app/smol_telescope/cosmwasm";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
-  ...cosmwasmProtoRegistry,
+  ...SMOL_registry,
 ];
 export const protobufRegistry = new Registry(protobufTypes);
 
 export const aminoTypes = new AminoTypes({
-  ...cosmosAminoConverters,
-  ...cosmwasmAminoConverters,
+  ...SMOL_AminoConverter,
 });
 
 const signerOptions: SignerOptions = {

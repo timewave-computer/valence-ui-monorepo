@@ -7,12 +7,12 @@ const buttonVariants = cva("text-center py-1.5 px-2  transition-colors", {
   variants: {
     variant: {
       primary:
-        "bg-valence-black text-valence-white border border-valence-black focus:bg-valence-white focus:text-valence-black focus:border-valence-black",
+        "bg-valence-black text-valence-white border border-valence-black focus:bg-valence-white focus:text-valence-black hover:bg-valence-white  hover:text-valence-black  ",
       secondary:
         "bg-valence-white text-valence-black border border-valence-black hover:bg-valence-black transition-all hover:text-valence-white  ",
     },
     disabled: {
-      true: "!bg-valence-gray  !border-valence-gray !text-valence-black !opacity-50",
+      true: "!bg-valence-gray hover:!bg-valence-gray focus:!bg-valence-gray cursor-not-allowed  !border-valence-gray !text-valence-black",
     },
   },
   defaultVariants: {

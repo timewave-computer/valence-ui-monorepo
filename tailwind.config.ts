@@ -10,6 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        warn: "#ff7b00",
         "valence-black": "#000000",
         "valence-white": "#FFFFFF",
         "valence-red": "#FF2A00",

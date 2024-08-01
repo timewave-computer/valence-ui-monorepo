@@ -8,14 +8,15 @@ import { RebalancerData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { fromHex, toUtf8 } from "@cosmjs/encoding";
 import Decimal from "decimal.js";
+
+import { UTCDate } from "@date-fns/utc";
+import { jsonToBase64, jsonToUtf8 } from "@/utils";
 import {
   MsgExecuteContract,
   MsgInstantiateContract2,
-} from "@/codegen/telescope/cosmwasm/wasm/v1/tx";
-import { UTCDate } from "@date-fns/utc";
-import { jsonToBase64, jsonToUtf8 } from "@/utils";
+} from "@/app/smol_telescope/cosmwasm";
 
-export const makeTransactionMessages = async ({
+export const makeCreateRebalancerMessages = async ({
   creatorAddress,
   cosmwasmClient,
   config,
@@ -80,13 +81,13 @@ const makeInstantiateMessageBody = ({
           denom: asset.denom,
           amount: baseToMicroDenomString(
             Number(asset.startingAmount) + SERVICE_FEE.amount,
-            8,
+            6,
           ), // TODO: get correct decimals
         } as Coin;
       } else
         return {
           denom: asset.denom,
-          amount: baseToMicroDenomString(asset.startingAmount, 8), // TODO: get correct decimals
+          amount: baseToMicroDenomString(asset.startingAmount, 6), // TODO: get correct decimals
         } as Coin;
     })
     .sort((a, b) => a.denom!.localeCompare(b.denom!)); // TODO: remove !, adjust type from form -> required input
@@ -95,7 +96,7 @@ const makeInstantiateMessageBody = ({
   if (!convertedFunds.find((f) => f.denom === SERVICE_FEE.denom)) {
     convertedFunds.push({
       denom: SERVICE_FEE.denom,
-      amount: baseToMicroDenomString(SERVICE_FEE.amount, 8),
+      amount: baseToMicroDenomString(SERVICE_FEE.amount, 6),
     } as Coin);
   }
 

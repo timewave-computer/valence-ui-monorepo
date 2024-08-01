@@ -6,7 +6,12 @@ import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
-import { useChainContext, useDisconnect, useWallet } from "@/hooks";
+import {
+  useChainContext,
+  useDisconnect,
+  useSupportedBalances,
+  useWallet,
+} from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
 
 const shouldHightlightItem = (href: string, path: string) => {
@@ -45,6 +50,9 @@ export const Nav = () => {
   const { chain, isWalletConnected } = useChainContext();
   const disconnect = useDisconnect();
   const { address } = useWallet();
+
+  // TODO: hydrate this on server so we dont have to call it unless user decides to click 'create'
+  useSupportedBalances(address);
 
   const links = (
     <>
