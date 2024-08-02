@@ -98,6 +98,7 @@ export const Dropdown = <T extends string>({
         <button
           disabled={isLoading || isDisabled}
           className={cn(
+            "text-sm",
             "flex h-full w-full min-w-[12rem] flex-row items-center justify-between gap-6 border border-valence-mediumgray bg-valence-white p-2 pl-3 font-mono",
             isPlaceholder ? "text-valence-gray" : "text-valence-black",
             isDisabled &&
@@ -120,6 +121,7 @@ export const Dropdown = <T extends string>({
             <button
               key={option.value}
               className={cn(
+                "text-sm",
                 "flex flex-row items-center justify-between gap-6 p-2 pl-3 hover:bg-valence-lightgray",
                 index < options.length - 1 &&
                   "border-b border-valence-mediumgray",

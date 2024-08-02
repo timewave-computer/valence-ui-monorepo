@@ -68,7 +68,7 @@ export const DisplayWalletAddresses: React.FC<{
           <div className="w-full font-semibold">Available funds</div>
 
           {isLoadingBalances ? (
-            <div className="min-h-[104px] animate-pulse bg-valence-lightgray"></div>
+            <div className="mt-2 min-h-[200px] animate-pulse bg-valence-lightgray"></div>
           ) : (
             <div
               role="grid"
@@ -122,7 +122,7 @@ export const DisplayWalletAddresses: React.FC<{
                               addAsset({
                                 symbol: balance.asset.symbol,
                                 denom: balance.denom,
-                                startingAmount: 0,
+                                startingAmount: undefined,
                               }),
                             );
                           }}

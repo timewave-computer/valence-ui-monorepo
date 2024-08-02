@@ -15,6 +15,7 @@ import { useQueryState } from "nuqs";
 import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
+import Link from "next/link";
 
 export const SidePanelV2: React.FC<{
   isLoading: boolean;
@@ -205,15 +206,11 @@ const DiscoverPanel: React.FC<{
             <span className=" text-pretty">
               No rebalancer found for this wallet.
             </span>
-            <Button
-              onClick={() => {
-                router.push(`/rebalancer/create/${address}`);
-              }}
-              className="w-fit"
-              variant="primary"
-            >
-              Start rebalancing funds
-            </Button>
+            <Link href={`/rebalancer/create/${address}`}>
+              <Button className="w-fit" variant="primary">
+                Start rebalancing funds
+              </Button>
+            </Link>
           </div>
         </div>
       )}

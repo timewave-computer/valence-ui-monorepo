@@ -17,19 +17,17 @@ export const CreateRebalancerCopy = {
     subTitle:
       "What distribution would you like your funds to be rebalanced into?",
     info1: "The token in which your assets will be valued in.",
-    info2:
-      "Choose your targets and configure the rebalance speed. The Rebalancer will attempt trades each day to move towards your targets.",
   },
   step_Settings: {
     title: "Step 4: Set Rebalancer settings",
-    subTitle: "Configure the speed and other settings for your Rebalancer.",
+    subTitle: "How quickly would you like your funds to be rebalanced?",
     info1:
       "This will determine how much is traded in a single day. The larger the quantity, the most susceptible you are to price volatility.",
-    info2: "Simulation of trades based on your settings ",
   },
   step_Trustee: {
-    title: "Step 5: Who can pause and resume the rebalancing on this account?",
-    subTitle:
-      "In case of emergency, you can grant permission to another address to pause and resume Rebalancing. This address will not be able to make other changes our withdrawals from the account.",
+    title: "Step 5: Choose a trustee",
+    subTitle: "Who can pause and resume rebalancing on this account?",
+    info1:
+      "In case of emergency, you can grant permission to another wallet to pause and resume the Rebalancer. This will NOT grant permission make configuration changes or withdrawals.",
   },
 };

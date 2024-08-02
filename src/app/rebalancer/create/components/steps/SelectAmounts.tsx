@@ -8,7 +8,7 @@ import { produce } from "immer";
 import { useSupportedBalances } from "@/hooks";
 import { displayNumber, displayValue } from "@/utils";
 import { PlaceholderRows } from "@/app/rebalancer/create/components";
-import { useBaseTokenValue } from "@/app/rebalancer/hooks/use-value-distribution";
+import { useBaseTokenValue } from "@/app/rebalancer/hooks";
 
 export const SetStartingAmounts: React.FC<{
   address: string;
@@ -40,7 +40,6 @@ export const SetStartingAmounts: React.FC<{
   const {
     isLoading: isValueLoading,
     calculateValue,
-    getBalance,
     baseTokenAsset,
   } = useBaseTokenValue({
     balances,
@@ -71,7 +70,10 @@ export const SetStartingAmounts: React.FC<{
           {assets
             .sort((a, b) => a.symbol.localeCompare(b.symbol))
             .map((field, index: number) => {
-              const value = calculateValue(field.startingAmount, field.denom);
+              const value = calculateValue({
+                amount: field.startingAmount,
+                denom: field.denom,
+              });
               const valueDisplayString = displayValue({
                 value: displayNumber(value, { precision: 2 }),
                 symbol: baseTokenAsset?.symbol ?? "USDC",

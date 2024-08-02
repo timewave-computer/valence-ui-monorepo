@@ -11,6 +11,7 @@ import {
 import { Provider as JotaiProvider } from "jotai";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
 import { getFeatureFlags } from "@/utils";
+import { Toaster } from "@/components";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -53,6 +54,7 @@ export default function RootLayout({
                 >
                   <Nav />
                   {children}
+                  <Toaster />
                 </body>
               </html>
             </CosmosProvider>

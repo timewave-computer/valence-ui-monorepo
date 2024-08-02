@@ -1,17 +1,6 @@
 import { usePrice } from "@/hooks";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
-import { OriginAsset } from "@/types/ibc";
-import { get } from "lodash";
 import { useCallback, useMemo } from "react";
-
-/***
- * what interface do i need?
- *
- * functions to
- * - get asset by denom from balances
- * - calc value in base denom
- * - calc total value + distribution
- */
 
 export const getBalance = (
   denom?: string,
@@ -21,7 +10,7 @@ export const getBalance = (
 };
 
 /***
- * calcs value with base token in mind
+ * calcs value with base token in consideration
  *   if base is not usdc:
  *      assetA in usdc  / assetB in usdc = assetA in assetB
  */
@@ -69,17 +58,17 @@ export const useBaseTokenValue = ({
   );
 
   const calculateValue = useCallback(
-    (amount: number, denom: string) => {
+    ({ denom, amount }: { denom: string; amount?: number }) => {
       // TODO: this is only used for asset metadata. questionable solution that should be fetched from cache in longer term
       const bal = getBalance(denom);
       return calculateValueInBaseDenom({
-        amount: Number(amount),
+        amount: Number(amount ?? 0),
         isUsdcBase: bal?.asset.symbol === "USDC",
         usdcPrice: bal?.price,
         baseTokenPrice: baseTokenPrice,
       });
     },
-    [getBalance, balances, baseTokenPrice],
+    [getBalance, baseTokenPrice],
   );
 
   const totalValue = useMemo(() => {

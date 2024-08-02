@@ -10,7 +10,7 @@ import {
 import { FeatureFlags, isFeatureFlagEnabled } from "@/utils";
 
 export const metadata: Metadata = {
-  title: "Create Rebalancer",
+  title: "Start Rebalancing",
   description: CREATE_REBALANCER_DESCRIPTION,
   openGraph: {
     siteName: "Valence",
@@ -36,6 +36,7 @@ export default function CreateRebalancerPage({
   params: { address },
 }: CreateRebalancerProps) {
   const enabled = isFeatureFlagEnabled(FeatureFlags.REBALANCER_CREATE);
+
   if (!enabled) {
     redirect("/rebalancer");
   }

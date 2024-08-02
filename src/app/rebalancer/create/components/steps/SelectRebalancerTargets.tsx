@@ -1,11 +1,12 @@
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
-import { Fragment, useCallback } from "react";
-import { CreateRebalancerForm } from "@/types/rebalancer";
+import { Fragment } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { useSupportedBalances } from "@/hooks";
-import { displayNumber } from "@/utils";
+import { cn, displayNumber } from "@/utils";
 import { PlaceholderRows, WarnText } from "@/app/rebalancer/create/components";
-import { useBaseTokenValue } from "@/app/rebalancer/hooks/use-value-distribution";
+import { useBaseTokenValue } from "@/app/rebalancer/hooks";
+import { useSupportedBalances } from "@/hooks/use-supported-balances";
+import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/Tooltip";
 
 export const SelectRebalancerTargets: React.FC<{
   address: string;
@@ -25,9 +26,14 @@ export const SelectRebalancerTargets: React.FC<{
   });
 
   const totalValue = assets?.reduce((acc, b) => {
-    const value = calculateValue(Number(b.startingAmount), b.denom);
+    const value = calculateValue({
+      amount: Number(b.startingAmount),
+      denom: b.denom,
+    });
     return acc + value;
   }, 0);
+
+  const isMimumumValueSet = targets?.some((t) => t.minimumAmount);
 
   return (
     <section className="flex w-full flex-col gap-8">
@@ -70,8 +76,15 @@ export const SelectRebalancerTargets: React.FC<{
               const distribution =
                 totalValue === 0
                   ? 0
-                  : calculateValue(Number(field.startingAmount), field.denom) /
-                    totalValue;
+                  : calculateValue({
+                      amount: Number(field.startingAmount),
+                      denom: field.denom,
+                    }) / totalValue;
+
+              const hasMimumValueProperty = targets[index]?.minimumAmount;
+
+              const disableMinimumValue =
+                isMimumumValueSet && !hasMimumValueProperty;
 
               return (
                 <Fragment key={`target-select-row-${index}`}>
@@ -91,7 +104,7 @@ export const SelectRebalancerTargets: React.FC<{
                     className="relative flex items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue "
                   >
                     <input
-                      className="h-full w-full max-w-[50%]  bg-transparent p-1 focus:outline-none"
+                      className="h-full w-full max-w-[50%] bg-transparent  p-1 font-mono focus:outline-none"
                       type="number"
                       placeholder="10.00"
                       value={watch(`targets.${index}.bps`)}
@@ -99,26 +112,54 @@ export const SelectRebalancerTargets: React.FC<{
                         setValue(`targets.${index}`, {
                           ...targets[index],
                           bps: parseFloat(e.target.value),
+                          denom: field.denom,
                         });
                       }}
                     />
-                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono font-mono">
                       % {field.symbol}
                     </span>
                   </div>
-                  <div
-                    role="gridcell"
-                    className="relative flex items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue "
-                  >
-                    <input
-                      className="h-full w-full max-w-[50%]  bg-transparent p-1 focus:outline-none"
-                      type="number"
-                      placeholder="10.000"
-                    />
-                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                      {field.symbol}
-                    </span>
-                  </div>
+
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <div
+                        role="gridcell"
+                        className={cn(
+                          disableMinimumValue
+                            ? "cursor-not-allowed border-valence-mediumgray bg-valence-mediumgray font-mono"
+                            : "border-valence-lightgray bg-valence-lightgray",
+                          "relative flex items-center border-[1.5px]  focus-within:border-valence-blue",
+                        )}
+                      >
+                        <input
+                          disabled={disableMinimumValue}
+                          className={cn(
+                            disableMinimumValue &&
+                              "cursor-not-allowed bg-valence-gray",
+                            "h-full w-full max-w-[50%]  bg-transparent p-1 focus:outline-none",
+                          )}
+                          type="number"
+                          placeholder="10.000"
+                          value={watch(`targets.${index}.minimumAmount`)}
+                          onChange={(e) => {
+                            setValue(`targets.${index}`, {
+                              ...targets[index],
+                              minimumAmount: parseFloat(e.target.value),
+                            });
+                          }}
+                        />
+                        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
+                          {field.symbol}
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    {disableMinimumValue && (
+                      <TooltipContent className="max-w-60 text-balance text-center">
+                        {"Minimum balance can only be set for one asset."}
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
                 </Fragment>
               );
             })}

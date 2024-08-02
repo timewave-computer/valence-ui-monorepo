@@ -3,25 +3,25 @@ import { useContext } from "react";
 import { ErrorHandler } from "@/const/error";
 
 export enum FeatureFlags {
-  REBALANCER_NONUSDC_VALUE = "REBALANCER_NONUSDC_VALUE",
-  REBALANCER_CREATE = "REBALANCER_CREATE",
-  COVENANTS_VIEW_POL = "COVENANTS_VIEW_POL",
+  REBALANCER_NONUSDC_VALUE = "NEXT_PUBLIC_FF_REBALANCER_NONUSDC_VALUE",
+  REBALANCER_CREATE = "NEXT_PUBLIC_FF_REBALANCER_CREATE",
+  COVENANTS_VIEW_POL = "NEXT_PUBLIC_FF_COVENANTS_VIEW_POL",
 }
 
 export const getFeatureFlags = () => {
   const flags: Record<string, boolean> = {};
-  Object.keys(FeatureFlags).forEach((key) => {
-    const envVar = `FF_${key}`;
-    flags[key] = process.env[envVar] === "true" ? true : false;
+  Object.values(FeatureFlags).forEach((value) => {
+    const envVar = value;
+    flags[value] = process.env[envVar] === "true" ? true : false;
   });
   return flags;
 };
 
-// for server side
+// for server side ONLY
 export const isFeatureFlagEnabled = (flag: FeatureFlags) => {
   const flags = getFeatureFlags();
   if (flag in flags) {
-    return flags[flag];
+    return flags[flag] === true;
   } else {
     throw new Error(`Unexpected feature flag ${flag}`);
   }

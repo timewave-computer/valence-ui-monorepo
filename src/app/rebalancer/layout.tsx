@@ -6,7 +6,7 @@ import {
 } from "@/const/socials";
 import { MobileOverlay } from "@/components";
 export const metadata: Metadata = {
-  title: "Rebalancer",
+  title: "Valence Rebalancer",
   description: REBALANCER_DESCRIPTION,
   openGraph: {
     siteName: "Valence",
@@ -30,7 +30,7 @@ export default function RebalancerLayout({
   return (
     <main className="flex grow flex-col bg-valence-white text-valence-black">
       <MobileOverlay text="The Rebalancer is only available on desktop." />
-      <div className="hidden grow sm:flex">{children}</div>
+      <div className="hidden grow overflow-clip sm:flex">{children}</div>
     </main>
   );
 }

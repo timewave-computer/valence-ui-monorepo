@@ -3,7 +3,7 @@ import { TargetOverrideStrategy } from "@/types/rebalancer";
 type AssetConfig = {
   denom: string;
   symbol: string;
-  startingAmount: number;
+  startingAmount?: number;
 };
 
 type TargetConfig = {
@@ -17,9 +17,9 @@ export type CreateRebalancerForm = {
   baseTokenDenom: string;
   targets: TargetConfig[];
   pid: {
-    p: number;
-    i: number;
-    d: number;
+    p: string;
+    i: string;
+    d: string;
   };
   trustee?: string;
   targetOverrideStrategy: TargetOverrideStrategy;

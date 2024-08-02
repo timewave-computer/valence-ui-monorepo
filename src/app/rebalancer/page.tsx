@@ -193,7 +193,7 @@ const RebalancerPage = () => {
   const [showTargets, setShowTargets] = useState(false);
 
   return (
-    <div className="flex grow flex-row">
+    <div className="flex grow flex-row overflow-hidden">
       {isDisabledElementHovered && (
         <div
           onMouseEnter={debouncedMouseEnter}
@@ -246,7 +246,7 @@ const RebalancerPage = () => {
           />
         </div>
       )}
-      <div className="flex grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
+      <div className="flex min-w-[824px] grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
         <div className="flex flex-row items-stretch justify-between border-b border-valence-black px-4 py-2">
           {isNonUsdValueEnabled && (
             <Dropdown
@@ -256,7 +256,7 @@ const RebalancerPage = () => {
             />
           )}
 
-          <div className="flex flex-row items-center gap-8 pr-2">
+          <div className="flex min-w-[824px] flex-row items-center gap-8 overflow-clip pr-2">
             {scales.map((thisScale) => (
               <div
                 key={thisScale}
@@ -289,7 +289,8 @@ const RebalancerPage = () => {
             disabled={!graphData.length}
             className={cn(
               "text-sm",
-              !graphData.length && "cursor-not-allowed text-valence-gray",
+              !graphData.length &&
+                "cursor-not-allowed text-nowrap text-valence-gray",
             )}
             onClick={() => setShowTargets(!showTargets)}
           >

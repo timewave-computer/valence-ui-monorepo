@@ -87,7 +87,7 @@ const makeInstantiateMessageBody = ({
       } else
         return {
           denom: asset.denom,
-          amount: baseToMicroDenomString(asset.startingAmount, 6), // TODO: get correct decimals
+          amount: baseToMicroDenomString(asset.startingAmount ?? 0, 6), // TODO: get correct decimals
         } as Coin;
     })
     .sort((a, b) => a.denom!.localeCompare(b.denom!)); // TODO: remove !, adjust type from form -> required input
