@@ -33,10 +33,10 @@ export const fetchOriginAssets = async (
         "factory/neutron1phx0sz708k3t6xdnyc98hgkyhra4tp44et5s68/rebalancer-test"
       ) {
         result.origin_assets[i].asset.decimals = 6;
-        result.origin_assets[i].asset.symbol = "JMN";
-        result.origin_assets[i].asset.recommended_symbol = "JMN";
-        result.origin_assets[i].asset.coingecko_id = "newt";
-        result.origin_assets[i].asset.name = "Jaman";
+        result.origin_assets[i].asset.symbol = "USDC";
+        result.origin_assets[i].asset.recommended_symbol = "USDC";
+        result.origin_assets[i].asset.coingecko_id = "usd-coin";
+        result.origin_assets[i].asset.name = "USDC";
       } else if (result.origin_assets[i].asset.denom === "untrn") {
         result.origin_assets[i].asset.coingecko_id = "neutron-3";
       }

@@ -16,7 +16,8 @@ export const useAccountConfigQuery = ({
   const [error, setError] = useState<null | LOAD_CONFIG_ERROR>(null);
   const query = useQuery({
     staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 0,
+    retry: false,
+    refetchInterval: 0,
     queryKey: [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, account],
     queryFn: async () => {
       setError(null);
@@ -25,9 +26,10 @@ export const useAccountConfigQuery = ({
           address: account,
         });
       } catch (e) {
+        let error = e as unknown as { name?: string; message?: string };
         // intercept account not found error
         // have to do it this way because server action -> client loses context of erorr instance
-        if (InvalidAccountError.name === ERROR_CODES.InvalidAccountError) {
+        if (error.name === ERROR_CODES.InvalidAccountError) {
           setError(LOAD_CONFIG_ERROR.INVALID_ACCOUNT);
         } else {
           setError(LOAD_CONFIG_ERROR.API_ERROR);

@@ -87,7 +87,8 @@ const RebalancerPage = () => {
 
   const historicalValuesQuery = useQuery({
     staleTime: 5 * 60 * 1000,
-    queryKey: [QUERY_KEYS.HISTORICAL_VALUES, account, baseDenom, targets],
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: [QUERY_KEYS.HISTORICAL_VALUES, account],
     refetchInterval: 0, // data is historical, no need to refresh for now
     retry: 0,
     queryFn: async () => {

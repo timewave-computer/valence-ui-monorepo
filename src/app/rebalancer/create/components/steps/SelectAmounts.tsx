@@ -1,6 +1,6 @@
-import { Button, Dropdown } from "@/components";
+import { Button, Dropdown, DropdownOption } from "@/components";
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
-import { Fragment, useCallback } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { BsDash } from "react-icons/bs";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
@@ -8,7 +8,8 @@ import { produce } from "immer";
 import { useSupportedBalances } from "@/hooks";
 import { displayNumber, displayValue } from "@/utils";
 import { PlaceholderRows } from "@/app/rebalancer/create/components";
-import { useBaseTokenValue } from "@/app/rebalancer/hooks";
+import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export const SetStartingAmounts: React.FC<{
   address: string;
@@ -16,25 +17,32 @@ export const SetStartingAmounts: React.FC<{
 }> = ({ form, address }) => {
   const { register, setValue, watch } = form;
 
+  const assetInputs = watch("assets");
   const { data: balances } = useSupportedBalances(address);
 
-  const assets = watch("assets");
+  const { getAsset } = useAssetCache();
 
   const removeAsset = useCallback(
     (denomToRemove: string) => {
-      return produce(assets, (draft) => {
+      return produce(assetInputs, (draft) => {
         const index = draft.findIndex((asset) => asset.denom === denomToRemove);
         if (index !== -1) draft.splice(index, 1);
       });
     },
-    [assets],
+    [assetInputs],
   );
-  const baseDenomOptions = balances?.map((balance) => {
-    return {
-      label: balance.asset.symbol,
-      value: balance.denom,
-    };
+
+  const baseDenomOptions: DropdownOption<string>[] = [];
+  balances?.forEach((balance) => {
+    const asset = getAsset(balance.denom);
+    if (asset) {
+      baseDenomOptions.push({
+        label: asset.symbol,
+        value: balance.denom,
+      });
+    }
   });
+
   const baseTokenDenom = watch("baseTokenDenom");
 
   const {
@@ -42,7 +50,6 @@ export const SetStartingAmounts: React.FC<{
     calculateValue,
     baseTokenAsset,
   } = useBaseTokenValue({
-    balances,
     baseTokenDenom,
   });
 
@@ -67,12 +74,12 @@ export const SetStartingAmounts: React.FC<{
           role="grid"
           className="grid w-1/2 grid-cols-[200px_160px_auto] justify-items-start  gap-x-4 gap-y-2"
         >
-          {assets
+          {assetInputs
             .sort((a, b) => a.symbol.localeCompare(b.symbol))
             .map((field, index: number) => {
               const value = calculateValue({
-                amount: field.startingAmount,
                 denom: field.denom,
+                amount: field.startingAmount,
               });
               const valueDisplayString = displayValue({
                 value: displayNumber(value, { precision: 2 }),
@@ -98,10 +105,9 @@ export const SetStartingAmounts: React.FC<{
                   </div>
 
                   {isValueLoading ? (
-                    <div
-                      role="gridcell"
-                      className="flex w-full animate-pulse items-center bg-valence-lightgray  p-1 font-mono font-light"
-                    ></div>
+                    <div role="gridcell" className="w-full">
+                      <LoadingSkeleton className="max-h-11 min-h-11 w-full" />
+                    </div>
                   ) : (
                     <div
                       role="gridcell"
@@ -126,7 +132,7 @@ export const SetStartingAmounts: React.FC<{
                 </Fragment>
               );
             })}
-          <PlaceholderRows length={assets.length} />
+          <PlaceholderRows length={assetInputs.length} />
         </div>
       </div>
 

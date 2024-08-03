@@ -151,6 +151,9 @@ devDependencies:
   "@tanstack/eslint-plugin-query":
     specifier: ^5.32.1
     version: 5.32.1(eslint@8.57.0)(typescript@5.4.5)
+  "@tanstack/react-query-devtools":
+    specifier: ^5.51.21
+    version: 5.51.21(@tanstack/react-query@5.35.5)(react@18.3.1)
   "@types/lodash":
     specifier: ^4.17.5
     version: 4.17.5
@@ -4911,7 +4914,27 @@ packages:
       {
         integrity: sha512-OMWvlEqG01RfGj+XZb/piDzPp0eZkkHWSDHt2LvE/fd1zWburP/xwm0ghk6Iv8cuPlP+ACFkZviKXK0OVt6lhg==,
       }
-    dev: false
+
+  /@tanstack/query-devtools@5.51.16:
+    resolution:
+      {
+        integrity: sha512-ajwuq4WnkNCMj/Hy3KR8d3RtZ6PSKc1dD2vs2T408MdjgKzQ3klVoL6zDgVO7X+5jlb5zfgcO3thh4ojPhfIaw==,
+      }
+    dev: true
+
+  /@tanstack/react-query-devtools@5.51.21(@tanstack/react-query@5.35.5)(react@18.3.1):
+    resolution:
+      {
+        integrity: sha512-mi5ef8dvsS48GsG6/8M60O2EgrzPK1kNPngOcHBTlIUrB5dGkxP9fuHf05GQRxtSp5W5GlyeUpzOmtkKNpf9dQ==,
+      }
+    peerDependencies:
+      "@tanstack/react-query": ^5.51.21
+      react: ^18 || ^19
+    dependencies:
+      "@tanstack/query-devtools": 5.51.16
+      "@tanstack/react-query": 5.35.5(react@18.3.1)
+      react: 18.3.1
+    dev: true
 
   /@tanstack/react-query@5.35.5(react@18.3.1):
     resolution:
@@ -4923,7 +4946,6 @@ packages:
     dependencies:
       "@tanstack/query-core": 5.35.5
       react: 18.3.1
-    dev: false
 
   /@tsconfig/node10@1.0.11:
     resolution:
@@ -12104,7 +12126,6 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /read-cache@1.0.0:
     resolution:

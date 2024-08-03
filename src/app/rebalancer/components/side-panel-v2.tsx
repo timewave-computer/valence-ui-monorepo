@@ -16,6 +16,7 @@ import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
 import Link from "next/link";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export const SidePanelV2: React.FC<{
   isLoading: boolean;
@@ -113,11 +114,10 @@ const AccountDetails: React.FC<{ account: string; isLoading: boolean }> = ({
     return (
       <div className="flex h-[160px] flex-col gap-2 border-b border-valence-black p-4">
         <div className="flex flex-row justify-between">
-          {" "}
           <h1 className="font-bold">Rebalancer account</h1>
-          <span className=" h-full w-2/5 animate-pulse bg-valence-lightgray"></span>{" "}
+          <LoadingSkeleton className="h-full min-h-4 w-2/5" />
         </div>
-        <div className="h-full w-full animate-pulse bg-valence-lightgray" />
+        <LoadingSkeleton className="h-full min-h-20 w-full" />
       </div>
     );
   return (

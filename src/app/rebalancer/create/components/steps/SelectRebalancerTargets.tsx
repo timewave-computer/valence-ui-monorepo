@@ -1,12 +1,12 @@
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { cn, displayNumber } from "@/utils";
 import { PlaceholderRows, WarnText } from "@/app/rebalancer/create/components";
 import { useBaseTokenValue } from "@/app/rebalancer/hooks";
-import { useSupportedBalances } from "@/hooks/use-supported-balances";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/Tooltip";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export const SelectRebalancerTargets: React.FC<{
   address: string;
@@ -17,18 +17,14 @@ export const SelectRebalancerTargets: React.FC<{
   const targets = watch("targets");
   const assets = watch("assets");
   const baseTokenDenom = watch("baseTokenDenom");
-
-  const { data: balances } = useSupportedBalances(address);
-
   const { isLoading: isValueLoading, calculateValue } = useBaseTokenValue({
-    balances,
     baseTokenDenom,
   });
 
-  const totalValue = assets?.reduce((acc, b) => {
+  const totalValue = assets.reduce((acc, asset) => {
     const value = calculateValue({
-      amount: Number(b.startingAmount),
-      denom: b.denom,
+      amount: Number(asset.startingAmount),
+      denom: asset.denom,
     });
     return acc + value;
   }, 0);
@@ -49,7 +45,7 @@ export const SelectRebalancerTargets: React.FC<{
       <div className="w-full">
         <div className="pb-2 font-semibold">Asset distribution</div>
         {isValueLoading ? (
-          <div className=" min-h-36 animate-pulse bg-valence-lightgray"></div>
+          <LoadingSkeleton className="min-h-36" />
         ) : (
           <div className="grid grid-cols-[200px_200px_200px] gap-x-4 gap-y-2">
             <div
@@ -155,8 +151,10 @@ export const SelectRebalancerTargets: React.FC<{
                       </div>
                     </TooltipTrigger>
                     {disableMinimumValue && (
-                      <TooltipContent className="max-w-60 text-balance text-center">
-                        {"Minimum balance can only be set for one asset."}
+                      <TooltipContent className="max-w-64 text-balance text-center">
+                        {
+                          "Minimum balance can be set for one asset per account."
+                        }
                       </TooltipContent>
                     )}
                   </Tooltip>

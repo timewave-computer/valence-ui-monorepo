@@ -4,5 +4,6 @@ export const QUERY_KEYS = {
   HISTORICAL_VALUES: "historical-values",
   HISTORICAL_TARGETS: "historical-targets",
   WALLET_BALANCES: "wallet-balances",
-  PRICES: "coingecko-prices",
+  COINGECKO_PRICE: "coingecko-price",
+  ORIGIN_ASSET: "origin-asset",
 };

@@ -1,6 +1,6 @@
-import { usePrice } from "@/hooks";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
+import { useAssetCache, usePriceCache } from "./use-cached-assets";
 
 export const getBalance = (
   denom?: string,
@@ -35,61 +35,37 @@ const calculateValueInBaseDenom = ({
 };
 
 export const useBaseTokenValue = ({
-  balances,
   baseTokenDenom,
 }: {
-  balances?: FetchSupportedBalancesReturnValue;
   baseTokenDenom?: string;
 }) => {
-  const getBalance = useCallback(
-    (denom?: string): FetchSupportedBalancesReturnValue[number] | undefined => {
-      return balances?.find((balance) => balance.denom === denom);
-    },
-    [balances],
-  );
+  const { getAsset } = useAssetCache();
+  const { getPrice } = usePriceCache();
+  const baseAsset = getAsset(baseTokenDenom ?? "");
+  const basePrice = getPrice(baseTokenDenom ?? "");
 
-  const baseTokenAsset = getBalance(baseTokenDenom);
-  const isBaseTokenUsdc = baseTokenAsset?.asset.symbol === "USDC";
-
-  const { data: baseTokenPrice, isLoading: isBaseTokenPriceLoading } = usePrice(
-    {
-      coinGeckoId: baseTokenAsset?.asset.coingecko_id,
-    },
-  );
+  const isBaseTokenUsdc = baseAsset?.symbol === "USDC";
 
   const calculateValue = useCallback(
     ({ denom, amount }: { denom: string; amount?: number }) => {
-      // TODO: this is only used for asset metadata. questionable solution that should be fetched from cache in longer term
-      const bal = getBalance(denom);
+      const asset = getAsset(denom);
+      const price = getPrice(denom);
+
       return calculateValueInBaseDenom({
         amount: Number(amount ?? 0),
-        isUsdcBase: bal?.asset.symbol === "USDC",
-        usdcPrice: bal?.price,
-        baseTokenPrice: baseTokenPrice,
+        isUsdcBase: asset?.symbol === "USDC",
+        usdcPrice: price,
+        baseTokenPrice: basePrice,
       });
     },
-    [getBalance, baseTokenPrice],
+    [getPrice, getAsset, getBalance, basePrice],
   );
 
-  const totalValue = useMemo(() => {
-    if (!balances?.length) return 0;
-    return balances.reduce((acc, b) => {
-      const value = calculateValueInBaseDenom({
-        amount: Number(b.amount),
-        isUsdcBase: isBaseTokenUsdc,
-        usdcPrice: b.price,
-        baseTokenPrice: baseTokenPrice,
-      });
-      return acc + value;
-    }, 0);
-  }, [balances, isBaseTokenUsdc, baseTokenPrice]);
-
   return {
-    baseTokenAsset: baseTokenAsset?.asset,
+    baseTokenAsset: baseAsset,
     getBalance,
-    totalValue,
     isBaseTokenUsdc,
-    isLoading: isBaseTokenPriceLoading,
+    isLoading: false,
     calculateValue,
   };
 };

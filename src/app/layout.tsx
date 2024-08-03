@@ -12,6 +12,8 @@ import { Provider as JotaiProvider } from "jotai";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
 import { getFeatureFlags } from "@/utils";
 import { Toaster } from "@/components";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import CachedData from "@/components/CachedData";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,6 +47,7 @@ export default function RootLayout({
         <JotaiProvider>
           <FeatureFlagsProvider flags={flags}>
             <CosmosProvider>
+              <CachedData />
               <html lang="en">
                 <body
                   className={cn(
@@ -52,6 +55,7 @@ export default function RootLayout({
                     "flex max-h-screen min-h-screen grow flex-col text-valence-black",
                   )}
                 >
+                  <ReactQueryDevtools />
                   <Nav />
                   {children}
                   <Toaster />

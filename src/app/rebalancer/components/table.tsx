@@ -4,6 +4,7 @@ import { Fragment, useMemo, useState } from "react";
 import { SymbolColors } from "@/app/rebalancer/const/graph";
 import { FetchLivePortfolioReturnValue, LiveHolding } from "@/server/actions";
 import { displayNumber } from "@/utils";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export const Table: React.FC<{
   livePortfolio?: FetchLivePortfolioReturnValue;
@@ -225,8 +226,8 @@ const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
 
 const LoadingRows = () => (
   <div className="flex flex-col gap-0.5">
-    <div className="min-h-12 animate-pulse bg-valence-lightgray"></div>
-    <div className="min-h-12 animate-pulse bg-valence-lightgray"></div>
-    <div className="min-h-12 animate-pulse bg-valence-lightgray"></div>
+    <LoadingSkeleton className="min-h-12" />
+    <LoadingSkeleton className="min-h-12" />
+    <LoadingSkeleton className="min-h-12" />
   </div>
 );

@@ -7,7 +7,6 @@ import { baseToMicroDenomString } from "./denom-math";
 import { RebalancerData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { fromHex, toUtf8 } from "@cosmjs/encoding";
-import Decimal from "decimal.js";
 
 import { UTCDate } from "@date-fns/utc";
 import { jsonToBase64, jsonToUtf8 } from "@/utils";
@@ -24,7 +23,10 @@ export const makeCreateRebalancerMessages = async ({
   creatorAddress: string;
   cosmwasmClient: CosmWasmClient;
   config: CreateRebalancerForm;
-}): Promise<EncodeObject[]> => {
+}): Promise<{
+  valenceAddress: string;
+  messages: EncodeObject[];
+}> => {
   const valenceAccountCodeId = chainConfig.codeIds.Account;
 
   // TODO: in production this should include address of the creator
@@ -37,26 +39,29 @@ export const makeCreateRebalancerMessages = async ({
     salt,
     cosmwasmClient,
   });
-
-  return [
-    {
-      typeUrl: MsgInstantiateContract2.typeUrl,
-      value: makeInstantiateMessageBody({
-        creatorAddress,
-        cosmwasmClient,
-        config,
-        codeId: valenceAccountCodeId,
-        salt,
-      }),
-    },
-    {
-      typeUrl: MsgExecuteContract.typeUrl,
-      value: makeRegisterMessage({
-        creatorAddress,
-        predictableValenceAddress,
-      }),
-    },
-  ];
+  return {
+    messages: [
+      {
+        typeUrl: MsgInstantiateContract2.typeUrl,
+        value: makeInstantiateMessageBody({
+          creatorAddress,
+          cosmwasmClient,
+          config,
+          codeId: valenceAccountCodeId,
+          salt,
+        }),
+      },
+      {
+        typeUrl: MsgExecuteContract.typeUrl,
+        value: makeRegisterMessage({
+          config,
+          creatorAddress,
+          predictableValenceAddress,
+        }),
+      },
+    ],
+    valenceAddress: predictableValenceAddress,
+  };
 };
 
 const makeInstantiateMessageBody = ({
@@ -117,7 +122,9 @@ const makeInstantiateMessageBody = ({
 const makeRegisterMessage = ({
   creatorAddress,
   predictableValenceAddress,
+  config,
 }: {
+  config: CreateRebalancerForm;
   creatorAddress: string;
   predictableValenceAddress: string;
 }): MsgExecuteContract => {
@@ -127,21 +134,20 @@ const makeRegisterMessage = ({
     msg: jsonToUtf8({
       register_to_service: {
         data: jsonToBase64({
-          base_denom: "untrn",
+          base_denom: config.baseTokenDenom,
           pid: {
-            p: new Decimal(".2").toString(),
-            i: "0", // TODO: map over config and use decimal.js for all
-            d: "0",
+            p: parseFloat(config.pid.p).toString(),
+            i: parseFloat(config.pid.i).toString(),
+            d: parseFloat(config.pid.d).toString(),
           },
-          target_override_strategy: "proportional",
-          targets: [
-            { denom: "untrn", bps: 10 * 100 },
-            {
-              denom:
-                "factory/neutron1phx0sz708k3t6xdnyc98hgkyhra4tp44et5s68/rebalancer-test",
-              bps: 90 * 100,
-            },
-          ],
+          target_override_strategy: config.targetOverrideStrategy,
+          targets: config.targets.map((target) => ({
+            denom: target.denom,
+            bps: target.bps * 100, // ("10%"=> 1000)
+            minimum_amount: target.minimumAmount,
+          })),
+          ...(!!config.trustee &&
+            config.trustee !== "" && { trustee: config.trustee }),
         } as RebalancerData),
         service_name: "rebalancer",
       },

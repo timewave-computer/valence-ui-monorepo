@@ -59,17 +59,17 @@ export const SelectTrustee: React.FC<{
         <div
           className={cn(
             "mt-2 w-3/4",
-            allowOtherAddressInput
+            !allowOtherAddressInput
               ? "cursor-not-allowed border-valence-mediumgray bg-valence-mediumgray"
               : "border-valence-lightgray bg-valence-lightgray",
             " flex items-center border-[1.5px]  focus-within:border-valence-blue",
           )}
         >
           <input
-            disabled={allowOtherAddressInput}
+            disabled={!allowOtherAddressInput}
             className={cn(
               " font-mono",
-              allowOtherAddressInput && "cursor-not-allowed bg-valence-gray",
+              !allowOtherAddressInput && "cursor-not-allowed bg-valence-gray",
               "h-full w-full bg-transparent p-2 transition-all focus:outline-none",
             )}
             type="text"

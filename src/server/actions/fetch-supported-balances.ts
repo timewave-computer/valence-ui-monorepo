@@ -49,6 +49,5 @@ export async function fetchSupportedBalances({
 export type FetchSupportedBalancesReturnValue = Array<
   Coin & {
     price: number;
-    asset: OriginAsset;
   }
 >;

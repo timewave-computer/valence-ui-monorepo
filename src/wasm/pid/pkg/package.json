@@ -1,0 +1,20 @@
+{
+  "name": "pid",
+  "type": "module",
+  "collaborators": [
+    "Yan Mayatskiy <r3mix.il@gmail.com>"
+  ],
+  "description": "PID calculation to be used in UIs",
+  "version": "0.0.0",
+  "license": "MIT/Apache-2.0",
+  "files": [
+    "pid_bg.wasm",
+    "pid.js",
+    "pid.d.ts"
+  ],
+  "main": "pid.js",
+  "types": "pid.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

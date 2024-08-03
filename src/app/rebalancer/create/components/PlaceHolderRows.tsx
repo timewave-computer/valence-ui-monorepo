@@ -4,10 +4,18 @@ export const PlaceholderRows = ({ length }: { length: number }) => {
   if (length >= 2) return;
   if (length === 1)
     return (
-      <WarnText className="text-warn" text="Add at least one more asset" />
+      <WarnText
+        className="text-warn"
+        text="Select at least one more asset in Step 1"
+      />
     );
 
-  return <WarnText className="text-warn" text="Add at least two assets" />;
+  return (
+    <WarnText
+      className="text-valence-gray"
+      text="Select eligible assets in Step 1 to continue"
+    />
+  );
 };
 
 export const WarnText = ({
