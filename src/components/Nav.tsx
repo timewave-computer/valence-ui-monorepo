@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, displayAddress } from "@/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
@@ -50,6 +50,7 @@ export const Nav = () => {
   const { chain, isWalletConnected } = useChainContext();
   const disconnect = useDisconnect();
   const { address } = useWallet();
+  const router = useRouter();
 
   // TODO: hydrate this on server so we dont have to call it unless user decides to click 'create'
   useSupportedBalances(address);
@@ -107,6 +108,16 @@ export const Nav = () => {
                 {address}
               </span>
             </div>
+
+            <Button
+              onClick={() =>
+                // TODO: if has valence account, take to account page
+                router.push("/rebalancer/")
+              }
+              variant="primary"
+            >
+              My account
+            </Button>
 
             <Button onClick={() => disconnect()} variant="secondary">
               Disconnect

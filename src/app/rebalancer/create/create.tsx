@@ -24,13 +24,9 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { useAssetCache } from "@/app/rebalancer/hooks";
 
-type CreateRebalancerPageProps = {
-  ownerAddress: string;
-};
+type CreateRebalancerPageProps = {};
 
-export default function CreateRebalancerPage({
-  ownerAddress,
-}: CreateRebalancerPageProps) {
+export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
   const router = useRouter();
   const { getCosmWasmClient, getSigningStargateClient, isWalletConnected } =
     useChainContext();
@@ -146,10 +142,7 @@ export default function CreateRebalancerPage({
     },
   });
 
-  if (!isWalletConnected) return redirect("/rebalancer");
-
-  // temporary, can remove when support added for DAO actions
-  if (ownerAddress !== address) return redirect("/rebalancer");
+  if (!isWalletConnected || !address) return redirect("/rebalancer");
 
   return (
     <div className="flex flex-col pb-8">
@@ -162,12 +155,16 @@ export default function CreateRebalancerPage({
 
           <span className="text-sm font-medium tracking-tight "> Go Back</span>
         </RouterButton>
-        <h1 className="text-xl font-bold">
-          Configure Rebalancing For Your Account{" "}
-          <span className="font-mono text-sm font-medium">{`(${ownerAddress})`}</span>
-        </h1>
+        <div className="flex flex-wrap items-center gap-1">
+          <h1 className="text-xl font-bold">
+            {" "}
+            Create a Rebalancer Account for Connected Wallet
+          </h1>
 
-        <p>
+          <span className="font-mono text-sm font-medium">{`(${address})`}</span>
+        </div>
+
+        <p className="pt-2">
           To learn more about how the Rebalancer works, you can read this{" "}
           <LinkText
             className=" border-valence-blue text-valence-blue hover:border-b"

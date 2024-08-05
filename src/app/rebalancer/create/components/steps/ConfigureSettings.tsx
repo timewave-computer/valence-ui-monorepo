@@ -187,8 +187,8 @@ export const ConfigureSettings: React.FC<{
       {
         // hiding for now as its buggy
         hideProjection ? (
-          <div className="flex h-48 flex-col items-center bg-valence-mediumgray p-4">
-            TODO: projection
+          <div className="flex h-48 flex-col items-center bg-valence-lightgray p-4">
+            Projection disabled
           </div>
         ) : (
           <ResponsiveContainer key={"pid-test"} height={300}>

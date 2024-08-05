@@ -52,7 +52,7 @@ export const SortableTableHeader = <T extends unknown>({
   return (
     <button
       className={cn(
-        "p-4 border-y border-valence-black flex flex-row items-center gap-2 outline-none",
+        "flex flex-row items-center gap-2 text-nowrap border-y border-valence-black p-4 outline-none",
         buttonClassName,
       )}
       onClick={() => {
@@ -64,7 +64,7 @@ export const SortableTableHeader = <T extends unknown>({
         }
       }}
     >
-      <p className="font-bold text-sm">{label}</p>
+      <p className="text-sm font-bold">{label}</p>
       {currentSorter.key === sorterKey && <SortIcon />}
     </button>
   );

@@ -26,15 +26,9 @@ export const metadata: Metadata = {
   },
 };
 
-type CreateRebalancerProps = {
-  params: {
-    address: string;
-  };
-};
+type CreateRebalancerProps = {};
 
-export default function CreateRebalancerPage({
-  params: { address },
-}: CreateRebalancerProps) {
+export default function CreateRebalancerPage({}: CreateRebalancerProps) {
   const enabled = isFeatureFlagEnabled(FeatureFlags.REBALANCER_CREATE);
 
   if (!enabled) {
@@ -44,7 +38,7 @@ export default function CreateRebalancerPage({
   return (
     <div className=" flex w-full flex-row">
       <SidePanelV2 isLoading={false} />
-      <CreateRebalancer ownerAddress={address} />
+      <CreateRebalancer />
     </div>
   );
 }

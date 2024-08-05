@@ -32,9 +32,6 @@ export const SidePanelV2: React.FC<{
   return (
     <div className="flex w-96 shrink-0 flex-col overflow-hidden overflow-y-auto border-r border-valence-black">
       <Brand account={account} setAccount={setAccountUrlParam} />
-      {!!account && account.length && (
-        <AccountDetails isLoading={isLoading} account={account} />
-      )}
       <DiscoverPanel account={account} />
     </div>
   );
@@ -87,101 +84,6 @@ const Brand: React.FC<{
   );
 };
 
-const AccountDetails: React.FC<{ account: string; isLoading: boolean }> = ({
-  account,
-  isLoading,
-}) => {
-  const queryClient = useQueryClient();
-  const config = queryClient.getQueryData<FetchAccountConfigReturnValue>([
-    QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG,
-    account,
-  ]);
-
-  const [isCopied, setIsCopied] = useState(false);
-  const [isCopying, setIsCopying] = useState(false);
-
-  const handleCopy = (account: string) => {
-    setIsCopying(true);
-    setIsCopied(true);
-    navigator.clipboard.writeText(account);
-    setTimeout(() => {
-      setIsCopied(false);
-      setIsCopying(false);
-    }, 1000);
-  };
-
-  if (isLoading)
-    return (
-      <div className="flex h-[160px] flex-col gap-2 border-b border-valence-black p-4">
-        <div className="flex flex-row justify-between">
-          <h1 className="font-bold">Rebalancer account</h1>
-          <LoadingSkeleton className="h-full min-h-4 w-2/5" />
-        </div>
-        <LoadingSkeleton className="h-full min-h-20 w-full" />
-      </div>
-    );
-  return (
-    <div className="flex flex-col  items-stretch gap-2 border-b border-valence-black p-4">
-      <div className="flex items-center justify-between">
-        {" "}
-        <h1 className="font-bold">Rebalancer account</h1>
-        <HoverCard.Root openDelay={0}>
-          <HoverCard.Trigger
-            onTouchMove={() => setIsCopying(false)}
-            onClick={() => handleCopy(account)}
-            asChild
-          >
-            <span className="font-mono text-sm font-bold">
-              {displayAddress(account)}
-            </span>
-          </HoverCard.Trigger>
-          <HoverCard.Content
-            {...(isCopying && { forceMount: true })}
-            onClick={() => handleCopy(account)}
-            className="z-50 flex flex-col items-center gap-2 border-[1px] border-valence-black bg-valence-white p-4 shadow-md"
-          >
-            <span className="font-mono text-sm font-medium tracking-wide">
-              {account}
-            </span>
-            {isCopied ? (
-              <Label text="Copied" />
-            ) : (
-              <Label text="Click to copy" />
-            )}
-
-            <HoverCard.Arrow />
-          </HoverCard.Content>
-        </HoverCard.Root>
-      </div>
-      <div className="flex flex-col gap-2 text-sm">
-        <div className="flex items-center justify-between ">
-          <span className="text-sm font-medium">Owner</span>
-          <span className=" text-sm font-light">not implemented</span>
-        </div>
-        <div className="items-top flex justify-between text-sm ">
-          <span className="text-sm font-medium">Targets</span>
-          <div className="flex flex-col">
-            {config?.targets.map((target) => (
-              <span
-                key={`details-target-${target.asset.symbol}`}
-                className=" text-sm font-light"
-              >
-                {target.percentage * 100}% {target.asset.symbol}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-sm font-medium">Rebalance Speed</span>
-          <span className=" text-sm font-light">
-            {Number(config?.pid?.p) * 100}%
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const DiscoverPanel: React.FC<{
   account: string;
 }> = ({ account }) => {
@@ -194,26 +96,7 @@ const DiscoverPanel: React.FC<{
   return (
     <div className="flex flex-col  items-stretch gap-2 border-b border-valence-black p-4">
       <h1 className="font-bold">Discover</h1>
-      {isWalletConnected && (
-        <div
-          onClick={() => {}}
-          className={cn(
-            " border border-valence-gray transition-all",
-            "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
-          )}
-        >
-          <div className="flex flex-col gap-2 ">
-            <span className=" text-pretty">
-              No rebalancer found for this wallet.
-            </span>
-            <Link href={`/rebalancer/create/${address}`}>
-              <Button className="w-fit" variant="primary">
-                Start rebalancing funds
-              </Button>
-            </Link>
-          </div>
-        </div>
-      )}
+
       <div>
         {featuredAccounts.length === 0 && (
           <p className="pt-2 text-sm">

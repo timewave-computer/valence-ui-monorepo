@@ -10,6 +10,8 @@ import {
   ValueTooltip,
   SidePanel,
   SidePanelV2,
+  TableV2,
+  AccountDetails,
 } from "@/app/rebalancer/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
@@ -396,25 +398,48 @@ const RebalancerPage = () => {
             );
           })}
         </Graph>
-        <div className="grow overflow-x-auto bg-valence-white">
-          <Table
-            isLoading={
-              livePortfolioQuery.isFetching && !livePortfolioQuery.data
-            }
-            livePortfolio={livePortfolioQuery.data}
-          />
-          {livePortfolioQuery.isError &&
-            !accountConfigQuery.isError &&
-            !historicalValuesQuery.isError &&
-            !historicalValuesQuery.isFetching && (
-              <StatusBar
-                className="border-0"
-                variant="error"
-                text="Could not load live portfolio"
-                icon={<FiAlertTriangle />}
-              />
-            )}
-        </div>
+        {isCreateRebalancerEnabled ? (
+          <>
+            <div className="flex grow overflow-x-auto border-t border-valence-black bg-valence-white ">
+              <section className="w-1/3 border-r border-valence-black">
+                <AccountDetails
+                  selectedAddress={account}
+                  isLoading={accountConfigQuery.isLoading}
+                />
+              </section>
+              <section className="flex w-2/3 flex-col gap-4 pt-4">
+                <h1 className="pl-4 text-base font-bold">Live Balances</h1>
+
+                <TableV2
+                  isLoading={
+                    livePortfolioQuery.isFetching && !livePortfolioQuery.data
+                  }
+                  livePortfolio={livePortfolioQuery.data}
+                />
+              </section>
+            </div>
+          </>
+        ) : (
+          <div className="grow overflow-x-auto bg-valence-white">
+            <Table
+              isLoading={
+                livePortfolioQuery.isFetching && !livePortfolioQuery.data
+              }
+              livePortfolio={livePortfolioQuery.data}
+            />
+            {livePortfolioQuery.isError &&
+              !accountConfigQuery.isError &&
+              !historicalValuesQuery.isError &&
+              !historicalValuesQuery.isFetching && (
+                <StatusBar
+                  className="border-0"
+                  variant="error"
+                  text="Could not load live portfolio"
+                  icon={<FiAlertTriangle />}
+                />
+              )}
+          </div>
+        )}
       </div>
     </div>
   );
