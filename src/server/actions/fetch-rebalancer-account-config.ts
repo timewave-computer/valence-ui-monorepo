@@ -13,23 +13,44 @@ import {
   RawTarget,
 } from "@/types/rebalancer";
 import { fetchOriginAssets } from "@/server/actions";
+import { z } from "zod";
 
 export async function fetchRebalancerAccountConfiguration({
   address,
 }: {
   address: string;
 }): Promise<FetchAccountConfigReturnValue> {
-  const res = await fetch(IndexerUrl.accountConfig(address));
-  if (!res.ok) {
-    if (res.status === 404) {
+  const adminRequest = fetch(IndexerUrl.accountAdmin(address));
+
+  const configRequest = fetch(IndexerUrl.accountConfig(address));
+
+  const results = await Promise.all([adminRequest, configRequest]);
+  const adminRes = results[0];
+  const configRes = results[1];
+
+  if (!adminRes.ok) {
+    if (adminRes.status === 404) {
       throw new InvalidAccountError();
     }
     throw ErrorHandler.makeError(
-      `${ERROR_MESSAGES.INDEXER_ACCT_CONFIG_ERROR}, API Error: ${res.status}, ${res.statusText}`,
+      `${ERROR_MESSAGES.INDEXER_ACCT_ADMIN_ERROR}, API Error: ${adminRes.status}, ${adminRes.statusText}`,
     );
   }
-  const data = await res.json();
-  const config = IndexerRebalancerConfigResponseSchema.parse(data);
+
+  const adminData = await adminRes.json();
+  const admin = z.string().parse(adminData);
+
+  if (!configRes.ok) {
+    if (configRes.status === 404) {
+      throw new InvalidAccountError();
+    }
+    throw ErrorHandler.makeError(
+      `${ERROR_MESSAGES.INDEXER_ACCT_CONFIG_ERROR}, API Error: ${configRes.status}, ${configRes.statusText}`,
+    );
+  }
+
+  const configData = await configRes.json();
+  const config = IndexerRebalancerConfigResponseSchema.parse(configData);
   const { targets, base_denom, pid } = config;
 
   const originAssets = await fetchOriginAssets(
@@ -49,6 +70,7 @@ export async function fetchRebalancerAccountConfiguration({
   });
 
   return {
+    admin,
     baseDenom: base_denom,
     pid: {
       p: parseFloat(pid.p),
@@ -67,6 +89,7 @@ export type AccountTarget = Omit<RawTarget, "percentage"> & {
 };
 
 export type FetchAccountConfigReturnValue = {
+  admin: string;
   targets: AccountTarget[];
   pid: {
     p: number;

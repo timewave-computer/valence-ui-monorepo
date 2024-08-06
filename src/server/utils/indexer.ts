@@ -13,21 +13,27 @@ const getRange = (startDate: Date, endDate: Date) => {
 };
 
 export class IndexerUrl {
-  static accountConfig(address: string) {
-    return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${address}/valence/account/rebalancerConfig`;
+  static accounts(walletAddress: string) {
+    return `${INDEXER_URL}/${INDEXER_API_KEY}/wallet/${walletAddress}/valence/accounts`;
   }
-  static fundsInAuction(address: string) {
-    return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${address}/valence/account/fundsInAuction`;
+  static accountAdmin(valenceAddress: string) {
+    return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${valenceAddress}/valence/account/admin`;
+  }
+  static accountConfig(valenceAddress: string) {
+    return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${valenceAddress}/valence/account/rebalancerConfig`;
+  }
+  static fundsInAuction(valenceAddress: string) {
+    return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${valenceAddress}/valence/account/fundsInAuction`;
   }
   static historicalTargets(
-    address: string,
+    valenceAddress: string,
     { startDate, endDate }: { startDate: Date; endDate: Date },
   ) {
     const range = getRange(startDate, endDate);
-    return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${address}/valence/account/rebalancerTargets?times=${range}&timeStep=${timeStep}`;
+    return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${valenceAddress}/valence/account/rebalancerTargets?times=${range}&timeStep=${timeStep}`;
   }
   static historicalBalances(
-    address: string,
+    valenceAddress: string,
     {
       startDate,
       endDate,
@@ -37,7 +43,7 @@ export class IndexerUrl {
     },
   ) {
     const range = getRange(startDate, endDate);
-    return `${INDEXER_URL}/${INDEXER_API_KEY}/wallet/${address}/bank/balances?times=${range}&timeStep=${timeStep}`;
+    return `${INDEXER_URL}/${INDEXER_API_KEY}/wallet/${valenceAddress}/bank/balances?times=${range}&timeStep=${timeStep}`;
   }
   // by default composes prices in USDC_DENOM
   static orcaleHistoricPrices(

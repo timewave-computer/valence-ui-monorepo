@@ -94,3 +94,9 @@ export const IndexerHistoricalTargetsResponseSchema = TimestepQuerySchema(
 export type IndexerHistoricalTargetsResponse = z.infer<
   typeof IndexerHistoricalTargetsResponseSchema
 >;
+
+export const IndexerValenceAccountsResponseSchema = z.array(z.string());
+
+export type IndexerValenceAccountsResponse = z.infer<
+  typeof IndexerValenceAccountsResponseSchema
+>;

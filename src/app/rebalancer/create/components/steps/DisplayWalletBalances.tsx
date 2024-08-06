@@ -130,9 +130,7 @@ export const DisplayWalletAddresses: React.FC<{
                     baseBalance = microToBase(balance.amount, asset.decimals);
                   }
                   const valueDisplayString = displayValue({
-                    value: displayNumber(baseBalance * balance.price, {
-                      precision: 2,
-                    }),
+                    value: baseBalance * balance.price,
                     symbol: "USDC", // always value in usd for first section, for now
                   });
                   return (

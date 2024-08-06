@@ -11,23 +11,17 @@ export const useChainContext = () => {
 
 export const useWallet = () => {
   const chainContext = useChainContext();
-  if (!chainContext.chainWallet) {
-    const noWallet = {
-      // populate these so we do not destructure from undefined object, if there is no wallet connected
-      address: undefined,
-    };
-    return noWallet;
-  }
 
-  return chainContext.chainWallet;
-};
+  const wallet = chainContext.chainWallet;
 
-export const useConnect = () => {
-  const chainContext = useChain(chainConfig.chain.chain_name, false);
-  return chainContext.walletRepo.wallets[0].connect;
-};
+  return {
+    address: wallet?.address,
+    // for some reason these are the ones that work for connecting and disconnecting
+    connect: chainContext.walletRepo.wallets[0].connect,
+    disconnect: chainContext.walletRepo.wallets[0].disconnect,
 
-export const useDisconnect = () => {
-  const chainContext = useChain(chainConfig.chain.chain_name, false);
-  return chainContext.walletRepo.wallets[0].disconnect;
+    // for some reason these are only accurate in chain context and not on wallet
+    isWalletConnected: chainContext.isWalletConnected,
+    isWalletConnecting: chainContext.isWalletConnecting,
+  };
 };

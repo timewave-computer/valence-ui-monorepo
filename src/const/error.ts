@@ -7,10 +7,12 @@ export const ERROR_MESSAGES = {
   CACHED_QUERY_FAIL: "Failed to call API with snapper",
   UNKNOWN_ERROR: "Unknown error",
   INDEXER_ACCT_CONFIG_ERROR: "Failed to fetch account config",
+  INDEXER_ACCT_ADMIN_ERROR: "Failed to fetch account admin",
   INDEXER_FUNDS_IN_AUCTION_ERROR: "Failed to fetch funds in auction",
   INDEXER_HISTORICAL_BALANCES_ERROR: "Failed to fetch historical balances",
   INDEXER_HISTORICAL_PRICES_ERROR: "Failed to fetch historical prices",
   INDEXER_HISTORICAL_TARGETS_ERROR: "Failed to fetch historical targets",
+  INDEXER_VALENCE_ACCOUNTS_ERROR: "Failed to fetch valence accounts",
 
   // create rebalancer
   CREATE_REBALANCER_CODE_ID_ERROR:

@@ -1,18 +1,13 @@
 "use client";
-
 import { cn, displayAddress } from "@/utils";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
-import {
-  useChainContext,
-  useDisconnect,
-  useSupportedBalances,
-  useWallet,
-} from "@/hooks";
+import { useChainContext, useSupportedBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
+import { useValenceAccount } from "@/app/rebalancer/hooks";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -47,10 +42,8 @@ const NavLink = ({
 
 export const Nav = () => {
   const path = usePathname();
-  const { chain, isWalletConnected } = useChainContext();
-  const disconnect = useDisconnect();
-  const { address } = useWallet();
-  const router = useRouter();
+  const { chain } = useChainContext();
+  const { address, disconnect, isWalletConnected } = useWallet();
 
   // TODO: hydrate this on server so we dont have to call it unless user decides to click 'create'
   useSupportedBalances(address);
@@ -108,16 +101,6 @@ export const Nav = () => {
                 {address}
               </span>
             </div>
-
-            <Button
-              onClick={() =>
-                // TODO: if has valence account, take to account page
-                router.push("/rebalancer/")
-              }
-              variant="primary"
-            >
-              My account
-            </Button>
 
             <Button onClick={() => disconnect()} variant="secondary">
               Disconnect

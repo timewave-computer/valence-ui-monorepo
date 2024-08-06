@@ -23,6 +23,7 @@ import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { useAssetCache } from "@/app/rebalancer/hooks";
+import { useCallback } from "react";
 
 type CreateRebalancerPageProps = {};
 
@@ -48,7 +49,7 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
     },
   });
 
-  const createRebalancer = async () => {
+  const createRebalancer = useCallback(async () => {
     // should not happen but here to make typescript happy
     if (!address)
       throw new Error(
@@ -66,7 +67,7 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
     const result = await signer.signAndBroadcast(address, messages, "auto");
     console.log("RESULT", result);
     return { valenceAddress, result };
-  };
+  }, [getSigningStargateClient, getCosmWasmClient, form, address]);
   const queryClient = useQueryClient();
 
   const { mutate: handleCreate, isPending: isCreatePending } = useMutation({
@@ -81,6 +82,7 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
       queryClient.setQueryData(
         [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, valenceAddress],
         {
+          admin: address,
           baseDenom: formValues.baseTokenDenom,
           pid: {
             p: parseFloat(formValues.pid.p),
@@ -90,12 +92,13 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
           targets: formValues.targets.map((t) => {
             const originAsset = getAsset(t.denom);
             return {
-              percentage: t.bps,
+              percentage: t.bps / 100,
               asset: originAsset!,
             };
           }),
         } as FetchAccountConfigReturnValue,
       );
+      queryClient.setQueryData([QUERY_KEYS.VALENCE_ACCOUNT], valenceAddress);
 
       console.log("created rebalancer at", valenceAddress, "tx:", result);
       toast.success(

@@ -82,7 +82,7 @@ export const SetStartingAmounts: React.FC<{
                 amount: field.startingAmount,
               });
               const valueDisplayString = displayValue({
-                value: displayNumber(value, { precision: 2 }),
+                value: value,
                 symbol: baseTokenAsset?.symbol ?? "USDC",
               });
 

@@ -50,13 +50,20 @@ export const displayAddress = (address: string) => {
 export const displayValue = ({
   value,
   symbol,
+  options,
 }: {
-  value: string;
+  value: number;
   symbol: string;
+  options?: { precision: number | null };
 }) => {
+  const _value = isNaN(value) ? 0 : value;
+  const displayString = displayNumber(_value, {
+    precision: options?.precision ?? 2,
+  });
+
   if (symbol === "USDC") {
-    return `$${value}`;
+    return `$${displayString}`;
   } else {
-    return `${value} ${symbol}`;
+    return `${displayString} ${symbol}`;
   }
 };

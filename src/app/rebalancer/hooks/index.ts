@@ -4,3 +4,4 @@ export * from "./use-account-config-query";
 export * from "./use-base-token-value";
 export * from "./use-projection-graph";
 export * from "./use-cached-assets";
+export * from "./use-valence-account";

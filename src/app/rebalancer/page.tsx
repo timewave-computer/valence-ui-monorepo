@@ -42,12 +42,13 @@ import { cn } from "@/utils";
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
 import { useAtom } from "jotai";
+import { useWallet } from "@/hooks";
 
 const RebalancerPage = () => {
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
     defaultValue: USDC_DENOM,
   });
-
+  const { isWalletConnected, address } = useWallet();
   const [account] = useAtom(accountAtom);
   const isHasAccountInput = !!account && account !== "";
   const accountConfigQuery = useAccountConfigQuery({

@@ -6,4 +6,5 @@ export const QUERY_KEYS = {
   WALLET_BALANCES: "wallet-balances",
   COINGECKO_PRICE: "coingecko-price",
   ORIGIN_ASSET: "origin-asset",
+  VALENCE_ACCOUNT: "valence-account",
 };

@@ -6,3 +6,4 @@ export * from "./fetch-historical-targets";
 export * from "./fetch-supported-balances";
 export * from "./fetch-prices";
 export * from "./fetch-origin-assets";
+export * from "./fetch-valence-accounts";

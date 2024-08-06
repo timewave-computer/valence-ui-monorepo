@@ -4,13 +4,11 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { FetchAccountConfigReturnValue } from "@/server/actions";
 import { cn, displayAddress } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
-
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { ReactNode, useState } from "react";
-
 import LoadingSkeleton from "@/components/LoadingSkeleton";
-import { useChainContext } from "@/hooks";
 import Link from "next/link";
+import { useWallet } from "@/hooks";
 
 export const AccountDetails: React.FC<{
   selectedAddress: string;
@@ -22,7 +20,9 @@ export const AccountDetails: React.FC<{
     selectedAddress,
   ]);
 
-  const { isWalletConnected } = useChainContext();
+  const { isWalletConnected, address: walletAddress } = useWallet();
+
+  const isOwnAccount = config?.admin === walletAddress && isWalletConnected;
 
   if (isLoading)
     return (
@@ -32,7 +32,6 @@ export const AccountDetails: React.FC<{
         </div>
       </AccountDetailsLayout>
     );
-  // TODO: if wallet has valence address
   else if (!selectedAddress)
     return (
       <AccountDetailsLayout>
@@ -54,10 +53,24 @@ export const AccountDetails: React.FC<{
     );
 
   return (
-    <AccountDetailsLayout>
+    <AccountDetailsLayout isOwnAccount={isOwnAccount}>
       <div className="flex flex-col px-4">
+        {isOwnAccount && (
+          <div className="flex flex-row flex-wrap gap-2 gap-y-8 py-4">
+            {actions.map((action) => (
+              <Button
+                key={`account-action-${action}`}
+                className=""
+                variant="secondary"
+                onClick={() => alert("got em")}
+              >
+                {action}
+              </Button>
+            ))}
+          </div>
+        )}
         <div className="flex flex-row justify-between gap-2 py-4">
-          <h3 className="text-sm font-bold">Address</h3>
+          <h3 className="text-sm font-bold">Rebalancer Address</h3>
           <p className="whitespace-normal  font-mono text-xs">
             <HoverToCopy
               textToCopy={selectedAddress}
@@ -74,18 +87,18 @@ export const AccountDetails: React.FC<{
           </p>
         </div>
         <div className="flex flex-row justify-between gap-2 py-4">
-          <h3 className="text-sm font-bold">Owner</h3>
+          <h3 className="text-sm font-bold">Creator</h3>
           <p className="whitespace-normal  font-mono text-xs">
             <HoverToCopy
               textToCopy={selectedAddress}
               hoverContent={
                 <div className="  max-w-48 text-balance break-all text-center ">
-                  {selectedAddress}
+                  {config?.admin}
                 </div>
               }
             >
               <span className="xs text-wrap break-all font-mono">
-                {displayAddress(selectedAddress)}
+                {displayAddress(config?.admin ?? "")}
               </span>
             </HoverToCopy>
           </p>
@@ -101,13 +114,20 @@ export const AccountDetails: React.FC<{
   );
 };
 
-const AccountDetailsLayout: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+const actions = ["Pause", "Edit", "Withdraw"];
+
+const AccountDetailsLayout: React.FC<{
+  isOwnAccount?: boolean;
+  children: ReactNode;
+}> = ({ children, isOwnAccount }) => {
+  const titleString = isOwnAccount
+    ? "Your Account Details"
+    : "Rebalancer Account Details";
+
   return (
     <div className="flex h-full w-full flex-col">
       <h1 className="border-b border-valence-black p-4 text-base font-bold">
-        Account details
+        {titleString}
       </h1>
       {children}
     </div>

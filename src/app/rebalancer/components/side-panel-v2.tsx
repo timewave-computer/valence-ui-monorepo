@@ -1,22 +1,17 @@
 "use client";
 import { Button, LinkText, TextInput, Label } from "@/components";
-import { QUERY_KEYS } from "@/const/query-keys";
 import { X_HANDLE, X_URL } from "@/const/socials";
-import { useChainContext, useConnect, useEdgeConfig } from "@/hooks";
-import { FetchAccountConfigReturnValue } from "@/server/actions";
-import { cn, displayAddress } from "@/utils";
-import { useQueryClient } from "@tanstack/react-query";
+import { useWallet } from "@/hooks";
+import { cn } from "@/utils";
 import Image from "next/image";
 import { accountAtom } from "@/app/rebalancer/const";
-import * as HoverCard from "@radix-ui/react-hover-card";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
-import Link from "next/link";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
+import { useValenceAccount } from "../hooks";
 
 export const SidePanelV2: React.FC<{
   isLoading: boolean;
@@ -87,8 +82,9 @@ const Brand: React.FC<{
 const DiscoverPanel: React.FC<{
   account: string;
 }> = ({ account }) => {
-  const { isWalletConnected, address } = useChainContext();
-  const featuredAccounts = chainConfig.featuredAccounts;
+  const { address, isWalletConnected } = useWallet();
+  const { data: valenceAddress } = useValenceAccount(address);
+  let featuredAccounts = chainConfig.featuredAccounts;
 
   const router = useRouter();
   const [scale] = useAtom(scaleAtom);
@@ -103,6 +99,31 @@ const DiscoverPanel: React.FC<{
             No featured accounts to show for {chainConfig.chain.pretty_name}.
           </p>
         )}
+        {isWalletConnected && (
+          <div
+            key={`discover-${valenceAddress}`}
+            onClick={() => {
+              if (valenceAddress)
+                router.push(
+                  `/rebalancer?account=${valenceAddress}&scale=${scale}`,
+                );
+              else router.push(`/rebalancer/`);
+            }}
+            className={cn(
+              "border-l border-r border-t border-valence-gray transition-all",
+
+              "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
+              account === valenceAddress &&
+                "bg-valence-black text-valence-white",
+              account !== valenceAddress && "hover:bg-valence-lightgray",
+            )}
+          >
+            <div className="flex flex-row justify-between gap-2 ">
+              <span className=" text-pretty">Your account</span>
+            </div>
+          </div>
+        )}
+
         {featuredAccounts.map((option, i) => {
           const isLastElement = i === featuredAccounts.length - 1;
 
@@ -137,10 +158,20 @@ const DiscoverPanel: React.FC<{
 };
 
 const ConnectWalletButton: React.FC = () => {
-  const { isWalletConnected, isWalletConnecting } = useChainContext();
+  const { isWalletConnected, isWalletConnecting, connect, address } =
+    useWallet();
+  const { data: valenceAccount, isLoading: isValenceAccountLoading } =
+    useValenceAccount(address);
 
-  const connect = useConnect();
-  if (isWalletConnecting) return <Button disabled={true}>Connecting</Button>;
+  const router = useRouter();
+  useEffect(() => {
+    // redirect to your own account if it exists
+    if (valenceAccount && isWalletConnected)
+      router.push(`/rebalancer?account=${valenceAccount}`);
+  }, [router, isWalletConnected, valenceAccount]);
+
+  if (isWalletConnecting || isValenceAccountLoading)
+    return <Button disabled={true}>Connecting</Button>;
   else if (!isWalletConnected)
     return (
       <>
