@@ -6,11 +6,11 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { BsPlus, BsX } from "react-icons/bs";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
-import { useEdgeConfig } from "@/hooks";
 import { DEFAULT_ACCOUNT, accountAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { useQueryState } from "nuqs";
 import { chainConfig } from "@/const/config";
+import { useAssetCache } from "../hooks";
 
 export const SidePanel: React.FC<{
   isLoading: boolean;
@@ -36,7 +36,6 @@ export const SidePanel: React.FC<{
     QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG,
     account,
   ]);
-  const { data } = useEdgeConfig();
 
   const { setValue, watch, control } = useForm<RebalancerConfig>({
     defaultValues: {
@@ -44,11 +43,17 @@ export const SidePanel: React.FC<{
     },
   });
 
+  const { getAsset } = useAssetCache();
+
   const tokenOptions =
-    config?.targets.map((target) => ({
-      label: target.asset.recommended_symbol ?? target.asset.symbol,
-      value: target.denom,
-    })) ?? [];
+    config?.targets.map((target) => {
+      const asset = getAsset(target.denom);
+
+      return {
+        label: asset?.symbol ?? "",
+        value: target.denom,
+      };
+    }) ?? [];
 
   useEffect(() => {
     if (!isValidAccount || !config) {

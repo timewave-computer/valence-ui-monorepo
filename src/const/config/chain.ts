@@ -13,7 +13,11 @@ export type CodeIdsType = {
   Oracle: number;
   Account: number;
 };
-export type SupportedAsset = { denom: string; symbol: string };
+export type SupportedAsset = {
+  denom: string;
+  symbol: string;
+  coingeckoId: string;
+};
 const SUPPORTED_CHAIN_IDS = ["neutron-1", "pion-1"];
 export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
 export type FeaturedAccount = {

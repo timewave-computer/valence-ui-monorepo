@@ -6,11 +6,9 @@ export type CoinGeckoHistoricPrice = z.infer<
 >;
 
 export const CoinGeckoHistoricPricesSchema = z.array(
-  z.object({
-    coinGeckoId: z.string(),
-    prices: z.array(CoinGeckoHistoricPriceSchema),
-  }),
+  CoinGeckoHistoricPriceSchema,
 );
+
 export type CoinGeckoHistoricPrices = z.infer<
   typeof CoinGeckoHistoricPricesSchema
 >;

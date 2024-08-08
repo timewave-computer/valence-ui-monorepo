@@ -2,8 +2,6 @@
 import { ComingSoonTooltipContent, Dropdown } from "@/components";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
-import { useQuery } from "@tanstack/react-query";
-import { fetchHistoricalValues, fetchLivePortfolio } from "@/server/actions";
 import {
   Graph,
   Table,
@@ -13,11 +11,13 @@ import {
   TableV2,
   AccountDetails,
 } from "@/app/rebalancer/components";
-import { QUERY_KEYS } from "@/const/query-keys";
 import {
   useAccountConfigQuery,
+  useAssetCache,
   useGraphOverlay,
   useHistoricalValueGraph,
+  useHistoricValues,
+  usePrefetchData,
 } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import {
@@ -39,18 +39,18 @@ import Image from "next/image";
 import { X_HANDLE, X_URL } from "@/const/socials";
 import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { cn } from "@/utils";
-import { UTCDate } from "@date-fns/utc";
-import { subDays } from "date-fns";
 import { useAtom } from "jotai";
-import { useWallet } from "@/hooks";
+import { useLivePortfolio } from "./hooks/use-live-portfolio";
 
 const RebalancerPage = () => {
+  const { isLoading: isCacheLoading } = usePrefetchData();
   const [baseDenom, setBaseDenom] = useQueryState("baseDenom", {
     defaultValue: USDC_DENOM,
   });
-  const { isWalletConnected, address } = useWallet();
   const [account] = useAtom(accountAtom);
+
   const isHasAccountInput = !!account && account !== "";
+  // TODO: make this is own hook
   const accountConfigQuery = useAccountConfigQuery({
     account,
     enabled: isHasAccountInput,
@@ -65,48 +65,21 @@ const RebalancerPage = () => {
     [accountConfigQuery.data?.targets],
   );
 
-  const [isRefetchLiveEnabled, setIsRefetchLiveEnabled] = useState(true);
+  const { getAsset } = useAssetCache();
 
-  const isFetchLivePortfolioEnabled =
-    !!account && !!baseDenom && !!targets?.length;
-  const livePortfolioQuery = useQuery({
-    staleTime: 60 * 1000,
-    queryKey: [QUERY_KEYS.LIVE_PORTFOLIO, account, baseDenom, targets],
-    retry: (errorCount) => {
-      if (errorCount > 1) {
-        setIsRefetchLiveEnabled(false);
-      }
-      return false;
-    },
-    refetchInterval: isRefetchLiveEnabled ? 10000 : false,
-    queryFn: async () =>
-      fetchLivePortfolio({
-        address: account,
-        baseDenom: baseDenom,
-        targets: targets,
-      }),
-    enabled: isFetchLivePortfolioEnabled,
+  const livePortfolio = useLivePortfolio({
+    rebalancerAddress: account,
+    targetDenoms: targets.map((target) => target.denom),
   });
 
-  const historicalValuesQuery = useQuery({
-    staleTime: 5 * 60 * 1000,
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: [QUERY_KEYS.HISTORICAL_VALUES, account],
-    refetchInterval: 0, // data is historical, no need to refresh for now
-    retry: 0,
-    queryFn: async () => {
-      const midnightUTC = new UTCDate(new UTCDate().setHours(0, 0, 0, 0));
-      const startDate = subDays(midnightUTC, 365);
-      const endDate = midnightUTC;
-      return fetchHistoricalValues({
-        targets: targets,
-        baseDenom: baseDenom,
-        address: account,
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-      });
-    },
-    enabled: isValidAccount && !!targets.length,
+  const {
+    isLoading: isHistoricalValuesLoading,
+    isError: isHistoricalValuesError,
+    data: historicalData,
+    historicTargets,
+  } = useHistoricValues({
+    address: account,
+    targets,
   });
 
   const [scaleUrlParam, setScaleUrlParam] = useQueryState(
@@ -120,10 +93,11 @@ const RebalancerPage = () => {
 
   const { xAxisTicks, yAxisTicks, graphData, keys, todayTimestamp } =
     useHistoricalValueGraph({
-      data: historicalValuesQuery.data?.values,
+      isLoading: livePortfolio.isLoading,
+      data: historicalData,
       config: accountConfigQuery.data,
-      livePortfolio: livePortfolioQuery.data?.portfolio,
-      historicalTargets: historicalValuesQuery.data?.historicalTargets,
+      livePortfolio: livePortfolio.data,
+      historicalTargets: historicTargets,
       scale,
     });
 
@@ -143,7 +117,8 @@ const RebalancerPage = () => {
       return <StatusBar variant="primary" text="Please enter an account" />;
     } else if (
       accountConfigQuery.isLoading ||
-      historicalValuesQuery.isLoading
+      isHistoricalValuesLoading ||
+      !graphData.length
     ) {
       return <StatusBar variant="loading" />;
     } else if (accountConfigQuery.isError) {
@@ -160,7 +135,7 @@ const RebalancerPage = () => {
           icon={<FiAlertTriangle />}
         />
       );
-    } else if (historicalValuesQuery.isError) {
+    } else if (isHistoricalValuesError) {
       return (
         <StatusBar
           variant="error"
@@ -260,15 +235,15 @@ const RebalancerPage = () => {
             />
           )}
 
-          <div className="flex min-w-[824px] flex-row items-center gap-8 overflow-clip pr-2">
+          <div className="flex  flex-row items-center gap-8 overflow-clip pr-2">
             {scales.map((thisScale) => (
               <div
                 key={thisScale}
                 className={cn(
                   "flex cursor-pointer flex-col items-center justify-center text-base",
                   accountConfigQuery.isError ||
-                    historicalValuesQuery.isError ||
-                    historicalValuesQuery.isLoading
+                    isHistoricalValuesError ||
+                    isHistoricalValuesLoading
                     ? "cursor-not-allowed text-valence-gray"
                     : "",
                   scale === thisScale
@@ -278,8 +253,8 @@ const RebalancerPage = () => {
                 onClick={() => {
                   if (
                     !accountConfigQuery.isError &&
-                    !historicalValuesQuery.isError &&
-                    !historicalValuesQuery.isLoading
+                    !isHistoricalValuesError &&
+                    !isHistoricalValuesLoading
                   )
                     setScaleUrlParam(thisScale as Scale);
                 }}
@@ -292,9 +267,8 @@ const RebalancerPage = () => {
           <button
             disabled={!graphData.length}
             className={cn(
-              "text-sm",
-              !graphData.length &&
-                "cursor-not-allowed text-nowrap text-valence-gray",
+              "text-nowrap text-sm",
+              !graphData.length && "cursor-not-allowed  text-valence-gray",
             )}
             onClick={() => setShowTargets(!showTargets)}
           >
@@ -328,76 +302,77 @@ const RebalancerPage = () => {
             }
           />
 
-          {accountConfigQuery?.data?.targets.map((target) => {
-            const historicalValue = GraphKey.historicalValue(target.asset.name);
-            const projectedValue = GraphKey.projectedValue(target.asset.name);
-            const historicalTarget = GraphKey.historicalTargetValue(
-              target.asset.name,
-            );
-            const projectedTarget = GraphKey.projectedTargetValue(
-              target.asset.name,
-            );
-            return (
-              <Fragment key={`line-${target.denom}`}>
-                <ReferenceLine
-                  key={`label-target-${target.denom}`}
-                  x={todayTimestamp}
-                  stroke="black"
-                  isFront
-                >
-                  <Label
-                    value="Today"
-                    position="insideTopLeft"
-                    style={{ fill: "black" }}
-                    offset={10}
-                  />
-                </ReferenceLine>
+          {!isCacheLoading &&
+            accountConfigQuery?.data?.targets.map((target) => {
+              const asset = getAsset(target.denom);
+              const assetSymbol = asset?.symbol ?? "";
+              const historicalValue = GraphKey.historicalValue(assetSymbol);
+              const projectedValue = GraphKey.projectedValue(assetSymbol);
+              const historicalTarget =
+                GraphKey.historicalTargetValue(assetSymbol);
+              const projectedTarget =
+                GraphKey.projectedTargetValue(assetSymbol);
+              return (
+                <Fragment key={`line-${target.denom}`}>
+                  <ReferenceLine
+                    key={`label-target-${target.denom}`}
+                    x={todayTimestamp}
+                    stroke="black"
+                    isFront
+                  >
+                    <Label
+                      value="Today"
+                      position="insideTopLeft"
+                      style={{ fill: "black" }}
+                      offset={10}
+                    />
+                  </ReferenceLine>
 
-                <Line
-                  dataKey={historicalValue}
-                  type="monotone"
-                  dot={false}
-                  strokeWidth={GraphStyles.width.regular}
-                  stroke={SymbolColors.get(target.asset.symbol)}
-                  isAnimationActive={false}
-                  strokeDasharray={GraphStyles.lineStyle.solid}
-                />
-                {showTargets && (
-                  <>
-                    <Line
-                      dataKey={historicalTarget}
-                      type="monotone"
-                      dot={false}
-                      activeDot={false}
-                      stroke={SymbolColors.get(target.asset.symbol)}
-                      strokeWidth={GraphStyles.width.thin}
-                      isAnimationActive={false}
-                      strokeDasharray={GraphStyles.lineStyle.solid}
-                    />
-                    <Line
-                      dataKey={projectedTarget}
-                      type="monotone"
-                      dot={false}
-                      activeDot={false}
-                      stroke={SymbolColors.get(target.asset.symbol)}
-                      strokeWidth={GraphStyles.width.thin}
-                      isAnimationActive={false}
-                      strokeDasharray={GraphStyles.lineStyle.solid}
-                    />
-                  </>
-                )}
-                <Line
-                  dataKey={projectedValue}
-                  type="monotone"
-                  dot={false}
-                  stroke={SymbolColors.get(target.asset.symbol)}
-                  isAnimationActive={false}
-                  strokeWidth={GraphStyles.width.regular}
-                  strokeDasharray={GraphStyles.lineStyle.dotted}
-                />
-              </Fragment>
-            );
-          })}
+                  <Line
+                    dataKey={historicalValue}
+                    type="monotone"
+                    dot={false}
+                    strokeWidth={GraphStyles.width.regular}
+                    stroke={SymbolColors.get(assetSymbol)}
+                    isAnimationActive={false}
+                    strokeDasharray={GraphStyles.lineStyle.solid}
+                  />
+                  {showTargets && (
+                    <>
+                      <Line
+                        dataKey={historicalTarget}
+                        type="monotone"
+                        dot={false}
+                        activeDot={false}
+                        stroke={SymbolColors.get(assetSymbol)}
+                        strokeWidth={GraphStyles.width.thin}
+                        isAnimationActive={false}
+                        strokeDasharray={GraphStyles.lineStyle.solid}
+                      />
+                      <Line
+                        dataKey={projectedTarget}
+                        type="monotone"
+                        dot={false}
+                        activeDot={false}
+                        stroke={SymbolColors.get(assetSymbol)}
+                        strokeWidth={GraphStyles.width.thin}
+                        isAnimationActive={false}
+                        strokeDasharray={GraphStyles.lineStyle.solid}
+                      />
+                    </>
+                  )}
+                  <Line
+                    dataKey={projectedValue}
+                    type="monotone"
+                    dot={false}
+                    stroke={SymbolColors.get(assetSymbol)}
+                    isAnimationActive={false}
+                    strokeWidth={GraphStyles.width.regular}
+                    strokeDasharray={GraphStyles.lineStyle.dotted}
+                  />
+                </Fragment>
+              );
+            })}
         </Graph>
         {isCreateRebalancerEnabled ? (
           <>
@@ -412,10 +387,9 @@ const RebalancerPage = () => {
                 <h1 className="pl-4 text-base font-bold">Live Balances</h1>
 
                 <TableV2
-                  isLoading={
-                    livePortfolioQuery.isFetching && !livePortfolioQuery.data
-                  }
-                  livePortfolio={livePortfolioQuery.data}
+                  targets={targets}
+                  isLoading={livePortfolio.isLoading || !livePortfolio.data}
+                  livePortfolio={livePortfolio.data}
                 />
               </section>
             </div>
@@ -423,15 +397,14 @@ const RebalancerPage = () => {
         ) : (
           <div className="grow overflow-x-auto bg-valence-white">
             <Table
-              isLoading={
-                livePortfolioQuery.isFetching && !livePortfolioQuery.data
-              }
-              livePortfolio={livePortfolioQuery.data}
+              isLoading={livePortfolio.isLoading}
+              livePortfolio={livePortfolio.data}
+              targets={targets}
             />
-            {livePortfolioQuery.isError &&
+            {livePortfolio.isError &&
               !accountConfigQuery.isError &&
-              !historicalValuesQuery.isError &&
-              !historicalValuesQuery.isFetching && (
+              !isHistoricalValuesError &&
+              !isHistoricalValuesLoading && (
                 <StatusBar
                   className="border-0"
                   variant="error"

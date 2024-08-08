@@ -2,28 +2,52 @@
 import { SortableTableHeader, Sorter } from "@/components";
 import { Fragment, useMemo, useState } from "react";
 import { SymbolColors } from "@/app/rebalancer/const/graph";
-import { FetchLivePortfolioReturnValue, LiveHolding } from "@/server/actions";
 import { displayNumber } from "@/utils";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
+import { UseLivePortfolioReturnValue } from "../hooks/use-live-portfolio";
+import { AccountTarget } from "@/server/actions";
+
+export type TableData = {
+  symbol: string;
+  name: string;
+  amount: number;
+  price: number;
+  distribution: number;
+  target: number;
+};
 
 export const TableV2: React.FC<{
-  livePortfolio?: FetchLivePortfolioReturnValue;
+  livePortfolio?: UseLivePortfolioReturnValue["data"];
   isLoading?: boolean;
-}> = ({ livePortfolio, isLoading }) => {
+  targets: AccountTarget[];
+}> = ({ livePortfolio, isLoading, targets = [] }) => {
   const [sorterKey, setSorter] = useState<string>(SORTER_KEYS.VALUE);
   const [sortAscending, setSortAscending] = useState(true);
   const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
-  const sortedHoldings = livePortfolio?.portfolio?.length
-    ? [...livePortfolio.portfolio].sort((a, b) =>
-        sorter.sort(a, b, sortAscending),
-      )
-    : [];
+
+  const tableData: TableData[] = useMemo(() => {
+    if (!livePortfolio) return [];
+    const formatted = livePortfolio.map((lineItem) => {
+      const target = targets.find((t) => t.denom === lineItem.denom);
+
+      return {
+        symbol: lineItem.symbol,
+        name: lineItem.name,
+        amount: lineItem.balance.total,
+        price: lineItem.price,
+        distribution: lineItem.distribution,
+        target: target?.percentage ?? 0,
+      };
+    });
+    return formatted.sort((a, b) => sorter.sort(a, b, sortAscending));
+  }, [sortAscending, sorter, livePortfolio, targets]);
+
   const totalValue = useMemo(() => {
-    const total = livePortfolio?.portfolio.reduce((acc, holding) => {
+    const total = tableData?.reduce((acc, holding) => {
       return acc + calcValue(holding);
     }, 0);
     return total ?? 0;
-  }, [livePortfolio?.portfolio]);
+  }, [tableData]);
 
   return (
     <>
@@ -86,43 +110,46 @@ export const TableV2: React.FC<{
 
         {!isLoading && (
           <>
-            {sortedHoldings.length === 0 && <EmptyRow />}
-            {sortedHoldings.map((holding, index) => (
-              <Fragment key={index}>
-                <div className="flex flex-row items-center justify-start gap-2 border-b border-valence-black p-4">
-                  <div
-                    className="h-4 w-4 shrink-0 rounded-full"
-                    style={{
-                      backgroundColor: SymbolColors.get(holding.asset.symbol),
-                    }}
-                  ></div>
-                  <p className="text-sm font-bold">{holding.asset.name}</p>
-                </div>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  {displayNumber(holding.amount, { precision: null })}
-                </p>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  ${displayNumber(holding.price, { precision: 2 })}
-                </p>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  ${displayNumber(calcValue(holding), { precision: 2 })}
-                </p>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  {displayNumber(holding.distribution * 100, { precision: 2 })}%
-                </p>
-                <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                  {displayNumber(holding.target * 100, { precision: 2 })}%
-                </p>
-              </Fragment>
-            ))}
+            {tableData.length === 0 && <EmptyRow />}
+            {tableData.map((holding, index) => {
+              return (
+                <Fragment key={index}>
+                  <div className="flex flex-row items-center justify-start gap-2 border-b border-valence-black p-4">
+                    <div
+                      className="h-4 w-4 shrink-0 rounded-full"
+                      style={{
+                        backgroundColor: SymbolColors.get(holding.symbol),
+                      }}
+                    ></div>
+                    <p className="text-sm font-bold">{holding.name}</p>
+                  </div>
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                    {displayNumber(holding.amount, { precision: null })}
+                  </p>
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                    ${displayNumber(holding.price, { precision: 2 })}
+                  </p>
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                    ${displayNumber(calcValue(holding), { precision: 2 })}
+                  </p>
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                    {displayNumber(holding.distribution * 100, {
+                      precision: 2,
+                    })}
+                    %
+                  </p>
+                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                    {displayNumber(holding.target * 100, { precision: 2 })}%
+                  </p>
+                </Fragment>
+              );
+            })}
 
-            {sortedHoldings.length !== 0 && (
-              <TotalValueRow total={totalValue} />
-            )}
+            {tableData.length !== 0 && <TotalValueRow total={totalValue} />}
           </>
         )}
+        {isLoading && <LoadingRows />}
       </div>
-      {isLoading && <LoadingRows />}
     </>
   );
 };
@@ -134,7 +161,7 @@ function compareNumbers<T extends number>(a: T, b: T, ascending: boolean) {
   return ascending ? a - b : b - a;
 }
 
-function calcValue(holding: LiveHolding) {
+function calcValue(holding: TableData) {
   return holding.amount * holding.price;
 }
 
@@ -147,11 +174,10 @@ enum SORTER_KEYS {
   TARGET = "target",
 }
 
-const SORTERS: Sorter<LiveHolding>[] = [
+export const SORTERS: Sorter<TableData>[] = [
   {
     key: SORTER_KEYS.TICKER,
-    sort: (a, b, ascending) =>
-      compareStrings(a.asset?.name ?? "", b.asset?.name ?? "", ascending),
+    sort: (a, b, ascending) => compareStrings(a.symbol, b.symbol, ascending),
   },
   {
     key: SORTER_KEYS.HOLDINGS,
@@ -225,7 +251,7 @@ const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
 );
 
 const LoadingRows = () => (
-  <div className="flex flex-col gap-0.5">
+  <div className="col-span-full flex flex-col gap-0.5">
     <LoadingSkeleton className="min-h-12" />
     <LoadingSkeleton className="min-h-12" />
     <LoadingSkeleton className="min-h-12" />

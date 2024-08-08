@@ -1,10 +1,15 @@
 export const QUERY_KEYS = {
   REBALANCER_ACCOUNT_CONFIG: "rebalancer-account-config",
-  LIVE_PORTFOLIO: "live-portfolio",
-  HISTORICAL_VALUES: "historical-values",
-  HISTORICAL_TARGETS: "historical-targets",
+  ACCOUNT_BALANCES: "account-balances",
+  AUCTION_BALANCES: "auction-balances",
+  HISTORIC_VALUES: "historic-values",
   WALLET_BALANCES: "wallet-balances",
   COINGECKO_PRICE: "coingecko-price",
   ORIGIN_ASSET: "origin-asset",
   VALENCE_ACCOUNT: "valence-account",
+  HISTORIC_PRICES: "historic-prices",
+  HISTORIC_BALANCES: "historic-balances",
+  HISTORIC_TARGETS: "historic-targets",
+  COMBINED_HISTORIC_PRICES: "combined-historic-prices",
+  COMBINED_HISTORICAL_VALUE_DATA: "combined-historical-values-data",
 };

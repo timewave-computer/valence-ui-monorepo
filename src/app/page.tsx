@@ -30,10 +30,9 @@ const HomePage = () => {
           <Button
             className="col-start-1 row-start-3 mx-4 w-fit transition-all hover:bg-valence-black hover:text-valence-white"
             variant="secondary"
-            asChild
           >
             <LinkText
-              className="mt-2 flex flex-row items-center gap-1.5 self-start"
+              className=" flex flex-row items-center gap-1.5 self-start"
               href="/covenants"
             >
               Create a Covenant
@@ -63,10 +62,9 @@ const HomePage = () => {
           <Button
             className="col-start-2 row-start-3 mx-4 w-fit transition-all hover:bg-valence-black hover:text-valence-white "
             variant="secondary"
-            asChild
           >
             <LinkText
-              className="mt-2 flex flex-row items-center gap-1.5 self-start"
+              className=" flex flex-row items-center gap-1.5 self-start"
               href="/rebalancer"
             >
               Rebalance Assets

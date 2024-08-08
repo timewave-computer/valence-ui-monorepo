@@ -170,12 +170,11 @@ const ConnectWalletButton: React.FC = () => {
       router.push(`/rebalancer?account=${valenceAccount}`);
   }, [router, isWalletConnected, valenceAccount]);
 
-  if (isWalletConnecting || isValenceAccountLoading)
-    return <Button disabled={true}>Connecting</Button>;
-  else if (!isWalletConnected)
+  if (!isWalletConnected)
     return (
       <>
         <Button
+          isLoading={isWalletConnecting || isValenceAccountLoading}
           onClick={async () => {
             await connect();
           }}

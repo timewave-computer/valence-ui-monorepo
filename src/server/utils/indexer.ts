@@ -45,6 +45,7 @@ export class IndexerUrl {
     const range = getRange(startDate, endDate);
     return `${INDEXER_URL}/${INDEXER_API_KEY}/wallet/${valenceAddress}/bank/balances?times=${range}&timeStep=${timeStep}`;
   }
+
   // by default composes prices in USDC_DENOM
   static orcaleHistoricPrices(
     denom: string,

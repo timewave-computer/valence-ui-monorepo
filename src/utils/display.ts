@@ -18,12 +18,10 @@ export const displayUtcTime = (date: Date) => {
 };
 
 export const displayNumber = (
-  value: number,
+  _value: number,
   { precision }: { precision: number | null },
 ): string => {
-  if (value === 0) {
-    return "0.00";
-  }
+  const value = isNaN(_value) ? 0 : _value;
   if (!precision) {
     const decimalPart = value % 1;
     if (decimalPart === 0) {

@@ -1,6 +1,5 @@
 "use server";
 import { getStargateClient } from "@/server/utils";
-import { OriginAsset } from "@/types/ibc";
 import { chainConfig } from "@/const/config";
 import { getPrices } from "./fetch-prices";
 import { Coin } from "@cosmjs/stargate";

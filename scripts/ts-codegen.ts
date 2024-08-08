@@ -18,7 +18,7 @@ codegen
         enabled: true,
       },
       client: {
-        enabled: false,
+        enabled: true,
       },
       reactQuery: {
         enabled: false, // for now

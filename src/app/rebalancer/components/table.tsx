@@ -2,28 +2,43 @@
 import { SortableTableHeader, Sorter } from "@/components";
 import { Fragment, useMemo, useState } from "react";
 import { SymbolColors } from "@/app/rebalancer/const/graph";
-import { FetchLivePortfolioReturnValue, LiveHolding } from "@/server/actions";
 import { displayNumber } from "@/utils";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
+import { UseLivePortfolioReturnValue } from "../hooks/use-live-portfolio";
+import { SORTERS, TableData } from "./table-v2";
+import { AccountTarget } from "@/server/actions";
 
 export const Table: React.FC<{
-  livePortfolio?: FetchLivePortfolioReturnValue;
+  livePortfolio?: UseLivePortfolioReturnValue["data"];
   isLoading?: boolean;
-}> = ({ livePortfolio, isLoading }) => {
+  targets: AccountTarget[];
+}> = ({ livePortfolio, isLoading, targets }) => {
   const [sorterKey, setSorter] = useState<string>(SORTER_KEYS.VALUE);
   const [sortAscending, setSortAscending] = useState(true);
   const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
-  const sortedHoldings = livePortfolio?.portfolio?.length
-    ? [...livePortfolio.portfolio].sort((a, b) =>
-        sorter.sort(a, b, sortAscending),
-      )
-    : [];
+  const tableData: TableData[] = useMemo(() => {
+    if (!livePortfolio) return [];
+    const formatted = livePortfolio.map((lineItem) => {
+      const target = targets.find((t) => t.denom === lineItem.denom);
+
+      return {
+        symbol: lineItem.symbol,
+        name: lineItem.name,
+        amount: lineItem.balance.total,
+        price: lineItem.price,
+        distribution: lineItem.distribution,
+        target: target?.percentage ?? 0,
+      };
+    });
+    return formatted.sort((a, b) => sorter.sort(a, b, sortAscending));
+  }, [livePortfolio, sorter, sortAscending, targets]);
+
   const totalValue = useMemo(() => {
-    const total = livePortfolio?.portfolio.reduce((acc, holding) => {
+    const total = tableData?.reduce((acc, holding) => {
       return acc + calcValue(holding);
     }, 0);
     return total ?? 0;
-  }, [livePortfolio?.portfolio]);
+  }, [tableData]);
 
   return (
     <>
@@ -86,17 +101,17 @@ export const Table: React.FC<{
 
         {!isLoading && (
           <>
-            {sortedHoldings.length === 0 && <EmptyRow />}
-            {sortedHoldings.map((holding, index) => (
+            {tableData.length === 0 && <EmptyRow />}
+            {tableData.map((holding, index) => (
               <Fragment key={index}>
                 <div className="flex flex-row items-center justify-start gap-2 border-b border-valence-black p-4">
                   <div
                     className="h-4 w-4 shrink-0 rounded-full"
                     style={{
-                      backgroundColor: SymbolColors.get(holding.asset.symbol),
+                      backgroundColor: SymbolColors.get(holding.symbol),
                     }}
                   ></div>
-                  <p className="text-sm font-bold">{holding.asset.name}</p>
+                  <p className="text-sm font-bold">{holding.name}</p>
                 </div>
                 <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
                   {displayNumber(holding.amount, { precision: null })}
@@ -116,9 +131,7 @@ export const Table: React.FC<{
               </Fragment>
             ))}
 
-            {sortedHoldings.length !== 0 && (
-              <TotalValueRow total={totalValue} />
-            )}
+            {tableData.length !== 0 && <TotalValueRow total={totalValue} />}
           </>
         )}
       </div>
@@ -127,14 +140,7 @@ export const Table: React.FC<{
   );
 };
 
-function compareStrings<T extends string>(a: T, b: T, ascending: boolean) {
-  return ascending ? a.localeCompare(b) : b.localeCompare(a);
-}
-function compareNumbers<T extends number>(a: T, b: T, ascending: boolean) {
-  return ascending ? a - b : b - a;
-}
-
-function calcValue(holding: LiveHolding) {
+function calcValue(holding: TableData) {
   return holding.amount * holding.price;
 }
 
@@ -146,39 +152,6 @@ enum SORTER_KEYS {
   DISTRIBUTION = "distribution",
   TARGET = "target",
 }
-
-const SORTERS: Sorter<LiveHolding>[] = [
-  {
-    key: SORTER_KEYS.TICKER,
-    sort: (a, b, ascending) =>
-      compareStrings(a.asset?.name ?? "", b.asset?.name ?? "", ascending),
-  },
-  {
-    key: SORTER_KEYS.HOLDINGS,
-    sort: (a, b, ascending) => compareNumbers(a.amount, b.amount, ascending),
-  },
-  {
-    key: SORTER_KEYS.PRICE,
-
-    sort: (a, b, ascending) => compareNumbers(a.price, b.price, ascending),
-  },
-  {
-    key: SORTER_KEYS.VALUE,
-
-    sort: (a, b, ascending) =>
-      compareNumbers(calcValue(a), calcValue(b), ascending),
-  },
-  {
-    key: SORTER_KEYS.DISTRIBUTION,
-
-    sort: (a, b, ascending) =>
-      compareNumbers(a.distribution, b.distribution, ascending),
-  },
-  {
-    key: SORTER_KEYS.TARGET,
-    sort: (a, b, ascending) => compareNumbers(a.target, b.target, ascending),
-  },
-];
 
 const EmptyRow = () => (
   <>

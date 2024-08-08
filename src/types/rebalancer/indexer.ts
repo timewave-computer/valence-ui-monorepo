@@ -54,6 +54,19 @@ export const IndexerRebalancerConfigResponseSchema = z.object({
   is_paused: z.boolean(),
 });
 
+export type IndexerRebalancerAccountConfig = z.infer<
+  typeof IndexerRebalancerConfigResponseSchema
+>;
+
+export const IndexerPausedAccountSchema = z.object({
+  is_paused: z.boolean(),
+  pauser: z.string(),
+  reason: z.object({ account_reason: z.string() }),
+  config: IndexerRebalancerConfigResponseSchema.omit({ is_paused: true }),
+});
+
+export type IndexerPausedAccount = z.infer<typeof IndexerPausedAccountSchema>;
+
 /***
  * Time series util
  */
@@ -72,7 +85,7 @@ const TimestepQuerySchema = <T extends ZodType<any, any>>(valueSchema: T) => {
  * historical balances endpoint
  */
 export const IndexerHistoricalBalancesResponseSchema = TimestepQuerySchema(
-  z.record(z.string(), z.string()),
+  z.record(z.string(), z.string()), // { denom: balance }
 );
 
 export type IndexerHistoricalBalancesResponse = z.infer<

@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "@chain-registry/types": "^0.30.0",
+    "@cosmjs/amino": "^0.32.4",
     "@cosmology/telescope": "^1.8.3",
     "@cosmwasm/ts-codegen": "^1.11.1",
     "@tanstack/eslint-plugin-query": "^5.32.1",

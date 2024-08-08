@@ -1,6 +1,12 @@
 "use client";
-import { Button, LinkText, LoadingIndicator, RouterButton } from "@/components";
-import { useChainContext, useWallet } from "@/hooks";
+import {
+  Button,
+  LinkText,
+  LoadingIndicator,
+  RouterButton,
+  ToastMessage,
+} from "@/components";
+import { useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { redirect, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -17,11 +23,11 @@ import {
 } from "@/app/rebalancer/create/components";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BsCheck2Circle, BsExclamationCircle } from "react-icons/bs";
+import { BsExclamationCircle } from "react-icons/bs";
 import { FaChevronLeft } from "react-icons/fa";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
-import { FetchAccountConfigReturnValue } from "@/server/actions";
+import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
 import { useAssetCache } from "@/app/rebalancer/hooks";
 import { useCallback } from "react";
 
@@ -29,9 +35,13 @@ type CreateRebalancerPageProps = {};
 
 export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
   const router = useRouter();
-  const { getCosmWasmClient, getSigningStargateClient, isWalletConnected } =
-    useChainContext();
-  const { address } = useWallet();
+
+  const {
+    address,
+    isWalletConnected,
+    getCosmWasmClient,
+    getSigningStargateClient,
+  } = useWallet();
 
   const { getAsset } = useAssetCache();
 
@@ -65,7 +75,6 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
     });
     const signer = await getSigningStargateClient();
     const result = await signer.signAndBroadcast(address, messages, "auto");
-    console.log("RESULT", result);
     return { valenceAddress, result };
   }, [getSigningStargateClient, getCosmWasmClient, form, address]);
   const queryClient = useQueryClient();
@@ -90,33 +99,26 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
             d: parseFloat(formValues.pid.d),
           },
           targets: formValues.targets.map((t) => {
-            const originAsset = getAsset(t.denom);
             return {
               percentage: t.bps / 100,
-              asset: originAsset!,
-            };
+            } as AccountTarget;
           }),
         } as FetchAccountConfigReturnValue,
       );
       queryClient.setQueryData([QUERY_KEYS.VALENCE_ACCOUNT], valenceAddress);
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, valenceAddress],
+      });
 
       console.log("created rebalancer at", valenceAddress, "tx:", result);
       toast.success(
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <BsCheck2Circle className="h-5 w-5 text-valence-blue" />
-            <h1 className="text-lg font-medium text-valence-blue">
-              Rebalancer setup successful
-            </h1>
-          </div>
-
+        <ToastMessage title="Rebalancer setup successful" variant="success">
           <p className="text-sm">
             Transaction:{" "}
             <span className="font-mono text-xs font-light">
               {result.transactionHash}
             </span>
           </p>
-
           <p className="text-sm">
             Address:{" "}
             <span className="font-mono text-xs font-light">
@@ -125,22 +127,16 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
           </p>
 
           <p className="font-semibold">Taking you to your account...</p>
-        </div>,
+        </ToastMessage>,
       );
       router.push(`/rebalancer?account=${valenceAddress}`);
     },
     onError: (e) => {
       console.log("create rebalancer error", e);
       toast.error(
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <BsExclamationCircle className="h-5 w-5 text-valence-red" />
-            <h1 className="text-lg font-medium text-valence-red">
-              Failed to set up rebalancer
-            </h1>
-          </div>
-          <p>{ErrorHandler.constructText("", e)}</p>
-        </div>,
+        <ToastMessage title="Failed to set up rebalancer" variant="error">
+          {ErrorHandler.constructText("", e)}
+        </ToastMessage>,
       );
     },
   });

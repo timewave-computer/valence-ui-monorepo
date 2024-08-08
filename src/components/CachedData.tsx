@@ -1,7 +1,7 @@
 "use client";
-import { usePrefetchAssets } from "@/app/rebalancer/hooks";
+import { usePrefetchData } from "@/app/rebalancer/hooks";
 
 export default function CachedData() {
-  usePrefetchAssets();
+  usePrefetchData();
   return <></>;
 }

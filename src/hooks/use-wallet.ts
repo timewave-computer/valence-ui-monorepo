@@ -23,5 +23,9 @@ export const useWallet = () => {
     // for some reason these are only accurate in chain context and not on wallet
     isWalletConnected: chainContext.isWalletConnected,
     isWalletConnecting: chainContext.isWalletConnecting,
+    getStargateClient: chainContext.getStargateClient,
+    getSigningStargateClient: chainContext.getSigningStargateClient,
+    getCosmWasmClient: chainContext.getCosmWasmClient,
+    getSigningCosmwasmClient: chainContext.getSigningCosmWasmClient,
   };
 };
