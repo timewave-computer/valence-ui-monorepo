@@ -4,8 +4,8 @@ import { Fragment, useMemo, useState } from "react";
 import { SymbolColors } from "@/app/rebalancer/const/graph";
 import { displayNumber } from "@/utils";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
-import { UseLivePortfolioReturnValue } from "../hooks/use-live-portfolio";
-import { SORTERS, TableData } from "./table-v2";
+import { UseLivePortfolioReturnValue } from "@/app/rebalancer/hooks";
+import { SORTERS, TableData } from "@/app/rebalancer/components";
 import { AccountTarget } from "@/server/actions";
 
 export const Table: React.FC<{

@@ -1,6 +1,6 @@
 "use server";
 import { Coin } from "@cosmjs/stargate";
-import { IndexerUrl } from "../utils";
+import { IndexerUrl } from "@/server/utils";
 import { ErrorHandler, ERROR_MESSAGES } from "@/const/error";
 import { IndexerFundsInAuctionSchema } from "@/types/rebalancer";
 

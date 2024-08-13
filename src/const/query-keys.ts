@@ -12,4 +12,6 @@ export const QUERY_KEYS = {
   HISTORIC_TARGETS: "historic-targets",
   COMBINED_HISTORIC_PRICES: "combined-historic-prices",
   COMBINED_HISTORICAL_VALUE_DATA: "combined-historical-values-data",
+  HISTORICAL_GRAPH: "historical-graph",
+  CREATE_PROJECTION_GRAPH: "create-projection-graph",
 };

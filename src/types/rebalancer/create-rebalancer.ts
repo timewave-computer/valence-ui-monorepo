@@ -7,13 +7,13 @@ type AssetConfig = {
 };
 
 type TargetConfig = {
-  denom: string;
+  denom?: string;
   bps: number;
   minimumAmount?: number;
 };
 
 export type CreateRebalancerForm = {
-  assets: AssetConfig[];
+  initialAssets: AssetConfig[];
   baseTokenDenom: string;
   targets: TargetConfig[];
   pid: {

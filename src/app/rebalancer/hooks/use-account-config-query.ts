@@ -1,9 +1,17 @@
 import { QUERY_KEYS } from "@/const/query-keys";
-import { fetchRebalancerAccountConfiguration } from "@/server/actions";
-import { useQuery } from "@tanstack/react-query";
+import {
+  FetchAccountConfigReturnValue,
+  fetchRebalancerAccountConfiguration,
+} from "@/server/actions";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useState } from "react";
 import { LOAD_CONFIG_ERROR } from "@/app/rebalancer/const";
-import { ERROR_CODES, InvalidAccountError } from "@/const/error";
+import { ERROR_CODES } from "@/const/error";
+
+export type UseAccountConfigQueryReturnValue = Omit<
+  UseQueryResult<FetchAccountConfigReturnValue>,
+  "error"
+> & { error: null | LOAD_CONFIG_ERROR };
 
 export const useAccountConfigQuery = ({
   account,
@@ -16,8 +24,6 @@ export const useAccountConfigQuery = ({
   const [error, setError] = useState<null | LOAD_CONFIG_ERROR>(null);
   const query = useQuery({
     staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: false,
-    refetchInterval: 0,
     queryKey: [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, account],
     queryFn: async () => {
       setError(null);

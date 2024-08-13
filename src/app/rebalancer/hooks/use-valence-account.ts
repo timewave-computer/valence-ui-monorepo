@@ -13,11 +13,14 @@ export const useValenceAccount = (walletAddress?: string) => {
 export const getValenceAccountQueryArgs = (walletAddress?: string) => ({
   queryKey: [QUERY_KEYS.VALENCE_ACCOUNT, walletAddress],
   enabled: !!walletAddress,
-  staleTime: 60 * 30 * 1000, // 30 mins, really not ever needed to refresh
-  refetchInterval: 0,
   queryFn: async () => {
     if (!walletAddress) return;
     const accounts = await fetchValenceAccounts(walletAddress);
-    return accounts[0]; // only support one for time being
+
+    if (!accounts.length) return; // wallet does not have one
+
+    // for dev / preview
+    if (process.env.NEXT_PUBLIC_ENABLE_MULTIPLE_ACCTS === "true") return;
+    else return accounts[0]; // only support one for time being
   },
 });

@@ -30,7 +30,7 @@ export const SelectTrustee: React.FC<{
         </div>
       </div>
       <div>
-        <div className="w-full pb-2 font-semibold">Trustee</div>
+        <div className="h-fit pb-1 text-xs font-medium">Trustee</div>
         <RadioGroup
           onValueChange={() => {
             setAllowOtherAddressInput(!allowOtherAddressInput);

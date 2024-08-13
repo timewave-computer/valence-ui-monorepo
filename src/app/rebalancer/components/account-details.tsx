@@ -9,7 +9,7 @@ import { ReactNode, useState } from "react";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import Link from "next/link";
 import { useWallet } from "@/hooks";
-import { useValenceAccount } from "../hooks";
+import { useValenceAccount } from "@/app/rebalancer/hooks";
 import { AccountClient } from "@/codegen/ts-codegen/Account.client";
 import { toast } from "sonner";
 
@@ -23,11 +23,7 @@ export const AccountDetails: React.FC<{
     selectedAddress,
   ]);
 
-  const {
-    isWalletConnected,
-    address: walletAddress,
-    getSigningCosmwasmClient,
-  } = useWallet();
+  const { isWalletConnected, address: walletAddress } = useWallet();
   const { data: valenceAccountAddress } = useValenceAccount(walletAddress);
   const isOwnAccount = config?.admin === walletAddress && isWalletConnected;
 
@@ -48,7 +44,7 @@ export const AccountDetails: React.FC<{
               <span className=" text-pretty">
                 This wallet does not have a Rebalancer account.
               </span>
-              <Link href={`/rebalancer/create/`}>
+              <Link href={`/rebalancer/create`}>
                 <Button variant="primary">Start rebalancing funds</Button>
               </Link>
             </div>

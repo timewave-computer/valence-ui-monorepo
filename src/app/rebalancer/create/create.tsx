@@ -13,22 +13,18 @@ import { useForm } from "react-hook-form";
 import { makeCreateRebalancerMessages } from "@/utils";
 import { chainConfig } from "@/const/config";
 import { toast } from "sonner";
-
 import {
   SelectRebalancerTargets,
-  SetStartingAmounts,
-  DisplayWalletAddresses,
+  SelectAmounts,
   ConfigureSettings,
   SelectTrustee,
 } from "@/app/rebalancer/create/components";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BsExclamationCircle } from "react-icons/bs";
 import { FaChevronLeft } from "react-icons/fa";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
-import { useAssetCache } from "@/app/rebalancer/hooks";
 import { useCallback } from "react";
 
 type CreateRebalancerPageProps = {};
@@ -43,11 +39,9 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
     getSigningStargateClient,
   } = useWallet();
 
-  const { getAsset } = useAssetCache();
-
   const form = useForm<CreateRebalancerForm>({
     defaultValues: {
-      assets: [],
+      initialAssets: [],
       baseTokenDenom: chainConfig.defaultBaseTokenDenom,
       targets: [],
       pid: {
@@ -141,29 +135,30 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
     },
   });
 
-  if (!isWalletConnected || !address) return redirect("/rebalancer");
+  if (!isWalletConnected || !address) {
+    return redirect("/rebalancer");
+  }
 
   return (
     <div className="flex flex-col pb-8">
-      <section className="flex w-full flex-col gap-2 p-4">
+      <section className="flex w-full flex-col gap-2 p-4 pb-12">
         <RouterButton
           options={{ back: true }}
           className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
         >
-          <FaChevronLeft className="h-4 w-4 transition-all  " />
+          <FaChevronLeft className="h-4 w-4 transition-all" />
 
           <span className="text-sm font-medium tracking-tight "> Go Back</span>
         </RouterButton>
         <div className="flex flex-wrap items-center gap-1">
           <h1 className="text-xl font-bold">
-            {" "}
             Create a Rebalancer Account for Connected Wallet
           </h1>
 
           <span className="font-mono text-sm font-medium">{`(${address})`}</span>
         </div>
 
-        <p className="pt-2">
+        <p className="pt-2 text-sm">
           To learn more about how the Rebalancer works, you can read this{" "}
           <LinkText
             className=" border-valence-blue text-valence-blue hover:border-b"
@@ -173,16 +168,14 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
           </LinkText>
         </p>
       </section>
-      <div className="flex grow flex-col flex-wrap items-start gap-14 p-4">
-        <DisplayWalletAddresses form={form} address={address} />
-        <SetStartingAmounts address={address} form={form} />
+      <div className="flex grow flex-col flex-wrap items-start gap-12 p-4">
+        <SelectAmounts form={form} address={address} />
         <SelectRebalancerTargets address={address} form={form} />
         <ConfigureSettings address={address} form={form} />
         <SelectTrustee address={address} form={form} />
         {isCreatePending ? (
           <div className="flex min-h-11 min-w-60 items-center justify-center bg-valence-black">
-            {" "}
-            <LoadingIndicator />{" "}
+            <LoadingIndicator />
           </div>
         ) : (
           <Button className="min-h-11 min-w-60" onClick={() => handleCreate()}>

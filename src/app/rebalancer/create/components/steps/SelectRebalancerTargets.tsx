@@ -1,39 +1,103 @@
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { cn, displayNumber } from "@/utils";
-import { PlaceholderRows, WarnText } from "@/app/rebalancer/create/components";
-import { useBaseTokenValue } from "@/app/rebalancer/hooks";
+import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/Tooltip";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
+import { InputTableCell } from "@/app/rebalancer/create/components";
+import { Dropdown, DropdownOption, IconButton } from "@/components";
+import { BsPlus, BsX } from "react-icons/bs";
+import { produce } from "immer";
+import { chainConfig } from "@/const/config";
 
 export const SelectRebalancerTargets: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
-}> = ({ form, address }) => {
-  const { setValue, watch } = form;
+}> = ({ form }) => {
+  const { setValue, watch, getValues } = form;
 
   const targets = watch("targets");
-  const assets = watch("assets");
+  const initialAssets = watch("initialAssets");
   const baseTokenDenom = watch("baseTokenDenom");
   const { isLoading: isValueLoading, calculateValue } = useBaseTokenValue({
     baseTokenDenom,
   });
+  const { getAsset } = useAssetCache();
 
-  const totalValue = assets.reduce((acc, asset) => {
-    const value = calculateValue({
+  const dropdownOptions: DropdownOption<string>[] = useMemo(() => {
+    return chainConfig.supportedAssets.map((a) => {
+      const asset = getAsset(a.denom);
+      return {
+        value: a.denom,
+        label: asset?.symbol ?? "",
+      };
+    });
+  }, [getAsset]);
+
+  const availableDropdownOptions = dropdownOptions.filter(
+    (option) => !targets.find((t) => t.denom === option.value),
+  );
+
+  const totalValue = initialAssets.reduce((acc, asset) => {
+    const _value = calculateValue({
       amount: Number(asset.startingAmount),
       denom: asset.denom,
     });
+    const value = isNaN(_value) ? 0 : _value;
     return acc + value;
   }, 0);
 
   const isMimumumValueSet = targets?.some((t) => t.minimumAmount);
 
+  const removeTarget = useCallback(
+    (index: number) => {
+      const targets = getValues("targets");
+
+      setValue(
+        "targets",
+        produce(targets, (draft: CreateRebalancerForm["targets"]) => {
+          draft.splice(index, 1);
+        }),
+      );
+    },
+    [setValue, getValues],
+  );
+
+  const addEmptyAsset = useCallback(() => {
+    const targets = getValues("targets");
+
+    setValue(
+      "targets",
+      produce(targets, (draft: CreateRebalancerForm["targets"]) => {
+        draft.push({
+          bps: 0,
+          denom: undefined,
+        });
+      }),
+    );
+  }, [setValue, getValues]);
+
+  const clearStartingAmont = useCallback(
+    (denom: string) => {
+      const initialAssets = getValues("initialAssets");
+      const index = initialAssets.findIndex((a) => a.denom === denom);
+      if (index == -1) return; // should not happen
+      const updatedArray = produce(
+        initialAssets,
+        (draft: CreateRebalancerForm["initialAssets"]) => {
+          draft[index] = { ...draft[index], startingAmount: 0 };
+        },
+      );
+      setValue("initialAssets", updatedArray);
+    },
+    [setValue, getValues],
+  );
+
   return (
     <section className="flex w-full flex-col gap-8">
-      <div className="col-span-4 flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         <h1 className="text-lg font-bold">
           {CreateRebalancerCopy.step_SelectTargets.title}
         </h1>
@@ -42,135 +106,191 @@ export const SelectRebalancerTargets: React.FC<{
         </p>
       </div>
 
-      <div className="w-full">
-        <div className="pb-2 font-semibold">Asset distribution</div>
+      <div className="grid w-full max-w-[90%] grid-cols-[1fr_1fr_2fr_2fr_auto]">
+        <div className="flex flex-col gap-2">
+          <div className="col-span-2 h-fit pb-1 text-xs font-medium ">
+            Base token denomination
+          </div>
+          <Dropdown
+            containerClassName=" min-w-32"
+            selected={watch(`baseTokenDenom`)}
+            onSelected={(value) => setValue(`baseTokenDenom`, value)}
+            options={dropdownOptions ?? []}
+          />
+        </div>
+      </div>
+
+      <div className="flex w-full max-w-[90%] flex-row gap-20">
         {isValueLoading ? (
           <LoadingSkeleton className="min-h-36" />
         ) : (
-          <div className="grid grid-cols-[200px_200px_200px] gap-x-4 gap-y-2">
-            <div
-              role="columnheader"
-              className="font-base font-base   flex items-end  text-xs"
-            >
-              Initial distribution
-            </div>
+          <>
+            <div className="grid h-fit grid-cols-[1fr_1fr_2fr_2fr_auto] gap-x-8 gap-y-2">
+              <InputTableCell className="justify-start" variant="header">
+                Asset
+              </InputTableCell>
+              <InputTableCell className="justify-start" variant="header">
+                Initial Distribution
+              </InputTableCell>
+              <InputTableCell className="justify-start" variant="header">
+                Target Distribution
+              </InputTableCell>
+              <InputTableCell className="justify-start" variant="header">
+                Minimum Balance (Optional)
+              </InputTableCell>
+              <InputTableCell
+                className="h-full flex-col items-center justify-center"
+                variant="header"
+              >
+                <IconButton onClick={addEmptyAsset} Icon={BsPlus} />
+              </InputTableCell>
 
-            <div
-              role="columnheader"
-              className="font-base font-base  flex items-end  text-xs"
-            >
-              Target distribution
-            </div>
-            <div
-              role="columnheader"
-              className="font-base font-base  flex items-end  text-xs"
-            >
-              Minimum balance (optional)
-            </div>
+              {targets?.map((field, index: number) => {
+                const initialAsset = getValues("initialAssets")
+                  .filter((a) => !!a)
+                  .find((a) => field.denom === a.denom);
 
-            {assets.map((field, index: number) => {
-              const distribution =
-                totalValue === 0
-                  ? 0
-                  : calculateValue({
-                      amount: Number(field.startingAmount),
-                      denom: field.denom,
-                    }) / totalValue;
+                const assetMetadata = getAsset(field.denom ?? "");
 
-              const hasMimumValueProperty = targets[index]?.minimumAmount;
+                const hasMimumValueProperty = targets[index]?.minimumAmount;
 
-              const disableMinimumValue =
-                isMimumumValueSet && !hasMimumValueProperty;
+                const disableMinimumValue =
+                  isMimumumValueSet && !hasMimumValueProperty;
 
-              return (
-                <Fragment key={`target-select-row-${index}`}>
-                  <div
-                    key={`target-select-row-${index}`}
-                    role="gridcell"
-                    className="relative flex min-h-11 items-center font-mono font-light"
-                  >
-                    {displayNumber(distribution * 100, {
-                      precision: 2,
-                    })}
-                    % {field.symbol}
-                  </div>
+                const distribution =
+                  totalValue === 0
+                    ? 0
+                    : calculateValue({
+                        amount: Number(initialAsset?.startingAmount),
+                        denom: field.denom ?? "0",
+                      }) / totalValue;
 
-                  <div
-                    role="gridcell"
-                    className="relative flex items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue "
-                  >
-                    <input
-                      className="h-full w-full max-w-[50%] bg-transparent  p-1 font-mono focus:outline-none"
-                      type="number"
-                      placeholder="10.00"
-                      value={watch(`targets.${index}.bps`)}
-                      onChange={(e) => {
-                        setValue(`targets.${index}`, {
-                          ...targets[index],
-                          bps: parseFloat(e.target.value),
-                          denom: field.denom,
-                        });
-                      }}
-                    />
-                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono font-mono">
-                      % {field.symbol}
-                    </span>
-                  </div>
+                return (
+                  <Fragment key={`target-select-row-${index}`}>
+                    <InputTableCell className="relative flex items-center justify-start   ">
+                      <Dropdown
+                        containerClassName="min-w-32"
+                        availableOptions={availableDropdownOptions}
+                        options={dropdownOptions}
+                        onSelected={(value) => {
+                          const current = getValues(`targets.${index}`);
+                          if (current?.denom)
+                            clearStartingAmont(current?.denom);
+                          setValue(`targets.${index}`, {
+                            ...current,
+                            denom: value,
+                          });
+                        }}
+                        selected={watch(`targets.${index}.denom`)}
+                      />
+                    </InputTableCell>
+                    <InputTableCell variant="number">
+                      {displayNumber(distribution * 100, {
+                        precision: 2,
+                      })}
+                      %
+                    </InputTableCell>
+                    <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
+                      <input
+                        className="h-full w-full max-w-[50%] bg-transparent  p-1 font-mono focus:outline-none"
+                        type="number"
+                        placeholder="10.00"
+                        value={watch(`targets.${index}.bps`)}
+                        onChange={(e) => {
+                          setValue(`targets.${index}`, {
+                            ...targets[index],
+                            bps: parseFloat(e.target.value),
+                            denom: field.denom,
+                          });
+                        }}
+                      />
+                      <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
+                        %
+                      </span>
+                    </InputTableCell>
 
-                  <Tooltip delayDuration={0}>
-                    <TooltipTrigger asChild>
-                      <div
-                        role="gridcell"
-                        className={cn(
-                          disableMinimumValue
-                            ? "cursor-not-allowed border-valence-mediumgray bg-valence-mediumgray font-mono"
-                            : "border-valence-lightgray bg-valence-lightgray",
-                          "relative flex items-center border-[1.5px]  focus-within:border-valence-blue",
-                        )}
-                      >
-                        <input
-                          disabled={disableMinimumValue}
+                    <Tooltip delayDuration={0}>
+                      <TooltipTrigger asChild>
+                        <InputTableCell
                           className={cn(
-                            disableMinimumValue &&
-                              "cursor-not-allowed bg-valence-gray",
-                            "h-full w-full max-w-[50%]  bg-transparent p-1 focus:outline-none",
+                            disableMinimumValue
+                              ? "cursor-not-allowed border-valence-mediumgray bg-valence-mediumgray font-mono"
+                              : "border-valence-lightgray bg-valence-lightgray",
+                            "relative flex items-center border-[1.5px]  focus-within:border-valence-blue",
                           )}
-                          type="number"
-                          placeholder="10.000"
-                          value={watch(`targets.${index}.minimumAmount`)}
-                          onChange={(e) => {
-                            setValue(`targets.${index}`, {
-                              ...targets[index],
-                              minimumAmount: parseFloat(e.target.value),
-                            });
-                          }}
-                        />
-                        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                          {field.symbol}
-                        </span>
-                      </div>
-                    </TooltipTrigger>
-                    {disableMinimumValue && (
-                      <TooltipContent className="max-w-64 text-balance text-center">
-                        {
-                          "Minimum balance can be set for one asset per account."
-                        }
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                </Fragment>
-              );
-            })}
-            <PlaceholderRows length={assets.length} />
-            {targets.length > 0 &&
-              targets.every((t) => Number(t.bps) > 0) &&
-              targets.reduce((acc, target) => acc + target.bps, 0) !== 100 && (
-                <WarnText
-                  text="Total distribution must equal 100%"
-                  className="text-warn"
-                />
-              )}
-          </div>
+                        >
+                          <input
+                            disabled={disableMinimumValue}
+                            className={cn(
+                              "justify-start",
+                              disableMinimumValue &&
+                                "cursor-not-allowed bg-valence-gray",
+                              "h-full w-full max-w-[50%]  bg-transparent p-1 focus:outline-none",
+                            )}
+                            type="number"
+                            placeholder="10.000"
+                            value={watch(`targets.${index}.minimumAmount`)}
+                            onChange={(e) => {
+                              setValue(`targets.${index}`, {
+                                ...targets[index],
+                                minimumAmount: parseFloat(e.target.value),
+                              });
+                            }}
+                          />
+                          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
+                            {assetMetadata?.symbol}
+                          </span>
+                        </InputTableCell>
+                      </TooltipTrigger>
+                      {disableMinimumValue && (
+                        <TooltipContent className="max-w-64 text-balance text-center">
+                          {
+                            "Minimum balance can be set for one asset per account."
+                          }
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                    <InputTableCell
+                      className="h-full flex-col items-center justify-center"
+                      variant="header"
+                    >
+                      <IconButton
+                        onClick={() => {
+                          removeTarget(index);
+
+                          if (initialAsset?.startingAmount) {
+                            clearStartingAmont(initialAsset?.denom);
+                          }
+                        }}
+                        Icon={BsX}
+                      />
+                    </InputTableCell>
+                  </Fragment>
+                );
+              })}
+
+              <div className="col-span-full">
+                {initialAssets?.every(
+                  (a) => !a.startingAmount || a.startingAmount === 0,
+                ) && (
+                  <InputTableCell className="col-span-full flex items-center  text-sm font-medium tracking-wide text-valence-gray ">
+                    Input at least one starting amount in Step 1 to continue
+                  </InputTableCell>
+                )}
+              </div>
+
+              <div className="col-span-full">
+                {targets?.length > 0 &&
+                  targets.some((t) => Number(t.bps) > 0) &&
+                  targets.reduce((acc, target) => acc + target.bps, 0) !==
+                    100 && (
+                    <InputTableCell className="col-span-full flex items-center text-sm  font-medium tracking-wide text-warn  ">
+                      Total distribution must equal 100%
+                    </InputTableCell>
+                  )}
+              </div>
+            </div>
+          </>
         )}
       </div>
     </section>

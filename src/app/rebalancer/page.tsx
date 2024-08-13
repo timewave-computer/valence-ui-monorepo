@@ -15,9 +15,10 @@ import {
   useAccountConfigQuery,
   useAssetCache,
   useGraphOverlay,
-  useHistoricalValueGraph,
   useHistoricValues,
   usePrefetchData,
+  useLivePortfolio,
+  useHistoricalGraphV2,
 } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import {
@@ -40,7 +41,6 @@ import { X_HANDLE, X_URL } from "@/const/socials";
 import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { cn } from "@/utils";
 import { useAtom } from "jotai";
-import { useLivePortfolio } from "./hooks/use-live-portfolio";
 
 const RebalancerPage = () => {
   const { isLoading: isCacheLoading } = usePrefetchData();
@@ -50,9 +50,8 @@ const RebalancerPage = () => {
   const [account] = useAtom(accountAtom);
 
   const isHasAccountInput = !!account && account !== "";
-  // TODO: make this is own hook
   const accountConfigQuery = useAccountConfigQuery({
-    account,
+    account: account,
     enabled: isHasAccountInput,
   });
 
@@ -67,18 +66,13 @@ const RebalancerPage = () => {
 
   const { getAsset } = useAssetCache();
 
-  const livePortfolio = useLivePortfolio({
+  const livePortfolioQuery = useLivePortfolio({
     rebalancerAddress: account,
     targetDenoms: targets.map((target) => target.denom),
   });
 
-  const {
-    isLoading: isHistoricalValuesLoading,
-    isError: isHistoricalValuesError,
-    data: historicalData,
-    historicTargets,
-  } = useHistoricValues({
-    address: account,
+  const historicValuesQuery = useHistoricValues({
+    rebalancerAddress: account,
     targets,
   });
 
@@ -91,15 +85,21 @@ const RebalancerPage = () => {
     setScale(scaleUrlParam);
   }, [setScale, scaleUrlParam]);
 
-  const { xAxisTicks, yAxisTicks, graphData, keys, todayTimestamp } =
-    useHistoricalValueGraph({
-      isLoading: livePortfolio.isLoading,
-      data: historicalData,
-      config: accountConfigQuery.data,
-      livePortfolio: livePortfolio.data,
-      historicalTargets: historicTargets,
-      scale,
-    });
+  const {
+    data,
+    isLoading: isGraphLoading,
+    isError: isGraphError,
+  } = useHistoricalGraphV2({
+    scale,
+    rebalancerAddress: account,
+    livePortfolio: livePortfolioQuery,
+    config: accountConfigQuery,
+    historicalValues: historicValuesQuery,
+  });
+
+  const tooltipKeys = !data?.keys
+    ? []
+    : [...data.keys.values, ...data.keys.projections];
 
   const isNonUsdValueEnabled = useFeatureFlag(
     FeatureFlags.REBALANCER_NONUSDC_VALUE,
@@ -116,12 +116,13 @@ const RebalancerPage = () => {
     if (!isHasAccountInput) {
       return <StatusBar variant="primary" text="Please enter an account" />;
     } else if (
+      isGraphLoading ||
       accountConfigQuery.isLoading ||
-      isHistoricalValuesLoading ||
-      !graphData.length
+      livePortfolioQuery.isLoading ||
+      historicValuesQuery.isLoading
     ) {
       return <StatusBar variant="loading" />;
-    } else if (accountConfigQuery.isError) {
+    } else if (accountConfigQuery.isError || isGraphError) {
       return accountConfigQuery.error === LOAD_CONFIG_ERROR.INVALID_ACCOUNT ? (
         <StatusBar
           variant="error"
@@ -131,11 +132,11 @@ const RebalancerPage = () => {
       ) : (
         <StatusBar
           variant="error"
-          text="Could not fetch account"
+          text="Could not fetch historical data"
           icon={<FiAlertTriangle />}
         />
       );
-    } else if (isHistoricalValuesError) {
+    } else if (historicValuesQuery.isError) {
       return (
         <StatusBar
           variant="error"
@@ -242,8 +243,8 @@ const RebalancerPage = () => {
                 className={cn(
                   "flex cursor-pointer flex-col items-center justify-center text-base",
                   accountConfigQuery.isError ||
-                    isHistoricalValuesError ||
-                    isHistoricalValuesLoading
+                    historicValuesQuery.isError ||
+                    historicValuesQuery.isLoading
                     ? "cursor-not-allowed text-valence-gray"
                     : "",
                   scale === thisScale
@@ -253,8 +254,8 @@ const RebalancerPage = () => {
                 onClick={() => {
                   if (
                     !accountConfigQuery.isError &&
-                    !isHistoricalValuesError &&
-                    !isHistoricalValuesLoading
+                    !historicValuesQuery.isError &&
+                    !historicValuesQuery.isLoading
                   )
                     setScaleUrlParam(thisScale as Scale);
                 }}
@@ -265,10 +266,11 @@ const RebalancerPage = () => {
           </div>
 
           <button
-            disabled={!graphData.length}
+            disabled={!data?.graphData.length}
             className={cn(
               "text-nowrap text-sm",
-              !graphData.length && "cursor-not-allowed  text-valence-gray",
+              !data?.graphData.length &&
+                "cursor-not-allowed  text-valence-gray",
             )}
             onClick={() => setShowTargets(!showTargets)}
           >
@@ -292,15 +294,11 @@ const RebalancerPage = () => {
         <Graph
           ref={graphRef}
           scale={scale}
-          xAxisTicks={xAxisTicks}
-          yAxisTicks={yAxisTicks}
-          data={graphData}
+          xAxisTicks={data?.xAxisTicks ?? []}
+          yAxisTicks={data?.yAxisTicks ?? []}
+          data={data?.graphData ?? []}
         >
-          <Tooltip
-            content={
-              <ValueTooltip keys={[...keys.values, ...keys.projections]} />
-            }
-          />
+          <Tooltip content={<ValueTooltip keys={tooltipKeys} />} />
 
           {!isCacheLoading &&
             accountConfigQuery?.data?.targets.map((target) => {
@@ -316,7 +314,7 @@ const RebalancerPage = () => {
                 <Fragment key={`line-${target.denom}`}>
                   <ReferenceLine
                     key={`label-target-${target.denom}`}
-                    x={todayTimestamp}
+                    x={data?.todayTimestamp}
                     stroke="black"
                     isFront
                   >
@@ -388,8 +386,10 @@ const RebalancerPage = () => {
 
                 <TableV2
                   targets={targets}
-                  isLoading={livePortfolio.isLoading || !livePortfolio.data}
-                  livePortfolio={livePortfolio.data}
+                  isLoading={
+                    livePortfolioQuery.isLoading || !livePortfolioQuery.data
+                  }
+                  livePortfolio={livePortfolioQuery.data}
                 />
               </section>
             </div>
@@ -397,14 +397,14 @@ const RebalancerPage = () => {
         ) : (
           <div className="grow overflow-x-auto bg-valence-white">
             <Table
-              isLoading={livePortfolio.isLoading}
-              livePortfolio={livePortfolio.data}
+              isLoading={livePortfolioQuery.isLoading}
+              livePortfolio={livePortfolioQuery.data}
               targets={targets}
             />
-            {livePortfolio.isError &&
+            {livePortfolioQuery.isError &&
               !accountConfigQuery.isError &&
-              !isHistoricalValuesError &&
-              !isHistoricalValuesLoading && (
+              !historicValuesQuery.isError &&
+              !historicValuesQuery.isLoading && (
                 <StatusBar
                   className="border-0"
                   variant="error"

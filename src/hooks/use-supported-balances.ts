@@ -2,8 +2,8 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { fetchSupportedBalances } from "@/server/actions";
 import { useQuery } from "@tanstack/react-query";
 
-export const useSupportedBalances = (address?: string) =>
-  useQuery({
+export const useSupportedBalances = (address?: string) => {
+  return useQuery({
     staleTime: 30 * 1000, // 30 sec
     retry: (errorCount) => {
       if (errorCount > 1) {
@@ -16,3 +16,4 @@ export const useSupportedBalances = (address?: string) =>
     queryKey: [QUERY_KEYS.WALLET_BALANCES, address],
     queryFn: () => fetchSupportedBalances({ address: address! }),
   });
+};

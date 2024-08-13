@@ -4,7 +4,7 @@ import { Fragment, useMemo, useState } from "react";
 import { SymbolColors } from "@/app/rebalancer/const/graph";
 import { displayNumber } from "@/utils";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
-import { UseLivePortfolioReturnValue } from "../hooks/use-live-portfolio";
+import { UseLivePortfolioReturnValue } from "@/app/rebalancer/hooks";
 import { AccountTarget } from "@/server/actions";
 
 export type TableData = {

@@ -10,7 +10,7 @@ import { DEFAULT_ACCOUNT, accountAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { useQueryState } from "nuqs";
 import { chainConfig } from "@/const/config";
-import { useAssetCache } from "../hooks";
+import { useAssetCache } from "@/app/rebalancer/hooks";
 
 export const SidePanel: React.FC<{
   isLoading: boolean;

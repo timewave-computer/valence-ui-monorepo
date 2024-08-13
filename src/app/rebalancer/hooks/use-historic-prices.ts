@@ -1,6 +1,6 @@
 type HistoricPriceTimeSeriesData = { timestamp: number; [key: string]: number };
 
-import { usePrefetchData } from "./use-cached-data";
+import { usePrefetchData } from "@/app/rebalancer/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { CoinGeckoHistoricPrices } from "@/types/coingecko";
@@ -22,7 +22,6 @@ export const useHistoricPrices = () => {
   const queryClient = useQueryClient();
 
   const pricesForDenoms = useQuery({
-    refetchInterval: 0,
     queryKey: [QUERY_KEYS.COMBINED_HISTORIC_PRICES],
     enabled: isCacheFetched,
     staleTime: 1000 * 60 * 10,

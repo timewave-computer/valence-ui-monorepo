@@ -7,7 +7,6 @@ import { baseToMicroDenomString } from "./denom-math";
 import { RebalancerData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { fromHex, toUtf8 } from "@cosmjs/encoding";
-
 import { UTCDate } from "@date-fns/utc";
 import { jsonToBase64, jsonToUtf8 } from "@/utils";
 import {
@@ -78,7 +77,7 @@ const makeInstantiateMessageBody = ({
 }): MsgInstantiateContract2 => {
   const SERVICE_FEE = chainConfig.serviceFee;
   // convert to micro units
-  const convertedFunds = config.assets
+  const convertedFunds = config.initialAssets
     .map((asset) => {
       // if service fee part of starting funds, include
       if (asset.denom === SERVICE_FEE.denom) {

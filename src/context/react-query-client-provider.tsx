@@ -8,7 +8,10 @@ export function ReactQueryProvider({ children }: { children: ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            refetchInterval: 6 * 1000, //every 6 seconds
+            // disable refetching and retrying by default
+            staleTime: Infinity,
+            refetchInterval: 0,
+            retry: false,
           },
         },
       }),

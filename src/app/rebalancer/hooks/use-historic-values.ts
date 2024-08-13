@@ -13,12 +13,13 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { CoinGeckoHistoricPrices } from "@/types/coingecko";
+import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 
 export const useHistoricValues = ({
-  address,
+  rebalancerAddress,
   targets,
 }: {
-  address: string;
+  rebalancerAddress: string;
   targets: Array<AccountTarget>;
 }) => {
   const midnightUTC = new UTCDate(new UTCDate().setHours(0, 0, 0, 0));
@@ -30,14 +31,24 @@ export const useHistoricValues = ({
     isLoading: isCacheLoading,
     isError: isCacheError,
   } = usePrefetchData();
-  const balanceQuery = useHistoricBalances({ address, startDate, endDate });
-  const targetQuery = useHistoricTargets({ address, startDate, endDate });
+  const balanceQuery = useHistoricBalances({
+    rebalancerAddress,
+    startDate,
+    endDate,
+  });
+  const targetQuery = useHistoricTargets({
+    rebalancerAddress,
+    startDate,
+    endDate,
+  });
   const queryClient = useQueryClient();
 
   const historicalValues = useQuery({
-    queryKey: [QUERY_KEYS.COMBINED_HISTORICAL_VALUE_DATA, targets, address],
-    staleTime: Infinity,
-    refetchInterval: 0,
+    queryKey: [
+      QUERY_KEYS.COMBINED_HISTORICAL_VALUE_DATA,
+      targets,
+      rebalancerAddress,
+    ],
     enabled: isCacheFetched && balanceQuery.isFetched && targetQuery.isFetched,
     queryFn: () => {
       const tempMergedData: FetchHistoricalValuesReturnValue["values"] = [];
@@ -69,13 +80,32 @@ export const useHistoricValues = ({
   });
 
   return {
-    isLoading: historicalValues.isLoading || isCacheLoading,
+    isLoading:
+      historicalValues.isLoading ||
+      balanceQuery.isLoading ||
+      targetQuery.isLoading ||
+      isCacheLoading,
     isError:
       isCacheError ||
       balanceQuery.isError ||
       targetQuery.isError ||
       historicalValues.isError,
     data: historicalValues.data,
-    historicTargets: targetQuery.data,
-  };
+    historicTargets: targetQuery.data as IndexerHistoricalTargetsResponse,
+  } as UseHistoricalValuesReturnValue;
+};
+
+export type UseHistoricalValuesReturnValue = {
+  isLoading: boolean;
+  isError: boolean;
+  data: {
+    timestamp: number;
+    readableDate: string;
+    tokens: Array<{
+      denom: string;
+      price: number;
+      amount: number;
+    }>;
+  }[];
+  historicTargets: IndexerHistoricalTargetsResponse;
 };

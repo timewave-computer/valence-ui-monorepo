@@ -2,14 +2,14 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { fetchHistoricalBalances } from "@/server/actions";
 import { microToBase } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
-import { usePrefetchData, useAssetCache } from "./use-cached-data";
+import { usePrefetchData, useAssetCache } from "@/app/rebalancer/hooks";
 
 export const useHistoricBalances = ({
-  address,
+  rebalancerAddress,
   startDate,
   endDate,
 }: {
-  address: string;
+  rebalancerAddress: string;
   startDate: Date;
   endDate: Date;
 }) => {
@@ -17,15 +17,18 @@ export const useHistoricBalances = ({
   const { getAsset } = useAssetCache();
 
   return useQuery({
-    staleTime: 1000 * 60 * 10, // 10 mins,
-    refetchInterval: 0,
-    enabled: isFetched && address.length > 0,
+    enabled: isFetched && rebalancerAddress.length > 0,
     retry: (errorCount) => {
       return errorCount < 1;
     },
-    queryKey: [QUERY_KEYS.HISTORIC_BALANCES, address, startDate, endDate],
+    queryKey: [
+      QUERY_KEYS.HISTORIC_BALANCES,
+      rebalancerAddress,
+      startDate,
+      endDate,
+    ],
     queryFn: async () => {
-      const data = await fetchHistoricalBalances(address, {
+      const data = await fetchHistoricalBalances(rebalancerAddress, {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
       });

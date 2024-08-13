@@ -1,6 +1,6 @@
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
 import { useCallback } from "react";
-import { useAssetCache, usePriceCache } from "./use-cached-data";
+import { useAssetCache, usePriceCache } from "@/app/rebalancer/hooks";
 
 export const getBalance = (
   denom?: string,

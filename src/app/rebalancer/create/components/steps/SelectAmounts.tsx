@@ -1,149 +1,186 @@
-import { Button, Dropdown, DropdownOption } from "@/components";
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { BsDash } from "react-icons/bs";
+import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
-import { produce } from "immer";
 import { useSupportedBalances } from "@/hooks";
-import { displayNumber, displayValue } from "@/utils";
-import { PlaceholderRows } from "@/app/rebalancer/create/components";
-import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
+import { displayNumber, displayValue, microToBase } from "@/utils";
+import { produce } from "immer";
+import {
+  InsufficientFundsWarning,
+  useInsufficientFundsWarning,
+  InputTableCell,
+} from "@/app/rebalancer/create/components";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
+import {
+  useAssetCache,
+  useBaseTokenValue,
+  usePrefetchData,
+} from "@/app/rebalancer/hooks";
 
-export const SetStartingAmounts: React.FC<{
+export const SelectAmounts: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
 }> = ({ form, address }) => {
-  const { register, setValue, watch } = form;
+  const {
+    data: balances,
+    isLoading: isLoadingBalances,
+    isFetched: isBalancesFetched,
+  } = useSupportedBalances(address);
+  const { setValue, getValues, watch } = form;
 
-  const assetInputs = watch("assets");
-  const { data: balances } = useSupportedBalances(address);
-
-  const { getAsset } = useAssetCache();
-
-  const removeAsset = useCallback(
-    (denomToRemove: string) => {
-      return produce(assetInputs, (draft) => {
-        const index = draft.findIndex((asset) => asset.denom === denomToRemove);
-        if (index !== -1) draft.splice(index, 1);
-      });
+  const addTarget = useCallback(
+    (denom: string) => {
+      const targets = getValues("targets");
+      const existingI = targets.findIndex((t) => t.denom === denom);
+      if (existingI > -1) return;
+      const withAdditionalTarget = produce(
+        targets,
+        (draft: CreateRebalancerForm["targets"]) => {
+          draft.push({
+            denom,
+            bps: 0,
+          });
+        },
+      );
+      setValue("targets", withAdditionalTarget);
     },
-    [assetInputs],
+    [setValue, getValues],
   );
-
-  const baseDenomOptions: DropdownOption<string>[] = [];
-  balances?.forEach((balance) => {
-    const asset = getAsset(balance.denom);
-    if (asset) {
-      baseDenomOptions.push({
-        label: asset.symbol,
-        value: balance.denom,
-      });
-    }
-  });
-
+  const { isLoading: isCacheLoading } = usePrefetchData();
   const baseTokenDenom = watch("baseTokenDenom");
 
-  const {
-    isLoading: isValueLoading,
-    calculateValue,
-    baseTokenAsset,
-  } = useBaseTokenValue({
+  const { calculateValue, baseTokenAsset } = useBaseTokenValue({
     baseTokenDenom,
   });
 
+  const { getAsset } = useAssetCache();
+
+  const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
+    useInsufficientFundsWarning(address);
+
+  if (isLoadingBalances || isCacheLoading)
+    return (
+      <SelectAmountsLayout showSubtitle={false}>
+        <LoadingSkeleton className="min-h-56" />
+      </SelectAmountsLayout>
+    );
+
+  if (isBalancesFetched && (!isHoldingMinimumFee || !isHoldingAtLeastOneAsset))
+    return (
+      <SelectAmountsLayout showSubtitle={false}>
+        <InsufficientFundsWarning
+          isHoldingAtLeastOneAsset={true}
+          isHoldingMinimumFee={true}
+        />
+      </SelectAmountsLayout>
+    );
+
   return (
-    <section className="flex w-full flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-lg font-bold">
-          {CreateRebalancerCopy.step_StartingAmounts.title}
-        </h1>
-        <div className="flex flex-col gap-2">
-          <p className="w-3/4 text-sm ">
-            {CreateRebalancerCopy.step_StartingAmounts.subTitle}
-          </p>
-          <p className="w-3/4 text-sm ">
-            {CreateRebalancerCopy.step_StartingAmounts.info1}
-          </p>
-        </div>
-      </div>
-      <div>
-        <div className="w-full pb-2 font-semibold">Initial Amounts</div>
+    <SelectAmountsLayout>
+      <div className="flex max-w-[90%] flex-row gap-20">
         <div
           role="grid"
-          className="grid w-1/2 grid-cols-[200px_160px_auto] justify-items-start  gap-x-4 gap-y-2"
+          className="grid grid-cols-[1fr_1fr_2fr_2fr] justify-items-start gap-x-8 gap-y-2"
         >
-          {assetInputs
-            .sort((a, b) => a.symbol.localeCompare(b.symbol))
-            .map((field, index: number) => {
-              const value = calculateValue({
-                denom: field.denom,
-                amount: field.startingAmount,
-              });
-              const valueDisplayString = displayValue({
-                value: value,
-                symbol: baseTokenAsset?.symbol ?? "USDC",
+          <InputTableCell variant="header">Available funds</InputTableCell>
+          <InputTableCell variant="header">Value (USD)</InputTableCell>
+          <InputTableCell className="justify-start" variant="header">
+            Initial Amounts
+          </InputTableCell>
+          <InputTableCell variant="header">Initial Value</InputTableCell>
+          {balances
+            ?.filter((b) => {
+              const asset = getAsset(b.denom);
+              return !!asset;
+            })
+            ?.map((balance, index) => {
+              const asset = getAsset(balance.denom);
+
+              let baseBalance = 0;
+              if (asset) {
+                baseBalance = microToBase(balance.amount, asset.decimals);
+              }
+              const allValueDisplayString = displayValue({
+                value: baseBalance * balance.price,
+                symbol: "USDC", // always value in usd for first section, for now
               });
 
+              const selectedAmount = getValues(
+                `initialAssets.${index}.startingAmount`,
+              );
+
+              const selectedValue = calculateValue({
+                denom: balance.denom,
+                amount: selectedAmount,
+              });
+
+              const selectedValueDisplayString = displayValue({
+                value: selectedValue,
+                symbol: baseTokenAsset?.symbol ?? "USDC",
+              });
               return (
-                <Fragment key={`asset-select-row-${index}`}>
-                  <div
-                    role="gridcell"
-                    className="relative flex items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue "
-                  >
+                <Fragment key={`wallet-balance-row-${balance.denom}`}>
+                  <InputTableCell className="flex gap-2">
+                    <span>{displayNumber(baseBalance, { precision: 2 })}</span>
+                    <span>{asset?.symbol ?? ""}</span>
+                  </InputTableCell>
+
+                  <InputTableCell>({allValueDisplayString})</InputTableCell>
+
+                  <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
                     <input
                       placeholder="0.00"
                       className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
                       type="number"
                       autoFocus={index === 0}
-                      {...register(`assets.${index}.startingAmount`)}
+                      value={watch(`initialAssets.${index}.startingAmount`)}
+                      onChange={(e) => {
+                        const amount = parseFloat(e.target.value);
+                        setValue(`initialAssets.${index}`, {
+                          startingAmount: amount,
+                          symbol: asset?.symbol ?? "",
+                          denom: balance.denom,
+                        });
+
+                        if (amount > 0) {
+                          addTarget(balance.denom);
+                        }
+                      }}
                     />
                     <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                      {field.symbol}
+                      {asset?.symbol}
                     </span>
-                  </div>
+                  </InputTableCell>
 
-                  {isValueLoading ? (
-                    <div role="gridcell" className="w-full">
-                      <LoadingSkeleton className="max-h-11 min-h-11 w-full" />
-                    </div>
-                  ) : (
-                    <div
-                      role="gridcell"
-                      className="flex items-center  p-1 font-mono font-light"
-                    >
-                      ({valueDisplayString})
-                    </div>
-                  )}
-
-                  <div>
-                    <Button
-                      variant="secondary"
-                      className="flex w-fit items-center justify-center gap-2 text-nowrap py-1  "
-                      onClick={() => {
-                        setValue("assets", removeAsset(field.denom));
-                      }}
-                    >
-                      <BsDash className="h-6 w-6" />
-                      <span>Remove</span>
-                    </Button>
-                  </div>
+                  <InputTableCell variant="number">
+                    ({selectedValueDisplayString})
+                  </InputTableCell>
                 </Fragment>
               );
             })}
-          <PlaceholderRows length={assetInputs.length} />
         </div>
       </div>
+    </SelectAmountsLayout>
+  );
+};
 
-      <div className="max-w-[200px]">
-        <div className="w-full pb-1 font-semibold">Value assets in</div>
-        <Dropdown
-          selected={watch(`baseTokenDenom`)}
-          onSelected={(value) => setValue(`baseTokenDenom`, value)}
-          options={baseDenomOptions ?? []}
-        />
+const SelectAmountsLayout: React.FC<{
+  children: ReactNode;
+  showSubtitle?: boolean;
+}> = ({ children, showSubtitle = true }) => {
+  return (
+    <section className="flex w-full flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-lg font-bold">
+          {CreateRebalancerCopy.step_SelectAssets.title}
+        </h1>
+        {showSubtitle && (
+          <p className="w-3/4 text-sm">
+            {CreateRebalancerCopy.step_SelectAssets.subTitle}
+          </p>
+        )}
       </div>
+      {children}
     </section>
   );
 };

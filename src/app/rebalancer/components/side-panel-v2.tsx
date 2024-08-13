@@ -11,7 +11,7 @@ import { useQueryState } from "nuqs";
 import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
-import { useValenceAccount } from "../hooks";
+import { useValenceAccount } from "@/app/rebalancer/hooks";
 
 export const SidePanelV2: React.FC<{
   isLoading: boolean;
@@ -113,7 +113,7 @@ const DiscoverPanel: React.FC<{
               "border-l border-r border-t border-valence-gray transition-all",
 
               "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
-              account === valenceAddress &&
+              (account === valenceAddress || (!account && !valenceAddress)) &&
                 "bg-valence-black text-valence-white",
               account !== valenceAddress && "hover:bg-valence-lightgray",
             )}

@@ -54,6 +54,13 @@ export const CosmosProvider: React.FC<{ children: ReactNode }> = ({
       assetLists={chainConfig.assets}
       wallets={ENABLED_WALLETS}
       signerOptions={signerOptions}
+      endpointOptions={{
+        endpoints: {
+          neutron: {
+            rpc: ["https://rpc.novel.remedy.tm.p2p.org"],
+          },
+        },
+      }}
       // walletConnectOptions={...} // required if `wallets` contains mobile wallets
     >
       {children}

@@ -13,6 +13,7 @@ export const ERROR_MESSAGES = {
   INDEXER_HISTORICAL_PRICES_ERROR: "Failed to fetch historical prices",
   INDEXER_HISTORICAL_TARGETS_ERROR: "Failed to fetch historical targets",
   INDEXER_VALENCE_ACCOUNTS_ERROR: "Failed to fetch valence accounts",
+  HISTORICAL_GRAPH_ERROR: "Failed to fetch historical graph",
 
   // create rebalancer
   CREATE_REBALANCER_CODE_ID_ERROR:

@@ -9,6 +9,10 @@ const PROD_FEATURED_ACCOUNTS: FeaturedAccount[] = [
     label: "Timewave Devs",
     value: "neutron13pvwjc3ctlv53u9c543h6la8e2cupkwcahe5ujccdc4nwfgann7ss0xynz",
   },
+  {
+    label: "NEWT DAO",
+    value: "neutron1e5smuf8r5xzpfdgem2p8z52wfw97pl2lj4679es9u9d6hv5552eq6ghewc",
+  },
 ];
 
 const TESTNET_FEATURED_ACCOUNTS: FeaturedAccount[] = [];
