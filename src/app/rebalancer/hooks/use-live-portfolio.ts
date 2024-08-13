@@ -120,7 +120,7 @@ export const useLivePortfolio = ({
   });
 
   const formattedData = useMemo(() => {
-    if (!targetDenoms) return [];
+    if (!targetDenoms || !isCacheFetched) return [];
 
     return targetDenoms.map((denom) => {
       const accountBalance = accountBalancesQuery.data?.find(
@@ -152,6 +152,7 @@ export const useLivePortfolio = ({
       };
     });
   }, [
+    isCacheFetched,
     getAsset,
     rawAuctionBalancesQuery.data,
     accountBalancesQuery.data,
