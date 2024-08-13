@@ -8,8 +8,7 @@ import {
   ValueTooltip,
   SidePanel,
   SidePanelV2,
-  TableV2,
-  AccountDetails,
+  AccountBottomPanel,
 } from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
@@ -373,27 +372,7 @@ const RebalancerPage = () => {
             })}
         </Graph>
         {isCreateRebalancerEnabled ? (
-          <>
-            <div className="flex grow overflow-x-auto border-t border-valence-black bg-valence-white ">
-              <section className="w-1/3 border-r border-valence-black">
-                <AccountDetails
-                  selectedAddress={account}
-                  isLoading={accountConfigQuery.isLoading}
-                />
-              </section>
-              <section className="flex w-2/3 flex-col gap-4 pt-4">
-                <h1 className="pl-4 text-base font-bold">Live Balances</h1>
-
-                <TableV2
-                  targets={targets}
-                  isLoading={
-                    livePortfolioQuery.isLoading || !livePortfolioQuery.data
-                  }
-                  livePortfolio={livePortfolioQuery.data}
-                />
-              </section>
-            </div>
-          </>
+          <AccountBottomPanel selectedAddress={account} />
         ) : (
           <div className="grow overflow-x-auto bg-valence-white">
             <Table

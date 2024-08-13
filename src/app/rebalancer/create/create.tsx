@@ -157,16 +157,24 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
 
           <span className="font-mono text-sm font-medium">{`(${address})`}</span>
         </div>
-
-        <p className="pt-2 text-sm">
-          To learn more about how the Rebalancer works, you can read this{" "}
-          <LinkText
-            className=" border-valence-blue text-valence-blue hover:border-b"
-            href="/blog//Rebalancer-Protocol-Asset-Management"
-          >
-            blog post.
-          </LinkText>
-        </p>
+        <div className="flex flex-col gap-1">
+          <p className="max-w-60% text-wrap pt-2 text-sm">
+            <span className="font-semibold">
+              Warning! This product is in Beta.
+            </span>{" "}
+            By using this product you accept the risks associated with beta
+            software.
+          </p>
+          <p className=" max-w-60% text-wrap text-sm">
+            To learn more about how the Rebalancer works, you can read this{" "}
+            <LinkText
+              className=" border-valence-blue text-valence-blue hover:border-b"
+              href="/blog//Rebalancer-Protocol-Asset-Management"
+            >
+              blog post.
+            </LinkText>
+          </p>
+        </div>
       </section>
       <div className="flex grow flex-col flex-wrap items-start gap-12 p-4">
         <SelectAmounts form={form} address={address} />

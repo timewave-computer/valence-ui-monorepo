@@ -2,7 +2,7 @@
 import { SortableTableHeader, Sorter } from "@/components";
 import { Fragment, useMemo, useState } from "react";
 import { SymbolColors } from "@/app/rebalancer/const/graph";
-import { displayNumber } from "@/utils";
+import { cn, displayNumber } from "@/utils";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import { UseLivePortfolioReturnValue } from "@/app/rebalancer/hooks";
 import { AccountTarget } from "@/server/actions";
@@ -14,6 +14,7 @@ export type TableData = {
   price: number;
   distribution: number;
   target: number;
+  auction: number;
 };
 
 export const TableV2: React.FC<{
@@ -34,6 +35,7 @@ export const TableV2: React.FC<{
         symbol: lineItem.symbol,
         name: lineItem.name,
         amount: lineItem.balance.total,
+        auction: lineItem.balance.auction,
         price: lineItem.price,
         distribution: lineItem.distribution,
         target: target?.percentage ?? 0,
@@ -51,7 +53,7 @@ export const TableV2: React.FC<{
 
   return (
     <>
-      <div className="grid grid-cols-[0.5fr_1.5fr_1fr_1.5fr_1fr_1fr]">
+      <div className="grid grid-cols-[0.5fr_1fr_1fr_1.5fr_1.5fr_1fr_1.5fr]">
         <SortableTableHeader
           label="Ticker"
           sorterKey={SORTER_KEYS.TICKER}
@@ -59,34 +61,8 @@ export const TableV2: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName=" justify-center"
-        />
-        <SortableTableHeader
-          label="Holdings"
-          sorterKey={SORTER_KEYS.HOLDINGS}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          buttonClassName="justify-end "
-        />
-        <SortableTableHeader
-          label="Price"
-          sorterKey={SORTER_KEYS.PRICE}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          buttonClassName="justify-end "
-        />
-        <SortableTableHeader
-          label="USD Value"
-          sorterKey={SORTER_KEYS.VALUE}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          buttonClassName="justify-end "
+          buttonClassName="pt-0 justify-start px-0  border-y-0"
+          textClassName=" text-xs font-base "
         />
 
         <SortableTableHeader
@@ -96,7 +72,8 @@ export const TableV2: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="justify-end"
+          buttonClassName="pt-0 justify-end px-0 border-y-0"
+          textClassName=" text-xs font-base "
         />
         <SortableTableHeader
           label="Target"
@@ -105,7 +82,49 @@ export const TableV2: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="justify-end"
+          buttonClassName="pt-0 justify-end px-0 border-y-0"
+          textClassName=" text-xs font-base "
+        />
+        <SortableTableHeader
+          label="Holdings in Auction"
+          sorterKey={SORTER_KEYS.HOLDINGS}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="pt-0 justify-end px-0  border-y-0"
+          textClassName=" text-xs font-base "
+        />
+        <SortableTableHeader
+          label="Total Holdings"
+          sorterKey={SORTER_KEYS.HOLDINGS}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="pt-0 justify-end px-0  border-y-0"
+          textClassName=" text-xs font-base "
+        />
+        <SortableTableHeader
+          label="Price"
+          sorterKey={SORTER_KEYS.PRICE}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="pt-0 justify-end px-0  border-y-0"
+          textClassName=" text-xs font-base "
+        />
+
+        <SortableTableHeader
+          label="USD Value"
+          sorterKey={SORTER_KEYS.VALUE}
+          currentSorter={sorter}
+          ascending={sortAscending}
+          setSorter={setSorter}
+          setSortAscending={setSortAscending}
+          buttonClassName="pt-0 justify-end  border-y-0 px-0"
+          textClassName=" text-xs font-base "
         />
 
         {!isLoading && (
@@ -114,7 +133,12 @@ export const TableV2: React.FC<{
             {tableData.map((holding, index) => {
               return (
                 <Fragment key={index}>
-                  <div className="flex flex-row items-center justify-start gap-2 border-b border-valence-black p-4">
+                  <div
+                    className={cn(
+                      index === 0 && "border-b border-t",
+                      "flex flex-row items-center justify-start gap-2 border-b border-valence-mediumgray px-0 py-4",
+                    )}
+                  >
                     <div
                       className="h-4 w-4 shrink-0 rounded-full"
                       style={{
@@ -123,23 +147,57 @@ export const TableV2: React.FC<{
                     ></div>
                     <p className="text-sm font-bold">{holding.name}</p>
                   </div>
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                    {displayNumber(holding.amount, { precision: null })}
-                  </p>
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                    ${displayNumber(holding.price, { precision: 2 })}
-                  </p>
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-                    ${displayNumber(calcValue(holding), { precision: 2 })}
-                  </p>
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+
+                  <p
+                    className={cn(
+                      index === 0 && "border-b border-t",
+                      "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
+                    )}
+                  >
                     {displayNumber(holding.distribution * 100, {
                       precision: 2,
                     })}
                     %
                   </p>
-                  <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+                  <p
+                    className={cn(
+                      index === 0 && "border-b border-t",
+                      "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 pr-0 text-right font-mono text-sm",
+                    )}
+                  >
                     {displayNumber(holding.target * 100, { precision: 2 })}%
+                  </p>
+                  <p
+                    className={cn(
+                      index === 0 && "border-b border-t",
+                      "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
+                    )}
+                  >
+                    {displayNumber(holding.auction, { precision: 2 })}
+                  </p>
+                  <p
+                    className={cn(
+                      index === 0 && "border-b border-t",
+                      "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
+                    )}
+                  >
+                    {displayNumber(holding.amount, { precision: 2 })}
+                  </p>
+                  <p
+                    className={cn(
+                      index === 0 && "border-b border-t",
+                      "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
+                    )}
+                  >
+                    ${displayNumber(holding.price, { precision: 2 })}
+                  </p>
+                  <p
+                    className={cn(
+                      index === 0 && "border-b border-t",
+                      "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
+                    )}
+                  >
+                    ${displayNumber(calcValue(holding), { precision: 2 })}
                   </p>
                 </Fragment>
               );
@@ -208,43 +266,46 @@ export const SORTERS: Sorter<TableData>[] = [
 
 const EmptyRow = () => (
   <>
-    <div className="flex flex-row items-center justify-center gap-2 border-b border-valence-black p-4">
+    <div className="flex flex-row items-center justify-start gap-2 border-t border-valence-mediumgray p-4 pl-1">
       <p className="text-center text-sm font-bold">{"-"}</p>
     </div>
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+
+    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray p-4 text-right font-mono text-sm">
+      {"0%"}
+    </p>
+    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray p-4 pr-0 text-right font-mono text-sm">
+      {"0%"}
+    </p>
+    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray p-4 text-right font-mono text-sm">
+      {"0.00"}
+    </p>
+    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray p-4 text-right font-mono text-sm">
       {"0.00"}
     </p>
 
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray p-4 text-right font-mono text-sm">
       {"$0.00"}
     </p>
 
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
+    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray p-4 text-right font-mono text-sm">
       {"$0.00"}
-    </p>
-
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-      {"0%"}
-    </p>
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm">
-      {"0%"}
     </p>
   </>
 );
 
 const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
   <>
-    <p className=" flex flex-row items-center border-valence-black p-4 text-right font-mono text-sm"></p>
+    <p className=" flex flex-row items-center border-valence-mediumgray p-4 text-right font-mono text-sm"></p>
 
-    <p className="flex flex-row items-center border-valence-black p-4 text-right font-mono text-sm"></p>
+    <p className="flex flex-row items-center border-valence-mediumgray p-4 text-right font-mono text-sm"></p>
 
-    <p className="flex flex-row items-center border-valence-black p-4 text-right font-mono text-sm"></p>
+    <p className="flex flex-row items-center border-valence-mediumgray p-4 text-right font-mono text-sm"></p>
 
-    <p className="flex flex-row items-center border-valence-black p-4 text-right font-mono text-sm"></p>
-    <p className="flex flex-row items-center  border-valence-black p-4 text-sm font-bold">
+    <p className="flex flex-row items-center border-valence-mediumgray p-4 text-right font-mono text-sm"></p>
+    <p className="flex flex-row items-center  justify-end border-valence-mediumgray py-0 text-xs font-bold">
       Total Value
     </p>
-    <p className="flex flex-row items-center justify-end  border-valence-black p-4 text-right font-mono text-sm font-bold">
+    <p className="flex flex-row items-center justify-end  border-valence-mediumgray py-4 text-right font-mono text-xs font-bold">
       ${displayNumber(total, { precision: 2 })}
     </p>
   </>

@@ -15,6 +15,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   disabled,
   onClick,
   disabledTooltip,
+  className,
 }) => {
   return (
     <TooltipProvider>
@@ -26,7 +27,11 @@ export const IconButton: React.FC<IconButtonProps> = ({
                 if (disabled) return;
                 onClick();
               }}
-              className={cn("h-6 w-6", disabled && "text-valence-gray")}
+              className={cn(
+                "h-6 w-6",
+                disabled && "text-valence-gray",
+                className,
+              )}
             />
           </button>
         </TooltipTrigger>

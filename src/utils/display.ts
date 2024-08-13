@@ -1,6 +1,31 @@
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { format } from "date-fns";
+import { microToBase } from "./denom-math";
 
+export const displayPid = (pid: { p: number; i: number; d: number }) => {
+  const { p, i, d } = pid;
+
+  if (i === 0 && d === 0) {
+    switch (p) {
+      case 0.05:
+        return "Slow (5%)";
+      case 0.1:
+        return "Medium (10%)";
+      case 0.2:
+        return "Fast (20%)";
+      default:
+        return `Custom (${p * 100}%)`;
+    }
+  } else return `Custom (${p * 100}%, ${i * 100}%, ${d * 100}%)`;
+};
+
+export const displayMinBalance = (
+  minBalance: number,
+  symbol: string,
+  decimals: number,
+) => {
+  return `${microToBase(minBalance, decimals)} ${symbol}`;
+};
 export const displayUtcTime = (date: Date) => {
   try {
     const dateStringWithTimezone = new Intl.DateTimeFormat("en-US", {

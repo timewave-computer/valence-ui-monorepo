@@ -28,6 +28,7 @@ export const Table: React.FC<{
         price: lineItem.price,
         distribution: lineItem.distribution,
         target: target?.percentage ?? 0,
+        auction: lineItem.balance.auction,
       };
     });
     return formatted.sort((a, b) => sorter.sort(a, b, sortAscending));

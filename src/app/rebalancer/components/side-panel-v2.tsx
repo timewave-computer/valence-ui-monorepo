@@ -90,7 +90,7 @@ const DiscoverPanel: React.FC<{
   const [scale] = useAtom(scaleAtom);
 
   return (
-    <div className="flex flex-col  items-stretch gap-2 border-b border-valence-black p-4">
+    <div className="flex flex-col  items-stretch gap-2  p-4">
       <h1 className="font-bold">Discover</h1>
 
       <div>

@@ -10,7 +10,9 @@ import {
   IndexerRebalancerAccountConfig,
   IndexerRebalancerConfigResponseSchema,
   RawTarget,
+  TargetOverrideStrategy,
 } from "@/types/rebalancer";
+import { Target } from "framer-motion";
 import { z } from "zod";
 
 export async function fetchRebalancerAccountConfiguration({
@@ -66,11 +68,13 @@ export async function fetchRebalancerAccountConfiguration({
 
   const targetsFormatted = targets.map((t) => ({
     ...t,
+    min_balance: t.min_balance ? parseFloat(t.min_balance) : null,
     percentage: parseFloat(t.percentage),
   }));
 
   return {
     admin,
+    trustee: config.trustee ?? null,
     isPaused: config.is_paused,
     baseDenom: base_denom,
     pid: {
@@ -79,15 +83,19 @@ export async function fetchRebalancerAccountConfiguration({
       d: parseFloat(pid.d),
     },
     targets: targetsFormatted,
+    targetOverrideStrategy: config.target_override_strategy,
+    maxLimit: config.max_limit ? parseFloat(config.max_limit) : undefined,
   };
 }
 
-export type AccountTarget = Omit<RawTarget, "percentage"> & {
+export type AccountTarget = Omit<RawTarget, "percentage" | "min_balance"> & {
   percentage: number;
+  min_balance: number | null;
 };
 
 export type FetchAccountConfigReturnValue = {
   admin: string;
+  trustee: string | null;
   targets: AccountTarget[];
   pid: {
     p: number;
@@ -96,4 +104,6 @@ export type FetchAccountConfigReturnValue = {
   };
   baseDenom: string;
   isPaused: boolean;
+  targetOverrideStrategy: TargetOverrideStrategy;
+  maxLimit?: number;
 };

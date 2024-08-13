@@ -36,6 +36,10 @@ export type SortableTableHeaderProps<T> = {
    * An optional class name for the button.
    */
   buttonClassName?: string;
+  /**
+   * An optional class name for the button.
+   */
+  textClassName?: string;
 };
 
 export const SortableTableHeader = <T extends unknown>({
@@ -46,6 +50,7 @@ export const SortableTableHeader = <T extends unknown>({
   setSorter,
   setSortAscending,
   buttonClassName,
+  textClassName,
 }: SortableTableHeaderProps<T>) => {
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
 
@@ -64,7 +69,7 @@ export const SortableTableHeader = <T extends unknown>({
         }
       }}
     >
-      <p className="text-sm font-bold">{label}</p>
+      <p className={cn("text-sm font-bold", textClassName)}>{label}</p>
       {currentSorter.key === sorterKey && <SortIcon />}
     </button>
   );
