@@ -20,3 +20,4 @@ export * from "./RadioGroup";
 export * from "./Toaster";
 export * from "./LoadingSkeleton";
 export * from "./CachedData";
+export * from "./Dialog";

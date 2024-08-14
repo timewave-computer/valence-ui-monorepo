@@ -58,25 +58,34 @@ export const SelectAmounts: React.FC<{
   const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
     useInsufficientFundsWarning(address);
 
+  console.log(isBalancesFetched, isHoldingMinimumFee, isHoldingAtLeastOneAsset);
   if (isLoadingBalances || isCacheLoading)
     return (
-      <SelectAmountsLayout showSubtitle={false}>
+      <SelectAmountsLayout>
         <LoadingSkeleton className="min-h-56" />
       </SelectAmountsLayout>
     );
 
   if (isBalancesFetched && (!isHoldingMinimumFee || !isHoldingAtLeastOneAsset))
     return (
-      <SelectAmountsLayout showSubtitle={false}>
-        <InsufficientFundsWarning
-          isHoldingAtLeastOneAsset={true}
-          isHoldingMinimumFee={true}
-        />
-      </SelectAmountsLayout>
+      <SelectAmountsLayout
+        subContent={
+          <InsufficientFundsWarning
+            isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
+            isHoldingMinimumFee={isHoldingMinimumFee}
+          />
+        }
+      ></SelectAmountsLayout>
     );
 
   return (
-    <SelectAmountsLayout>
+    <SelectAmountsLayout
+      subContent={
+        <p className="w-3/4 text-sm">
+          {CreateRebalancerCopy.step_SelectAssets.subTitle}
+        </p>
+      }
+    >
       <div className="flex max-w-[90%] flex-row gap-20">
         <div
           role="grid"
@@ -165,20 +174,17 @@ export const SelectAmounts: React.FC<{
 };
 
 const SelectAmountsLayout: React.FC<{
-  children: ReactNode;
-  showSubtitle?: boolean;
-}> = ({ children, showSubtitle = true }) => {
+  children?: ReactNode;
+  subContent?: React.ReactNode;
+}> = ({ children, subContent }) => {
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-lg font-bold">
           {CreateRebalancerCopy.step_SelectAssets.title}
         </h1>
-        {showSubtitle && (
-          <p className="w-3/4 text-sm">
-            {CreateRebalancerCopy.step_SelectAssets.subTitle}
-          </p>
-        )}
+
+        {subContent}
       </div>
       {children}
     </section>

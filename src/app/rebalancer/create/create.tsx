@@ -141,7 +141,7 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
 
   return (
     <div className="flex flex-col pb-8">
-      <section className="flex w-full flex-col gap-2 p-4 pb-12">
+      <section className="flex w-full flex-col gap-2 p-4">
         <RouterButton
           options={{ back: true }}
           className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
@@ -176,7 +176,7 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
           </p>
         </div>
       </section>
-      <div className="flex grow flex-col flex-wrap items-start gap-12 p-4">
+      <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
         <SelectAmounts form={form} address={address} />
         <SelectRebalancerTargets address={address} form={form} />
         <ConfigureSettings address={address} form={form} />

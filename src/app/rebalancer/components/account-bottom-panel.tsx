@@ -90,7 +90,7 @@ export const AccountBottomPanel: React.FC<{
             ]
           : []),
       ];
-    }, [config, getAsset]);
+    }, [targets, config, getAsset]);
 
   return (
     <div className="flex grow flex-col  overflow-x-auto border-valence-black bg-valence-white ">
@@ -179,7 +179,7 @@ const TopBar: React.FC<{
   if (isWalletConnecting || isLoadingValenceAccount) {
     return (
       <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
-        <LoadingSkeleton className="min-h-16 w-full" />
+        <LoadingSkeleton className="min-h-[56px] w-full" />
       </section>
     );
   }
@@ -187,10 +187,12 @@ const TopBar: React.FC<{
   if (!isWalletConnected || !isOwnAccount) {
     return (
       <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
-        <div className="flex flex-col gap-1 ">
+        <div className="flex flex-col gap-1">
           <h1 className="text-base font-bold">Rebalancer Account</h1>
-          {selectedAddress.length > 0 && (
-            <span className="font-mono">{selectedAddress}</span>
+          {selectedAddress.length > 0 ? (
+            <span className="font-mono text-xs">{selectedAddress}</span>
+          ) : (
+            <span className="text-xs">No account selected</span>
           )}
         </div>
       </section>
@@ -208,7 +210,7 @@ const TopBar: React.FC<{
           </p>
         )}
         {selectedAddress.length > 0 && (
-          <span className="font-mono">{selectedAddress}</span>
+          <span className="font-mono text-xs">{selectedAddress}</span>
         )}
       </div>
       {hasValenceAccount ? (

@@ -300,6 +300,7 @@ const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
     <p className="flex flex-row items-center border-valence-mediumgray p-4 text-right font-mono text-sm"></p>
 
     <p className="flex flex-row items-center border-valence-mediumgray p-4 text-right font-mono text-sm"></p>
+    <p className="flex flex-row items-center border-valence-mediumgray p-4 text-right font-mono text-sm"></p>
 
     <p className="flex flex-row items-center border-valence-mediumgray p-4 text-right font-mono text-sm"></p>
     <p className="flex flex-row items-center  justify-end border-valence-mediumgray py-0 text-xs font-bold">

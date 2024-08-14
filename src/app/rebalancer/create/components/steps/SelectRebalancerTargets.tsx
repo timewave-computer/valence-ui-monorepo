@@ -96,7 +96,7 @@ export const SelectRebalancerTargets: React.FC<{
   );
 
   return (
-    <section className="flex w-full flex-col gap-8">
+    <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-lg font-bold">
           {CreateRebalancerCopy.step_SelectTargets.title}

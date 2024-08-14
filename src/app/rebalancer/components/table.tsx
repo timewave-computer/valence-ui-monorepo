@@ -187,7 +187,7 @@ const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
 
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
-
+    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
     <p className="flex flex-row items-center  justify-end border-b border-valence-black p-4 text-sm font-bold">
       Total Value
