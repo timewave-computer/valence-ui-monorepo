@@ -15,7 +15,7 @@ import {
 import { simulate } from "@/utils";
 import { UTCDate } from "@date-fns/utc";
 import { addDays, subDays } from "date-fns";
-import type { GraphData } from "@/app/rebalancer/components/graph";
+import type { GraphData } from "@/app/rebalancer/components/Graph/graph";
 import {
   useAssetCache,
   UseLivePortfolioReturnValue,
@@ -42,8 +42,8 @@ export const useHistoricalGraphV2 = ({
   livePortfolio: UseLivePortfolioReturnValue;
   historicalValues: UseHistoricalValuesReturnValue;
 }) => {
-  const { getAsset } = useAssetCache();
-  const { isLoading: isCacheLoading } = usePrefetchData();
+  const { getOriginAsset } = useAssetCache();
+  const { isFetched: isCacheFetched } = usePrefetchData();
   return useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: [
@@ -59,11 +59,11 @@ export const useHistoricalGraphV2 = ({
       !livePortfolio.isLoading &&
       !historicalValues.isLoading &&
       !!rebalancerAddress &&
-      !isCacheLoading,
+      isCacheFetched,
     queryFn: () => {
       const _keysToGraph = config.data?.targets?.reduce(
         (acc: string[], target) => {
-          const asset = getAsset(target.denom);
+          const asset = getOriginAsset(target.denom);
           const assetSymbol = asset?.symbol ?? "";
           acc.push(GraphKey.historicalValue(assetSymbol));
           acc.push(GraphKey.projectedValue(assetSymbol));
@@ -98,13 +98,13 @@ export const useHistoricalGraphV2 = ({
       const historialGraphData = generateHistoricalGraphData({
         data,
         config: config?.data,
-        getAsset,
+        getOriginAsset,
         historicalTargets: historicalValues.historicTargets,
       });
 
       const projectedGraphData = generateProjectedData({
         latest: todayDataPoint,
-        getAsset,
+        getOriginAsset,
         config: config?.data,
         scale,
       });
@@ -180,11 +180,11 @@ const convertData = ({
 
   // pad data with current 'Today' timestamp
   // if live portfolio, use that, else use last data point
-  if (livePortfolio) {
+  if (livePortfolio?.balances) {
     lastItem = {
       timestamp: localTimeNow,
       readableDate: new UTCDate(localTimeNow).toISOString(),
-      tokens: livePortfolio.map((lineItem) => {
+      tokens: livePortfolio.balances.map((lineItem) => {
         return {
           denom: lineItem.denom,
           amount: lineItem.balance.total,
@@ -202,12 +202,12 @@ const convertData = ({
 const generateHistoricalGraphData = ({
   data,
   config,
-  getAsset,
+  getOriginAsset,
   historicalTargets,
 }: {
   data: FetchHistoricalValuesReturnValue["values"];
   config?: FetchAccountConfigReturnValue;
-  getAsset: (s: string) => OriginAsset | undefined;
+  getOriginAsset: (s: string) => OriginAsset | undefined;
   historicalTargets?: FetchHistoricalValuesReturnValue["historicalTargets"];
 }): GraphData => {
   const historialGraphData = data.map((graphDataPoint) => {
@@ -220,7 +220,7 @@ const generateHistoricalGraphData = ({
         // should not happen but handle it just in case
         return;
       }
-      const asset = getAsset(target.denom);
+      const asset = getOriginAsset(target.denom);
       const assetSymbol = asset?.symbol ?? "";
 
       // write target value for each asset
@@ -244,7 +244,7 @@ const generateHistoricalGraphData = ({
           ?.percentage,
       );
       if (percentage) {
-        const assetSymbol = getAsset(target.denom)?.symbol ?? "";
+        const assetSymbol = getOriginAsset(target.denom)?.symbol ?? "";
         targetValues[GraphKey.historicalTargetValue(assetSymbol)] =
           totalValue * percentage;
       }
@@ -263,12 +263,12 @@ const generateProjectedData = ({
   latest,
   config,
   scale,
-  getAsset,
+  getOriginAsset,
 }: {
   latest: FetchHistoricalValuesReturnValue["values"][number];
   config?: FetchAccountConfigReturnValue;
   scale: Scale;
-  getAsset: (s: string) => OriginAsset | undefined;
+  getOriginAsset: (s: string) => OriginAsset | undefined;
 }) => {
   if (!config) return [];
 
@@ -319,7 +319,7 @@ const generateProjectedData = ({
           );
           if (!target) return acc; // should not happen but just in case
           const amount = Number(tokenAmounts[i].toFixed(6));
-          const assetSymbol = getAsset(target.denom)?.symbol ?? "";
+          const assetSymbol = getOriginAsset(target.denom)?.symbol ?? "";
 
           return {
             ...acc,

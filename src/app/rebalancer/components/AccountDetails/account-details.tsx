@@ -1,9 +1,13 @@
 "use client";
-import { TableV2, AccountActions } from "@/app/rebalancer/components";
+import {
+  TableV2,
+  WithdrawDialog,
+  PauseOrUnpauseButton,
+} from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
   useAssetCache,
-  useLivePortfolio,
+  usePrefetchData,
   useValenceAccount,
 } from "@/app/rebalancer/hooks";
 import React, { useMemo, useState } from "react";
@@ -11,32 +15,24 @@ import { useWallet } from "@/hooks";
 import { IconButton, Label } from "@/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import { displayMinBalance, displayPid } from "@/utils";
-import { Button } from "@/components";
+import { Button, LoadingSkeleton } from "@/components";
 import Link from "next/link";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
 
-export const AccountBottomPanel: React.FC<{
+export const AccountDetailsPanel: React.FC<{
   selectedAddress: string;
 }> = ({ selectedAddress }) => {
-  const isHasAccountInput = !!selectedAddress && selectedAddress !== "";
   const { data: config } = useAccountConfigQuery({
     account: selectedAddress,
-    enabled: isHasAccountInput,
   });
 
   const targets = config?.targets ?? [];
 
-  const livePortfolioQuery = useLivePortfolio({
-    rebalancerAddress: selectedAddress,
-    targetDenoms: targets.map((target) => target.denom),
-  });
-
-  const { getAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetCache();
   const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   const configData: Array<{ title: string; content: string | number }> =
     useMemo(() => {
-      const baseDenomAsset = getAsset(config?.baseDenom ?? "");
+      const baseDenomAsset = getOriginAsset(config?.baseDenom ?? "");
       const targetWithMinBalance = targets.find((t) => !!t.min_balance);
 
       if (!config) return [];
@@ -59,7 +55,7 @@ export const AccountBottomPanel: React.FC<{
               {
                 title: "Minimum balance",
                 content: (() => {
-                  const asset = getAsset(targetWithMinBalance.denom);
+                  const asset = getOriginAsset(targetWithMinBalance.denom);
                   return displayMinBalance(
                     targetWithMinBalance.min_balance ?? 0,
                     asset?.symbol ?? "",
@@ -90,11 +86,11 @@ export const AccountBottomPanel: React.FC<{
             ]
           : []),
       ];
-    }, [targets, config, getAsset]);
+    }, [targets, config, getOriginAsset]);
 
   return (
     <div className="flex grow flex-col  overflow-x-auto border-valence-black bg-valence-white ">
-      <TopBar selectedAddress={selectedAddress} />
+      <AccountDetailsHeader selectedAddress={selectedAddress} />
       <section className="flex flex-col gap-2 border-b border-valence-black  p-4">
         <div
           className="flex flex-row justify-between"
@@ -109,7 +105,7 @@ export const AccountBottomPanel: React.FC<{
           </div>
           <IconButton
             className="h-4 w-4"
-            Icon={isConfigOpen ? FaChevronLeft : FaChevronDown}
+            Icon={isConfigOpen ? FaChevronDown : FaChevronLeft}
             onClick={() => {
               setIsConfigOpen(!isConfigOpen);
             }}
@@ -145,23 +141,19 @@ export const AccountBottomPanel: React.FC<{
       </section>
       <section className="flex w-full grow  flex-col gap-4 px-4">
         <h2 className="pt-4 text-sm font-bold">Live balances</h2>
-        <TableV2
-          targets={targets}
-          isLoading={livePortfolioQuery.isLoading || !livePortfolioQuery.data}
-          livePortfolio={livePortfolioQuery.data}
-        />
+        <TableV2 />
       </section>
     </div>
   );
 };
 
-const TopBar: React.FC<{
+const AccountDetailsHeader: React.FC<{
   selectedAddress: string;
 }> = ({ selectedAddress }) => {
-  const isHasAccountInput = !!selectedAddress && selectedAddress !== "";
+  const { isFetched: isCacheFetched } = usePrefetchData();
+
   const { data: config } = useAccountConfigQuery({
     account: selectedAddress,
-    enabled: isHasAccountInput,
   });
 
   const {
@@ -179,7 +171,7 @@ const TopBar: React.FC<{
   if (isWalletConnecting || isLoadingValenceAccount) {
     return (
       <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
-        <LoadingSkeleton className="min-h-[56px] w-full" />
+        <LoadingSkeleton className="min-h-[43px] w-full" />
       </section>
     );
   }
@@ -213,16 +205,24 @@ const TopBar: React.FC<{
           <span className="font-mono text-xs">{selectedAddress}</span>
         )}
       </div>
-      {hasValenceAccount ? (
-        <AccountActions
-          valenceAccountAddress={valenceAccountAddress}
-          config={config}
-        />
-      ) : (
-        <Link href={`/rebalancer/create`}>
-          <Button variant="primary">Start rebalancing funds</Button>
-        </Link>
-      )}
+      {isCacheFetched &&
+        (hasValenceAccount ? (
+          <div className="flex flex-row flex-nowrap gap-2 ">
+            <PauseOrUnpauseButton />
+            <WithdrawDialog />
+            <Button
+              className="h-fit"
+              variant="secondary"
+              onClick={() => alert("no working yet")}
+            >
+              Edit
+            </Button>
+          </div>
+        ) : (
+          <Link href={`/rebalancer/create`}>
+            <Button variant="primary">Start rebalancing funds</Button>
+          </Link>
+        ))}
     </section>
   );
 };

@@ -39,16 +39,16 @@ export const useBaseTokenValue = ({
 }: {
   baseTokenDenom?: string;
 }) => {
-  const { getAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetCache();
   const { getPrice } = usePriceCache();
-  const baseAsset = getAsset(baseTokenDenom ?? "");
+  const baseAsset = getOriginAsset(baseTokenDenom ?? "");
   const basePrice = getPrice(baseTokenDenom ?? "");
 
   const isBaseTokenUsdc = baseAsset?.symbol === "USDC";
 
   const calculateValue = useCallback(
     ({ denom, amount }: { denom: string; amount?: number }) => {
-      const asset = getAsset(denom);
+      const asset = getOriginAsset(denom);
       const price = getPrice(denom);
 
       return calculateValueInBaseDenom({
@@ -58,7 +58,7 @@ export const useBaseTokenValue = ({
         baseTokenPrice: basePrice,
       });
     },
-    [getPrice, getAsset, basePrice],
+    [getPrice, getOriginAsset, basePrice],
   );
 
   return {

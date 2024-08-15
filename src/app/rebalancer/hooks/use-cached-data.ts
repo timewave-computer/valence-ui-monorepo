@@ -9,6 +9,7 @@ import {
 import { QUERY_KEYS } from "@/const/query-keys";
 import { chainConfig } from "@/const/config";
 import { OriginAsset } from "@/types/ibc";
+import { withTimeout } from "./use-historic-targets";
 
 const getOriginAssetQueryArgs = (denom: string) => ({
   queryKey: [QUERY_KEYS.ORIGIN_ASSET, denom],
@@ -46,7 +47,7 @@ export const useAssetCache = () => {
     [queryClient],
   );
 
-  const getAsset = useCallback(
+  const getOriginAsset = useCallback(
     (denom: string) => {
       return queryClient.getQueryData<OriginAsset>([
         QUERY_KEYS.ORIGIN_ASSET,
@@ -57,7 +58,7 @@ export const useAssetCache = () => {
   );
 
   return {
-    getAsset,
+    getOriginAsset,
     fetchAsset,
   };
 };
@@ -95,11 +96,14 @@ export const usePrefetchData = () => {
       staleTime: 60 * 1000 * 10, // 10 mins
       queryKey: [QUERY_KEYS.HISTORIC_PRICES, asset.denom],
       refetchInterval: 0,
+      retry: (errorCount: number) => errorCount < 1,
       queryFn: () =>
-        fetchHistoricalPricesV2({
-          denom: asset.denom,
-          coingeckoId: asset.coingeckoId,
-        }),
+        withTimeout(async () => {
+          return fetchHistoricalPricesV2({
+            denom: asset.denom,
+            coingeckoId: asset.coingeckoId,
+          });
+        }, QUERY_KEYS.HISTORIC_PRICES),
     })),
   });
 

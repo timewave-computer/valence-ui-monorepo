@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/utils";
 import { cva, VariantProps } from "class-variance-authority";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
+import { LoadingSkeleton } from "@/components";
 
 const inputTableCellVariants = cva("flex w-full items-center justify-start  ", {
   variants: {

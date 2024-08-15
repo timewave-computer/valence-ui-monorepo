@@ -1,3 +1,4 @@
+"use client";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
   FetchAccountConfigReturnValue,
@@ -13,13 +14,9 @@ export type UseAccountConfigQueryReturnValue = Omit<
   "error"
 > & { error: null | LOAD_CONFIG_ERROR };
 
-export const useAccountConfigQuery = ({
-  account,
-  enabled = true,
-}: {
-  account: string;
-  enabled?: boolean;
-}) => {
+export const useAccountConfigQuery = ({ account }: { account: string }) => {
+  const isHasAccountInput = !!account && account !== "";
+
   // maintain custom error state
   const [error, setError] = useState<null | LOAD_CONFIG_ERROR>(null);
   const query = useQuery({
@@ -43,7 +40,7 @@ export const useAccountConfigQuery = ({
         throw e;
       }
     },
-    enabled,
+    enabled: isHasAccountInput,
   });
 
   return { ...query, error };

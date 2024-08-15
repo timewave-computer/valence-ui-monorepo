@@ -43,11 +43,11 @@ export const SidePanel: React.FC<{
     },
   });
 
-  const { getAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetCache();
 
   const tokenOptions =
     config?.targets.map((target) => {
-      const asset = getAsset(target.denom);
+      const asset = getOriginAsset(target.denom);
 
       return {
         label: asset?.symbol ?? "",

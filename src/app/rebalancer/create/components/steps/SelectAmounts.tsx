@@ -10,7 +10,7 @@ import {
   useInsufficientFundsWarning,
   InputTableCell,
 } from "@/app/rebalancer/create/components";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
+import { LoadingSkeleton } from "@/components";
 import {
   useAssetCache,
   useBaseTokenValue,
@@ -53,12 +53,11 @@ export const SelectAmounts: React.FC<{
     baseTokenDenom,
   });
 
-  const { getAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetCache();
 
   const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
     useInsufficientFundsWarning(address);
 
-  console.log(isBalancesFetched, isHoldingMinimumFee, isHoldingAtLeastOneAsset);
   if (isLoadingBalances || isCacheLoading)
     return (
       <SelectAmountsLayout>
@@ -99,11 +98,11 @@ export const SelectAmounts: React.FC<{
           <InputTableCell variant="header">Initial Value</InputTableCell>
           {balances
             ?.filter((b) => {
-              const asset = getAsset(b.denom);
+              const asset = getOriginAsset(b.denom);
               return !!asset;
             })
             ?.map((balance, index) => {
-              const asset = getAsset(balance.denom);
+              const asset = getOriginAsset(balance.denom);
 
               let baseBalance = 0;
               if (asset) {

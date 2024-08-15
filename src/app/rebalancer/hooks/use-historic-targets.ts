@@ -24,24 +24,33 @@ export const useHistoricTargets = ({
       startDate,
       endDate,
     ],
-    queryFn: async () => {
-      return new Promise(async (resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error("Request timed out"));
-        }, 5000);
-
-        try {
-          const history = (await fetchHistoricalTargets({
-            address: rebalancerAddress,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-          })) as IndexerHistoricalTargetsResponse;
-          resolve(history);
-        } catch (error) {
-          clearTimeout(timeout);
-          reject(error);
-        }
-      });
-    },
+    queryFn: () =>
+      withTimeout(async () => {
+        return fetchHistoricalTargets({
+          address: rebalancerAddress,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+        });
+      }, QUERY_KEYS.HISTORIC_TARGETS),
   });
 };
+
+export function withTimeout<T>(
+  fn: () => Promise<T>,
+  key: string,
+  timeoutLength: number = 5000,
+) {
+  return new Promise(async (resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(new Error(`Request timed out. Key: ${key}`));
+    }, timeoutLength);
+
+    try {
+      const result = (await fn()) as T;
+      resolve(result);
+    } catch (error) {
+      clearTimeout(timeout);
+      reject(error);
+    }
+  });
+}

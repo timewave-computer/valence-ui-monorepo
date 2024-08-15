@@ -5,7 +5,7 @@ import React from "react";
 import { LoadingIndicator } from "@/components";
 
 const buttonVariants = cva(
-  "text-center py-1.5 px-2 min-h-8 min-w-16  transition-colors flex flex-row items-center justify-center border-valence-black border",
+  "text-center py-1.5 px-2  min-h-9 min-w-20  transition-colors flex flex-row items-center justify-center border-valence-black border",
   {
     variants: {
       variant: {

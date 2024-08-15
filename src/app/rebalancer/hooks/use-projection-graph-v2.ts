@@ -45,7 +45,7 @@ export const useProjectionGraphV2 = (
   const baseTokenDenom = watch("baseTokenDenom");
 
   const { getPrice } = usePriceCache();
-  const { getAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetCache();
 
   const { calculateValue } = useBaseTokenValue({
     baseTokenDenom,
@@ -68,7 +68,7 @@ export const useProjectionGraphV2 = (
         generateProjectionGraphData({
           initialAssets: validInitialAssets,
           targets: validTargets,
-          getAsset,
+          getOriginAsset,
           getPrice,
           pid,
           calculateValue,
@@ -126,14 +126,14 @@ const generateProjectionGraphData = async ({
   initialAssets,
   calculateValue,
   targets,
-  getAsset,
+  getOriginAsset,
   getPrice,
   pid,
 }: {
   initialAssets: CreateRebalancerForm["initialAssets"];
   pid: CreateRebalancerForm["pid"];
   targets: CreateRebalancerForm["targets"];
-  getAsset: (denom: string) => OriginAsset | undefined;
+  getOriginAsset: (denom: string) => OriginAsset | undefined;
   getPrice: (denom: string) => number | undefined;
   calculateValue: ({
     amount,
@@ -154,7 +154,7 @@ const generateProjectionGraphData = async ({
   const projectionInputs: ProjectionInput[] = [];
   targets.forEach(({ denom, bps }) => {
     if (!denom || !bps) return;
-    const cachedAsset = getAsset(denom);
+    const cachedAsset = getOriginAsset(denom);
     const price = getPrice(denom);
     const assetInput = initialAssets.find((asset) => asset?.denom === denom);
 

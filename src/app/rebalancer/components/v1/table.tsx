@@ -1,9 +1,8 @@
 "use client";
-import { SortableTableHeader, Sorter } from "@/components";
+import { SortableTableHeader, LoadingSkeleton } from "@/components";
 import { Fragment, useMemo, useState } from "react";
 import { SymbolColors } from "@/app/rebalancer/const/graph";
 import { displayNumber } from "@/utils";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
 import { UseLivePortfolioReturnValue } from "@/app/rebalancer/hooks";
 import { SORTERS, TableData } from "@/app/rebalancer/components";
 import { AccountTarget } from "@/server/actions";
@@ -16,23 +15,28 @@ export const Table: React.FC<{
   const [sorterKey, setSorter] = useState<string>(SORTER_KEYS.VALUE);
   const [sortAscending, setSortAscending] = useState(true);
   const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
+
   const tableData: TableData[] = useMemo(() => {
     if (!livePortfolio) return [];
-    const formatted = livePortfolio.map((lineItem) => {
+    const formatted = livePortfolio?.balances.reduce((acc, lineItem) => {
       const target = targets.find((t) => t.denom === lineItem.denom);
 
-      return {
-        symbol: lineItem.symbol,
-        name: lineItem.name,
-        amount: lineItem.balance.total,
-        price: lineItem.price,
-        distribution: lineItem.distribution,
-        target: target?.percentage ?? 0,
-        auction: lineItem.balance.auction,
-      };
-    });
+      if (target) {
+        acc.push({
+          symbol: lineItem.symbol,
+          name: lineItem.name,
+          amount: lineItem.balance.total,
+          auction: lineItem.balance.auction,
+          price: lineItem.price,
+          distribution: lineItem.distribution,
+          target: target.percentage,
+        });
+      }
+      return acc;
+    }, [] as TableData[]);
+
     return formatted.sort((a, b) => sorter.sort(a, b, sortAscending));
-  }, [livePortfolio, sorter, sortAscending, targets]);
+  }, [sortAscending, sorter, livePortfolio, targets]);
 
   const totalValue = useMemo(() => {
     const total = tableData?.reduce((acc, holding) => {
@@ -186,7 +190,6 @@ const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
 
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
 
-    <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
     <p className="flex flex-row items-center justify-end border-b border-valence-black p-4 text-right font-mono text-sm"></p>
     <p className="flex flex-row items-center  justify-end border-b border-valence-black p-4 text-sm font-bold">

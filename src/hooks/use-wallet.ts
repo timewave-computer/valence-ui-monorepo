@@ -1,6 +1,7 @@
 "use client";
 
 import { chainConfig } from "@/const/config";
+import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { useChain } from "@cosmos-kit/react-lite";
 
 export const useChainContext = () => {
@@ -14,6 +15,22 @@ export const useWallet = () => {
 
   const wallet = chainContext.chainWallet;
 
+  const getSigningStargateClient = () => {
+    try {
+      return chainContext.getSigningStargateClient();
+    } catch (err) {
+      throw ErrorHandler.makeError(ERROR_MESSAGES.STARGATE_SIGNER_FAIL, err);
+    }
+  };
+
+  const getSigningCosmWasmClient = () => {
+    try {
+      return chainContext.getSigningCosmWasmClient();
+    } catch (err) {
+      throw ErrorHandler.makeError(ERROR_MESSAGES.COSMWASM_SIGNER_FAIL, err);
+    }
+  };
+
   return {
     address: wallet?.address,
     // for some reason these are the ones that work for connecting and disconnecting
@@ -24,8 +41,8 @@ export const useWallet = () => {
     isWalletConnected: chainContext.isWalletConnected,
     isWalletConnecting: chainContext.isWalletConnecting,
     getStargateClient: chainContext.getStargateClient,
-    getSigningStargateClient: chainContext.getSigningStargateClient,
+    getSigningStargateClient,
     getCosmWasmClient: chainContext.getCosmWasmClient,
-    getSigningCosmwasmClient: chainContext.getSigningCosmWasmClient,
+    getSigningCosmwasmClient: getSigningCosmWasmClient,
   };
 };

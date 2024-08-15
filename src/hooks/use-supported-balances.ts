@@ -1,5 +1,9 @@
+import { withTimeout } from "@/app/rebalancer/hooks";
 import { QUERY_KEYS } from "@/const/query-keys";
-import { fetchSupportedBalances } from "@/server/actions";
+import {
+  fetchSupportedBalances,
+  FetchSupportedBalancesReturnValue,
+} from "@/server/actions";
 import { useQuery } from "@tanstack/react-query";
 
 export const useSupportedBalances = (address?: string) => {
@@ -14,6 +18,11 @@ export const useSupportedBalances = (address?: string) => {
     refetchInterval: 30 * 1000, // 30 sec
     enabled: !!address,
     queryKey: [QUERY_KEYS.WALLET_BALANCES, address],
-    queryFn: () => fetchSupportedBalances({ address: address! }),
+    queryFn: () =>
+      withTimeout(
+        () => fetchSupportedBalances({ address: address! }),
+        QUERY_KEYS.WALLET_BALANCES,
+        5000,
+      ) as Promise<FetchSupportedBalancesReturnValue>,
   });
 };

@@ -8,7 +8,7 @@ import {
   ValueTooltip,
   SidePanel,
   SidePanelV2,
-  AccountBottomPanel,
+  AccountDetailsPanel,
 } from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
@@ -51,7 +51,6 @@ const RebalancerPage = () => {
   const isHasAccountInput = !!account && account !== "";
   const accountConfigQuery = useAccountConfigQuery({
     account: account,
-    enabled: isHasAccountInput,
   });
 
   const isValidAccount =
@@ -63,11 +62,10 @@ const RebalancerPage = () => {
     [accountConfigQuery.data?.targets],
   );
 
-  const { getAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetCache();
 
   const livePortfolioQuery = useLivePortfolio({
     rebalancerAddress: account,
-    targetDenoms: targets.map((target) => target.denom),
   });
 
   const historicValuesQuery = useHistoricValues({
@@ -301,7 +299,7 @@ const RebalancerPage = () => {
 
           {!isCacheLoading &&
             accountConfigQuery?.data?.targets.map((target) => {
-              const asset = getAsset(target.denom);
+              const asset = getOriginAsset(target.denom);
               const assetSymbol = asset?.symbol ?? "";
               const historicalValue = GraphKey.historicalValue(assetSymbol);
               const projectedValue = GraphKey.projectedValue(assetSymbol);
@@ -372,7 +370,7 @@ const RebalancerPage = () => {
             })}
         </Graph>
         {isCreateRebalancerEnabled ? (
-          <AccountBottomPanel selectedAddress={account} />
+          <AccountDetailsPanel selectedAddress={account} />
         ) : (
           <div className="grow overflow-x-auto bg-valence-white">
             <Table

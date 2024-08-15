@@ -4,10 +4,16 @@ import { UseFormReturn } from "react-hook-form";
 import { cn, displayNumber } from "@/utils";
 import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/Tooltip";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  Dropdown,
+  DropdownOption,
+  IconButton,
+  LoadingSkeleton,
+} from "@/components";
 import { InputTableCell } from "@/app/rebalancer/create/components";
-import { Dropdown, DropdownOption, IconButton } from "@/components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
 import { chainConfig } from "@/const/config";
@@ -24,17 +30,17 @@ export const SelectRebalancerTargets: React.FC<{
   const { isLoading: isValueLoading, calculateValue } = useBaseTokenValue({
     baseTokenDenom,
   });
-  const { getAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetCache();
 
   const dropdownOptions: DropdownOption<string>[] = useMemo(() => {
     return chainConfig.supportedAssets.map((a) => {
-      const asset = getAsset(a.denom);
+      const asset = getOriginAsset(a.denom);
       return {
         value: a.denom,
         label: asset?.symbol ?? "",
       };
     });
-  }, [getAsset]);
+  }, [getOriginAsset]);
 
   const availableDropdownOptions = dropdownOptions.filter(
     (option) => !targets.find((t) => t.denom === option.value),
@@ -150,7 +156,7 @@ export const SelectRebalancerTargets: React.FC<{
                   .filter((a) => !!a)
                   .find((a) => field.denom === a.denom);
 
-                const assetMetadata = getAsset(field.denom ?? "");
+                const assetMetadata = getOriginAsset(field.denom ?? "");
 
                 const hasMimumValueProperty = targets[index]?.minimumAmount;
 

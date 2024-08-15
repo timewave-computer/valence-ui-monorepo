@@ -6,7 +6,7 @@ import {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-import { ColoredDot } from "@/app/rebalancer/components";
+import { ColoredDot } from "@/components";
 import { ReactNode } from "react";
 
 export const ValueTooltip = ({
