@@ -5,7 +5,7 @@ author: test
 description: Patterns and best practices are starting to emerge when it comes to automating POL markets. Continue reading to learn about the evolution of POL deployments and what to expect in the future. 
 ---
 
-![Header](/img/blog/valence_emergence.png)
+![Header](/img/blog/emergence.png)
 
 So you are convinced that your protocol would benefit from deploying protocol-owned liquidity (POL) — perhaps after reading the last blog [post](https://www.valence.zone/blog/4-Ways-that-POL-Adds-Value-Across-the-Interchain) about its benefits — but you are unsure about how best to go about implementing a POL strategy. You have come to the right place because Valence has facilitated more POL deployments than any other protocol. It’s still early days, but patterns and best practices are starting to emerge. Continue reading to learn about the evolution of POL deployments and what to expect in the future. 
 
