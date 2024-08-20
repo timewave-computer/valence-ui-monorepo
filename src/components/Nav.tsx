@@ -43,7 +43,7 @@ const NavLink = ({
 export const Nav = () => {
   const path = usePathname();
   const { chain } = useChainContext();
-  const { address, disconnect, isWalletConnected } = useWallet();
+  const { address, disconnect, isWalletConnected, walletInfo } = useWallet();
 
   // TODO: hydrate this on server so we dont have to call it unless user decides to click 'create'
   useSupportedBalances(address);
@@ -89,17 +89,29 @@ export const Nav = () => {
           </Popover.Trigger>
 
           <Popover.Content
-            sideOffset={0}
-            className="z-50 flex flex-col items-center gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all"
+            side="bottom"
+            sideOffset={11}
+            className="items-left z-50 flex flex-col gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all"
           >
-            <Popover.Arrow />
-            <div className="flex flex-col items-center gap-1">
-              <span className="h-fit bg-valence-mediumgray px-1.5 py-0.5 text-xs text-valence-black ">
-                {chain.chain_id}
-              </span>
-              <span className="w-fit max-w-32 break-words text-center font-mono text-xs font-light tracking-tight">
-                {address}
-              </span>
+            <div className="items-left flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
+                <h1 className="text-base font-bold">Wallet Connected</h1>
+                <span className="h-fit w-fit bg-valence-mediumgray px-1.5 py-0.5 text-xs text-valence-black ">
+                  {chain.pretty_name}
+                </span>
+              </div>
+
+              <div className="flex flex-row flex-nowrap  items-center gap-2">
+                <div
+                  className="h-6 w-6 bg-contain bg-center bg-no-repeat "
+                  style={{
+                    backgroundImage: `url(${walletInfo?.logo})`,
+                  }}
+                />
+                <span className="w-fit max-w-44 text-balance break-words text-center font-mono text-xs font-light tracking-tight">
+                  {address}
+                </span>
+              </div>
             </div>
 
             <Button onClick={() => disconnect()} variant="secondary">

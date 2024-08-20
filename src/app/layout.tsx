@@ -12,7 +12,6 @@ import { Provider as JotaiProvider } from "jotai";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
 import { getFeatureFlags } from "@/utils";
 import { Toaster } from "@/components";
-import CachedData from "@/components/CachedData";
 import React from "react";
 import ReactQueryDevToolsWithProd from "@/components/react-query-devtools";
 
@@ -48,7 +47,6 @@ export default function RootLayout({
         <JotaiProvider>
           <FeatureFlagsProvider flags={flags}>
             <CosmosProvider>
-              <CachedData />
               <html lang="en">
                 <body
                   className={cn(
@@ -59,7 +57,12 @@ export default function RootLayout({
                   <ReactQueryDevToolsWithProd />
                   <Nav />
                   {children}
-                  <Toaster />
+                  <Toaster
+                    toastOptions={{
+                      duration: 7000,
+                    }}
+                    closeButton={true}
+                  />
                 </body>
               </html>
             </CosmosProvider>

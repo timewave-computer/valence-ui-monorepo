@@ -41,6 +41,7 @@ type SupportedChainConfig = {
     denom: string;
     amount: number;
   };
+  celatoneUrl: string;
 };
 
 const isSupportedChainId = (id: string): id is SupportedChainId =>
@@ -79,6 +80,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       denom: "untrn",
       amount: 1,
     },
+    celatoneUrl: "https://neutron.celat.one/neutron-1/",
   },
   "pion-1": {
     chain: NEUTRON_TESTNET_CHAIN,
@@ -109,6 +111,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       denom: "untrn",
       amount: 0.001,
     },
+    celatoneUrl: "https://neutron.celat.one/pion-1/",
   },
 };
 

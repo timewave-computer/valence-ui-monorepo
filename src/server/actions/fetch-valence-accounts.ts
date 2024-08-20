@@ -7,7 +7,11 @@ import { IndexerValenceAccountsResponseSchema } from "@/types/rebalancer";
 export const fetchValenceAccounts = async (
   walletAddress: string,
 ): Promise<any> => {
-  const res = await fetch(IndexerUrl.accounts(walletAddress));
+  const res = await fetch(IndexerUrl.accounts(walletAddress), {
+    next: {
+      revalidate: 5, // 5 minutes
+    },
+  });
   if (!res.ok) {
     throw ErrorHandler.makeError(
       `${ERROR_MESSAGES.INDEXER_VALENCE_ACCOUNTS_ERROR}, API Error: ${res.status}, ${res.statusText}`,

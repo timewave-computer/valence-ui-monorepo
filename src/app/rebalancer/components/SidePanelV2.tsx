@@ -5,7 +5,7 @@ import { useWallet } from "@/hooks";
 import { cn } from "@/utils";
 import Image from "next/image";
 import { accountAtom } from "@/app/rebalancer/const";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
@@ -13,9 +13,7 @@ import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
 import { useValenceAccount } from "@/app/rebalancer/hooks";
 
-export const SidePanelV2: React.FC<{
-  isLoading: boolean;
-}> = ({ isLoading }) => {
+export const SidePanelV2: React.FC<{}> = ({}) => {
   const [accountUrlParam, setAccountUrlParam] = useQueryState("account", {
     defaultValue: DEFAULT_ACCOUNT,
   });
@@ -27,7 +25,7 @@ export const SidePanelV2: React.FC<{
   return (
     <div className="flex w-96 shrink-0 flex-col overflow-hidden overflow-y-auto border-r border-valence-black">
       <Brand account={account} setAccount={setAccountUrlParam} />
-      <DiscoverPanel account={account} />
+      <DiscoverPanel />
     </div>
   );
 };
@@ -60,6 +58,7 @@ const Brand: React.FC<{
           </p>
         </div>
       </div>
+
       <div className="flex flex-col gap-2">
         <ConnectWalletButton />
       </div>
@@ -79,9 +78,9 @@ const Brand: React.FC<{
   );
 };
 
-const DiscoverPanel: React.FC<{
-  account: string;
-}> = ({ account }) => {
+const DiscoverPanel: React.FC<{}> = ({}) => {
+  const [account] = useAtom(accountAtom);
+
   const { address, isWalletConnected } = useWallet();
   const { data: valenceAddress } = useValenceAccount(address);
   let featuredAccounts = chainConfig.featuredAccounts;
@@ -146,7 +145,6 @@ const DiscoverPanel: React.FC<{
             >
               <div className="flex flex-row justify-between gap-2 ">
                 <span className=" text-pretty">{option.label}</span>
-
                 <Label text="Featured" />
               </div>
             </div>
@@ -157,18 +155,24 @@ const DiscoverPanel: React.FC<{
   );
 };
 
-const ConnectWalletButton: React.FC = () => {
+const ConnectWalletButton: React.FC<{}> = ({}) => {
   const { isWalletConnected, isWalletConnecting, connect, address } =
     useWallet();
   const { data: valenceAccount, isLoading: isValenceAccountLoading } =
     useValenceAccount(address);
-
   const router = useRouter();
+
+  // for calling effect only when connect wallet is clicked
+  const [connectWalletClicked, setConnectWalletClicked] = useState(false);
+
+  // redirect to rebalancer page after wallet is connected and data is fetched
   useEffect(() => {
-    // redirect to your own account if it exists
-    if (valenceAccount && isWalletConnected)
+    if (!connectWalletClicked) return;
+    if (isValenceAccountLoading) return;
+    if (valenceAccount) {
       router.push(`/rebalancer?account=${valenceAccount}`);
-  }, [router, isWalletConnected, valenceAccount]);
+    } else router.push(`/rebalancer/`);
+  }, [connectWalletClicked, address, valenceAccount, isValenceAccountLoading]);
 
   if (!isWalletConnected)
     return (
@@ -177,6 +181,7 @@ const ConnectWalletButton: React.FC = () => {
           isLoading={isWalletConnecting || isValenceAccountLoading}
           onClick={async () => {
             await connect();
+            setConnectWalletClicked(true);
           }}
           variant="primary"
         >

@@ -16,10 +16,10 @@ import { CoinGeckoHistoricPrices } from "@/types/coingecko";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 
 export const useHistoricValues = ({
-  rebalancerAddress,
+  accountAddress,
   targets,
 }: {
-  rebalancerAddress: string;
+  accountAddress: string;
   targets: Array<AccountTarget>;
 }) => {
   const midnightUTC = new UTCDate(new UTCDate().setHours(0, 0, 0, 0));
@@ -32,12 +32,12 @@ export const useHistoricValues = ({
     isError: isCacheError,
   } = usePrefetchData();
   const balanceQuery = useHistoricBalances({
-    rebalancerAddress,
+    accountAddress,
     startDate,
     endDate,
   });
   const targetQuery = useHistoricTargets({
-    rebalancerAddress,
+    accountAddress,
     startDate,
     endDate,
   });
@@ -47,7 +47,7 @@ export const useHistoricValues = ({
     queryKey: [
       QUERY_KEYS.COMBINED_HISTORICAL_VALUE_DATA,
       targets,
-      rebalancerAddress,
+      accountAddress,
     ],
     enabled: isCacheFetched && balanceQuery.isFetched && targetQuery.isFetched,
     queryFn: () => {

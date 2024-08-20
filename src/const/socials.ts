@@ -14,3 +14,5 @@ export const COVENANT_DESCRIPTION =
   "Covenants enable trust-minimized agreements between crypto-native organizations.";
 
 export const CREATE_REBALANCER_DESCRIPTION = "Get started rebalancing funds.";
+export const EDIT_REBALANCER_DESCRIPTION =
+  "Make changes to Rebalancer account.";

@@ -7,7 +7,6 @@ import {
 import {
   useAccountConfigQuery,
   useAssetCache,
-  usePrefetchData,
   useValenceAccount,
 } from "@/app/rebalancer/hooks";
 import React, { useMemo, useState } from "react";
@@ -150,8 +149,6 @@ export const AccountDetailsPanel: React.FC<{
 const AccountDetailsHeader: React.FC<{
   selectedAddress: string;
 }> = ({ selectedAddress }) => {
-  const { isFetched: isCacheFetched } = usePrefetchData();
-
   const { data: config } = useAccountConfigQuery({
     account: selectedAddress,
   });
@@ -198,31 +195,29 @@ const AccountDetailsHeader: React.FC<{
         <h1 className="text-base font-bold">Your Rebalancer Account</h1>
         {selectedAddress.length === 0 && !hasValenceAccount && (
           <p className="text-xs">
-            This wallet does not have a Rebalancer account
+            This wallet does not yet have a Rebalancer account
           </p>
         )}
         {selectedAddress.length > 0 && (
           <span className="font-mono text-xs">{selectedAddress}</span>
         )}
       </div>
-      {isCacheFetched &&
-        (hasValenceAccount ? (
-          <div className="flex flex-row flex-nowrap gap-2 ">
-            <PauseOrUnpauseButton />
-            <WithdrawDialog />
-            <Button
-              className="h-fit"
-              variant="secondary"
-              onClick={() => alert("no working yet")}
-            >
+
+      {hasValenceAccount ? (
+        <div className="flex flex-row flex-nowrap gap-2 ">
+          <PauseOrUnpauseButton />
+          <WithdrawDialog />
+          <Link href={`/rebalancer/edit/${selectedAddress}`}>
+            <Button className="h-fit" variant="secondary">
               Edit
             </Button>
-          </div>
-        ) : (
-          <Link href={`/rebalancer/create`}>
-            <Button variant="primary">Start rebalancing funds</Button>
           </Link>
-        ))}
+        </div>
+      ) : (
+        <Link href={`/rebalancer/create`}>
+          <Button variant="primary">Start rebalancing funds</Button>
+        </Link>
+      )}
     </section>
   );
 };

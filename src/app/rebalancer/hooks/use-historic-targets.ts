@@ -1,14 +1,13 @@
 import { fetchHistoricalTargets } from "@/server/actions";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
-import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 
 export const useHistoricTargets = ({
-  rebalancerAddress,
+  accountAddress,
   startDate,
   endDate,
 }: {
-  rebalancerAddress: string;
+  accountAddress: string;
   startDate: Date;
   endDate: Date;
 }) => {
@@ -17,17 +16,17 @@ export const useHistoricTargets = ({
     retry: (errorCount) => {
       return errorCount < 1;
     },
-    enabled: rebalancerAddress.length > 0,
+    enabled: accountAddress.length > 0,
     queryKey: [
       QUERY_KEYS.HISTORIC_TARGETS,
-      rebalancerAddress,
-      startDate,
-      endDate,
+      accountAddress,
+      startDate.toISOString(),
+      endDate.toISOString(),
     ],
     queryFn: () =>
       withTimeout(async () => {
         return fetchHistoricalTargets({
-          address: rebalancerAddress,
+          address: accountAddress,
           startDate: startDate.toISOString(),
           endDate: endDate.toISOString(),
         });

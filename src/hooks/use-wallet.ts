@@ -14,7 +14,6 @@ export const useWallet = () => {
   const chainContext = useChainContext();
 
   const wallet = chainContext.chainWallet;
-
   const getSigningStargateClient = () => {
     try {
       return chainContext.getSigningStargateClient();
@@ -32,6 +31,7 @@ export const useWallet = () => {
   };
 
   return {
+    walletInfo: wallet?.walletInfo,
     address: wallet?.address,
     // for some reason these are the ones that work for connecting and disconnecting
     connect: chainContext.walletRepo.wallets[0].connect,

@@ -14,6 +14,7 @@ export type UseLivePortfolioReturnValue = {
   isLoading: boolean;
   data: { balances: Array<PortfolioLineItem>; totalValue: number };
   isError: boolean;
+  isFetched: boolean;
 };
 
 type PortfolioLineItem = {
@@ -31,12 +32,12 @@ type PortfolioLineItem = {
 
 export type BalanceReturnValue = { denom: string; amount: number }[];
 export const useLivePortfolio = ({
-  rebalancerAddress,
+  accountAddress,
 }: {
-  rebalancerAddress: string;
+  accountAddress: string;
 }): UseLivePortfolioReturnValue => {
   const { isFetched: isCacheFetched } = usePrefetchData();
-  const isFetchEnabled = isCacheFetched && !!rebalancerAddress?.length;
+  const isFetchEnabled = isCacheFetched && !!accountAddress?.length;
 
   const { getOriginAsset } = useAssetCache();
   const { getPrice } = usePriceCache();
@@ -49,7 +50,7 @@ export const useLivePortfolio = ({
         retry: (errorCount) => {
           return errorCount < 2;
         },
-        queryKey: [QUERY_KEYS.ACCOUNT_BALANCES, rebalancerAddress],
+        queryKey: [QUERY_KEYS.ACCOUNT_BALANCES, accountAddress],
         queryFn: (): Promise<BalanceReturnValue> => {
           return new Promise(async (resolve, reject) => {
             const timeout = setTimeout(() => {
@@ -58,7 +59,7 @@ export const useLivePortfolio = ({
 
             try {
               const rawBalances = await fetchAccountBalances({
-                address: rebalancerAddress,
+                address: accountAddress,
               });
               clearTimeout(timeout);
               // balances from stargate client returned in micro units
@@ -86,7 +87,7 @@ export const useLivePortfolio = ({
         retry: (errorCount) => {
           return errorCount < 2;
         },
-        queryKey: [QUERY_KEYS.AUCTION_BALANCES, rebalancerAddress],
+        queryKey: [QUERY_KEYS.AUCTION_BALANCES, accountAddress],
         queryFn: async (): Promise<BalanceReturnValue> => {
           return new Promise((resolve, reject) => {
             const timeout = setTimeout(() => {
@@ -94,7 +95,7 @@ export const useLivePortfolio = ({
             }, 5000);
 
             fetchAuctionBalances({
-              address: rebalancerAddress,
+              address: accountAddress,
             })
               .then((response) => {
                 clearTimeout(timeout);
@@ -172,6 +173,7 @@ export const useLivePortfolio = ({
         isLoading: results.every((result) => result.isLoading),
         data: { totalValue, balances: [...combinedData] },
         isError: results.some((result) => result.isError),
+        isFetched: results.every((result) => result.isFetched),
       };
     },
   });

@@ -14,6 +14,10 @@ import { withTimeout } from "./use-historic-targets";
 const getOriginAssetQueryArgs = (denom: string) => ({
   queryKey: [QUERY_KEYS.ORIGIN_ASSET, denom],
   refetchInterval: 0,
+  // TODO: probably dont need the below two
+  prefetchOnMount: false,
+  refetchOnConnect: false,
+  cacheTime: 1000 * 60 * 60,
   staleTime: 1000 * 60 * 10, // 10 mins, really should never need it
   queryFn: async () => {
     const originAsset = await fetchOriginAssets([

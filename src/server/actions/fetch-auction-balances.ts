@@ -23,7 +23,11 @@ export async function fetchAuctionBalances({
 const getAuctionBalances = async (
   address: string,
 ): Promise<Record<string, number>> => {
-  const res = await fetch(IndexerUrl.fundsInAuction(address));
+  const res = await fetch(IndexerUrl.fundsInAuction(address), {
+    next: {
+      revalidate: 5, // 5 minutes
+    },
+  });
   if (!res.ok) {
     throw ErrorHandler.makeError(
       `${ERROR_MESSAGES.INDEXER_FUNDS_IN_AUCTION_ERROR}, API Error: ${res.status}, ${res.statusText}`,

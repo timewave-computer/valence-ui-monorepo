@@ -12,7 +12,6 @@ import {
   RawTarget,
   TargetOverrideStrategy,
 } from "@/types/rebalancer";
-import { Target } from "framer-motion";
 import { z } from "zod";
 
 export async function fetchRebalancerAccountConfiguration({
@@ -22,7 +21,11 @@ export async function fetchRebalancerAccountConfiguration({
 }): Promise<FetchAccountConfigReturnValue> {
   const adminRequest = fetch(IndexerUrl.accountAdmin(address));
 
-  const configRequest = fetch(IndexerUrl.accountConfig(address));
+  const configRequest = fetch(IndexerUrl.accountConfig(address), {
+    next: {
+      revalidate: 5, // 5 minutes
+    },
+  });
 
   const results = await Promise.all([adminRequest, configRequest]);
   const adminRes = results[0];
@@ -63,7 +66,6 @@ export async function fetchRebalancerAccountConfiguration({
   } else {
     config = IndexerRebalancerConfigResponseSchema.parse(configData);
   }
-
   const { targets, base_denom, pid } = config;
 
   const targetsFormatted = targets.map((t) => ({

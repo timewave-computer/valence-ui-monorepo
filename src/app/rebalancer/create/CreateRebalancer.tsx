@@ -27,9 +27,9 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
 import { useCallback } from "react";
 
-type CreateRebalancerPageProps = {};
+type CreateRebalancerProps = {};
 
-export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
+export default function CreateRebalancer({}: CreateRebalancerProps) {
   const router = useRouter();
 
   const {
@@ -141,44 +141,14 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
 
   return (
     <div className="flex flex-col pb-8">
-      <section className="flex w-full flex-col gap-2 p-4">
-        <RouterButton
-          options={{ back: true }}
-          className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
-        >
-          <FaChevronLeft className="h-4 w-4 transition-all" />
-
-          <span className="text-sm font-medium tracking-tight "> Go Back</span>
-        </RouterButton>
-        <div className="flex flex-wrap items-center gap-1">
-          <h1 className="text-xl font-bold">
-            Create a Rebalancer Account for Connected Wallet
-          </h1>
-
-          <span className="font-mono text-sm font-medium">{`(${address})`}</span>
-        </div>
-        <div className="flex flex-col gap-1">
-          <p className="max-w-60% text-wrap pt-2 text-sm">
-            <span className="font-semibold">
-              Warning! This product is in Beta.
-            </span>{" "}
-            By using this product you accept the risks associated with beta
-            software.
-          </p>
-          <p className=" max-w-60% text-wrap text-sm">
-            To learn more about how the Rebalancer works, you can read this{" "}
-            <LinkText
-              className=" border-valence-blue text-valence-blue hover:border-b"
-              href="/blog//Rebalancer-Protocol-Asset-Management"
-            >
-              blog post.
-            </LinkText>
-          </p>
-        </div>
-      </section>
+      <RebalancerFormHeader address={address} isEdit={false} />
       <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
         <SelectAmounts form={form} address={address} />
-        <SelectRebalancerTargets address={address} form={form} />
+        <SelectRebalancerTargets
+          address={address}
+          form={form}
+          isCleanStartingAmountEnabled={true}
+        />
         <ConfigureSettings address={address} form={form} />
         <SelectTrustee address={address} form={form} />
         {isCreatePending ? (
@@ -194,3 +164,53 @@ export default function CreateRebalancerPage({}: CreateRebalancerPageProps) {
     </div>
   );
 }
+
+export const RebalancerFormHeader = ({
+  isEdit,
+  address,
+  children,
+}: {
+  address: string;
+  isEdit: boolean;
+  children?: React.ReactNode;
+}) => {
+  const title = isEdit
+    ? "Edit Rebalancer Account"
+    : "Set up a Rebalancer account for this wallet";
+  return (
+    <section className="flex w-full flex-col gap-2 p-4">
+      <RouterButton
+        options={{ back: true }}
+        className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
+      >
+        <FaChevronLeft className="h-4 w-4 transition-all" />
+
+        <span className="text-sm font-medium tracking-tight "> Go Back</span>
+      </RouterButton>
+      <div className="flex flex-wrap items-center gap-1">
+        <h1 className="text-xl font-bold">{title}</h1>
+
+        <span className="font-mono text-sm font-medium">{`(${address})`}</span>
+      </div>
+      <div className="flex flex-col gap-1">
+        <p className="max-w-60% text-wrap pt-2 text-sm">
+          <span className="font-semibold">
+            Warning! This product is in Beta.
+          </span>{" "}
+          By using this product you accept the risks associated with beta
+          software.
+        </p>
+        <p className=" max-w-60% text-wrap text-sm">
+          To learn more about how the Rebalancer works, you can read this{" "}
+          <LinkText
+            className=" border-valence-blue text-valence-blue hover:border-b"
+            href="/blog//Rebalancer-Protocol-Asset-Management"
+          >
+            blog post.
+          </LinkText>
+        </p>
+        {children}
+      </div>
+    </section>
+  );
+};

@@ -40,7 +40,7 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
   const [accountAddress] = useAtom(accountAtom);
   const { data: config } = useAccountConfigQuery({ account: accountAddress });
   const livePortfolioQuery = useLivePortfolio({
-    rebalancerAddress: accountAddress,
+    accountAddress: accountAddress,
   });
 
   const isFundsInAuction = livePortfolioQuery.data?.balances.some(
@@ -88,7 +88,7 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
     mutationFn: withdraw,
     onSuccess: async (data, variables: WithdrawInputForm["amounts"]) => {
       toast.success(
-        <ToastMessage variant="success" title="Withdraw successful">
+        <ToastMessage variant="success" title="Withdraw completed">
           {data?.transactionHash && (
             <p className="text-sm">
               Transaction:{" "}

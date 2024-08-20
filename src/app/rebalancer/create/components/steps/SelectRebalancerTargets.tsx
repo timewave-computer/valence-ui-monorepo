@@ -21,7 +21,8 @@ import { chainConfig } from "@/const/config";
 export const SelectRebalancerTargets: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
-}> = ({ form }) => {
+  isCleanStartingAmountEnabled?: boolean; // bandaid fix for supporting edit
+}> = ({ form, isCleanStartingAmountEnabled = true }) => {
   const { setValue, watch, getValues } = form;
 
   const targets = watch("targets");
@@ -87,6 +88,7 @@ export const SelectRebalancerTargets: React.FC<{
 
   const clearStartingAmont = useCallback(
     (denom: string) => {
+      if (!isCleanStartingAmountEnabled) return;
       const initialAssets = getValues("initialAssets");
       const index = initialAssets.findIndex((a) => a.denom === denom);
       if (index == -1) return; // should not happen
@@ -98,7 +100,7 @@ export const SelectRebalancerTargets: React.FC<{
       );
       setValue("initialAssets", updatedArray);
     },
-    [setValue, getValues],
+    [isCleanStartingAmountEnabled, setValue, getValues],
   );
 
   return (
@@ -136,7 +138,7 @@ export const SelectRebalancerTargets: React.FC<{
                 Asset
               </InputTableCell>
               <InputTableCell className="justify-start" variant="header">
-                Initial Distribution
+                Current Distribution
               </InputTableCell>
               <InputTableCell className="justify-start" variant="header">
                 Target Distribution

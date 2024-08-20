@@ -12,3 +12,10 @@ export const jsonToBase64 = (object: { [key: string]: any }) =>
  */
 export const jsonToUtf8 = (object: { [key: string]: any }) =>
   toUtf8(JSON.stringify(object));
+
+/***
+ * Convert number to uint128 string
+ */
+export const numberToUint128 = (num: number): string => {
+  return BigInt(num).toString();
+};

@@ -9,11 +9,11 @@ import {
 } from "@/app/rebalancer/hooks";
 
 export const useHistoricBalances = ({
-  rebalancerAddress,
+  accountAddress,
   startDate,
   endDate,
 }: {
-  rebalancerAddress: string;
+  accountAddress: string;
   startDate: Date;
   endDate: Date;
 }) => {
@@ -21,20 +21,20 @@ export const useHistoricBalances = ({
   const { getOriginAsset } = useAssetCache();
 
   return useQuery({
-    enabled: isFetched && rebalancerAddress.length > 0,
+    enabled: isFetched && accountAddress.length > 0,
     retry: (errorCount) => {
       return errorCount < 1;
     },
     queryKey: [
       QUERY_KEYS.HISTORIC_BALANCES,
-      rebalancerAddress,
+      accountAddress,
       startDate,
       endDate,
     ],
     queryFn: () =>
       withTimeout(
         async () => {
-          const data = await fetchHistoricalBalances(rebalancerAddress, {
+          const data = await fetchHistoricalBalances(accountAddress, {
             startDate: startDate.toISOString(),
             endDate: endDate.toISOString(),
           });

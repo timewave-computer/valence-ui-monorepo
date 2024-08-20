@@ -38,11 +38,11 @@ export const TableV2: React.FC<{}> = ({}) => {
   });
   const { data: livePortfolio, isLoading: isBalancesLoading } =
     useLivePortfolio({
-      rebalancerAddress: selectedAddress,
+      accountAddress: selectedAddress,
     });
 
   const unsortedTableData: TableData[] = useMemo(() => {
-    if (!livePortfolio || !config?.targets) return [];
+    if (!livePortfolio?.balances || !config?.targets) return [];
     return livePortfolio?.balances
       .reduce((acc, lineItem) => {
         const target = config?.targets.find((t) => t.denom === lineItem.denom);
@@ -64,7 +64,7 @@ export const TableV2: React.FC<{}> = ({}) => {
 
   const tableData = useMemo(() => {
     return unsortedTableData.sort((a, b) => sorter.sort(a, b, sortAscending));
-  }, [unsortedTableData]);
+  }, [sorter, sortAscending, unsortedTableData]);
 
   const totalValue = useMemo(() => {
     const total = tableData?.reduce((acc, holding) => {

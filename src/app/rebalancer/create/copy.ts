@@ -5,6 +5,13 @@ export const CreateRebalancerCopy = {
       "Which funds would you like rebalanced? Specify the amounts that will be deposited to your Rebalancer account upon creation.",
     info1: "",
   },
+  step_edit_SelectAssets: {
+    // for edit
+    title: "Step 1: Enable rebalancing for assets",
+    subTitle:
+      "These are the assets in your Rebalancer account. Assets with a target are enabled for rebalancing.",
+    info1: "",
+  },
   step_SelectTargets: {
     title: "Step 2: Set targets",
     subTitle:

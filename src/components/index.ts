@@ -18,7 +18,6 @@ export * from "./Dropdown";
 export * from "./IconButton";
 export * from "./RadioGroup";
 export * from "./Toaster";
-export * from "./CachedData";
 export * from "./Dialog";
 export * from "./hover-to-copy";
 export * from "./colored-dot";
