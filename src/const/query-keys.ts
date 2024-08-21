@@ -1,4 +1,5 @@
 export const QUERY_KEYS = {
+  REBALANCER_WHITELIST: "rebalancer-whitelist",
   REBALANCER_ACCOUNT_CONFIG: "rebalancer-account-config",
   ACCOUNT_BALANCES: "account-balances",
   AUCTION_BALANCES: "auction-balances",

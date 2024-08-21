@@ -1,8 +1,13 @@
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
 import { Fragment, useCallback, useMemo } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { cn, displayNumber } from "@/utils";
-import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
+import { cn, displayNumber, microToBase } from "@/utils";
+import {
+  useAssetCache,
+  useBaseTokenValue,
+  useMinimumRequiredValue,
+  usePriceCache,
+} from "@/app/rebalancer/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
   Tooltip,
@@ -16,7 +21,7 @@ import {
 import { InputTableCell } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
-import { chainConfig } from "@/const/config";
+import { useWhitelistedDenoms } from "@/hooks";
 
 export const SelectRebalancerTargets: React.FC<{
   address: string;
@@ -32,16 +37,18 @@ export const SelectRebalancerTargets: React.FC<{
     baseTokenDenom,
   });
   const { getOriginAsset } = useAssetCache();
+  const { data: whitelistedDenoms } = useWhitelistedDenoms();
 
   const dropdownOptions: DropdownOption<string>[] = useMemo(() => {
-    return chainConfig.supportedAssets.map((a) => {
+    if (!whitelistedDenoms?.base_denom_whitelist) return [];
+    return whitelistedDenoms?.base_denom_whitelist.map((a) => {
       const asset = getOriginAsset(a.denom);
       return {
         value: a.denom,
         label: asset?.symbol ?? "",
       };
     });
-  }, [getOriginAsset]);
+  }, [whitelistedDenoms?.base_denom_whitelist, getOriginAsset]);
 
   const availableDropdownOptions = dropdownOptions.filter(
     (option) => !targets.find((t) => t.denom === option.value),
@@ -282,7 +289,7 @@ export const SelectRebalancerTargets: React.FC<{
                   (a) => !a.startingAmount || a.startingAmount === 0,
                 ) && (
                   <InputTableCell className="col-span-full flex items-center  text-sm font-medium tracking-wide text-valence-gray ">
-                    Input at least one starting amount in Step 1 to continue
+                    Select at least one starting amount in Step 1 to continue.
                   </InputTableCell>
                 )}
               </div>
@@ -294,6 +301,17 @@ export const SelectRebalancerTargets: React.FC<{
                     100 && (
                     <InputTableCell className="col-span-full flex items-center text-sm  font-medium tracking-wide text-warn  ">
                       Total distribution must equal 100%
+                    </InputTableCell>
+                  )}
+              </div>
+
+              <div className="col-span-full">
+                {targets?.length > 0 &&
+                  targets.some(
+                    (t) => Number(t.bps) === 0 || Number(t.bps) === 100,
+                  ) && (
+                    <InputTableCell className="col-span-full flex items-center text-sm  font-medium tracking-wide text-warn  ">
+                      Percentages must be between .01% and 99.99%
                     </InputTableCell>
                   )}
               </div>

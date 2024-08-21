@@ -40,6 +40,7 @@ type SupportedChainConfig = {
   serviceFee: {
     denom: string;
     amount: number;
+    symbol: string;
   };
   celatoneUrl: string;
 };
@@ -79,6 +80,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
     serviceFee: {
       denom: "untrn",
       amount: 1,
+      symbol: "NTRN",
     },
     celatoneUrl: "https://neutron.celat.one/neutron-1/",
   },
@@ -108,6 +110,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
     featuredAccounts: getFeaturedAccounts("pion-1", process.env.NODE_ENV),
     defaultBaseTokenDenom: "untrn",
     serviceFee: {
+      symbol: "NTRN",
       denom: "untrn",
       amount: 0.001,
     },

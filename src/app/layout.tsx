@@ -58,8 +58,16 @@ export default function RootLayout({
                   <Nav />
                   {children}
                   <Toaster
+                    style={{
+                      borderRadius: 0,
+                    }}
                     toastOptions={{
-                      duration: 7000,
+                      duration: 70000,
+                      classNames: {
+                        toast: "rounded-none",
+                        closeButton:
+                          "hover:bg-valence-white hover:text-valence-black bg-valence-black text-valence-white ",
+                      },
                     }}
                     closeButton={true}
                   />

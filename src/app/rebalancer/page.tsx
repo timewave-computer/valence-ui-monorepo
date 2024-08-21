@@ -146,8 +146,7 @@ export default async function RebalancerPage({
 
   await Promise.all(prefetchedHistoricPrices);
   if (account && account.length > 0) {
-    // TODO: await this
-    prefetchDataForAccount(account, queryClient);
+    await prefetchDataForAccount(account, queryClient);
   }
 
   return (

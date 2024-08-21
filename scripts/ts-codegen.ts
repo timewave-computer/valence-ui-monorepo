@@ -21,7 +21,7 @@ codegen
         enabled: true,
       },
       reactQuery: {
-        enabled: false, // for now
+        enabled: false,
         optionalClient: true,
         version: "v4",
         mutations: true,

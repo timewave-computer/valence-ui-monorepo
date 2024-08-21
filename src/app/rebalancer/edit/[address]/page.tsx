@@ -17,6 +17,7 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import {
   fetchAccountBalances,
   fetchRebalancerAccountConfiguration,
+  fetchRebalancerWhitelist,
 } from "@/server/actions";
 import { BalanceReturnValue } from "../../hooks";
 import { OriginAsset } from "@/types/ibc";
@@ -99,6 +100,11 @@ export default async function CreateRebalancerPage({
         }
       });
     },
+  });
+
+  await queryClient.prefetchQuery({
+    queryKey: [QUERY_KEYS.REBALANCER_WHITELIST],
+    queryFn: () => fetchRebalancerWhitelist(),
   });
 
   return (

@@ -1,16 +1,17 @@
 "use client";
 import {
   Button,
+  DialogClose,
   LinkText,
   LoadingIndicator,
   RouterButton,
   ToastMessage,
 } from "@/components";
-import { useWallet } from "@/hooks";
+import { useWallet, useWhitelistedDenoms } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { redirect, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { makeCreateRebalancerMessages } from "@/utils";
+import { displayValue, makeCreateRebalancerMessages } from "@/utils";
 import { chainConfig } from "@/const/config";
 import { toast } from "sonner";
 import {
@@ -24,8 +25,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaChevronLeft } from "react-icons/fa";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
-import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
-import { useCallback } from "react";
+import {
+  AccountTarget,
+  FetchAccountConfigReturnValue,
+  fetchRebalancerWhitelist,
+} from "@/server/actions";
+import { useCallback, useEffect, useState } from "react";
+import { Dialog, DialogContent } from "@/components";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@radix-ui/react-hover-card";
+import { CelatoneUrl } from "@/const/celatone";
+import { useBaseTokenValue, useMinimumRequiredValue } from "../hooks";
 
 type CreateRebalancerProps = {};
 
@@ -39,8 +52,11 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     getSigningStargateClient,
   } = useWallet();
 
+  const { data: whitelist } = useWhitelistedDenoms();
+
   const form = useForm<CreateRebalancerForm>({
     defaultValues: {
+      isServiceFeeIncluded: false,
       initialAssets: [],
       baseTokenDenom: chainConfig.defaultBaseTokenDenom,
       targets: [],
@@ -52,6 +68,47 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       targetOverrideStrategy: "proportional",
     },
   });
+
+  const [isBetaWarningVisible, setIsBetaWarningVisible] = useState(true);
+
+  const initialAssets = form.watch("initialAssets");
+  const targets = form.watch("targets");
+  const baseDenom = form.watch("baseTokenDenom");
+  const isServiceFeeIncluded = form.watch("isServiceFeeIncluded");
+
+  const isDepositsValid =
+    initialAssets.every((asset) => {
+      return !!asset?.startingAmount && asset.startingAmount > 0;
+    }) && initialAssets.length > 0;
+
+  const { calculateValue } = useBaseTokenValue({
+    baseTokenDenom: baseDenom,
+  });
+
+  const isTargetsValid =
+    targets.length >= 2 &&
+    targets.every((t) => t.bps > 0 && t.bps < 100 && !!t.denom) &&
+    targets.reduce((acc, t) => acc + t.bps, 0) === 100;
+
+  const { value: requiredMinimumValue, symbol: minimumValueSymbol } =
+    useMinimumRequiredValue(baseDenom);
+
+  const totalValue = initialAssets.reduce((acc, asset) => {
+    const _value = calculateValue({
+      amount: Number(asset.startingAmount),
+      denom: asset.denom,
+    });
+    const value = isNaN(_value) ? 0 : _value;
+    return acc + value;
+  }, 0);
+
+  const isMinimumValueMet = totalValue >= requiredMinimumValue;
+
+  const isSubmitEnabled =
+    isDepositsValid &&
+    isTargetsValid &&
+    isServiceFeeIncluded &&
+    isMinimumValueMet;
 
   const createRebalancer = useCallback(async () => {
     // should not happen but here to make typescript happy
@@ -107,12 +164,17 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       console.log("created rebalancer at", valenceAddress, "tx:", result);
       toast.success(
         <ToastMessage title="Rebalancer setup successful" variant="success">
-          <p className="text-sm">
-            Transaction:{" "}
-            <span className="font-mono text-xs font-light">
-              {result.transactionHash}
-            </span>
-          </p>
+          <LinkText
+            className="group"
+            href={CelatoneUrl.trasaction(result.transactionHash)}
+          >
+            <p className="text-sm transition-all group-hover:underline">
+              Transaction:{" "}
+              <span className="font-mono text-xs font-light transition-all group-hover:underline">
+                {result.transactionHash}
+              </span>
+            </p>
+          </LinkText>
           <p className="text-sm">
             Address:{" "}
             <span className="font-mono text-xs font-light">
@@ -140,7 +202,48 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
   }
 
   return (
-    <div className="flex flex-col pb-8">
+    <div className="flex flex-col gap-2 pb-8">
+      <Dialog
+        open={isBetaWarningVisible}
+        defaultOpen={true}
+        onOpenChange={setIsBetaWarningVisible}
+      >
+        <DialogContent
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}
+          className=" max-w-[40%]"
+        >
+          <div className=" flex flex-col gap-2">
+            <div className="flex items-center gap-2 ">
+              <h1 className="text-xl font-bold  ">This feature is in beta.</h1>
+            </div>
+            <p className="text-sm">
+              By continuing, you accept the risks associated with using beta
+              software.
+            </p>
+            <div className="no-wrap flex flex-row items-center justify-end gap-4 pt-4">
+              <DialogClose asChild>
+                <Button
+                  onClick={() => {
+                    router.back();
+                  }}
+                  variant="secondary"
+                >
+                  Go back
+                </Button>
+              </DialogClose>
+              <Button
+                className=""
+                onClick={() => setIsBetaWarningVisible(false)}
+                variant="primary"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       <RebalancerFormHeader address={address} isEdit={false} />
       <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
         <SelectAmounts form={form} address={address} />
@@ -156,9 +259,55 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
             <LoadingIndicator />
           </div>
         ) : (
-          <Button className="min-h-11 min-w-60" onClick={() => handleCreate()}>
-            Create Rebalancer
-          </Button>
+          <HoverCard openDelay={0}>
+            <HoverCardTrigger>
+              <Button
+                disabled={!isSubmitEnabled}
+                className="min-h-11 min-w-60"
+                onClick={() => (isSubmitEnabled ? handleCreate() : {})}
+              >
+                Start rebalancing
+              </Button>
+            </HoverCardTrigger>
+            {!isSubmitEnabled && (
+              <HoverCardContent className="flex flex-col gap-1 border border-valence-black bg-valence-lightgray p-4 text-sm text-valence-black">
+                <h2 className="font-semibold">
+                  Configuration does not meet the below requirements:
+                </h2>
+                <ul>
+                  {!isServiceFeeIncluded && (
+                    <li className="">
+                      - A service fee of {chainConfig.serviceFee.amount}{" "}
+                      {chainConfig.serviceFee.symbol} must be included with the
+                      deposit.
+                    </li>
+                  )}
+
+                  {!isMinimumValueMet && (
+                    <li>
+                      - A minimum value of{" "}
+                      {displayValue({
+                        value: requiredMinimumValue,
+                        symbol: minimumValueSymbol,
+                      })}{" "}
+                      must be deposited to the account.
+                    </li>
+                  )}
+
+                  {!isDepositsValid && (
+                    <li>- At least 1 asset should be selected to deposit.</li>
+                  )}
+
+                  {!isTargetsValid && (
+                    <li>
+                      - At least 2 targets should be selected, adding up to
+                      100%.
+                    </li>
+                  )}
+                </ul>
+              </HoverCardContent>
+            )}
+          </HoverCard>
         )}
       </div>
     </div>
@@ -193,22 +342,18 @@ export const RebalancerFormHeader = ({
         <span className="font-mono text-sm font-medium">{`(${address})`}</span>
       </div>
       <div className="flex flex-col gap-1">
-        <p className="max-w-60% text-wrap pt-2 text-sm">
-          <span className="font-semibold">
-            Warning! This product is in Beta.
-          </span>{" "}
-          By using this product you accept the risks associated with beta
-          software.
-        </p>
         <p className=" max-w-60% text-wrap text-sm">
-          To learn more about how the Rebalancer works, you can read this{" "}
+          Learn more about how the Rebalancer works{" "}
           <LinkText
+            openInNewTab={true}
             className=" border-valence-blue text-valence-blue hover:border-b"
             href="/blog//Rebalancer-Protocol-Asset-Management"
           >
-            blog post.
+            here
           </LinkText>
+          .
         </p>
+
         {children}
       </div>
     </section>

@@ -17,7 +17,7 @@ import {
   SelectRebalancerTargets,
   SelectTrustee,
 } from "@/app/rebalancer/create/components";
-import { Button, ToastMessage } from "@/components";
+import { Button, LinkText, ToastMessage } from "@/components";
 import { SelectAssetsFromAccount } from "@/app/rebalancer/create/components/";
 import { OriginAsset } from "@/types/ibc";
 import { useMemo } from "react";
@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
 import { ErrorHandler } from "@/const/error";
+import { CelatoneUrl } from "@/const/celatone";
 
 export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
   const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
@@ -59,6 +60,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
         );
 
     return {
+      isServiceFeeIncluded: true,
       initialAssets: initialAmounts,
       baseTokenDenom: config?.baseDenom ?? "",
       targets:
@@ -73,7 +75,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
         d: config?.pid.d.toString() ?? "",
       },
       targetOverrideStrategy: config?.targetOverrideStrategy ?? "priority",
-    };
+    } as CreateRebalancerForm;
   }, []);
 
   const form = useForm<CreateRebalancerForm>({
@@ -96,12 +98,17 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
       onSuccess: (data) => {
         toast.success(
           <ToastMessage title="Rebalancer update successful" variant="success">
-            <p className="text-sm">
-              Transaction:{" "}
-              <span className="font-mono text-xs font-light">
-                {data.transactionHash}
-              </span>
-            </p>
+            <LinkText
+              className="group"
+              href={CelatoneUrl.trasaction(data.transactionHash)}
+            >
+              <p className="text-sm transition-all group-hover:underline">
+                Transaction:{" "}
+                <span className="font-mono text-xs font-light transition-all group-hover:underline">
+                  {data.transactionHash}
+                </span>
+              </p>
+            </LinkText>
             <p className="font-semibold">Taking you to your account...</p>
           </ToastMessage>,
         );

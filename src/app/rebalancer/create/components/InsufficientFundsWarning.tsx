@@ -5,17 +5,31 @@ import { BsExclamationCircle } from "react-icons/bs";
 import { useSupportedBalances } from "@/hooks";
 import { WarnText } from "@/app/rebalancer/create/components";
 import { HiMiniArrowRight } from "react-icons/hi2";
+import { useMinimumRequiredValue } from "../../hooks";
+import { displayValue } from "@/utils";
 
 export const InsufficientFundsWarning: React.FC<{
   isHoldingMinimumFee: boolean;
   isHoldingAtLeastOneAsset: boolean;
-}> = ({ isHoldingMinimumFee, isHoldingAtLeastOneAsset }) => {
+  baseDenom: string;
+}> = ({ isHoldingMinimumFee, isHoldingAtLeastOneAsset, baseDenom }) => {
+  const { value, symbol } = useMinimumRequiredValue(baseDenom);
+
+  const minimumValueDisplayString = displayValue({ value, symbol });
+
   if (isHoldingMinimumFee) return;
 
   return (
     <div className="mt-2 flex flex-col gap-2 border border-warn p-4">
       {!isHoldingAtLeastOneAsset ? (
-        <>{NoSupportedAssetsMessage}</>
+        <>
+          {NoSupportedAssetsMessage}
+          {
+            <RequiredValueMessage
+              requiredValueString={minimumValueDisplayString}
+            />
+          }
+        </>
       ) : (
         <>{MinimumFeeMessage}</>
       )}
@@ -61,6 +75,19 @@ export const InsufficientFundsWarning: React.FC<{
   );
 };
 
+const RequiredValueMessage = ({
+  requiredValueString,
+}: {
+  requiredValueString: string;
+}) => {
+  return (
+    <p className="text-sm">
+      The Rebalancer requires a minimum value of {requiredValueString} to be in
+      your account.
+    </p>
+  );
+};
+
 const NoSupportedAssetsMessage = (
   <>
     <div className="flex items-center gap-2 ">
@@ -72,7 +99,7 @@ const NoSupportedAssetsMessage = (
     </div>
     <p className="text-sm">
       Deposit at least one of the following assets into your wallet to continue:{" "}
-      {chainConfig.supportedAssets.map((a) => a.symbol).join(", ")}
+      {chainConfig.supportedAssets.map((a) => a.symbol).join(", ")}.
     </p>
   </>
 );

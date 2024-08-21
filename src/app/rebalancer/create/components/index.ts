@@ -1,4 +1,4 @@
 export * from "./steps";
-export * from "./PlaceHolderRows";
+export * from "./WarnText";
 export * from "./InsufficientFundsWarning";
 export * from "./InputTableCell";

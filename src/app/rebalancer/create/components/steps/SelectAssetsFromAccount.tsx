@@ -86,6 +86,7 @@ export const SelectAssetsFromAccount: React.FC<{
       <SelectAmountsLayout
         subContent={
           <InsufficientFundsWarning
+            baseDenom={baseTokenDenom}
             isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
             isHoldingMinimumFee={isHoldingMinimumFee}
           />

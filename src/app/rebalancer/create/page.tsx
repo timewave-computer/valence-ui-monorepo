@@ -8,6 +8,13 @@ import {
   X_HANDLE,
 } from "@/const/socials";
 import { FeatureFlags, isFeatureFlagEnabled } from "@/utils";
+import { fetchRebalancerWhitelist } from "@/server/actions";
+import { QUERY_KEYS } from "@/const/query-keys";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
 export const metadata: Metadata = {
   title: "Start Rebalancing",
@@ -28,17 +35,26 @@ export const metadata: Metadata = {
 
 type CreateRebalancerProps = {};
 
-export default function CreateRebalancerPage({}: CreateRebalancerProps) {
+export default async function CreateRebalancerPage({}: CreateRebalancerProps) {
   const enabled = isFeatureFlagEnabled(FeatureFlags.REBALANCER_CREATE);
 
   if (!enabled) {
     redirect("/rebalancer");
   }
 
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: [QUERY_KEYS.REBALANCER_WHITELIST],
+    queryFn: () => fetchRebalancerWhitelist(),
+  });
+
   return (
-    <div className=" flex w-full flex-row">
-      <SidePanelV2 />
-      <CreateRebalancer />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className=" flex w-full flex-row">
+        <SidePanelV2 />
+        <CreateRebalancer />
+      </div>
+    </HydrationBoundary>
   );
 }

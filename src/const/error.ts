@@ -5,6 +5,7 @@ export const ERROR_MESSAGES = {
   SUBMIT_WITHDRAW_FAIL: "Failed to submit withdraw",
   SUBMIT_WITHDRAW_CACHE_FAIL: "Failed to fetch asset metadata during withdraw",
   DISPLAY_UTC_TIME_FAIL: "Failed to format date to UTC Time",
+  COSMWASM_CONNECT_FAIL: "RPC connect failed, could not create cosmwasm client",
   STARGATE_CONNECT_FAIL: "RPC connect failed, could not create stargate client",
   IBC_TRACE_FAIL: "Failed to trace origin assets",
   COINGECKO_PRICE_FAIL: "Could not fetch prices",

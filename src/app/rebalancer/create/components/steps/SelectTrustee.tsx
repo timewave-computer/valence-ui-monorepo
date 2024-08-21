@@ -43,7 +43,7 @@ export const SelectTrustee: React.FC<{
               value={TrusteeOptions.OnlyThisWallet}
               id={TrusteeOptions.OnlyThisWallet}
             />
-            <p>
+            <p className="text-sm">
               Only my wallet{" "}
               <span className="font-mono text-sm font-light">({address})</span>
             </p>
@@ -53,7 +53,7 @@ export const SelectTrustee: React.FC<{
               value={TrusteeOptions.ThisWalletAndAnotherAddress}
               id={TrusteeOptions.ThisWalletAndAnotherAddress}
             />
-            <p>My wallet and another address</p>
+            <p className="text-sm">My wallet and another address</p>
           </div>
         </RadioGroup>
         <div

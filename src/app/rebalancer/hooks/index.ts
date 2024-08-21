@@ -11,3 +11,4 @@ export * from "./use-historic-values";
 export * from "./use-cached-data";
 export * from "./use-live-portfolio";
 export * from "./use-historical-graph-v2";
+export * from "./use-required-minimum-value";

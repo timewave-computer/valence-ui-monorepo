@@ -3,19 +3,21 @@ import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { useSupportedBalances } from "@/hooks";
-import { displayNumber, displayValue, microToBase } from "@/utils";
+import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import {
   InsufficientFundsWarning,
   useInsufficientFundsWarning,
   InputTableCell,
 } from "@/app/rebalancer/create/components";
-import { LoadingSkeleton } from "@/components";
+import { Checkbox, LoadingSkeleton } from "@/components";
 import {
   useAssetCache,
   useBaseTokenValue,
+  useMinimumRequiredValue,
   usePrefetchData,
 } from "@/app/rebalancer/hooks";
+import { chainConfig } from "@/const/config";
 
 export const SelectAmounts: React.FC<{
   address: string;
@@ -54,6 +56,7 @@ export const SelectAmounts: React.FC<{
   });
 
   const { getOriginAsset } = useAssetCache();
+  const isServiceFeeIncluded = form.watch("isServiceFeeIncluded");
 
   const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
     useInsufficientFundsWarning(address);
@@ -70,6 +73,7 @@ export const SelectAmounts: React.FC<{
       <SelectAmountsLayout
         subContent={
           <InsufficientFundsWarning
+            baseDenom={baseTokenDenom}
             isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
             isHoldingMinimumFee={isHoldingMinimumFee}
           />
@@ -85,17 +89,28 @@ export const SelectAmounts: React.FC<{
         </p>
       }
     >
+      <div className="flex flex-row items-center gap-2">
+        <Checkbox
+          checked={isServiceFeeIncluded}
+          onChange={(value) => setValue("isServiceFeeIncluded", value)}
+        />
+        <span className="text-sm">
+          Accept service fee of {chainConfig.serviceFee.amount}{" "}
+          {chainConfig.serviceFee.symbol}
+        </span>
+      </div>
+
       <div className="flex max-w-[90%] flex-row gap-20">
         <div
           role="grid"
           className="grid grid-cols-[1fr_1fr_2fr_2fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputTableCell variant="header">Available funds</InputTableCell>
-          <InputTableCell variant="header">Value (USD)</InputTableCell>
+          <InputTableCell variant="header">Funds in wallet</InputTableCell>
+          <InputTableCell variant="header">Value</InputTableCell>
           <InputTableCell className="justify-start" variant="header">
-            Initial Amounts
+            Initial Deposit
           </InputTableCell>
-          <InputTableCell variant="header">Initial Value</InputTableCell>
+          <InputTableCell variant="header">Deposit Value</InputTableCell>
           {balances
             ?.filter((b) => {
               const asset = getOriginAsset(b.denom);
@@ -108,6 +123,13 @@ export const SelectAmounts: React.FC<{
               if (asset) {
                 baseBalance = microToBase(balance.amount, asset.decimals);
               }
+              if (
+                asset?.denom === chainConfig.serviceFee.denom &&
+                isServiceFeeIncluded
+              ) {
+                baseBalance -= chainConfig.serviceFee.amount;
+              }
+
               const allValueDisplayString = displayValue({
                 value: baseBalance * balance.price,
                 symbol: "USDC", // always value in usd for first section, for now
@@ -126,16 +148,31 @@ export const SelectAmounts: React.FC<{
                 value: selectedValue,
                 symbol: baseTokenAsset?.symbol ?? "USDC",
               });
+
+              const isOverMax = Number(selectedAmount ?? 0) > baseBalance;
+
               return (
                 <Fragment key={`wallet-balance-row-${balance.denom}`}>
-                  <InputTableCell className="flex gap-2">
+                  <InputTableCell
+                    className={cn(
+                      "flex gap-2",
+                      isOverMax && "text-valence-red",
+                    )}
+                  >
                     <span>{displayNumber(baseBalance, { precision: 2 })}</span>
                     <span>{asset?.symbol ?? ""}</span>
                   </InputTableCell>
 
                   <InputTableCell>({allValueDisplayString})</InputTableCell>
 
-                  <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
+                  <InputTableCell
+                    className={cn(
+                      "relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray",
+                      "focus-within:border-valence-blue",
+                      isOverMax &&
+                        "border-valence-red focus-within:border-valence-red",
+                    )}
+                  >
                     <input
                       placeholder="0.00"
                       className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
@@ -161,7 +198,11 @@ export const SelectAmounts: React.FC<{
                   </InputTableCell>
 
                   <InputTableCell variant="number">
-                    ({selectedValueDisplayString})
+                    {isOverMax ? (
+                      <>({allValueDisplayString})</>
+                    ) : (
+                      <>({selectedValueDisplayString})</>
+                    )}
                   </InputTableCell>
                 </Fragment>
               );

@@ -1,7 +1,7 @@
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import { Checkbox, Dropdown } from "@/components";
+import { Checkbox, Dropdown, IconButton } from "@/components";
 import { useState } from "react";
 import { cn } from "@/utils";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
@@ -24,6 +24,7 @@ import {
 } from "@/app/rebalancer/const";
 import { useProjectionGraphV2 } from "@/app/rebalancer/hooks";
 import { ValueTooltip } from "@/app/rebalancer/components";
+import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 
 type PidKey = keyof CreateRebalancerForm["pid"];
 const AdvancedPid = "advanced-pid";
@@ -151,7 +152,7 @@ export const ConfigureSettings: React.FC<{
         {!isProjectionEnabled && (
           <WarnText
             className="text-valence-gray"
-            text="Select initial amounts and at least two targets to generate projected balances."
+            text="Select initial deposits and at least two targets to generate projected balances."
           />
         )}
         <div className="overflow-clip  bg-valence-lightgray">
@@ -225,11 +226,15 @@ export const ConfigureSettings: React.FC<{
 
       <div className="flex flex-col gap-6 ">
         <div className="flex flex-row items-center gap-2 pt-2">
-          <Checkbox
-            checked={showAdvancedSettings}
-            onChange={setShowAdvancedSettings}
+          <span className="text-sm">Advanced settings</span>
+
+          <IconButton
+            className="h-4 w-4"
+            Icon={showAdvancedSettings ? FaChevronDown : FaChevronLeft}
+            onClick={() => {
+              setShowAdvancedSettings(!showAdvancedSettings);
+            }}
           />
-          <span className="">Show advanced settings</span>
         </div>
         {showAdvancedSettings && (
           <div className="grid grid-cols-[1fr_1fr_1fr] gap-y-4">

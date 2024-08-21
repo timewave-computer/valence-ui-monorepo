@@ -14,6 +14,7 @@ import { useAssetCache } from "@/app/rebalancer/hooks";
 
 export const SidePanel: React.FC<{
   isLoading: boolean;
+  isDisabled?: boolean;
   isValidAccount: boolean;
   debouncedMouseEnter: () => void;
   debouncedMouseLeave: () => void;
@@ -22,6 +23,7 @@ export const SidePanel: React.FC<{
   isValidAccount,
   debouncedMouseEnter,
   debouncedMouseLeave,
+  isDisabled = false,
 }) => {
   const queryClient = useQueryClient();
   const [accountUrlParam, setAccountUrlParam] = useQueryState("account", {
@@ -92,7 +94,7 @@ export const SidePanel: React.FC<{
         <DropdownTextField
           options={chainConfig.featuredAccounts}
           value={account}
-          onChange={(value) => setAccountUrlParam(value)}
+          onChange={(value) => (!isDisabled ? setAccountUrlParam(value) : {})}
           placeholder="neutron12345..."
         />
 

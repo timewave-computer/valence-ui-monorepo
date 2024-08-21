@@ -84,17 +84,15 @@ export const useHistoricalGraphV2 = ({
       // filters, formats, appends todays value
       const data = convertData({
         minTimestamp,
-        localTimeNow,
-        livePortfolio: livePortfolio.data,
+
         rawData: historicalValues.data,
       });
-      if (!data.length)
-        throw ErrorHandler.makeError(
-          ERROR_MESSAGES.HISTORICAL_GRAPH_ERROR,
-          "Could not make graph",
-        );
+      const todaysDataPoint = makeTodaysDataPoint({
+        livePortfolio: livePortfolio.data,
+        localTimeNow,
+      });
+      data.push(todaysDataPoint);
 
-      const todayDataPoint = data[data.length - 1];
       const historialGraphData = generateHistoricalGraphData({
         data,
         config: config?.data,
@@ -103,7 +101,7 @@ export const useHistoricalGraphV2 = ({
       });
 
       const projectedGraphData = generateProjectedData({
-        latest: todayDataPoint,
+        latest: todaysDataPoint,
         getOriginAsset,
         config: config?.data,
         scale,
@@ -162,41 +160,37 @@ const getMinTimestamp = ({
   else return rawData[Math.max(0, dataSize - dayCount)]?.timestamp;
 };
 
-const convertData = ({
-  minTimestamp,
-  rawData,
+const makeTodaysDataPoint = ({
   livePortfolio,
   localTimeNow,
 }: {
-  minTimestamp: number;
-  rawData?: FetchHistoricalValuesReturnValue["values"];
-  livePortfolio?: UseLivePortfolioReturnValue["data"];
+  livePortfolio: UseLivePortfolioReturnValue["data"];
   localTimeNow: number;
-}): FetchHistoricalValuesReturnValue["values"] => {
-  if (!minTimestamp || !rawData) return [];
-  const filtered = rawData?.filter((d) => d.timestamp >= minTimestamp);
-  if (!filtered.length) return [];
+}): FetchHistoricalValuesReturnValue["values"][number] => {
   let lastItem: FetchHistoricalValuesReturnValue["values"][number];
 
-  // pad data with current 'Today' timestamp
-  // if live portfolio, use that, else use last data point
-  if (livePortfolio?.balances) {
-    lastItem = {
-      timestamp: localTimeNow,
-      readableDate: new UTCDate(localTimeNow).toISOString(),
-      tokens: livePortfolio.balances.map((lineItem) => {
-        return {
-          denom: lineItem.denom,
-          amount: lineItem.balance.total,
-          price: lineItem.price,
-        };
-      }),
-    };
-  } else {
-    lastItem = filtered[filtered.length - 1];
-  }
-  filtered.push(lastItem);
-  return filtered;
+  return {
+    timestamp: localTimeNow,
+    readableDate: new UTCDate(localTimeNow).toISOString(),
+    tokens: livePortfolio.balances.map((lineItem) => {
+      return {
+        denom: lineItem.denom,
+        amount: lineItem.balance.total,
+        price: lineItem.price,
+      };
+    }),
+  };
+};
+
+const convertData = ({
+  minTimestamp,
+  rawData,
+}: {
+  minTimestamp: number;
+  rawData?: FetchHistoricalValuesReturnValue["values"];
+}): FetchHistoricalValuesReturnValue["values"] => {
+  if (!minTimestamp || !rawData) return [];
+  return rawData?.filter((d) => d.timestamp >= minTimestamp);
 };
 
 const generateHistoricalGraphData = ({

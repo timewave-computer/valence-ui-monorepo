@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogTrigger,
   DialogContent,
+  LinkText,
 } from "@/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -29,6 +30,7 @@ import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
 import { useAtom } from "jotai";
 import { accountAtom } from "@/app/rebalancer/const";
+import { CelatoneUrl } from "@/const/celatone";
 
 type WithdrawInputForm = {
   amounts: Coin[];
@@ -90,12 +92,17 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
       toast.success(
         <ToastMessage variant="success" title="Withdraw completed">
           {data?.transactionHash && (
-            <p className="text-sm">
-              Transaction:{" "}
-              <span className="font-mono text-xs font-light">
-                {data.transactionHash}
-              </span>
-            </p>
+            <LinkText
+              className="group"
+              href={CelatoneUrl.trasaction(data.transactionHash)}
+            >
+              <p className="text-sm transition-all group-hover:underline">
+                Transaction:{" "}
+                <span className="font-mono text-xs font-light transition-all group-hover:underline">
+                  {data.transactionHash}
+                </span>
+              </p>
+            </LinkText>
           )}
         </ToastMessage>,
       );

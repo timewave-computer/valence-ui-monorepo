@@ -1,7 +1,6 @@
 "use client";
 
 import React, { ReactNode } from "react";
-import { BsCheck2Circle, BsExclamationCircle } from "react-icons/bs";
 import { Toaster as Sonner } from "sonner";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
@@ -19,19 +18,13 @@ export const ToastMessage: React.FC<{
   switch (variant) {
     case "success":
       titleBody = (
-        <div className="flex items-center gap-2">
-          <BsCheck2Circle className="h-5 w-5 text-valence-blue" />
-          <h1 className="text-lg font-semibold text-valence-blue">{title}</h1>
-        </div>
+        <h1 className="text-lg font-semibold text-valence-blue">{title}</h1>
       );
       break;
 
     case "error":
       titleBody = (
-        <div className="flex items-center gap-2">
-          <BsExclamationCircle className="h-5 w-5 text-valence-red" />
-          <h1 className="text-lg font-semibold text-valence-red">{title}</h1>
-        </div>
+        <h1 className="text-lg font-semibold text-valence-red">{title}</h1>
       );
       break;
 

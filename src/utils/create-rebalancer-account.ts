@@ -7,7 +7,6 @@ import { baseToMicroDenomString } from "./denom-math";
 import { RebalancerData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { fromHex, toUtf8 } from "@cosmjs/encoding";
-import { UTCDate } from "@date-fns/utc";
 import { jsonToBase64, jsonToUtf8 } from "@/utils";
 import {
   MsgExecuteContract,
@@ -28,8 +27,8 @@ export const makeCreateRebalancerMessages = async ({
 }> => {
   const valenceAccountCodeId = chainConfig.codeIds.Account;
 
-  // TODO: in production this should include address of the creator
-  const salt = "valence" + UTCDate.now().toString();
+  // supporting just "one" rebalancer per user for now
+  const salt = "valence" + creatorAddress + "1";
 
   // deterministically generate account address
   const predictableValenceAddress = await generatePredictableAddress({

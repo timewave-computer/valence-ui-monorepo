@@ -13,6 +13,7 @@ type TargetConfig = {
 };
 
 export type CreateRebalancerForm = {
+  isServiceFeeIncluded: boolean;
   initialAssets: AssetConfig[];
   baseTokenDenom: string;
   targets: TargetConfig[];

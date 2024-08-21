@@ -1,12 +1,11 @@
 import { LoadingSkeleton } from "@/components";
+import { SidePanelV2 } from "../../components/";
 
 export default function Loading() {
   return (
     <div className=" flex w-full flex-row">
-      <div className="w-96 shrink-0 p-4">
-        <LoadingSkeleton className="min-h-screen" />
-      </div>
-      <div className="min-h-screen w-full border-l border-valence-black p-4">
+      <SidePanelV2 />
+      <div className="flex min-w-[824px] grow animate-pulse flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
         <LoadingSkeleton className="min-h-screen" />
       </div>
     </div>

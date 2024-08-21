@@ -202,7 +202,6 @@ const AccountDetailsHeader: React.FC<{
           <span className="font-mono text-xs">{selectedAddress}</span>
         )}
       </div>
-
       {hasValenceAccount ? (
         <div className="flex flex-row flex-nowrap gap-2 ">
           <PauseOrUnpauseButton />

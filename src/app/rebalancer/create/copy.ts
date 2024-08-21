@@ -1,8 +1,8 @@
 export const CreateRebalancerCopy = {
   step_SelectAssets: {
-    title: "Step 1: Select funds to rebalance",
+    title: "Step 1: Select funds to deposit into Rebalancer account",
     subTitle:
-      "Which funds would you like rebalanced? Specify the amounts that will be deposited to your Rebalancer account upon creation.",
+      "These amounts will be transferred to your Rebalancer account upon creation, and will be be added to the next rebalancing cycle.",
     info1: "",
   },
   step_edit_SelectAssets: {
