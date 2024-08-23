@@ -13,11 +13,16 @@ if (!API_CACHE_URL) throw new Error("Please provide API_CACHE_URL");
 export const fetchMaybeCached = async (
   queryName: string,
   args: { [r: string]: any },
+  options?: {
+    cache?: "force-cache" | "no-store";
+  },
 ): Promise<unknown> => {
   const url =
     API_CACHE_URL + "/q/" + queryName + "?" + new URLSearchParams(args);
+
+  const cacheOptions = options?.cache ?? "force-cache";
   const response = await fetch(url, {
-    cache: "no-store",
+    cache: cacheOptions,
     method: "GET",
     headers: {
       accept: "application/json",

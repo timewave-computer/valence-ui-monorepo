@@ -11,7 +11,7 @@ export const ComingSoonTooltipContent = () => (
     <p className="text-balance pt-2">
       Contact{" "}
       <LinkText
-        className="border-valence-black text-valence-black hover:border-b"
+        className="border-valence-black font-medium text-valence-black hover:border-b"
         href={X_URL}
       >
         {X_HANDLE}

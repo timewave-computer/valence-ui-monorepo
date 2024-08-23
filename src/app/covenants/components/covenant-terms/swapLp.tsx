@@ -253,7 +253,7 @@ export const swapLp: CovenantFields = {
         <p>
           This proposal was automatically generated at {VALENCE_DOMAIN}. Reach
           out if you have any questions or feature requests:{" "}
-          <LinkText className="hover:underline" href={X_URL}>
+          <LinkText className="font-medium hover:underline" href={X_URL}>
             {X_HANDLE}
           </LinkText>
           .

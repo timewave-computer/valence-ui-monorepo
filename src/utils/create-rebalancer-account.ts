@@ -28,7 +28,7 @@ export const makeCreateRebalancerMessages = async ({
   const valenceAccountCodeId = chainConfig.codeIds.Account;
 
   // supporting just "one" rebalancer per user for now
-  const salt = "valence" + creatorAddress + "1";
+  const salt = "valence" + creatorAddress + "1" + "test";
 
   // deterministically generate account address
   const predictableValenceAddress = await generatePredictableAddress({
@@ -93,6 +93,7 @@ const makeInstantiateMessageBody = ({
           amount: baseToMicroDenomString(asset.startingAmount ?? 0, 6), // TODO: get correct decimals
         } as Coin;
     })
+    .filter((f) => f.amount !== "0")
     .sort((a, b) => a.denom!.localeCompare(b.denom!)); // TODO: remove !, adjust type from form -> required input
 
   // add service fee

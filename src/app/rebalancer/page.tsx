@@ -1,27 +1,16 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/const/query-keys";
-import {
-  fetchHistoricalBalances,
-  fetchHistoricalPricesV2,
-  fetchHistoricalTargets,
-} from "@/server/actions";
-import { chainConfig } from "@/const/config";
 import type { Metadata } from "next";
 import {
   ABSOLUTE_URL,
   REBALANCER_DESCRIPTION,
   X_HANDLE,
 } from "@/const/socials";
-import { withTimeout } from "./hooks";
-import { RebalancerMain } from "./RebalancerMain";
-import { UTCDate } from "@date-fns/utc";
-import { subDays } from "date-fns";
-import { OriginAsset } from "@/types/ibc";
-import { microToBase } from "@/utils";
+
+import { Suspense } from "react";
+import { FeatureFlags, isFeatureFlagEnabled } from "@/utils";
+import { AccountDetailsPanel, SidePanelV2, Table } from "./components";
+import { HistoricalGraph } from "./create/components/HistoricalGraph";
+import { SidePanelV1 } from "./RebalancerMainClient";
+import RebalancerMainServerComponent from "./RebalancerMainServer";
 
 export const metadata: Metadata = {
   title: "Valence Rebalancer",
@@ -40,85 +29,41 @@ export const metadata: Metadata = {
   },
 };
 
-const prefetchDataForAccount = async (
-  accountAddress: string,
-  queryClient: QueryClient,
-) => {
-  const midnightUTC = new UTCDate(new UTCDate().setHours(0, 0, 0, 0));
-  const startDate = subDays(midnightUTC, 365);
-  const endDate = midnightUTC;
+function RebalancerMainSuspenseFallback() {
+  const enabled = isFeatureFlagEnabled(FeatureFlags.REBALANCER_ACTIONS_LAYOUT);
 
-  await queryClient.prefetchQuery({
-    retry: (errorCount) => {
-      return errorCount < 1;
-    },
-    queryKey: [
-      QUERY_KEYS.HISTORIC_BALANCES,
-      accountAddress,
-      startDate,
-      endDate,
-    ],
-    queryFn: () =>
-      withTimeout(
-        async () => {
-          const data = await fetchHistoricalBalances(accountAddress, {
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-          });
-          const convertedData = data.map((timeSeriesData) => {
-            const balanceData = timeSeriesData.value;
-            const convertedBalances = Object.keys(balanceData).map((denom) => {
-              const asset = queryClient.getQueryData<OriginAsset>([
-                QUERY_KEYS.ORIGIN_ASSET,
-                denom,
-              ]);
-              const amount = balanceData[denom];
-              return {
-                denom: denom,
-                amount: microToBase(amount ?? 0, asset?.decimals ?? 6),
-              };
-            });
-            return {
-              timestamp: Number(timeSeriesData.at),
-              balances: convertedBalances,
-            };
-          });
-          return convertedData as Array<{
-            timestamp: number;
-            balances: Array<{ denom: string; amount: number }>;
-          }>;
-        },
-        QUERY_KEYS.HISTORIC_BALANCES,
-        10000,
-      ) as Promise<
-        Array<{
-          timestamp: number;
-          balances: Array<{ denom: string; amount: number }>;
-        }>
-      >,
-  });
-
-  await queryClient.prefetchQuery({
-    staleTime: 1000 * 60 * 10, // 10 mins,
-    retry: (errorCount) => {
-      return errorCount < 1;
-    },
-    queryKey: [
-      QUERY_KEYS.HISTORIC_TARGETS,
-      accountAddress,
-      startDate.toISOString(),
-      endDate.toISOString(),
-    ],
-    queryFn: () =>
-      withTimeout(async () => {
-        return fetchHistoricalTargets({
-          address: accountAddress,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
-        });
-      }, QUERY_KEYS.HISTORIC_TARGETS),
-  });
-};
+  if (enabled)
+    return (
+      <div className=" flex w-full flex-row">
+        <SidePanelV2 />
+        <div className="flex min-w-[824px] grow  flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
+          <HistoricalGraph isLoading={true} isError={false} />
+          <AccountDetailsPanel selectedAddress="" />
+        </div>
+      </div>
+    );
+  else
+    return (
+      <div className=" flex w-full flex-row">
+        <SidePanelV1
+          isLoading={true}
+          isValidAccount={false}
+          isDisabled={true}
+        />
+        <div className="flex min-w-[824px] grow  flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
+          <HistoricalGraph isLoading={true} isError={false} />
+          <Table
+            isLoading={true}
+            livePortfolio={{
+              balances: [],
+              totalValue: 0,
+            }}
+            targets={[]}
+          />
+        </div>
+      </div>
+    );
+}
 
 export default async function RebalancerPage({
   searchParams: { account },
@@ -127,31 +72,10 @@ export default async function RebalancerPage({
     account: string;
   };
 }) {
-  const queryClient = new QueryClient();
-
-  const prefetchedHistoricPrices = chainConfig.supportedAssets.map((asset) => {
-    return queryClient.prefetchQuery({
-      staleTime: 60 * 1000 * 10, // 10 mins
-      queryKey: [QUERY_KEYS.HISTORIC_PRICES, asset.denom],
-      retry: (errorCount: number) => errorCount < 1,
-      queryFn: () =>
-        withTimeout(async () => {
-          return fetchHistoricalPricesV2({
-            denom: asset.denom,
-            coingeckoId: asset.coingeckoId,
-          });
-        }, QUERY_KEYS.HISTORIC_PRICES),
-    });
-  });
-
-  await Promise.all(prefetchedHistoricPrices);
-  if (account && account.length > 0) {
-    await prefetchDataForAccount(account, queryClient);
-  }
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <RebalancerMain />
-    </HydrationBoundary>
+    // doing this instead of loading.tsx to provide search param as a key, to trigger loading state on account change
+    <Suspense key={account} fallback={<RebalancerMainSuspenseFallback />}>
+      <RebalancerMainServerComponent searchParams={{ account }} />
+    </Suspense>
   );
 }

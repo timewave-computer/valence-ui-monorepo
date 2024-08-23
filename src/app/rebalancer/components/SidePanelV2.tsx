@@ -1,19 +1,27 @@
 "use client";
-import { Button, LinkText, TextInput, Label } from "@/components";
+import { LinkText, TextInput, Label, ConnectWalletButton } from "@/components";
 import { X_HANDLE, X_URL } from "@/const/socials";
 import { useWallet } from "@/hooks";
-import { cn } from "@/utils";
+import { cn, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
 import { accountAtom } from "@/app/rebalancer/const";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
 import { useValenceAccount } from "@/app/rebalancer/hooks";
+import { ValenceProductBrand } from "@/components/ValenceProductBrand";
 
-export const SidePanelV2: React.FC<{}> = ({}) => {
+export const SidePanelV2: React.FC<{
+  showConnectWallet?: boolean;
+  debouncedMouseEnter?: () => void;
+  debouncedMouseLeave?: () => void;
+  setCursorPosition?: React.Dispatch<
+    React.SetStateAction<{ x: number; y: number }>
+  >;
+}> = ({ debouncedMouseEnter, debouncedMouseLeave, setCursorPosition }) => {
   const [accountUrlParam, setAccountUrlParam] = useQueryState("account", {
     defaultValue: DEFAULT_ACCOUNT,
   });
@@ -22,58 +30,64 @@ export const SidePanelV2: React.FC<{}> = ({}) => {
     setAccount(accountUrlParam);
   }, [setAccount, accountUrlParam]);
 
-  return (
-    <div className="flex w-96 shrink-0 flex-col overflow-hidden overflow-y-auto border-r border-valence-black">
-      <Brand account={account} setAccount={setAccountUrlParam} />
-      <DiscoverPanel />
-    </div>
-  );
-};
+  const isConnectWalletEnabled = useFeatureFlag(FeatureFlags.REBALANCER_CREATE);
 
-const Brand: React.FC<{
-  account: string;
-  setAccount: (s: string) => void;
-}> = ({ account, setAccount }) => {
+  // to track cursor when it moves
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    setCursorPosition &&
+      setCursorPosition({ x: event.clientX, y: event.clientY });
+  };
+
   return (
-    <div className=" flex flex-col items-stretch gap-4 border-b   border-valence-black p-4">
-      <div className="flex flex-row  items-center gap-4 border-valence-black">
-        <Image
-          className="max-h-20 w-auto"
-          src="/img/rebalancer.svg"
-          alt="Rebalancer illustration"
-          width={134}
-          height={80}
-        />
-        <div className="">
+    <div
+      onPointerMove={handlePointerMove}
+      className="flex w-96 shrink-0 flex-col overflow-hidden overflow-y-auto border-r border-valence-black"
+    >
+      <div className=" flex flex-col items-stretch gap-4 border-b   border-valence-black p-4">
+        <ValenceProductBrand
+          img={
+            <Image
+              className="max-h-20 w-auto"
+              src="/img/rebalancer.svg"
+              alt="Rebalancer illustration"
+              width={134}
+              height={80}
+            />
+          }
+        >
           <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
           <p className="text-pretty pt-1">
             Automated balance sheet and treasury management. Contact{" "}
             <LinkText
-              className=" text-valence-black hover:border-b-[1.6px] hover:border-valence-black"
+              className=" font-medium text-valence-black hover:border-b-[1.6px] hover:border-valence-black"
               href={X_URL}
             >
               {X_HANDLE}
             </LinkText>{" "}
             for support.
           </p>
+        </ValenceProductBrand>
+        <ConnectWalletButton
+          connectCta="            Connect your wallet to start rebalancing funds."
+          debouncedMouseEnter={debouncedMouseEnter}
+          debouncedMouseLeave={debouncedMouseLeave}
+          disabled={!isConnectWalletEnabled}
+        />
+
+        <div className="flex flex-col gap-2  ">
+          <h1 className="font-bold">Search by address</h1>
+
+          <TextInput
+            input={account}
+            onChange={(value) => setAccountUrlParam(value)}
+            textClassName="font-mono"
+            containerClassName="w-full"
+            placeholder="neutron12345..."
+          />
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <ConnectWalletButton />
-      </div>
-
-      <div className="flex flex-col gap-2  ">
-        <h1 className="font-bold">Search by address</h1>
-
-        <TextInput
-          input={account}
-          onChange={(value) => setAccount(value)}
-          textClassName="font-mono"
-          containerClassName="w-full"
-          placeholder="neutron12345..."
-        />
-      </div>
+      <DiscoverPanel />
     </div>
   );
 };
@@ -94,7 +108,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
 
       <div>
         {featuredAccounts.length === 0 && (
-          <p className="pt-2 text-sm">
+          <p className="py-2 text-sm">
             No featured accounts to show for {chainConfig.chain.pretty_name}.
           </p>
         )}
@@ -114,7 +128,8 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
               "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
               (account === valenceAddress || (!account && !valenceAddress)) &&
                 "bg-valence-black text-valence-white",
-              account !== valenceAddress && "hover:bg-valence-lightgray",
+              account !== valenceAddress &&
+                "hover:bg-valence-lightgray hover:text-valence-black",
             )}
           >
             <div className="flex flex-row justify-between gap-2 ">
@@ -153,45 +168,4 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
       </div>
     </div>
   );
-};
-
-const ConnectWalletButton: React.FC<{}> = ({}) => {
-  const { isWalletConnected, isWalletConnecting, connect, address } =
-    useWallet();
-  const { data: valenceAccount, isLoading: isValenceAccountLoading } =
-    useValenceAccount(address);
-  const router = useRouter();
-
-  // for calling effect only when connect wallet is clicked
-  const [connectWalletClicked, setConnectWalletClicked] = useState(false);
-
-  // redirect to rebalancer page after wallet is connected and data is fetched
-  useEffect(() => {
-    if (!connectWalletClicked) return;
-    if (isValenceAccountLoading) return;
-    if (valenceAccount) {
-      router.push(`/rebalancer?account=${valenceAccount}`);
-    } else router.push(`/rebalancer/`);
-  }, [connectWalletClicked, address, valenceAccount, isValenceAccountLoading]);
-
-  if (!isWalletConnected)
-    return (
-      <>
-        <Button
-          isLoading={isWalletConnecting || isValenceAccountLoading}
-          onClick={async () => {
-            await connect();
-            setConnectWalletClicked(true);
-          }}
-          variant="primary"
-        >
-          {" "}
-          Connect Wallet
-        </Button>
-        <p className="text-center text-sm">
-          Connect your wallet to start rebalancing funds.
-        </p>
-      </>
-    );
-  else return null;
 };

@@ -2,7 +2,7 @@ import { Button, LinkText } from "@/components";
 import { chainConfig } from "@/const/config";
 import React from "react";
 import { BsExclamationCircle } from "react-icons/bs";
-import { useSupportedBalances } from "@/hooks";
+import { useWalletBalances } from "@/hooks";
 import { WarnText } from "@/app/rebalancer/create/components";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import { useMinimumRequiredValue } from "../../hooks";
@@ -12,7 +12,13 @@ export const InsufficientFundsWarning: React.FC<{
   isHoldingMinimumFee: boolean;
   isHoldingAtLeastOneAsset: boolean;
   baseDenom: string;
-}> = ({ isHoldingMinimumFee, isHoldingAtLeastOneAsset, baseDenom }) => {
+  isEdit?: boolean;
+}> = ({
+  isHoldingMinimumFee,
+  isHoldingAtLeastOneAsset,
+  baseDenom,
+  isEdit = false,
+}) => {
   const { value, symbol } = useMinimumRequiredValue(baseDenom);
 
   const minimumValueDisplayString = displayValue({ value, symbol });
@@ -23,7 +29,11 @@ export const InsufficientFundsWarning: React.FC<{
     <div className="mt-2 flex flex-col gap-2 border border-warn p-4">
       {!isHoldingAtLeastOneAsset ? (
         <>
-          {NoSupportedAssetsMessage}
+          {isEdit ? (
+            <NoSupportedAssetsInAccountMessage />
+          ) : (
+            <NoSupportedAssetsInWalletMessage />
+          )}
           {
             <RequiredValueMessage
               requiredValueString={minimumValueDisplayString}
@@ -88,7 +98,7 @@ const RequiredValueMessage = ({
   );
 };
 
-const NoSupportedAssetsMessage = (
+const NoSupportedAssetsInWalletMessage = () => (
   <>
     <div className="flex items-center gap-2 ">
       <BsExclamationCircle className="h-6 w-6 text-warn " />
@@ -99,6 +109,23 @@ const NoSupportedAssetsMessage = (
     </div>
     <p className="text-sm">
       Deposit at least one of the following assets into your wallet to continue:{" "}
+      {chainConfig.supportedAssets.map((a) => a.symbol).join(", ")}.
+    </p>
+  </>
+);
+
+// for edit
+const NoSupportedAssetsInAccountMessage = () => (
+  <>
+    <div className="flex items-center gap-2 ">
+      <BsExclamationCircle className="h-6 w-6 text-warn " />
+      <WarnText
+        className="text-base font-semibold text-warn"
+        text="This Rebalancer account does not hold any assets supported by the Rebalancer."
+      />
+    </div>
+    <p className="text-sm">
+      Deposit at least one of the following assets into the account to continue:{" "}
       {chainConfig.supportedAssets.map((a) => a.symbol).join(", ")}.
     </p>
   </>
@@ -118,7 +145,7 @@ const MinimumFeeMessage = (
 );
 
 export const useInsufficientFundsWarning = (address: string) => {
-  const { data: balances } = useSupportedBalances(address);
+  const { data: balances } = useWalletBalances(address);
 
   const feeBalance = balances?.find(
     (b) => b.denom === chainConfig.serviceFee.denom,

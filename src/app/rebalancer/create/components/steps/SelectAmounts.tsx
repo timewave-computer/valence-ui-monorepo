@@ -2,7 +2,7 @@ import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
 import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
-import { useSupportedBalances } from "@/hooks";
+import { useWalletBalances } from "@/hooks";
 import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import {
@@ -27,7 +27,9 @@ export const SelectAmounts: React.FC<{
     data: balances,
     isLoading: isLoadingBalances,
     isFetched: isBalancesFetched,
-  } = useSupportedBalances(address);
+  } = useWalletBalances(address, {
+    refetchInveral: 10 * 1000,
+  });
   const { setValue, getValues, watch } = form;
 
   const addTarget = useCallback(

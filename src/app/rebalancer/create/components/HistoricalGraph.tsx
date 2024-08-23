@@ -77,6 +77,7 @@ export const HistoricalGraph: React.FC<{
 
   const {
     data,
+    isPending: isGraphPending,
     isLoading: isGraphLoading,
     isError: isGraphError,
   } = useHistoricalGraphV2({
@@ -132,12 +133,13 @@ export const HistoricalGraph: React.FC<{
         ) {
           return (
             <StatusBar
+              asButton={true}
               className="border border-valence-black transition-all hover:bg-valence-white hover:text-valence-black"
               onClick={() => {
                 router.push("/rebalancer/create");
               }}
               variant="primary"
-              text="Create a Rebalancer account"
+              text="Create a Rebalancer Account"
             />
           );
         }
@@ -146,6 +148,8 @@ export const HistoricalGraph: React.FC<{
     } else if (
       valenceAccountQuery.isLoading ||
       isGraphLoading ||
+      isGraphPending ||
+      isLoading ||
       accountConfigQuery.isLoading ||
       livePortfolioQuery.isLoading ||
       historicValuesQuery.isLoading

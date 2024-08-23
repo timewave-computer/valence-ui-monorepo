@@ -23,7 +23,7 @@ import { cn } from "@/utils";
 import { useAtom } from "jotai";
 import { HistoricalGraph } from "./create/components/HistoricalGraph";
 
-export const RebalancerMain = () => {
+export const RebalancerMainClient = () => {
   const [account] = useAtom(accountAtom);
 
   const isHasAccountInput = !!account && account !== "";
@@ -49,8 +49,8 @@ export const RebalancerMain = () => {
     targets,
   });
 
-  const isCreateRebalancerEnabled = useFeatureFlag(
-    FeatureFlags.REBALANCER_CREATE,
+  const isNewLayoutEnabled = useFeatureFlag(
+    FeatureFlags.REBALANCER_ACTIONS_LAYOUT,
   );
 
   // used to track when hovering over scrollable side panel
@@ -89,14 +89,19 @@ export const RebalancerMain = () => {
         </div>
       )}
 
-      {isCreateRebalancerEnabled ? (
-        <SidePanelV2 />
+      {isNewLayoutEnabled ? (
+        <SidePanelV2
+          setCursorPosition={setCursorPosition}
+          debouncedMouseEnter={debouncedMouseEnter}
+          debouncedMouseLeave={debouncedMouseLeave}
+        />
       ) : (
         <SidePanelV1
           setCursorPosition={setCursorPosition}
-          setIsDisabledElementHovered={setIsDisabledElementHovered}
           isLoading={accountConfigQuery.isLoading}
           isValidAccount={isValidAccount}
+          debouncedMouseEnter={debouncedMouseEnter}
+          debouncedMouseLeave={debouncedMouseLeave}
         />
       )}
       <div className="flex min-w-[824px] grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
@@ -106,7 +111,7 @@ export const RebalancerMain = () => {
           }
           isError={accountConfigQuery.isError || historicValuesQuery.isError}
         />
-        {isCreateRebalancerEnabled ? (
+        {isNewLayoutEnabled ? (
           <AccountDetailsPanel selectedAddress={account} />
         ) : (
           <div className="grow overflow-x-auto bg-valence-white">
@@ -137,30 +142,19 @@ export const SidePanelV1 = ({
   isLoading,
   isValidAccount,
   setCursorPosition,
-  setIsDisabledElementHovered,
   isDisabled = false,
+  debouncedMouseEnter,
+  debouncedMouseLeave,
 }: {
+  debouncedMouseEnter?: () => void;
+  debouncedMouseLeave?: () => void;
   isLoading: boolean;
   isDisabled?: boolean;
   isValidAccount: boolean;
-  setIsDisabledElementHovered?: React.Dispatch<React.SetStateAction<boolean>>;
   setCursorPosition?: React.Dispatch<
     React.SetStateAction<{ x: number; y: number }>
   >;
 }) => {
-  const [delayHandler, setDelayHandler] = useState<number | null>(null); // hack to keep tooltip open when moving mouse towards it
-  const debouncedMouseEnter = () => {
-    setIsDisabledElementHovered && setIsDisabledElementHovered(true);
-    if (delayHandler !== null) clearTimeout(delayHandler);
-  };
-  const debouncedMouseLeave = () => {
-    setDelayHandler(
-      window.setTimeout(() => {
-        setIsDisabledElementHovered && setIsDisabledElementHovered(false);
-      }, 100),
-    );
-  };
-
   // to track cursor when it moves
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     setCursorPosition &&
@@ -184,7 +178,7 @@ export const SidePanelV1 = ({
         <p>
           Contact{" "}
           <LinkText
-            className="border-valence-black text-valence-black hover:border-b"
+            className="border-valence-black font-medium text-valence-black hover:border-b"
             href={X_URL}
           >
             {X_HANDLE}

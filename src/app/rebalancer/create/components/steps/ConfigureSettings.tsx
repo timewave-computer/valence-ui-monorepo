@@ -1,7 +1,7 @@
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import { Checkbox, Dropdown, IconButton } from "@/components";
+import { Dropdown, IconButton } from "@/components";
 import { useState } from "react";
 import { cn } from "@/utils";
 import { TargetOverrideStrategy } from "@/types/rebalancer";

@@ -1,5 +1,12 @@
 "use client";
-import { Button, Dropdown, LinkText, MobileOverlay } from "@/components";
+import {
+  Button,
+  ConnectWalletButton,
+  Dropdown,
+  LinkText,
+  MobileOverlay,
+  ValenceProductBrand,
+} from "@/components";
 import { FeatureFlags, cn, useFeatureFlag } from "@/utils";
 import { useState } from "react";
 import Image from "next/image";
@@ -87,82 +94,82 @@ const CovenantPage = () => {
       <div className="hidden min-h-0 grow flex-row items-stretch sm:flex">
         <div
           onPointerMove={handlePointerMove}
-          className="  flex  w-[24rem] shrink-0  flex-col items-stretch overflow-hidden overflow-y-auto  border-r border-valence-black"
+          className="  flex w-[24rem] shrink-0  flex-col items-stretch overflow-hidden overflow-y-auto  border-r border-valence-black"
         >
-          <div className="flex flex-col gap-2 border-b border-valence-black px-4 pb-4">
-            <Image
-              className="mb-6 mt-8"
-              src="/img/covenant.svg"
-              alt="Covenant illustration"
-              width={226}
-              height={144}
+          <div className="flex flex-col gap-4 p-4">
+            <ValenceProductBrand
+              img={
+                <Image
+                  className="mb-6 mt-8"
+                  src="/img/covenant.svg"
+                  alt="Covenant illustration"
+                  width={134}
+                  height={80}
+                />
+              }
+            >
+              <h1 className="text-xl font-bold">Covenants (beta)</h1>
+
+              <p>
+                Crypto-native agreements. Contact{" "}
+                <LinkText
+                  className="border-valence-black font-medium text-valence-black hover:border-b"
+                  href={X_URL}
+                >
+                  {X_HANDLE}
+                </LinkText>{" "}
+                if your organization wants early access to Covenants.
+              </p>
+            </ValenceProductBrand>
+            <ConnectWalletButton
+              connectCta="            Connect your wallet create a covenant."
+              debouncedMouseEnter={debouncedMouseEnter}
+              debouncedMouseLeave={debouncedMouseLeave}
+              disabled={true}
             />
 
-            <h1 className="text-xl font-bold">Covenants (beta)</h1>
-
-            <p>
-              Contact{" "}
-              <LinkText
-                className="border-valence-black text-valence-black hover:border-b"
-                href={X_URL}
-              >
-                {X_HANDLE}
-              </LinkText>{" "}
-              if your crypto-native organization wants early access to
-              Covenants.
-            </p>
-
-            <p className="mt-4 font-bold">Covenant type</p>
-            {canViewPol ? (
-              <Dropdown
-                options={TYPE_OPTIONS}
-                selected={covenantTypeSelection}
-                onSelected={(e) => {
-                  setCovenantType(e);
-
-                  if (e === CovenantTypeSelector.Pol) {
-                    setBothPartiesData(PLACEHOLDER_BOTH_PARTIES_DATA);
-                  } else {
-                    setBothPartiesData({
-                      ...PLACEHOLDER_BOTH_PARTIES_DATA,
-                      ...PLACEHOLDER_BOTH_LIQUIDITY_DATA,
-                    });
-                  }
-                  setCovenantType(e);
-                }}
-              />
-            ) : (
-              <Dropdown
-                onMouseMove={debouncedMouseEnter}
-                onMouseEnter={debouncedMouseEnter}
-                onMouseLeave={debouncedMouseLeave}
-                isDisabled={true}
-                options={TYPE_OPTIONS}
-                selected={covenantTypeSelection}
-                onSelected={setCovenantType}
-              />
-            )}
-            {covenantTypeSelection === "pol" && (
-              <div className="mt-2 space-y-2">
-                <p className="font-bold">How many parties?</p>
+            <div className="flex flex-col gap-2">
+              <p className=" font-bold">Covenant type</p>
+              {canViewPol ? (
                 <Dropdown
-                  options={POL_TYPE_PARTIES_OPTIONS}
-                  selected={numParties}
-                  onSelected={setNumParties}
-                />
-              </div>
-            )}
+                  options={TYPE_OPTIONS}
+                  selected={covenantTypeSelection}
+                  onSelected={(e) => {
+                    setCovenantType(e);
 
-            <Button
-              disabled
-              onMouseMove={debouncedMouseEnter}
-              onMouseEnter={debouncedMouseEnter}
-              onMouseLeave={debouncedMouseLeave}
-              className="mt-2"
-              onClick={() => {}}
-            >
-              Connect wallet
-            </Button>
+                    if (e === CovenantTypeSelector.Pol) {
+                      setBothPartiesData(PLACEHOLDER_BOTH_PARTIES_DATA);
+                    } else {
+                      setBothPartiesData({
+                        ...PLACEHOLDER_BOTH_PARTIES_DATA,
+                        ...PLACEHOLDER_BOTH_LIQUIDITY_DATA,
+                      });
+                    }
+                    setCovenantType(e);
+                  }}
+                />
+              ) : (
+                <Dropdown
+                  onMouseMove={debouncedMouseEnter}
+                  onMouseEnter={debouncedMouseEnter}
+                  onMouseLeave={debouncedMouseLeave}
+                  isDisabled={true}
+                  options={TYPE_OPTIONS}
+                  selected={covenantTypeSelection}
+                  onSelected={setCovenantType}
+                />
+              )}
+              {covenantTypeSelection === "pol" && (
+                <div className="mt-2 space-y-2">
+                  <p className="font-bold">How many parties?</p>
+                  <Dropdown
+                    options={POL_TYPE_PARTIES_OPTIONS}
+                    selected={numParties}
+                    onSelected={setNumParties}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="relative flex grow flex-col items-stretch">

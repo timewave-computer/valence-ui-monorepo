@@ -16,8 +16,8 @@ export const SidePanel: React.FC<{
   isLoading: boolean;
   isDisabled?: boolean;
   isValidAccount: boolean;
-  debouncedMouseEnter: () => void;
-  debouncedMouseLeave: () => void;
+  debouncedMouseEnter?: () => void;
+  debouncedMouseLeave?: () => void;
 }> = ({
   isLoading,
   isValidAccount,

@@ -174,7 +174,6 @@ const WithdrawForm: React.FC<{
   const {
     register,
     getValues,
-    watch,
     formState: { errors },
   } = useForm<WithdrawInputForm>({
     mode: "onChange",
@@ -186,86 +185,102 @@ const WithdrawForm: React.FC<{
     },
   });
   const isOverMax = !!errors.amounts?.length;
+
+  const nonZeroBalances = balances.filter((lineItem) => {
+    return lineItem.balance.total > 0;
+  });
   return (
     <>
       <div className="flex flex-col gap-2">
         <h1 className="text-xl font-bold">Withdraw Funds</h1>
         {isFundsInAuction && <UnavailableFundsWarning />}
       </div>
-      <div
-        role="grid"
-        className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
-      >
-        <InputTableCell variant="header">Available funds</InputTableCell>
-        <InputTableCell variant="header">Withdraw Amount</InputTableCell>
-        {balances
-          .filter((lineItem) => lineItem.balance.total > 0)
-          .map((lineItem, index) => {
-            const asset = getOriginAsset(lineItem.denom);
-            return (
-              <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
-                <InputTableCell className="flex gap-2">
-                  <span>
-                    {displayNumber(lineItem.balance.account, {
-                      precision: 2,
-                    })}
-                  </span>
-                  <span>{asset?.symbol ?? ""}</span>
-                </InputTableCell>
-                <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
-                  <input
-                    placeholder="0.00"
-                    className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
-                    type="number"
-                    autoFocus={index === 0}
-                    {...register(`amounts.${index}.amount`, {
-                      valueAsNumber: true,
-                      max: {
-                        value: lineItem.balance.account,
-                        message: maxLimitMsg,
-                      },
-                    })}
-                  />
-                  <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                    {asset?.symbol}
-                  </span>
-                </InputTableCell>
-              </Fragment>
-            );
-          })}
+      {nonZeroBalances.length === 0 ? (
+        <>
+          {" "}
+          <p>Account is empty, no funds to withdraw.</p>
+          <div className="no-wrap flex flex-row items-center justify-end gap-4">
+            <DialogClose asChild>
+              <Button variant="primary">Close</Button>
+            </DialogClose>
+          </div>
+        </>
+      ) : (
+        <>
+          <div
+            role="grid"
+            className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
+          >
+            <InputTableCell variant="header">Available funds</InputTableCell>
+            <InputTableCell variant="header">Withdraw Amount</InputTableCell>
+            {nonZeroBalances.map((lineItem, index) => {
+              const asset = getOriginAsset(lineItem.denom);
+              return (
+                <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
+                  <InputTableCell className="flex gap-2">
+                    <span>
+                      {displayNumber(lineItem.balance.account, {
+                        precision: 2,
+                      })}
+                    </span>
+                    <span>{asset?.symbol ?? ""}</span>
+                  </InputTableCell>
+                  <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
+                    <input
+                      placeholder="0.00"
+                      className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
+                      type="number"
+                      autoFocus={index === 0}
+                      {...register(`amounts.${index}.amount`, {
+                        valueAsNumber: true,
+                        max: {
+                          value: lineItem.balance.account,
+                          message: maxLimitMsg,
+                        },
+                      })}
+                    />
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
+                      {asset?.symbol}
+                    </span>
+                  </InputTableCell>
+                </Fragment>
+              );
+            })}
 
-        {isOverMax ? (
-          <WarnText text={maxLimitMsg} className="text-warn" />
-        ) : (
-          <div className="min-h-4 w-full"></div>
-        )}
-      </div>
-      <div className="no-wrap flex flex-row items-center justify-end gap-4">
-        <DialogClose asChild>
-          <Button disabled={isSubmitPending} variant="secondary">
-            Close
-          </Button>
-        </DialogClose>
-        <Button
-          className=""
-          isLoading={isSubmitPending}
-          onClick={() =>
-            handleSubmit(
-              getValues("amounts").filter((a) => {
-                const num = parseFloat(a.amount);
-                if (isNaN(num) || num <= 0) {
-                  return false;
-                }
-                return true;
-              }),
-            )
-          }
-          disabled={isOverMax}
-          variant="primary"
-        >
-          Withdraw
-        </Button>
-      </div>
+            {isOverMax ? (
+              <WarnText text={maxLimitMsg} className="text-warn" />
+            ) : (
+              <div className="min-h-4 w-full"></div>
+            )}
+          </div>
+          <div className="no-wrap flex flex-row items-center justify-end gap-4">
+            <DialogClose asChild>
+              <Button disabled={isSubmitPending} variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+            <Button
+              className=""
+              isLoading={isSubmitPending}
+              onClick={() =>
+                handleSubmit(
+                  getValues("amounts").filter((a) => {
+                    const num = parseFloat(a.amount);
+                    if (isNaN(num) || num <= 0) {
+                      return false;
+                    }
+                    return true;
+                  }),
+                )
+              }
+              disabled={isOverMax}
+              variant="primary"
+            >
+              Withdraw
+            </Button>
+          </div>
+        </>
+      )}
     </>
   );
 };

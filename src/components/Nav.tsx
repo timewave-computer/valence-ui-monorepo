@@ -5,7 +5,7 @@ import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
-import { useChainContext, useSupportedBalances, useWallet } from "@/hooks";
+import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
 import { useValenceAccount } from "@/app/rebalancer/hooks";
 
@@ -46,7 +46,7 @@ export const Nav = () => {
   const { address, disconnect, isWalletConnected, walletInfo } = useWallet();
 
   // TODO: hydrate this on server so we dont have to call it unless user decides to click 'create'
-  useSupportedBalances(address);
+  useWalletBalances(address);
 
   const links = (
     <>

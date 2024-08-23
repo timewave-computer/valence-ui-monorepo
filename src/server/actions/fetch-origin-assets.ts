@@ -9,6 +9,7 @@ export const fetchOriginAssets = async (
 ): Promise<OriginAssetResponse["origin_assets"]> => {
   const res = await fetch(SKIP_URL + "/v1/fungible/ibc_origin_assets", {
     method: "POST",
+    cache: "force-cache",
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",

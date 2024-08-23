@@ -40,7 +40,8 @@ export const useProjectionGraphV2 = (
   const validInitialAssets = initialAssets.filter(
     (a) => !!a && !!a.startingAmount && !isNaN(a.startingAmount),
   );
-  const isInitialAssetsValid = !!initialAssets && validInitialAssets.length > 1;
+  const isInitialAssetsValid =
+    !!initialAssets && validInitialAssets.length >= 1;
   const pid = watch("pid");
   const baseTokenDenom = watch("baseTokenDenom");
 
@@ -198,34 +199,54 @@ const generateProjectionGraphData = async ({
     );
 
     return timestamps.map((timestamp) => {
+      let keepTrading = true;
       let result: any = {
         timestamp,
       };
-      convertedInitialData.forEach((denomData) => {
-        let { i, value } = do_pid({
-          pid: convertedPids,
-          input: denomData.currentBalance,
-          target: denomData.targetBalance,
-          dt: "1", // always 1
-          last_i: denomData.lastI,
-          last_input: denomData.lastInput,
+
+      if (keepTrading) {
+        convertedInitialData.forEach((denomData) => {
+          let { i, value } = do_pid({
+            pid: convertedPids,
+            input: denomData.currentBalance,
+            target: denomData.targetBalance,
+            dt: "1", // always 1
+            last_i: denomData.lastI,
+            last_input: denomData.lastInput,
+          });
+          denomData.lastI = i;
+          denomData.lastInput = denomData.currentBalance;
+          denomData.currentBalance = new Decimal(denomData.currentBalance)
+            .plus(new Decimal(value))
+            .toString();
+
+          const roundedBalance = parseFloat(
+            parseFloat(denomData.currentBalance).toPrecision(4),
+          );
+          // if value is between 0 and -1, stop trading
+          // we will not sell less than 1 asset
+          // can be a fraction if positive
+          if (roundedBalance <= 0 && roundedBalance >= -1) keepTrading = false;
+
+          result[GraphKey.projectedAmount(denomData.symbol)] = roundedBalance;
+          result[GraphKey.projectedValue(denomData.symbol)] =
+            roundedBalance * denomData.price;
+          result[GraphKey.projectedTargetValue(denomData.symbol)] =
+            parseFloat(denomData.targetBalance) * denomData.price;
         });
+      } else {
+        convertedInitialData.forEach((denomData) => {
+          const roundedBalance = parseFloat(denomData.currentBalance);
 
-        denomData.lastI = i;
-        denomData.lastInput = denomData.currentBalance;
-        denomData.currentBalance = new Decimal(denomData.currentBalance)
-          .plus(new Decimal(value))
-          .floor()
-          .toString();
+          result[GraphKey.projectedAmount(denomData.symbol)] =
+            roundedBalance.toPrecision(4);
+          result[GraphKey.projectedValue(denomData.symbol)] =
+            roundedBalance * denomData.price;
 
-        result[GraphKey.projectedAmount(denomData.symbol)] = parseFloat(
-          denomData.currentBalance,
-        );
-        result[GraphKey.projectedValue(denomData.symbol)] =
-          parseFloat(denomData.currentBalance) * denomData.price;
-        result[GraphKey.projectedTargetValue(denomData.symbol)] =
-          parseFloat(denomData.targetBalance) * denomData.price;
-      });
+          result[GraphKey.projectedTargetValue(denomData.symbol)] =
+            parseFloat(denomData.targetBalance) * denomData.price;
+        });
+      }
 
       return result;
     });

@@ -20,7 +20,7 @@ export async function fetchHistoricalTargets({
     startDate: new UTCDate(startDate),
     endDate: new UTCDate(endDate),
   });
-  const res = await fetch(url);
+  const res = await fetch(url, { cache: "force-cache" });
   if (!res.ok) {
     throw ErrorHandler.makeError(
       `${ERROR_MESSAGES.INDEXER_HISTORICAL_TARGETS_ERROR}, API Error: ${res.status}, ${res.statusText}`,

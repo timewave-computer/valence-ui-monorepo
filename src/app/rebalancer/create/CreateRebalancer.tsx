@@ -4,12 +4,13 @@ import {
   DialogClose,
   LinkText,
   LoadingIndicator,
+  LoadingSkeleton,
   RouterButton,
   ToastMessage,
 } from "@/components";
-import { useWallet, useWhitelistedDenoms } from "@/hooks";
+import { useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { displayValue, makeCreateRebalancerMessages } from "@/utils";
 import { chainConfig } from "@/const/config";
@@ -25,12 +26,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaChevronLeft } from "react-icons/fa";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
-import {
-  AccountTarget,
-  FetchAccountConfigReturnValue,
-  fetchRebalancerWhitelist,
-} from "@/server/actions";
-import { useCallback, useEffect, useState } from "react";
+import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
+import { useCallback, useState } from "react";
 import { Dialog, DialogContent } from "@/components";
 import {
   HoverCard,
@@ -46,14 +43,13 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
   const router = useRouter();
 
   const {
-    address,
-    isWalletConnected,
+    address: _address,
+    isWalletConnecting,
     getCosmWasmClient,
     getSigningStargateClient,
   } = useWallet();
 
-  const { data: whitelist } = useWhitelistedDenoms();
-
+  const address = _address ?? "";
   const form = useForm<CreateRebalancerForm>({
     defaultValues: {
       isServiceFeeIncluded: false,
@@ -77,7 +73,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
   const isServiceFeeIncluded = form.watch("isServiceFeeIncluded");
 
   const isDepositsValid =
-    initialAssets.every((asset) => {
+    initialAssets.some((asset) => {
       return !!asset?.startingAmount && asset.startingAmount > 0;
     }) && initialAssets.length > 0;
 
@@ -128,6 +124,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     const result = await signer.signAndBroadcast(address, messages, "auto");
     return { valenceAddress, result };
   }, [getSigningStargateClient, getCosmWasmClient, form, address]);
+
   const queryClient = useQueryClient();
 
   const { mutate: handleCreate, isPending: isCreatePending } = useMutation({
@@ -157,9 +154,6 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
         } as FetchAccountConfigReturnValue,
       );
       queryClient.setQueryData([QUERY_KEYS.VALENCE_ACCOUNT], valenceAddress);
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, valenceAddress],
-      });
 
       console.log("created rebalancer at", valenceAddress, "tx:", result);
       toast.success(
@@ -197,8 +191,8 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     },
   });
 
-  if (!isWalletConnected || !address) {
-    return redirect("/rebalancer");
+  if (isWalletConnecting) {
+    return <LoadingSkeleton className="min-h-screen" />;
   }
 
   return (
@@ -339,7 +333,9 @@ export const RebalancerFormHeader = ({
       <div className="flex flex-wrap items-center gap-1">
         <h1 className="text-xl font-bold">{title}</h1>
 
-        <span className="font-mono text-sm font-medium">{`(${address})`}</span>
+        {!!address.length && (
+          <span className="font-mono text-sm font-medium">{`(${address})`}</span>
+        )}
       </div>
       <div className="flex flex-col gap-1">
         <p className=" max-w-60% text-wrap text-sm">
@@ -347,7 +343,7 @@ export const RebalancerFormHeader = ({
           <LinkText
             openInNewTab={true}
             className=" border-valence-blue text-valence-blue hover:border-b"
-            href="/blog//Rebalancer-Protocol-Asset-Management"
+            href="/blog/Rebalancer-Protocol-Asset-Management"
           >
             here
           </LinkText>

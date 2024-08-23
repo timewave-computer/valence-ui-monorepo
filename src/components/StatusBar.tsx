@@ -19,10 +19,11 @@ const statusBarVariants = cva(
 );
 
 export interface StatusBarProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLDivElement | HTMLButtonElement>,
     VariantProps<typeof statusBarVariants> {
   text?: string;
   icon?: ReactNode;
+  asButton?: boolean;
 }
 type SizedIconType = IconType & { size?: number };
 
@@ -31,14 +32,16 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   icon,
   className,
   variant,
+  asButton,
   ...props
 }) => {
   const sizedIcon = React.isValidElement<SizedIconType>(icon)
     ? React.cloneElement(icon, { size: 20 })
     : icon;
 
+  const Comp = asButton ? "button" : "div";
   return (
-    <div className={cn(statusBarVariants({ variant, className }))} {...props}>
+    <Comp className={cn(statusBarVariants({ variant, className }))} {...props}>
       <div
         className={cn(
           "flex  min-w-56 flex-row items-center justify-center overflow-hidden",
@@ -52,6 +55,6 @@ export const StatusBar: React.FC<StatusBarProps> = ({
           <span className="text-wrap text-center">{text}</span>
         )}
       </div>
-    </div>
+    </Comp>
   );
 };

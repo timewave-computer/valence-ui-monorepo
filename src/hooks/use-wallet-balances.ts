@@ -6,7 +6,12 @@ import {
 } from "@/server/actions";
 import { useQuery } from "@tanstack/react-query";
 
-export const useSupportedBalances = (address?: string) => {
+export const useWalletBalances = (
+  address?: string,
+  options?: {
+    refetchInveral?: number;
+  },
+) => {
   return useQuery({
     staleTime: 30 * 1000, // 30 sec
     retry: (errorCount) => {
@@ -15,7 +20,7 @@ export const useSupportedBalances = (address?: string) => {
       }
       return true;
     },
-    refetchInterval: 30 * 1000, // 30 sec
+    refetchInterval: options?.refetchInveral ?? 30 * 1000, // 30 sec
     enabled: !!address,
     queryKey: [QUERY_KEYS.WALLET_BALANCES, address],
     queryFn: () =>
