@@ -20,6 +20,7 @@ import {
   SelectAmounts,
   ConfigureSettings,
   SelectTrustee,
+  WarnText,
 } from "@/app/rebalancer/create/components";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -320,6 +321,7 @@ export const RebalancerFormHeader = ({
   const title = isEdit
     ? "Edit Rebalancer Account"
     : "Set up a Rebalancer account for this wallet";
+
   return (
     <section className="flex w-full flex-col gap-2 p-4">
       <RouterButton
@@ -332,6 +334,9 @@ export const RebalancerFormHeader = ({
       </RouterButton>
       <div className="flex flex-wrap items-center gap-1">
         <h1 className="text-xl font-bold">{title}</h1>
+        {!address.length && (
+          <WarnText className="text-warn" text="Wallet not connected" />
+        )}
 
         {!!address.length && (
           <span className="font-mono text-sm font-medium">{`(${address})`}</span>

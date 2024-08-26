@@ -153,17 +153,20 @@ const generateProjectionGraphData = async ({
   }, 0);
 
   const projectionInputs: ProjectionInput[] = [];
+
   targets.forEach(({ denom, bps }) => {
     if (!denom || !bps) return;
     const cachedAsset = getOriginAsset(denom);
     const price = getPrice(denom);
-    const assetInput = initialAssets.find((asset) => asset?.denom === denom);
+    const assetStartingAmount =
+      initialAssets.find((asset) => asset?.denom === denom)?.startingAmount ??
+      0;
 
-    if (!cachedAsset || !assetInput?.startingAmount || !price) return;
+    if (!cachedAsset || !price) return;
     projectionInputs.push({
       symbol: cachedAsset.symbol,
       price,
-      initialBalance: assetInput.startingAmount,
+      initialBalance: assetStartingAmount,
       targetBalance: calculateTargetBalance({
         totalValue,
         targetPercentage: bps,

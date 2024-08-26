@@ -5,7 +5,7 @@ import { Tooltip } from "@/components";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 type IconButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   Icon: React.ElementType;
   disabledTooltip?: React.ReactNode;
@@ -25,7 +25,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
             <Icon
               onClick={() => {
                 if (disabled) return;
-                onClick();
+                if (onClick) onClick();
               }}
               className={cn(
                 "h-6 w-6",

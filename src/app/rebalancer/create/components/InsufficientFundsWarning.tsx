@@ -43,16 +43,7 @@ export const InsufficientFundsWarning: React.FC<{
       ) : (
         <>{MinimumFeeMessage}</>
       )}
-      <div className="flex max-w-96  flex-row flex-wrap items-center gap-4 pt-4">
-        <Button variant="secondary">
-          <LinkText
-            className=" flex flex-row items-center gap-1.5 self-start"
-            href="https://www.usdc.com/#access"
-          >
-            Buy USDC
-            <HiMiniArrowRight className="h-4 w-4" />
-          </LinkText>
-        </Button>
+      <div className="flex  flex-row flex-wrap items-center gap-4 pt-4">
         <Button variant="secondary">
           <LinkText
             className=" flex flex-row items-center gap-1.5 self-start"

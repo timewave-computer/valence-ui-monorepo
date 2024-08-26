@@ -173,7 +173,7 @@ const AccountDetailsHeader: React.FC<{
     );
   }
 
-  if (!isWalletConnected || !isOwnAccount) {
+  if (!isWalletConnected || !isOwnAccount || !hasValenceAccount) {
     return (
       <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
         <div className="flex flex-col gap-1">
@@ -193,16 +193,11 @@ const AccountDetailsHeader: React.FC<{
     <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
       <div className="flex flex-col gap-1 ">
         <h1 className="text-base font-bold">Your Rebalancer Account</h1>
-        {selectedAddress.length === 0 && !hasValenceAccount && (
-          <p className="text-xs">
-            This wallet does not yet have a Rebalancer account
-          </p>
-        )}
         {selectedAddress.length > 0 && (
           <span className="font-mono text-xs">{selectedAddress}</span>
         )}
       </div>
-      {hasValenceAccount ? (
+      {hasValenceAccount && (
         <div className="flex flex-row flex-nowrap gap-2 ">
           <PauseOrUnpauseButton />
           <WithdrawDialog />
@@ -212,10 +207,6 @@ const AccountDetailsHeader: React.FC<{
             </Button>
           </Link>
         </div>
-      ) : (
-        <Link href={`/rebalancer/create`}>
-          <Button variant="primary">Start rebalancing funds</Button>
-        </Link>
       )}
     </section>
   );

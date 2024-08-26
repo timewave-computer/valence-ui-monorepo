@@ -1,13 +1,8 @@
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
 import { Fragment, useCallback, useMemo } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { cn, displayNumber, microToBase } from "@/utils";
-import {
-  useAssetCache,
-  useBaseTokenValue,
-  useMinimumRequiredValue,
-  usePriceCache,
-} from "@/app/rebalancer/hooks";
+import { cn, displayNumber } from "@/utils";
+import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
   Tooltip,
@@ -17,6 +12,8 @@ import {
   DropdownOption,
   IconButton,
   LoadingSkeleton,
+  QuestionTooltipContent,
+  WithQuestionTooltip,
 } from "@/components";
 import { InputTableCell } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
@@ -123,9 +120,19 @@ export const SelectRebalancerTargets: React.FC<{
 
       <div className="grid w-full max-w-[90%] grid-cols-[1fr_1fr_2fr_2fr_auto]">
         <div className="flex flex-col gap-2">
-          <div className="col-span-2 h-fit pb-1 text-xs font-medium ">
-            Base token denomination
-          </div>
+          <WithQuestionTooltip
+            tooltipContent={
+              <QuestionTooltipContent
+                title="Base token denomination"
+                subtext="TODO"
+              />
+            }
+          >
+            <div className="col-span-2 h-fit pb-1 text-xs font-medium ">
+              Base token denomination
+            </div>
+          </WithQuestionTooltip>
+
           <Dropdown
             containerClassName=" min-w-32"
             selected={watch(`baseTokenDenom`)}
@@ -151,7 +158,17 @@ export const SelectRebalancerTargets: React.FC<{
                 Target Distribution
               </InputTableCell>
               <InputTableCell className="justify-start" variant="header">
-                Minimum Balance (Optional)
+                <WithQuestionTooltip
+                  tooltipContent={
+                    <QuestionTooltipContent
+                      title="Minimum balance"
+                      subtext="TODO"
+                    />
+                  }
+                >
+                  {" "}
+                  Minimum Balance (Optional)
+                </WithQuestionTooltip>
               </InputTableCell>
               <InputTableCell
                 className="h-full flex-col items-center justify-center"
@@ -243,7 +260,6 @@ export const SelectRebalancerTargets: React.FC<{
                               "h-full w-full max-w-[50%]  bg-transparent p-1 focus:outline-none",
                             )}
                             type="number"
-                            placeholder="10.000"
                             value={watch(`targets.${index}.minimumAmount`)}
                             onChange={(e) => {
                               setValue(`targets.${index}`, {
@@ -252,7 +268,12 @@ export const SelectRebalancerTargets: React.FC<{
                               });
                             }}
                           />
-                          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
+                          <span
+                            className={cn(
+                              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono text-valence-gray",
+                              hasMimumValueProperty && "text-valence-black",
+                            )}
+                          >
                             {assetMetadata?.symbol}
                           </span>
                         </InputTableCell>

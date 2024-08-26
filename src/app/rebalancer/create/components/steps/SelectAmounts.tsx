@@ -10,11 +10,15 @@ import {
   useInsufficientFundsWarning,
   InputTableCell,
 } from "@/app/rebalancer/create/components";
-import { Checkbox, LoadingSkeleton } from "@/components";
+import {
+  Checkbox,
+  LoadingSkeleton,
+  QuestionTooltipContent,
+  WithQuestionTooltip,
+} from "@/components";
 import {
   useAssetCache,
   useBaseTokenValue,
-  useMinimumRequiredValue,
   usePrefetchData,
 } from "@/app/rebalancer/hooks";
 import { chainConfig } from "@/const/config";
@@ -86,9 +90,16 @@ export const SelectAmounts: React.FC<{
   return (
     <SelectAmountsLayout
       subContent={
-        <p className="w-3/4 text-sm">
-          {CreateRebalancerCopy.step_SelectAssets.subTitle}
-        </p>
+        <>
+          <p className="w-3/4 text-sm">
+            {CreateRebalancerCopy.step_SelectAssets.subTitle}
+          </p>
+          <InsufficientFundsWarning // here to handle if missing service fee
+            baseDenom={baseTokenDenom}
+            isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
+            isHoldingMinimumFee={isHoldingMinimumFee}
+          />
+        </>
       }
     >
       <div className="flex flex-row items-center gap-2">
@@ -96,10 +107,19 @@ export const SelectAmounts: React.FC<{
           checked={isServiceFeeIncluded}
           onChange={(value) => setValue("isServiceFeeIncluded", value)}
         />
-        <span className="text-sm">
-          Accept service fee of {chainConfig.serviceFee.amount}{" "}
-          {chainConfig.serviceFee.symbol}
-        </span>
+        <WithQuestionTooltip
+          tooltipContent={
+            <QuestionTooltipContent
+              title="Service fee"
+              subtext="TODO: explain why a service fee is collected"
+            />
+          }
+        >
+          <span className="text-sm">
+            Accept service fee of {chainConfig.serviceFee.amount}{" "}
+            {chainConfig.serviceFee.symbol}
+          </span>
+        </WithQuestionTooltip>
       </div>
 
       <div className="flex max-w-[90%] flex-row gap-20">
@@ -107,7 +127,7 @@ export const SelectAmounts: React.FC<{
           role="grid"
           className="grid grid-cols-[1fr_1fr_2fr_2fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputTableCell variant="header">Funds in wallet</InputTableCell>
+          <InputTableCell variant="header">Available funds</InputTableCell>
           <InputTableCell variant="header">Value</InputTableCell>
           <InputTableCell className="justify-start" variant="header">
             Initial Deposit

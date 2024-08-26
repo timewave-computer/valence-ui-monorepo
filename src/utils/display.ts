@@ -55,11 +55,11 @@ export const displayNumber = (
       return value.toPrecision();
     }
   }
-  if (value >= 0.01) {
-    // If the value is greater than or equal to 0.01, format it with two decimal points
+  if (value >= 0.1) {
+    // If the value is greater than or equal to 0.1, format it with two decimal points
     return value.toFixed(precision);
   } else {
-    // If the value is less than 0.01, format it with two significant figures
+    // If the value is less than 0.1, format it with two significant figures
     return value.toPrecision(precision);
   }
 };

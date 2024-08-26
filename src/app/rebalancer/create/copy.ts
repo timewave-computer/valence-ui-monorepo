@@ -23,6 +23,8 @@ export const CreateRebalancerCopy = {
     subTitle: "How quickly would you like your funds to be rebalanced?",
     info1:
       "This will determine how much is traded in a single day. The larger the quantity, the most susceptible you are to price volatility.",
+    infoPid:
+      "You can configure more advanced rebalancing based on PID math. Not reccommended unless you are an advanced user.",
   },
   step_Trustee: {
     title: "Step 4: Choose a trustee",

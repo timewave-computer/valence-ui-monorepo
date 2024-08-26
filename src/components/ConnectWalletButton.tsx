@@ -10,7 +10,14 @@ export const ConnectWalletButton: React.FC<{
   debouncedMouseEnter?: () => void;
   debouncedMouseLeave?: () => void;
   connectCta: string;
-}> = ({ disabled, debouncedMouseEnter, debouncedMouseLeave, connectCta }) => {
+  rerouteOnConnect?: boolean;
+}> = ({
+  disabled,
+  debouncedMouseEnter,
+  debouncedMouseLeave,
+  connectCta,
+  rerouteOnConnect = false,
+}) => {
   const { isWalletConnected, isWalletConnecting, connect, address } =
     useWallet();
   const { data: valenceAccount, isLoading: isValenceAccountLoading } =
@@ -22,12 +29,19 @@ export const ConnectWalletButton: React.FC<{
 
   // redirect to rebalancer page after wallet is connected and data is fetched
   useEffect(() => {
+    if (!rerouteOnConnect) return;
     if (!connectWalletClicked) return;
     if (isValenceAccountLoading) return;
     if (valenceAccount) {
       router.push(`/rebalancer?account=${valenceAccount}`);
     } else router.push(`/rebalancer/`);
-  }, [connectWalletClicked, address, valenceAccount, isValenceAccountLoading]);
+  }, [
+    rerouteOnConnect,
+    connectWalletClicked,
+    address,
+    valenceAccount,
+    isValenceAccountLoading,
+  ]);
 
   const button = disabled ? (
     <Button disabled={true} variant="primary">

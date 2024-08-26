@@ -91,6 +91,7 @@ export const RebalancerMainClient = () => {
 
       {isNewLayoutEnabled ? (
         <SidePanelV2
+          rerouteOnConnect={true}
           setCursorPosition={setCursorPosition}
           debouncedMouseEnter={debouncedMouseEnter}
           debouncedMouseLeave={debouncedMouseLeave}

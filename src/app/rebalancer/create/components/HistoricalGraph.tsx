@@ -132,15 +132,21 @@ export const HistoricalGraph: React.FC<{
           !isWalletConnecting
         ) {
           return (
-            <StatusBar
-              asButton={true}
-              className="border border-valence-black transition-all hover:bg-valence-white hover:text-valence-black"
-              onClick={() => {
-                router.push("/rebalancer/create");
-              }}
-              variant="primary"
-              text="Create a Rebalancer Account"
-            />
+            <div className="flex flex-col items-center justify-center gap-2">
+              <p className="text-sm">
+                This wallet does not yet have a rebalancer account.
+              </p>
+
+              <StatusBar
+                asButton={true}
+                className="w-fit border border-valence-black transition-all hover:bg-valence-white hover:text-valence-black"
+                onClick={() => {
+                  router.push("/rebalancer/create");
+                }}
+                variant="primary"
+                text="Start rebalancing funds"
+              />
+            </div>
           );
         }
         return <StatusBar variant="primary" text="Please enter an account" />;

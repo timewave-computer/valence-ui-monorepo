@@ -1,7 +1,12 @@
 import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import { Dropdown, IconButton } from "@/components";
+import {
+  Dropdown,
+  IconButton,
+  QuestionTooltipContent,
+  WithQuestionTooltip,
+} from "@/components";
 import { useState } from "react";
 import { cn } from "@/utils";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
@@ -22,9 +27,11 @@ import {
   scaleFormatter,
   SymbolColors,
 } from "@/app/rebalancer/const";
-import { useProjectionGraphV2 } from "@/app/rebalancer/hooks";
+import { useAssetCache, useProjectionGraphV2 } from "@/app/rebalancer/hooks";
 import { ValueTooltip } from "@/app/rebalancer/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
+import { getAsset } from "node:sea";
+import { symbol } from "zod";
 
 type PidKey = keyof CreateRebalancerForm["pid"];
 const AdvancedPid = "advanced-pid";
@@ -37,8 +44,9 @@ export const ConfigureSettings: React.FC<{
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const pid = watch("pid");
-  const initialAssets = watch("initialAssets");
+  const targets = watch("targets");
   const strategy = watch("targetOverrideStrategy");
+  const { getOriginAsset } = useAssetCache();
 
   const {
     isEnabled: isProjectionEnabled,
@@ -60,7 +68,16 @@ export const ConfigureSettings: React.FC<{
       </div>
       <div className="grid grid-cols-[1fr_1fr_1fr]">
         <div className="col-span-1 flex flex-col gap-2">
-          <div className="h-fit pb-1 text-xs font-medium">Rebalance speed</div>
+          <WithQuestionTooltip
+            tooltipContent={
+              <QuestionTooltipContent title="Rebalance speed" subtext="TODO" />
+            }
+          >
+            {" "}
+            <div className="h-fit pb-1 text-xs font-medium">
+              Rebalance speed
+            </div>
+          </WithQuestionTooltip>
           <Dropdown
             containerClassName="min-w-80"
             selected={showPid ? AdvancedPid : watch(`pid.p`)}
@@ -83,25 +100,55 @@ export const ConfigureSettings: React.FC<{
 
       {showPid && (
         <div>
+          <p className="py-2 text-sm">
+            {CreateRebalancerCopy.step_Settings.infoPid}
+          </p>
           <div className="grid grid-cols-[auto_auto_auto] gap-x-8 gap-y-2 pt-4">
             <div
               role="columnheader"
               className="font-base font-base   flex items-end  text-xs"
             >
-              Proportional
+              <WithQuestionTooltip
+                tooltipContent={
+                  <QuestionTooltipContent
+                    title="Proportional parameter"
+                    subtext="TODO"
+                  />
+                }
+              >
+                Proportional
+              </WithQuestionTooltip>
             </div>
 
             <div
               role="columnheader"
               className="font-base font-base  flex items-end  text-xs"
             >
-              Integral
+              <WithQuestionTooltip
+                tooltipContent={
+                  <QuestionTooltipContent
+                    title="Integral parameter"
+                    subtext="TODO"
+                  />
+                }
+              >
+                Integral Parameter
+              </WithQuestionTooltip>
             </div>
             <div
               role="columnheader"
               className="font-base font-base  flex items-end  text-xs"
             >
-              Derivative
+              <WithQuestionTooltip
+                tooltipContent={
+                  <QuestionTooltipContent
+                    title="Derivative parameter"
+                    subtext="TODO"
+                  />
+                }
+              >
+                Derivative
+              </WithQuestionTooltip>
             </div>
 
             {Object.keys(pid).map((key) => {
@@ -194,30 +241,36 @@ export const ConfigureSettings: React.FC<{
                 axisLine={{ stroke: "white" }}
                 className="font-sans text-xs text-valence-black"
               />
-              {initialAssets.map((asset) => (
-                <>
-                  <Line
-                    key={GraphKey.projectedValue(asset.symbol)}
-                    dataKey={GraphKey.projectedValue(asset.symbol)}
-                    type="monotone"
-                    dot={false}
-                    strokeWidth={GraphStyles.width.regular}
-                    stroke={SymbolColors.get(asset.symbol)}
-                    isAnimationActive={false}
-                    strokeDasharray={GraphStyles.lineStyle.solid}
-                  />
-                  <Line
-                    dataKey={GraphKey.projectedTargetValue(asset.symbol)}
-                    type="monotone"
-                    dot={false}
-                    activeDot={false}
-                    stroke={SymbolColors.get(asset.symbol)}
-                    strokeWidth={GraphStyles.width.regular}
-                    isAnimationActive={false}
-                    strokeDasharray={GraphStyles.lineStyle.dotted}
-                  />
-                </>
-              ))}
+              {targets
+                .filter((t) => !!t.denom)
+                .map((target) => {
+                  const asset = getOriginAsset(target.denom ?? "");
+                  const symbol = asset?.symbol ?? "";
+                  return (
+                    <>
+                      <Line
+                        key={GraphKey.projectedValue(symbol)}
+                        dataKey={GraphKey.projectedValue(symbol)}
+                        type="monotone"
+                        dot={false}
+                        strokeWidth={GraphStyles.width.regular}
+                        stroke={SymbolColors.get(symbol)}
+                        isAnimationActive={false}
+                        strokeDasharray={GraphStyles.lineStyle.solid}
+                      />
+                      <Line
+                        dataKey={GraphKey.projectedTargetValue(symbol)}
+                        type="monotone"
+                        dot={false}
+                        activeDot={false}
+                        stroke={SymbolColors.get(symbol)}
+                        strokeWidth={GraphStyles.width.regular}
+                        isAnimationActive={false}
+                        strokeDasharray={GraphStyles.lineStyle.dotted}
+                      />
+                    </>
+                  );
+                })}
               <CartesianGrid syncWithTicks stroke="white" />
             </LineChart>
           </ResponsiveContainer>
@@ -240,7 +293,16 @@ export const ConfigureSettings: React.FC<{
           <div className="grid grid-cols-[1fr_1fr_1fr] gap-y-4">
             <div className="col-span-1 col-start-1 flex flex-col gap-2">
               <div className="h-fit pb-1 text-xs font-medium">
-                Target override strategy
+                <WithQuestionTooltip
+                  tooltipContent={
+                    <QuestionTooltipContent
+                      title="Target override strategy"
+                      subtext="TODO"
+                    />
+                  }
+                >
+                  Target override strategy
+                </WithQuestionTooltip>
               </div>
 
               <Dropdown
@@ -253,12 +315,20 @@ export const ConfigureSettings: React.FC<{
             </div>
             <div className="col-span-1 col-start-1 flex flex-col gap-2 ">
               <div className="h-fit pb-1 text-xs font-medium">
-                Maximum daily limit
+                <WithQuestionTooltip
+                  tooltipContent={
+                    <QuestionTooltipContent
+                      title="Maximum daily limit"
+                      subtext="TODO"
+                    />
+                  }
+                >
+                  Maximum daily limit
+                </WithQuestionTooltip>
               </div>
 
               <div className="relative flex items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue ">
                 <input
-                  placeholder="0.00"
                   className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
                   type="number"
                   {...register(`maxLimit`)}

@@ -15,13 +15,19 @@ import { useValenceAccount } from "@/app/rebalancer/hooks";
 import { ValenceProductBrand } from "@/components/ValenceProductBrand";
 
 export const SidePanelV2: React.FC<{
+  rerouteOnConnect?: boolean;
   showConnectWallet?: boolean;
   debouncedMouseEnter?: () => void;
   debouncedMouseLeave?: () => void;
   setCursorPosition?: React.Dispatch<
     React.SetStateAction<{ x: number; y: number }>
   >;
-}> = ({ debouncedMouseEnter, debouncedMouseLeave, setCursorPosition }) => {
+}> = ({
+  debouncedMouseEnter,
+  debouncedMouseLeave,
+  setCursorPosition,
+  rerouteOnConnect,
+}) => {
   const [accountUrlParam, setAccountUrlParam] = useQueryState("account", {
     defaultValue: DEFAULT_ACCOUNT,
   });
@@ -68,6 +74,7 @@ export const SidePanelV2: React.FC<{
           </p>
         </ValenceProductBrand>
         <ConnectWalletButton
+          rerouteOnConnect={rerouteOnConnect}
           connectCta="            Connect your wallet to start rebalancing funds."
           debouncedMouseEnter={debouncedMouseEnter}
           debouncedMouseLeave={debouncedMouseLeave}
