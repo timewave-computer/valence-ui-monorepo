@@ -30,8 +30,6 @@ import {
 import { useAssetCache, useProjectionGraphV2 } from "@/app/rebalancer/hooks";
 import { ValueTooltip } from "@/app/rebalancer/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
-import { getAsset } from "node:sea";
-import { symbol } from "zod";
 
 type PidKey = keyof CreateRebalancerForm["pid"];
 const AdvancedPid = "advanced-pid";

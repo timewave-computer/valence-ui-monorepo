@@ -29,7 +29,7 @@ const calculateValueInBaseDenom = ({
   if (isUsdcBase) {
     price = usdcPrice ?? 0;
   } else {
-    price = usdcPrice ?? 0 / Number(baseTokenPrice ?? 0);
+    price = (usdcPrice ?? 0) / Number(baseTokenPrice ?? 0);
   }
   return amount * price;
 };
@@ -48,17 +48,16 @@ export const useBaseTokenValue = ({
 
   const calculateValue = useCallback(
     ({ denom, amount }: { denom: string; amount?: number }) => {
-      const asset = getOriginAsset(denom);
       const price = getPrice(denom);
 
       return calculateValueInBaseDenom({
         amount: Number(amount ?? 0),
-        isUsdcBase: asset?.symbol === "USDC",
+        isUsdcBase: baseAsset?.symbol === "USDC",
         usdcPrice: price,
         baseTokenPrice: basePrice,
       });
     },
-    [getPrice, getOriginAsset, basePrice],
+    [baseAsset, getPrice, getOriginAsset, basePrice],
   );
 
   return {

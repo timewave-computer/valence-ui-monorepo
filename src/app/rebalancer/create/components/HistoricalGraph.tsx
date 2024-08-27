@@ -132,11 +132,7 @@ export const HistoricalGraph: React.FC<{
           !isWalletConnecting
         ) {
           return (
-            <div className="flex flex-col items-center justify-center gap-2">
-              <p className="text-sm">
-                This wallet does not yet have a rebalancer account.
-              </p>
-
+            <div className="mt-7 flex flex-col items-center justify-center  gap-2">
               <StatusBar
                 asButton={true}
                 className="w-fit border border-valence-black transition-all hover:bg-valence-white hover:text-valence-black"
@@ -146,6 +142,9 @@ export const HistoricalGraph: React.FC<{
                 variant="primary"
                 text="Start rebalancing funds"
               />
+              <p className="text-sm">
+                This wallet does not yet have a rebalancer account.
+              </p>
             </div>
           );
         }

@@ -152,9 +152,14 @@ export const SelectAmounts: React.FC<{
                 baseBalance -= chainConfig.serviceFee.amount;
               }
 
-              const allValueDisplayString = displayValue({
-                value: baseBalance * balance.price,
-                symbol: "USDC", // always value in usd for first section, for now
+              const totalValue = calculateValue({
+                denom: balance.denom,
+                amount: baseBalance,
+              });
+
+              const toalValueDisplayString = displayValue({
+                value: totalValue,
+                symbol: baseTokenAsset?.symbol ?? "USDC",
               });
 
               const selectedAmount = getValues(
@@ -185,7 +190,7 @@ export const SelectAmounts: React.FC<{
                     <span>{asset?.symbol ?? ""}</span>
                   </InputTableCell>
 
-                  <InputTableCell>({allValueDisplayString})</InputTableCell>
+                  <InputTableCell>({toalValueDisplayString})</InputTableCell>
 
                   <InputTableCell
                     className={cn(
@@ -221,7 +226,7 @@ export const SelectAmounts: React.FC<{
 
                   <InputTableCell variant="number">
                     {isOverMax ? (
-                      <>({allValueDisplayString})</>
+                      <>({toalValueDisplayString})</>
                     ) : (
                       <>({selectedValueDisplayString})</>
                     )}
