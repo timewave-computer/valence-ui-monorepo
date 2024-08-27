@@ -7,3 +7,4 @@ export * from "./feature-flags";
 export * from "./create-rebalancer-account";
 export * from "./encoding";
 export * from "./closest-price";
+export * from "./dates";

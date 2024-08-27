@@ -2,9 +2,8 @@ import {
   AccountTarget,
   FetchHistoricalValuesReturnValue,
 } from "@/server/actions";
-import { findClosestCoingeckoPrice } from "@/utils";
-import { UTCDate } from "@date-fns/utc";
-import { subDays } from "date-fns";
+import { findClosestCoingeckoPrice, useDateRange } from "@/utils";
+
 import {
   useHistoricBalances,
   useHistoricTargets,
@@ -14,6 +13,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { CoinGeckoHistoricPrices } from "@/types/coingecko";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
+import { UTCDate } from "@date-fns/utc";
 
 export const useHistoricValues = ({
   accountAddress,
@@ -22,10 +22,7 @@ export const useHistoricValues = ({
   accountAddress: string;
   targets: Array<AccountTarget>;
 }) => {
-  const midnightUTC = new UTCDate(new UTCDate().setHours(0, 0, 0, 0));
-  const startDate = subDays(midnightUTC, 365);
-  const endDate = midnightUTC;
-
+  const { startDate, endDate } = useDateRange();
   const {
     isFetched: isCacheFetched,
     isLoading: isCacheLoading,

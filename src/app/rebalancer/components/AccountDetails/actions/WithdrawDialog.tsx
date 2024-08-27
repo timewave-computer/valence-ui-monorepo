@@ -90,23 +90,12 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
     mutationFn: withdraw,
     onSuccess: async (data, variables: WithdrawInputForm["amounts"]) => {
       toast.success(
-        <ToastMessage variant="success" title="Withdraw completed">
-          {data?.transactionHash && (
-            <LinkText
-              className="group"
-              href={CelatoneUrl.trasaction(data.transactionHash)}
-            >
-              <p className="text-sm transition-all group-hover:underline">
-                Transaction:{" "}
-                <span className="font-mono text-xs font-light transition-all group-hover:underline">
-                  {data.transactionHash}
-                </span>
-              </p>
-            </LinkText>
-          )}
-        </ToastMessage>,
+        <ToastMessage
+          transactionHash={data.transactionHash}
+          title="Withdraw completed"
+          variant="success"
+        ></ToastMessage>,
       );
-
       queryClient.setQueryData(
         [QUERY_KEYS.ACCOUNT_BALANCES, accountAddress],
         (old: BalanceReturnValue) => {

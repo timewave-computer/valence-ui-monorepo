@@ -162,6 +162,8 @@ export const ConfigureSettings: React.FC<{
                   )}
                 >
                   <input
+                    // @ts-ignore
+                    onWheel={(e) => e.target?.blur()} // prevent scroll
                     key={key}
                     className={cn(
                       "h-full w-full bg-transparent p-1 focus:outline-none",
@@ -327,6 +329,8 @@ export const ConfigureSettings: React.FC<{
 
               <div className="relative flex items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue ">
                 <input
+                  // @ts-ignore
+                  onWheel={(e) => e.target?.blur()} // prevent scroll
                   className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
                   type="number"
                   {...register(`maxLimit`)}

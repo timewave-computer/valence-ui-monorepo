@@ -167,8 +167,6 @@ const makeTodaysDataPoint = ({
   livePortfolio: UseLivePortfolioReturnValue["data"];
   localTimeNow: number;
 }): FetchHistoricalValuesReturnValue["values"][number] => {
-  let lastItem: FetchHistoricalValuesReturnValue["values"][number];
-
   return {
     timestamp: localTimeNow,
     readableDate: new UTCDate(localTimeNow).toISOString(),

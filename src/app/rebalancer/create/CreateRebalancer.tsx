@@ -12,7 +12,11 @@ import { useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { displayValue, makeCreateRebalancerMessages } from "@/utils";
+import {
+  displayValue,
+  makeCreateRebalancerMessages,
+  useDateRange,
+} from "@/utils";
 import { chainConfig } from "@/const/config";
 import { toast } from "sonner";
 import {
@@ -44,13 +48,13 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
   const router = useRouter();
 
   const {
-    address: _address,
+    address: _walletAddress,
     isWalletConnecting,
     getCosmWasmClient,
     getSigningStargateClient,
   } = useWallet();
 
-  const address = _address ?? "";
+  const walletAddress = _walletAddress ?? "";
   const form = useForm<CreateRebalancerForm>({
     defaultValues: {
       isServiceFeeIncluded: false,
@@ -109,24 +113,32 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
 
   const createRebalancer = useCallback(async () => {
     // should not happen but here to make typescript happy
-    if (!address)
+    if (!walletAddress)
       throw new Error(
         "No address specified. Please reconnect wallet or contact @ValenceZone for help.",
       );
     const cwClient = await getCosmWasmClient();
 
     // atomically create & fund valence account and register account to rebalancer
-    const { messages, valenceAddress } = await makeCreateRebalancerMessages({
+    const { valenceAddress, messages } = await makeCreateRebalancerMessages({
       cosmwasmClient: cwClient,
-      creatorAddress: address,
+      creatorAddress: walletAddress,
       config: form.getValues(),
     });
     const signer = await getSigningStargateClient();
-    const result = await signer.signAndBroadcast(address, messages, "auto");
+    const result = await signer.signAndBroadcast(
+      walletAddress,
+      messages,
+      "auto",
+    );
+
     return { valenceAddress, result };
-  }, [getSigningStargateClient, getCosmWasmClient, form, address]);
+  }, [getSigningStargateClient, getCosmWasmClient, form, walletAddress]);
 
   const queryClient = useQueryClient();
+
+  // for query key to do optimistic update on historical values
+  const { startDate, endDate } = useDateRange();
 
   const { mutate: handleCreate, isPending: isCreatePending } = useMutation({
     mutationFn: createRebalancer,
@@ -140,44 +152,61 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       queryClient.setQueryData(
         [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, valenceAddress],
         {
-          admin: address,
+          admin: walletAddress,
           baseDenom: formValues.baseTokenDenom,
+          targetOverrideStrategy: formValues.targetOverrideStrategy,
+          trustee: formValues.trustee,
           pid: {
             p: parseFloat(formValues.pid.p),
             i: parseFloat(formValues.pid.i),
             d: parseFloat(formValues.pid.d),
           },
+          isPaused: false,
+          maxLimit: formValues.maxLimit,
           targets: formValues.targets.map((t) => {
             return {
+              denom: t.denom,
               percentage: t.bps / 100,
+              min_balance: t.minimumAmount,
             } as AccountTarget;
           }),
         } as FetchAccountConfigReturnValue,
       );
-      queryClient.setQueryData([QUERY_KEYS.VALENCE_ACCOUNT], valenceAddress);
+      queryClient.setQueryData(
+        [QUERY_KEYS.VALENCE_ACCOUNT, walletAddress],
+        valenceAddress,
+      );
+      queryClient.setQueryData(
+        [QUERY_KEYS.ACCOUNT_BALANCES, valenceAddress],
+        formValues.initialAssets.map((asset) => ({
+          denom: asset.denom,
+          amount: asset.startingAmount,
+        })),
+      );
+
+      queryClient.setQueryData(
+        [QUERY_KEYS.AUCTION_BALANCES, valenceAddress],
+        [],
+      );
+      queryClient.setQueryData(
+        [QUERY_KEYS.HISTORIC_BALANCES, valenceAddress, startDate, endDate],
+        [],
+      );
+      queryClient.setQueryData(
+        [QUERY_KEYS.HISTORIC_TARGETS, valenceAddress, startDate, endDate],
+        [],
+      );
 
       console.log("created rebalancer at", valenceAddress, "tx:", result);
       toast.success(
-        <ToastMessage title="Rebalancer setup successful" variant="success">
-          <LinkText
-            className="group"
-            href={CelatoneUrl.trasaction(result.transactionHash)}
-          >
-            <p className="text-sm transition-all group-hover:underline">
-              Transaction:{" "}
-              <span className="font-mono text-xs font-light transition-all group-hover:underline">
-                {result.transactionHash}
-              </span>
-            </p>
-          </LinkText>
+        <ToastMessage
+          transactionHash={result.transactionHash}
+          title="Rebalancer account was created and funded sucessfully."
+          variant="success"
+        >
           <p className="text-sm">
-            Address:{" "}
-            <span className="font-mono text-xs font-light">
-              {valenceAddress}
-            </span>
+            Funds will begin rebalancing at the beggining of the next cycle.
           </p>
-
-          <p className="font-semibold">Taking you to your account...</p>
         </ToastMessage>,
       );
       router.push(`/rebalancer?account=${valenceAddress}`);
@@ -239,16 +268,16 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
           </div>
         </DialogContent>
       </Dialog>
-      <RebalancerFormHeader address={address} isEdit={false} />
+      <RebalancerFormHeader address={walletAddress} isEdit={false} />
       <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
-        <SelectAmounts form={form} address={address} />
+        <SelectAmounts form={form} address={walletAddress} />
         <SelectRebalancerTargets
-          address={address}
+          address={walletAddress}
           form={form}
           isCleanStartingAmountEnabled={true}
         />
-        <ConfigureSettings address={address} form={form} />
-        <SelectTrustee address={address} form={form} />
+        <ConfigureSettings address={walletAddress} form={form} />
+        <SelectTrustee address={walletAddress} form={form} />
         {isCreatePending ? (
           <div className="flex min-h-11 min-w-60 items-center justify-center bg-valence-black">
             <LoadingIndicator />
@@ -334,9 +363,6 @@ export const RebalancerFormHeader = ({
       </RouterButton>
       <div className="flex flex-wrap items-center gap-1">
         <h1 className="text-xl font-bold">{title}</h1>
-        {!address.length && (
-          <WarnText className="text-warn" text="Wallet not connected" />
-        )}
 
         {!!address.length && (
           <span className="font-mono text-sm font-medium">{`(${address})`}</span>

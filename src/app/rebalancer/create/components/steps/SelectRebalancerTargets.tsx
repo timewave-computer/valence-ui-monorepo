@@ -224,6 +224,8 @@ export const SelectRebalancerTargets: React.FC<{
                     </InputTableCell>
                     <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
                       <input
+                        // @ts-ignore
+                        onWheel={(e) => e.target?.blur()} // prevent scroll
                         className="h-full w-full max-w-[50%] bg-transparent  p-1 font-mono focus:outline-none"
                         type="number"
                         placeholder="10.00"
@@ -252,6 +254,8 @@ export const SelectRebalancerTargets: React.FC<{
                           )}
                         >
                           <input
+                            // @ts-ignore
+                            onWheel={(e) => e.target?.blur()} // prevent scroll
                             disabled={disableMinimumValue}
                             className={cn(
                               "justify-start",

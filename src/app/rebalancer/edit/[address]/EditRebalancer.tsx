@@ -97,19 +97,15 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
       },
       onSuccess: (data) => {
         toast.success(
-          <ToastMessage title="Rebalancer update successful" variant="success">
-            <LinkText
-              className="group"
-              href={CelatoneUrl.trasaction(data.transactionHash)}
-            >
-              <p className="text-sm transition-all group-hover:underline">
-                Transaction:{" "}
-                <span className="font-mono text-xs font-light transition-all group-hover:underline">
-                  {data.transactionHash}
-                </span>
-              </p>
-            </LinkText>
-            <p className="font-semibold">Taking you to your account...</p>
+          <ToastMessage
+            transactionHash={data.transactionHash}
+            title="Rebalancer account updated sucessfully."
+            variant="success"
+          >
+            <p className="text-sm">
+              The most current configuration will be applied to the next
+              Rebalancer cycle.
+            </p>
           </ToastMessage>,
         );
         const currentVals = form.getValues();

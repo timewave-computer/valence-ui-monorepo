@@ -2,13 +2,14 @@ import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
 import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
-import { useWalletBalances } from "@/hooks";
+import { useWallet, useWalletBalances } from "@/hooks";
 import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import {
   InsufficientFundsWarning,
   useInsufficientFundsWarning,
   InputTableCell,
+  WarnText,
 } from "@/app/rebalancer/create/components";
 import {
   Checkbox,
@@ -22,6 +23,7 @@ import {
   usePrefetchData,
 } from "@/app/rebalancer/hooks";
 import { chainConfig } from "@/const/config";
+import { BsExclamationCircle } from "react-icons/bs";
 
 export const SelectAmounts: React.FC<{
   address: string;
@@ -35,6 +37,7 @@ export const SelectAmounts: React.FC<{
     refetchInveral: 10 * 1000,
   });
   const { setValue, getValues, watch } = form;
+  const { isWalletConnected } = useWallet();
 
   const addTarget = useCallback(
     (denom: string) => {
@@ -74,6 +77,26 @@ export const SelectAmounts: React.FC<{
       </SelectAmountsLayout>
     );
 
+  if (!isWalletConnected) {
+    return (
+      <SelectAmountsLayout
+        subContent={
+          <div>
+            <div className="mt-2 flex flex-row items-center gap-4 border border-warn p-4">
+              <BsExclamationCircle className="h-8 w-8 text-warn " />
+              <div className="flex flex-col gap-0.5">
+                <WarnText
+                  className="text-base font-semibold text-warn"
+                  text="No wallet connected."
+                />
+                <p className="text-sm">Connect a wallet to continue.</p>
+              </div>
+            </div>
+          </div>
+        }
+      />
+    );
+  }
   if (isBalancesFetched && (!isHoldingMinimumFee || !isHoldingAtLeastOneAsset))
     return (
       <SelectAmountsLayout
@@ -175,7 +198,6 @@ export const SelectAmounts: React.FC<{
                 value: selectedValue,
                 symbol: baseTokenAsset?.symbol ?? "USDC",
               });
-
               const isOverMax = Number(selectedAmount ?? 0) > baseBalance;
 
               return (
@@ -201,6 +223,8 @@ export const SelectAmounts: React.FC<{
                     )}
                   >
                     <input
+                      // @ts-ignore
+                      onWheel={(e) => e.target?.blur()} // prevent scroll
                       placeholder="0.00"
                       className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
                       type="number"

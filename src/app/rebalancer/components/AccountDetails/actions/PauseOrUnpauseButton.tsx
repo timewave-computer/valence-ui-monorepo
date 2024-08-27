@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
 import { AccountClient } from "@/codegen/ts-codegen/Account.client";
 import { toast } from "sonner";
+import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 
 export const PauseOrUnpauseButton: React.FC<{}> = () => {
   const queryClient = useQueryClient();
@@ -50,11 +51,17 @@ export const PauseOrUnpauseButton: React.FC<{}> = () => {
 
   const { mutate: handlePause, isPending: isPausePending } = useMutation({
     mutationFn: () => pauseRebalancer(),
-    onSuccess: () => {
+    onSuccess: (data: ExecuteResult) => {
       toast.success(
-        <ToastMessage variant="success" title="Rebalancer paused">
-          You can unpause anytime. No funds will be traded while the Rebalancer
-          is paused.
+        <ToastMessage
+          transactionHash={data.transactionHash}
+          variant="success"
+          title="Rebalancer paused"
+        >
+          <p className="text-sm">
+            You can unpause anytime. No funds will be traded while the
+            Rebalancer is paused.
+          </p>
         </ToastMessage>,
       );
       queryClient.setQueryData(
@@ -82,9 +89,18 @@ export const PauseOrUnpauseButton: React.FC<{}> = () => {
 
   const { mutate: handleUnpause, isPending: isUnpausePending } = useMutation({
     mutationFn: () => unpauseRebalancer(),
-    onSuccess: () => {
+    onSuccess: (data: ExecuteResult) => {
       toast.success(
-        <ToastMessage variant="success" title="Rebalancer resumed" />,
+        <ToastMessage
+          transactionHash={data.transactionHash}
+          variant="success"
+          title="Rebalancer resumed."
+        >
+          <p className="text-sm">
+            This Rebalancer account will be included in the next Rebalancer
+            cycle.
+          </p>
+        </ToastMessage>,
       );
       queryClient.setQueryData(
         [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, selectedAccountAddress],
