@@ -91,25 +91,24 @@ export const AccountDetailsPanel: React.FC<{
     <div className="flex grow flex-col  overflow-x-auto border-valence-black bg-valence-white ">
       <AccountDetailsHeader selectedAddress={selectedAddress} />
       <section className="flex flex-col gap-2 border-b border-valence-black  p-4">
-        <div
+        <button
           className="flex flex-row justify-between"
           onClick={() => {
             setIsConfigOpen(!isConfigOpen);
           }}
         >
-          <div className="flex flex-row items-center gap-2">
-            <h2 className="text-sm font-bold">Configuration</h2>
+          <span className="flex flex-row items-center gap-2">
+            <span className="text-sm font-bold">Configuration</span>
 
             {config?.isPaused && <Label text="PAUSED" />}
-          </div>
-          <IconButton
-            className="h-4 w-4"
-            Icon={isConfigOpen ? FaChevronDown : FaChevronLeft}
-            onClick={() => {
-              setIsConfigOpen(!isConfigOpen);
-            }}
-          />
-        </div>
+          </span>
+
+          {isConfigOpen ? (
+            <FaChevronDown className="h-4 w-4" />
+          ) : (
+            <FaChevronLeft className="h-4 w-4" />
+          )}
+        </button>
 
         {isConfigOpen && (
           <>

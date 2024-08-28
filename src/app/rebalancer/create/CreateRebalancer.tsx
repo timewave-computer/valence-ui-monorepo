@@ -39,8 +39,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@radix-ui/react-hover-card";
-import { CelatoneUrl } from "@/const/celatone";
 import { useBaseTokenValue, useMinimumRequiredValue } from "../hooks";
+import { HiMiniArrowLeft } from "react-icons/hi2";
 
 type CreateRebalancerProps = {};
 
@@ -209,7 +209,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
           </p>
         </ToastMessage>,
       );
-      router.push(`/rebalancer?account=${valenceAddress}`);
+      router.push(`/rebalancer?account=${valenceAddress}&scale=w`);
     },
     onError: (e) => {
       console.log("create rebalancer error", e);
@@ -313,6 +313,9 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
                       {displayValue({
                         value: requiredMinimumValue,
                         symbol: minimumValueSymbol,
+                        options: {
+                          omitDollarSignForUsdc: true,
+                        },
                       })}{" "}
                       must be deposited to the account.
                     </li>
@@ -351,16 +354,22 @@ export const RebalancerFormHeader = ({
     ? "Edit Rebalancer Account"
     : "Set up a Rebalancer account for this wallet";
 
+  const router = useRouter();
+
   return (
     <section className="flex w-full flex-col gap-2 p-4">
-      <RouterButton
-        options={{ back: true }}
-        className="flex items-center gap-2 self-start text-valence-gray hover:underline  "
+      <Button
+        onClick={() => router.back()}
+        className="flex w-fit flex-row gap-1 transition-all hover:bg-valence-black hover:text-valence-white"
+        variant="secondary"
       >
-        <FaChevronLeft className="h-4 w-4 transition-all" />
+        <HiMiniArrowLeft className="h-4 w-4" />
 
-        <span className="text-sm font-medium tracking-tight "> Go Back</span>
-      </RouterButton>
+        <span className=" flex flex-row items-center gap-1.5 self-start">
+          Go back
+        </span>
+      </Button>
+
       <div className="flex flex-wrap items-center gap-1">
         <h1 className="text-xl font-bold">{title}</h1>
 

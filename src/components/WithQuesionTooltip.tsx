@@ -29,7 +29,7 @@ export const WithQuestionTooltip: React.FC<{
       {children}
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <button className=" flex h-4  w-4 -translate-y-2 flex-col items-center justify-center rounded-full bg-valence-lightgray text-valence-gray transition-all hover:bg-valence-mediumgray hover:text-valence-black">
+          <button className=" flex h-4 w-4 flex-col items-center justify-center rounded-full bg-valence-lightgray text-valence-gray transition-all hover:bg-valence-mediumgray hover:text-valence-black">
             <BsQuestion className="h-3 w-3" />
           </button>
         </TooltipTrigger>

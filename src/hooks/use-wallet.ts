@@ -33,6 +33,7 @@ export const useWallet = () => {
   return {
     walletInfo: wallet?.walletInfo,
     address: wallet?.address,
+    walletStatus: chainContext.walletRepo.wallets[0].walletStatus,
     // for some reason these are the ones that work for connecting and disconnecting
     connect: chainContext.walletRepo.wallets[0].connect,
     disconnect: chainContext.walletRepo.wallets[0].disconnect,

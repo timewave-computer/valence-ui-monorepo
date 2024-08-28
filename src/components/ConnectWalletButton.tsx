@@ -1,9 +1,11 @@
 "use client";
-import { Button } from "@/components";
-import { useWallet } from "@/hooks";
+import { Button, ToastMessage } from "@/components";
+import { useIsServer, useWallet } from "@/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useValenceAccount } from "@/app/rebalancer/hooks";
+import { WalletStatus } from "@cosmos-kit/core";
+import { toast } from "sonner";
 
 export const ConnectWalletButton: React.FC<{
   disabled: boolean;
@@ -18,14 +20,40 @@ export const ConnectWalletButton: React.FC<{
   connectCta,
   rerouteOnConnect = false,
 }) => {
-  const { isWalletConnected, isWalletConnecting, connect, address } =
-    useWallet();
+  const isServer = useIsServer();
+  const {
+    isWalletConnected,
+    isWalletConnecting,
+    connect,
+    address,
+    walletStatus,
+  } = useWallet();
   const { data: valenceAccount, isLoading: isValenceAccountLoading } =
     useValenceAccount(address);
   const router = useRouter();
 
   // for calling effect only when connect wallet is clicked
   const [connectWalletClicked, setConnectWalletClicked] = useState(false);
+
+  useEffect(() => {
+    if (walletStatus === WalletStatus.NotExist) {
+      toast.error(
+        <ToastMessage variant="error" title="Please install keplr.">
+          Support for more wallets will be added soon.
+        </ToastMessage>,
+      );
+      return;
+    } else if (
+      walletStatus === WalletStatus.Error ||
+      walletStatus === WalletStatus.Rejected
+    ) {
+      toast.error(
+        <ToastMessage variant="error" title="Error connecting wallet.">
+          Please try again.
+        </ToastMessage>,
+      );
+    }
+  }, [walletStatus]);
 
   // redirect to rebalancer page after wallet is connected and data is fetched
   useEffect(() => {
@@ -42,6 +70,8 @@ export const ConnectWalletButton: React.FC<{
     valenceAccount,
     isValenceAccountLoading,
   ]);
+
+  if (isServer) return;
 
   const button = disabled ? (
     <Button disabled={true} variant="primary">
@@ -61,6 +91,7 @@ export const ConnectWalletButton: React.FC<{
       Connect Wallet
     </Button>
   );
+
   if (!isWalletConnected)
     return (
       <div

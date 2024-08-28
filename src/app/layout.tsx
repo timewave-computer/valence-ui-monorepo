@@ -62,7 +62,7 @@ export default function RootLayout({
                       borderRadius: 0,
                     }}
                     toastOptions={{
-                      duration: 10,
+                      duration: 10000,
                       classNames: {
                         toast: "rounded-none",
                         closeButton:

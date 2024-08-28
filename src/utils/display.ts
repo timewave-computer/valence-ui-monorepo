@@ -81,14 +81,17 @@ export const displayValue = ({
 }: {
   value: number;
   symbol: string;
-  options?: { precision: number | null };
+  options?: {
+    omitDollarSignForUsdc?: boolean;
+    precision?: number | null;
+  };
 }) => {
   const _value = isNaN(value) ? 0 : value;
   const displayString = displayNumber(_value, {
     precision: options?.precision ?? 2,
   });
 
-  if (symbol === "USDC") {
+  if (!options?.omitDollarSignForUsdc && symbol === "USDC") {
     return `$${displayString}`;
   } else {
     return `${displayString} ${symbol}`;

@@ -72,25 +72,23 @@ export const SelectAmounts: React.FC<{
 
   if (isLoadingBalances || isCacheLoading)
     return (
-      <SelectAmountsLayout>
-        <LoadingSkeleton className="min-h-56" />
-      </SelectAmountsLayout>
+      <SelectAmountsLayout
+        subContent={<LoadingSkeleton className="min-h-56" />}
+      ></SelectAmountsLayout>
     );
 
   if (!isWalletConnected) {
     return (
       <SelectAmountsLayout
         subContent={
-          <div>
-            <div className="mt-2 flex flex-row items-center gap-4 border border-warn p-4">
-              <BsExclamationCircle className="h-8 w-8 text-warn " />
-              <div className="flex flex-col gap-0.5">
-                <WarnText
-                  className="text-base font-semibold text-warn"
-                  text="No wallet connected."
-                />
-                <p className="text-sm">Connect a wallet to continue.</p>
-              </div>
+          <div className="mt-2 flex flex-row items-center gap-4 border border-warn p-4">
+            <BsExclamationCircle className="h-8 w-8 text-warn " />
+            <div className="flex flex-col gap-0.5">
+              <WarnText
+                className="text-base font-semibold text-warn"
+                text="No wallet connected."
+              />
+              <p className="text-sm">Connect a wallet to continue.</p>
             </div>
           </div>
         }
@@ -212,7 +210,7 @@ export const SelectAmounts: React.FC<{
                     <span>{asset?.symbol ?? ""}</span>
                   </InputTableCell>
 
-                  <InputTableCell>({toalValueDisplayString})</InputTableCell>
+                  <InputTableCell>{toalValueDisplayString}</InputTableCell>
 
                   <InputTableCell
                     className={cn(
@@ -250,9 +248,9 @@ export const SelectAmounts: React.FC<{
 
                   <InputTableCell variant="number">
                     {isOverMax ? (
-                      <>({toalValueDisplayString})</>
+                      <>{toalValueDisplayString}</>
                     ) : (
-                      <>({selectedValueDisplayString})</>
+                      <>{selectedValueDisplayString}</>
                     )}
                   </InputTableCell>
                 </Fragment>

@@ -71,7 +71,6 @@ export const ConfigureSettings: React.FC<{
               <QuestionTooltipContent title="Rebalance speed" subtext="TODO" />
             }
           >
-            {" "}
             <div className="h-fit pb-1 text-xs font-medium">
               Rebalance speed
             </div>
@@ -278,17 +277,19 @@ export const ConfigureSettings: React.FC<{
       </div>
 
       <div className="flex flex-col gap-6 ">
-        <div className="flex flex-row items-center gap-2 pt-2">
+        <button
+          onClick={() => {
+            setShowAdvancedSettings(!showAdvancedSettings);
+          }}
+          className="flex flex-row items-center gap-2 pt-2"
+        >
           <span className="text-sm">Advanced settings</span>
 
           <IconButton
-            className="h-4 w-4"
+            className="h-3 w-3"
             Icon={showAdvancedSettings ? FaChevronDown : FaChevronLeft}
-            onClick={() => {
-              setShowAdvancedSettings(!showAdvancedSettings);
-            }}
           />
-        </div>
+        </button>
         {showAdvancedSettings && (
           <div className="grid grid-cols-[1fr_1fr_1fr] gap-y-4">
             <div className="col-span-1 col-start-1 flex flex-col gap-2">
@@ -329,6 +330,7 @@ export const ConfigureSettings: React.FC<{
 
               <div className="relative flex items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue ">
                 <input
+                  placeholder="0.00"
                   // @ts-ignore
                   onWheel={(e) => e.target?.blur()} // prevent scroll
                   className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "

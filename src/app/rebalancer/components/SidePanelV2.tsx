@@ -120,7 +120,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
           </p>
         )}
         {isWalletConnected && (
-          <div
+          <button
             key={`discover-${valenceAddress}`}
             onClick={() => {
               if (valenceAddress)
@@ -130,7 +130,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
               else router.push(`/rebalancer/`);
             }}
             className={cn(
-              "border-l border-r border-t border-valence-gray transition-all",
+              "w-full border-l border-r border-t border-valence-gray transition-all",
 
               "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
               (account === valenceAddress || (!account && !valenceAddress)) &&
@@ -139,17 +139,17 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
                 "hover:bg-valence-lightgray hover:text-valence-black",
             )}
           >
-            <div className="flex flex-row justify-between gap-2 ">
-              <span className=" text-pretty">Your account</span>
-            </div>
-          </div>
+            <span className="flex flex-row justify-between gap-2 ">
+              <span className="text-left">Your account</span>
+            </span>
+          </button>
         )}
 
         {featuredAccounts.map((option, i) => {
           const isLastElement = i === featuredAccounts.length - 1;
 
           return (
-            <div
+            <button
               key={`discover-${option.value}`}
               onClick={() => {
                 router.push(
@@ -157,7 +157,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
                 );
               }}
               className={cn(
-                "border-l border-r border-t border-valence-gray transition-all",
+                "w-full border-l border-r border-t border-valence-gray transition-all",
                 isLastElement && "border-b",
                 "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
                 account === option.value &&
@@ -165,11 +165,11 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
                 account !== option.value && "hover:bg-valence-lightgray",
               )}
             >
-              <div className="flex flex-row justify-between gap-2 ">
-                <span className=" text-pretty">{option.label}</span>
+              <span className="flex w-full flex-row justify-between gap-2 ">
+                <span className="text-left">{option.label}</span>
                 <Label text="Featured" />
-              </div>
-            </div>
+              </span>
+            </button>
           );
         })}
       </div>
