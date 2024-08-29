@@ -188,7 +188,16 @@ export const ConfigureSettings: React.FC<{
       )}
 
       <div className="flex flex-col gap-2">
-        <div className="h-fit pb-1 text-xs font-medium">Projection</div>
+        <WithQuestionTooltip
+          tooltipContent={
+            <QuestionTooltipContent
+              title="Projection"
+              subtext="Simulation of how balances in your Rebalancer account will change with the current settings. The projection assumes a constant price."
+            />
+          }
+        >
+          <div className="h-fit pb-1 text-xs font-medium">Projection</div>
+        </WithQuestionTooltip>
         {isProjectionError && (
           <WarnText
             className="text-warn"

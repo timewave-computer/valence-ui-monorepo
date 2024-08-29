@@ -1,8 +1,6 @@
 "use client";
 import { useWallet } from "@/hooks/use-wallet";
 import { RebalancerFormHeader } from "../../create/CreateRebalancer";
-import { RebalancerClient } from "@/codegen/ts-codegen/Rebalancer.client";
-import { chainConfig } from "@/const/config";
 import { RebalancerUpdateData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { useForm } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer";
@@ -17,16 +15,18 @@ import {
   SelectRebalancerTargets,
   SelectTrustee,
 } from "@/app/rebalancer/create/components";
-import { Button, LinkText, ToastMessage } from "@/components";
+import { Button, ToastMessage } from "@/components";
 import { SelectAssetsFromAccount } from "@/app/rebalancer/create/components/";
 import { OriginAsset } from "@/types/ibc";
 import { useMemo } from "react";
-import { numberToUint128 } from "@/utils";
+import { makeUpdateRebalancerMessage } from "@/app/rebalancer/utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
 import { ErrorHandler } from "@/const/error";
-import { CelatoneUrl } from "@/const/celatone";
+import { EncodeObject } from "@cosmjs/proto-signing";
+import { MsgExecuteContract } from "@/app/smol_telescope/cosmwasm";
+import { DeliverTxResponse } from "@cosmjs/cosmwasm-stargate";
 
 export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
   const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
@@ -46,7 +46,6 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
               QUERY_KEYS.ORIGIN_ASSET,
               balance.denom,
             ]);
-
             if (asset) {
               acc.push({
                 denom: balance.denom,
@@ -86,7 +85,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
   const router = useRouter();
   const { mutate: handleUpdateRebalancer, isPending: isUpdatePending } =
     useMutation({
-      mutationFn: () => updateRebalancer(convertToCosmwasm(form.getValues())),
+      mutationFn: () => updateRebalancer(form.getValues()),
       onError: (e) => {
         console.log("update rebalancer error", e);
         toast.error(
@@ -95,7 +94,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
           </ToastMessage>,
         );
       },
-      onSuccess: (data) => {
+      onSuccess: (data: DeliverTxResponse) => {
         toast.success(
           <ToastMessage
             transactionHash={data.transactionHash}
@@ -134,36 +133,49 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
       },
     });
 
-  const updateRebalancer = async (params: RebalancerUpdateData) => {
-    const cwClient = await getSigningCosmwasmClient();
+  const updateRebalancer = async (values: CreateRebalancerForm) => {
+    const signer = await getSigningCosmwasmClient();
+
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen
     }
-    const rebalancerClient = new RebalancerClient(
-      cwClient,
-      walletAddress,
-      chainConfig.addresses.rebalancer,
-    );
+    const messages: EncodeObject[] = [
+      {
+        typeUrl: MsgExecuteContract.typeUrl,
+        value: makeUpdateRebalancerMessage({
+          config: values,
+          creatorAddress: walletAddress,
+          predictableValenceAddress: address,
+        }),
+      },
+    ];
 
-    return rebalancerClient.update({
-      data: params,
-      updateFor: address,
-    });
+    const result = await signer.signAndBroadcast(
+      walletAddress,
+      messages,
+      "auto",
+    );
+    return result;
+
+    // TODO: using the client fails, gives parsing error :'(
+    // const rebalancerClient = new RebalancerClient(
+    //   signer,
+    //   walletAddress,
+    //   chainConfig.addresses.rebalancer,
+    // );
+    // return rebalancerClient.update({
+    //   data: params,
+    //   updateFor: address,
+    // });
   };
 
   return (
     <div className="flex flex-col pb-8">
-      <RebalancerFormHeader address={address} isEdit={true}>
-        <Button
-          variant="secondary"
-          className="mt-4 w-fit"
-          onClick={() => {
-            form.reset();
-          }}
-        >
-          Reset changes
-        </Button>
-      </RebalancerFormHeader>
+      <RebalancerFormHeader
+        form={form}
+        address={address}
+        isEdit={true}
+      ></RebalancerFormHeader>
 
       <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
         <SelectAssetsFromAccount form={form} address={address} />
@@ -184,37 +196,4 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
       </div>
     </div>
   );
-};
-
-const convertToCosmwasm = (
-  values: CreateRebalancerForm,
-): RebalancerUpdateData => {
-  return {
-    base_denom: values.baseTokenDenom,
-    max_limit_bps: values.maxLimit
-      ? {
-          set: values.maxLimit,
-        }
-      : "clear",
-    pid: {
-      p: values.pid.p,
-      i: values.pid.i,
-      d: values.pid.d,
-    },
-    targets: values.targets
-      .filter((t) => !!t.denom)
-      .map((target) => ({
-        bps: target.bps / 100,
-        denom: target.denom!,
-        ...(target.minimumAmount && {
-          min_balance: numberToUint128(target.minimumAmount),
-        }),
-      })),
-    target_override_strategy: values.targetOverrideStrategy,
-    trustee: values.trustee
-      ? {
-          set: values.trustee,
-        }
-      : "clear",
-  };
 };

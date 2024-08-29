@@ -6,8 +6,23 @@ import { fetchValenceAccounts } from "@/server/actions";
 /***
  * fetch for connected user or specific wallet address
  */
-export const useValenceAccount = (walletAddress?: string) => {
+export const useValenceAccountQuery = (walletAddress?: string) => {
   return useQuery(getValenceAccountQueryArgs(walletAddress));
+};
+
+export const useValenceAccount = (walletAddress?: string) => {
+  const query = useValenceAccountQuery(walletAddress);
+  return {
+    ...query,
+    data: !!query.data?.length ? query.data[0] : null,
+  };
+};
+
+// just for dev, for now
+export const isMultipleValenceAccountsEnabled =
+  process.env.NEXT_PUBLIC_ENABLE_MULTIPLE_ACCTS === "true";
+export const useMultipleValenceAccounts = (walletAddress?: string) => {
+  return useValenceAccountQuery(walletAddress);
 };
 
 export const getValenceAccountQueryArgs = (walletAddress?: string) => ({
@@ -15,10 +30,6 @@ export const getValenceAccountQueryArgs = (walletAddress?: string) => ({
   enabled: !!walletAddress,
   queryFn: async () => {
     if (!walletAddress) return;
-    const accounts = await fetchValenceAccounts(walletAddress);
-    if (!accounts.length) return null; // wallet does not have one
-    // for dev / preview
-    if (process.env.NEXT_PUBLIC_ENABLE_MULTIPLE_ACCTS === "true") return null;
-    else return accounts[0]; // only support one for time being
+    return fetchValenceAccounts(walletAddress) as Promise<string[]>;
   },
 });

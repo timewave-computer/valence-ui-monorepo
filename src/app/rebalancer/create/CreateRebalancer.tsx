@@ -5,18 +5,14 @@ import {
   LinkText,
   LoadingIndicator,
   LoadingSkeleton,
-  RouterButton,
   ToastMessage,
 } from "@/components";
-import { useWallet } from "@/hooks";
+import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import {
-  displayValue,
-  makeCreateRebalancerMessages,
-  useDateRange,
-} from "@/utils";
+import { useForm, UseFormReturn } from "react-hook-form";
+import { makeCreateRebalancerMessages } from "@/app/rebalancer/utils";
+import { displayValue, useDateRange } from "@/utils";
 import { chainConfig } from "@/const/config";
 import { toast } from "sonner";
 import {
@@ -24,11 +20,9 @@ import {
   SelectAmounts,
   ConfigureSettings,
   SelectTrustee,
-  WarnText,
 } from "@/app/rebalancer/create/components";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FaChevronLeft } from "react-icons/fa";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
@@ -131,7 +125,6 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       messages,
       "auto",
     );
-
     return { valenceAddress, result };
   }, [getSigningStargateClient, getCosmWasmClient, form, walletAddress]);
 
@@ -174,7 +167,9 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       );
       queryClient.setQueryData(
         [QUERY_KEYS.VALENCE_ACCOUNT, walletAddress],
-        valenceAddress,
+        (old: string[]) => {
+          return [...old, valenceAddress];
+        },
       );
       queryClient.setQueryData(
         [QUERY_KEYS.ACCOUNT_BALANCES, valenceAddress],
@@ -220,6 +215,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       );
     },
   });
+  const isServer = useIsServer();
 
   if (isWalletConnecting) {
     return <LoadingSkeleton className="min-h-screen" />;
@@ -227,48 +223,56 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
 
   return (
     <div className="flex flex-col gap-2 pb-8">
-      <Dialog
-        open={isBetaWarningVisible}
-        defaultOpen={true}
-        onOpenChange={setIsBetaWarningVisible}
-      >
-        <DialogContent
-          onInteractOutside={(e) => {
-            e.preventDefault();
-          }}
-          className=" max-w-[40%]"
+      {!isServer && (
+        <Dialog
+          open={isBetaWarningVisible}
+          defaultOpen={true}
+          onOpenChange={setIsBetaWarningVisible}
         >
-          <div className=" flex flex-col gap-2">
-            <div className="flex items-center gap-2 ">
-              <h1 className="text-xl font-bold  ">This feature is in beta.</h1>
-            </div>
-            <p className="text-sm">
-              By continuing, you accept the risks associated with using beta
-              software.
-            </p>
-            <div className="no-wrap flex flex-row items-center justify-end gap-4 pt-4">
-              <DialogClose asChild>
+          <DialogContent
+            onInteractOutside={(e) => {
+              e.preventDefault();
+            }}
+            className=" max-w-[40%]"
+          >
+            <div className=" flex flex-col gap-2">
+              <div className="flex items-center gap-2 ">
+                <h1 className="text-xl font-bold  ">
+                  This feature is in beta.
+                </h1>
+              </div>
+              <p className="text-sm">
+                By continuing, you accept the risks associated with using beta
+                software.
+              </p>
+              <div className="no-wrap flex flex-row items-center justify-end gap-4 pt-4">
+                <DialogClose asChild>
+                  <Button
+                    onClick={() => {
+                      router.back();
+                    }}
+                    variant="secondary"
+                  >
+                    Go back
+                  </Button>
+                </DialogClose>
                 <Button
-                  onClick={() => {
-                    router.back();
-                  }}
-                  variant="secondary"
+                  className=""
+                  onClick={() => setIsBetaWarningVisible(false)}
+                  variant="primary"
                 >
-                  Go back
+                  Continue
                 </Button>
-              </DialogClose>
-              <Button
-                className=""
-                onClick={() => setIsBetaWarningVisible(false)}
-                variant="primary"
-              >
-                Continue
-              </Button>
+              </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-      <RebalancerFormHeader address={walletAddress} isEdit={false} />
+          </DialogContent>
+        </Dialog>
+      )}
+      <RebalancerFormHeader
+        form={form}
+        address={walletAddress}
+        isEdit={false}
+      />
       <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
         <SelectAmounts form={form} address={walletAddress} />
         <SelectRebalancerTargets
@@ -345,7 +349,9 @@ export const RebalancerFormHeader = ({
   isEdit,
   address,
   children,
+  form,
 }: {
+  form: UseFormReturn<CreateRebalancerForm, any, undefined>;
   address: string;
   isEdit: boolean;
   children?: React.ReactNode;
@@ -358,18 +364,6 @@ export const RebalancerFormHeader = ({
 
   return (
     <section className="flex w-full flex-col gap-2 p-4">
-      <Button
-        onClick={() => router.back()}
-        className="flex w-fit flex-row gap-1 transition-all hover:bg-valence-black hover:text-valence-white"
-        variant="secondary"
-      >
-        <HiMiniArrowLeft className="h-4 w-4" />
-
-        <span className=" flex flex-row items-center gap-1.5 self-start">
-          Go back
-        </span>
-      </Button>
-
       <div className="flex flex-wrap items-center gap-1">
         <h1 className="text-xl font-bold">{title}</h1>
 
@@ -391,6 +385,28 @@ export const RebalancerFormHeader = ({
         </p>
 
         {children}
+      </div>
+      <div className="flex flex-row gap-2">
+        <Button
+          onClick={() => router.back()}
+          className="flex w-fit flex-row gap-1 transition-all hover:bg-valence-black hover:text-valence-white"
+          variant="secondary"
+        >
+          <HiMiniArrowLeft className="h-4 w-4" />
+
+          <span className=" flex flex-row items-center gap-1.5 self-start">
+            Go back
+          </span>
+        </Button>
+        {isEdit && (
+          <Button
+            onClick={() => form.reset()}
+            className="flex w-fit flex-row gap-1 transition-all hover:bg-valence-black hover:text-valence-white"
+            variant="secondary"
+          >
+            Reset changes
+          </Button>
+        )}
       </div>
     </section>
   );

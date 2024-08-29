@@ -2,7 +2,7 @@
 import { LinkText, TextInput, Label, ConnectWalletButton } from "@/components";
 import { X_HANDLE, X_URL } from "@/const/socials";
 import { useWallet } from "@/hooks";
-import { cn, FeatureFlags, useFeatureFlag } from "@/utils";
+import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
 import { accountAtom } from "@/app/rebalancer/const";
 import { useMemo } from "react";
@@ -11,7 +11,11 @@ import { useQueryState } from "nuqs";
 import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
-import { useValenceAccount } from "@/app/rebalancer/hooks";
+import {
+  isMultipleValenceAccountsEnabled,
+  useMultipleValenceAccounts,
+  useValenceAccount,
+} from "@/app/rebalancer/hooks";
 import { ValenceProductBrand } from "@/components/ValenceProductBrand";
 
 export const SidePanelV2: React.FC<{
@@ -104,6 +108,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
 
   const { address, isWalletConnected } = useWallet();
   const { data: valenceAddress } = useValenceAccount(address);
+  const { data: allValenceAccounts } = useMultipleValenceAccounts(address);
   let featuredAccounts = chainConfig.featuredAccounts;
 
   const router = useRouter();
@@ -119,7 +124,25 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
             No featured accounts to show for {chainConfig.chain.pretty_name}.
           </p>
         )}
-        {isWalletConnected && (
+        {isWalletConnected && isMultipleValenceAccountsEnabled ? (
+          <button
+            key={`discover-${valenceAddress}`}
+            onClick={() => {
+              router.push(`/rebalancer/create`);
+            }}
+            className={cn(
+              "w-full border-l border-r border-t border-valence-gray transition-all",
+              "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
+
+              account !== valenceAddress &&
+                "hover:bg-valence-lightgray hover:text-valence-black",
+            )}
+          >
+            <span className="flex flex-row justify-between gap-2 ">
+              <span className="text-left">Create new account</span>
+            </span>
+          </button>
+        ) : (
           <button
             key={`discover-${valenceAddress}`}
             onClick={() => {
@@ -143,6 +166,32 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
               <span className="text-left">Your account</span>
             </span>
           </button>
+        )}
+
+        {isMultipleValenceAccountsEnabled && !!allValenceAccounts?.length && (
+          <>
+            {allValenceAccounts.map((a) => {
+              return (
+                <button
+                  key={`wallet-accts-${a}`}
+                  onClick={() => {
+                    router.push(`/rebalancer?account=${a}&scale=${scale}`);
+                  }}
+                  className={cn(
+                    "w-full border-l border-r border-t border-valence-gray transition-all",
+                    "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
+                    account === a && "bg-valence-black text-valence-white",
+                    account !== a && "hover:bg-valence-lightgray",
+                  )}
+                >
+                  <span className="flex w-full flex-row justify-between gap-2 ">
+                    <span className="text-left">{displayAddress(a)}</span>
+                    <Label text="Your account" />
+                  </span>
+                </button>
+              );
+            })}
+          </>
         )}
 
         {featuredAccounts.map((option, i) => {

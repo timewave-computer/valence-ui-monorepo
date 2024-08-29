@@ -4,7 +4,6 @@ export * from "./display";
 export * from "./denom-math";
 export * from "./hash";
 export * from "./feature-flags";
-export * from "./create-rebalancer-account";
 export * from "./encoding";
 export * from "./closest-price";
 export * from "./dates";

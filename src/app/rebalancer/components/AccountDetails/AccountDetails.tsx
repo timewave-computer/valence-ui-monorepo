@@ -7,11 +7,12 @@ import {
 import {
   useAccountConfigQuery,
   useAssetCache,
+  useMultipleValenceAccounts,
   useValenceAccount,
 } from "@/app/rebalancer/hooks";
 import React, { useMemo, useState } from "react";
 import { useWallet } from "@/hooks";
-import { IconButton, Label } from "@/components";
+import { Label } from "@/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import { displayMinBalance, displayPid } from "@/utils";
 import { Button, LoadingSkeleton } from "@/components";
@@ -148,10 +149,6 @@ export const AccountDetailsPanel: React.FC<{
 const AccountDetailsHeader: React.FC<{
   selectedAddress: string;
 }> = ({ selectedAddress }) => {
-  const { data: config } = useAccountConfigQuery({
-    account: selectedAddress,
-  });
-
   const {
     isWalletConnected,
     isWalletConnecting,
@@ -160,11 +157,18 @@ const AccountDetailsHeader: React.FC<{
   const { data: valenceAccountAddress, isLoading: isLoadingValenceAccount } =
     useValenceAccount(walletAddress);
   const hasValenceAccount = !!valenceAccountAddress;
-  const isOwnAccount =
-    (isWalletConnected && config?.admin === walletAddress) ||
-    (!hasValenceAccount && selectedAddress === "");
 
-  if (isWalletConnecting || isLoadingValenceAccount) {
+  const { data: allValenceAccounts, isLoading: isLoadingAllValenceAccounts } =
+    useMultipleValenceAccounts(walletAddress);
+
+  const isOwnAccount =
+    isWalletConnected && allValenceAccounts?.includes(selectedAddress);
+
+  if (
+    isWalletConnecting ||
+    isLoadingValenceAccount ||
+    isLoadingAllValenceAccounts
+  ) {
     return (
       <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
         <LoadingSkeleton className="min-h-[43px] w-full" />
@@ -172,41 +176,42 @@ const AccountDetailsHeader: React.FC<{
     );
   }
 
-  if (!isWalletConnected || !isOwnAccount || !hasValenceAccount) {
+  if (isWalletConnected && isOwnAccount) {
     return (
       <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-base font-bold">Rebalancer Account</h1>
-          {selectedAddress.length > 0 ? (
+        <div className="flex flex-col gap-1 ">
+          <h1 className="text-base font-bold">Your Rebalancer Account</h1>
+          {selectedAddress.length > 0 && (
             <span className="font-mono text-xs">{selectedAddress}</span>
-          ) : (
-            <span className="text-xs">No account selected</span>
           )}
         </div>
+        {(hasValenceAccount ||
+          allValenceAccounts?.includes(selectedAddress)) && (
+          <div className="flex flex-row flex-nowrap gap-2 ">
+            <PauseOrUnpauseButton />
+            <WithdrawDialog />
+            <Link href={`/rebalancer/edit/${selectedAddress}`}>
+              <Button className="h-fit" variant="secondary">
+                Edit
+              </Button>
+            </Link>
+          </div>
+        )}
       </section>
     );
   }
 
-  // is own account
+  // default
   return (
     <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
-      <div className="flex flex-col gap-1 ">
-        <h1 className="text-base font-bold">Your Rebalancer Account</h1>
-        {selectedAddress.length > 0 && (
+      <div className="flex flex-col gap-1">
+        <h1 className="text-base font-bold">Rebalancer Account</h1>
+        {selectedAddress.length > 0 ? (
           <span className="font-mono text-xs">{selectedAddress}</span>
+        ) : (
+          <span className="text-xs">No account selected</span>
         )}
       </div>
-      {hasValenceAccount && (
-        <div className="flex flex-row flex-nowrap gap-2 ">
-          <PauseOrUnpauseButton />
-          <WithdrawDialog />
-          <Link href={`/rebalancer/edit/${selectedAddress}`}>
-            <Button className="h-fit" variant="secondary">
-              Edit
-            </Button>
-          </Link>
-        </div>
-      )}
     </section>
   );
 };

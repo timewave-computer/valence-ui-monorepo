@@ -22,6 +22,7 @@ import {
 import { BalanceReturnValue } from "../../hooks";
 import { OriginAsset } from "@/types/ibc";
 import { ErrorHandler } from "@/const/error";
+import { prefetchMetadata } from "@/server/prefetch";
 
 export const metadata: Metadata = {
   title: "Edit Rebalancer",
@@ -56,7 +57,7 @@ export default async function CreateRebalancerPage({
   }
 
   const queryClient = new QueryClient();
-
+  await prefetchMetadata(queryClient);
   await queryClient.prefetchQuery({
     staleTime: 5 * 60 * 1000, // 5 minutes
     queryKey: [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, address],

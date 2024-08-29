@@ -79,7 +79,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
       >
         <FaChevronLeft className="h-4 w-4 transition-all  " />
 
-        <span className="text-sm font-medium tracking-tight "> Go Back</span>
+        <span className="text-sm font-medium tracking-tight "> Go back</span>
       </RouterButton>
       <section>
         <span className="text-sm">

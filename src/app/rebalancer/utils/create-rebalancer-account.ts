@@ -3,15 +3,16 @@ import { CosmWasmClient, instantiate2Address } from "@cosmjs/cosmwasm-stargate";
 import { chainConfig } from "@/const/config";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { InstantiateMsg as ValenceAccountInstatiateMessage } from "@/codegen/ts-codegen/Account.types";
-import { baseToMicroDenomString } from "./denom-math";
+import { baseToMicroDenomString } from "@/utils/denom-math";
 import { RebalancerData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { fromHex, toUtf8 } from "@cosmjs/encoding";
-import { jsonToBase64, jsonToUtf8 } from "@/utils";
+import { jsonToBase64, jsonToUtf8, numberToUint128 } from "@/utils";
 import {
   MsgExecuteContract,
   MsgInstantiateContract2,
 } from "@/app/smol_telescope/cosmwasm";
+import { hasDenom } from "@/app/rebalancer/utils";
 
 export const makeCreateRebalancerMessages = async ({
   creatorAddress,
@@ -28,7 +29,7 @@ export const makeCreateRebalancerMessages = async ({
   const valenceAccountCodeId = chainConfig.codeIds.Account;
 
   // supporting just "one" rebalancer per user for now
-  const salt = "valence" + creatorAddress + "1" + "test";
+  const salt = "valence" + creatorAddress;
 
   // deterministically generate account address
   const predictableValenceAddress = await generatePredictableAddress({
@@ -127,27 +128,30 @@ const makeRegisterMessage = ({
   creatorAddress: string;
   predictableValenceAddress: string;
 }): MsgExecuteContract => {
+  const data: RebalancerData = {
+    base_denom: config.baseTokenDenom,
+    pid: {
+      p: parseFloat(config.pid.p).toString(),
+      i: parseFloat(config.pid.i).toString(),
+      d: parseFloat(config.pid.d).toString(),
+    },
+    max_limit_bps: config.maxLimit,
+    target_override_strategy: config.targetOverrideStrategy,
+    targets: config.targets.filter(hasDenom).map((target) => ({
+      denom: target.denom,
+      bps: target.bps * 100, // ("10%"=> 1000)
+      ...(!!target.minimumAmount && {
+        min_balance: numberToUint128(target.minimumAmount),
+      }),
+    })),
+    ...(!!config.trustee &&
+      config.trustee !== "" && { trustee: config.trustee }),
+  };
   return {
-    // TODO: trustee, max bps, min balance
     contract: predictableValenceAddress,
     msg: jsonToUtf8({
-      register_to_service: {
-        data: jsonToBase64({
-          base_denom: config.baseTokenDenom,
-          pid: {
-            p: parseFloat(config.pid.p).toString(),
-            i: parseFloat(config.pid.i).toString(),
-            d: parseFloat(config.pid.d).toString(),
-          },
-          target_override_strategy: config.targetOverrideStrategy,
-          targets: config.targets.map((target) => ({
-            denom: target.denom,
-            bps: target.bps * 100, // ("10%"=> 1000)
-            minimum_amount: target.minimumAmount,
-          })),
-          ...(!!config.trustee &&
-            config.trustee !== "" && { trustee: config.trustee }),
-        } as RebalancerData),
+      ["register_to_service"]: {
+        data: jsonToBase64(data),
         service_name: "rebalancer",
       },
     }),

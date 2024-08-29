@@ -76,9 +76,9 @@ export const SelectAssetsFromAccount: React.FC<{
 
   if (isLoadingBalances || isCacheLoading)
     return (
-      <SelectAmountsLayout>
-        <LoadingSkeleton className="min-h-56" />
-      </SelectAmountsLayout>
+      <SelectAmountsLayout
+        subContent={<LoadingSkeleton className="min-h-56" />}
+      ></SelectAmountsLayout>
     );
 
   if (isBalancesFetched && (!isHoldingMinimumFee || !isHoldingAtLeastOneAsset))

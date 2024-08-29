@@ -3,6 +3,7 @@ import { TooltipContent, TooltipTrigger } from "@/components";
 import { cn } from "@/utils";
 import { Tooltip } from "@/components";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { useIsServer } from "@/hooks";
 
 type IconButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
   onClick?: () => void;
@@ -17,6 +18,20 @@ export const IconButton: React.FC<IconButtonProps> = ({
   disabledTooltip,
   className,
 }) => {
+  const isServer = useIsServer();
+  if (isServer) {
+    return (
+      <button>
+        <Icon
+          onClick={() => {
+            return;
+          }}
+          className={cn("h-6 w-6", disabled && "text-valence-gray", className)}
+        />
+      </button>
+    );
+  }
+
   return (
     <TooltipProvider>
       <Tooltip delayDuration={0}>
