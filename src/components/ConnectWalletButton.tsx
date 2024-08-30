@@ -71,7 +71,12 @@ export const ConnectWalletButton: React.FC<{
     isValenceAccountLoading,
   ]);
 
-  if (isServer) return;
+  if (isServer)
+    return (
+      <Button disabled={true} variant="primary">
+        Connect Wallet
+      </Button>
+    );
 
   const button = disabled ? (
     <Button disabled={true} variant="primary">

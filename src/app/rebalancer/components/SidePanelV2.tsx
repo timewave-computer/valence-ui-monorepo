@@ -12,7 +12,6 @@ import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
 import {
-  isMultipleValenceAccountsEnabled,
   useMultipleValenceAccounts,
   useValenceAccount,
 } from "@/app/rebalancer/hooks";
@@ -79,7 +78,7 @@ export const SidePanelV2: React.FC<{
         </ValenceProductBrand>
         <ConnectWalletButton
           rerouteOnConnect={rerouteOnConnect}
-          connectCta="            Connect your wallet to start rebalancing funds."
+          connectCta="Connect your wallet to start rebalancing funds."
           debouncedMouseEnter={debouncedMouseEnter}
           debouncedMouseLeave={debouncedMouseLeave}
           disabled={!isConnectWalletEnabled}
@@ -113,6 +112,10 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
 
   const router = useRouter();
   const [scale] = useAtom(scaleAtom);
+
+  const isMultipleValenceAccountsEnabled = useFeatureFlag(
+    FeatureFlags.REBALANCER_MULTIPLE_ACCOUNTS,
+  );
 
   return (
     <div className="flex flex-col  items-stretch gap-2  p-4">

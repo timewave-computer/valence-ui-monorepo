@@ -12,30 +12,18 @@ import {
   useLivePortfolio,
 } from "@/app/rebalancer/hooks";
 import { LOAD_CONFIG_ERROR, accountAtom } from "@/app/rebalancer/const";
-import { cn } from "@/utils";
+import { cn, FeatureFlags, useFeatureFlag } from "@/utils";
 import { useAtom } from "jotai";
 
 export const RebalancerMainClient = () => {
   const [account] = useAtom(accountAtom);
-
-  const isHasAccountInput = !!account && account !== "";
   const accountConfigQuery = useAccountConfigQuery({
     account: account,
   });
-
-  const isValidAccount =
-    isHasAccountInput &&
-    accountConfigQuery.error !== LOAD_CONFIG_ERROR.INVALID_ACCOUNT;
-
   const targets = useMemo(
     () => accountConfigQuery.data?.targets ?? [],
     [accountConfigQuery.data?.targets],
   );
-
-  const livePortfolioQuery = useLivePortfolio({
-    accountAddress: account,
-  });
-
   const historicValuesQuery = useHistoricValues({
     accountAddress: account,
     targets,
@@ -59,9 +47,11 @@ export const RebalancerMainClient = () => {
     );
   };
 
+  const isConnectWalletEnabled = useFeatureFlag(FeatureFlags.REBALANCER_CREATE);
+
   return (
     <div className="flex grow flex-row overflow-hidden">
-      {isDisabledElementHovered && (
+      {isDisabledElementHovered && !isConnectWalletEnabled && (
         <div
           onMouseEnter={debouncedMouseEnter}
           onMouseLeave={debouncedMouseLeave}

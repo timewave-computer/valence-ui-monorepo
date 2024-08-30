@@ -126,10 +126,10 @@ export const useLivePortfolio = ({
             const denom = supportedAsset.denom;
 
             const accountBalance = accountBalances?.find(
-              (balance) => balance.denom === denom,
+              (balance) => balance?.denom === denom,
             );
             const rawAuctionBalance = rawAuctionBalances?.find(
-              (balance) => balance.denom === denom,
+              (balance) => balance?.denom === denom,
             );
 
             const price = getPrice(denom);

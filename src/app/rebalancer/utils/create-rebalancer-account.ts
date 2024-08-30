@@ -6,8 +6,8 @@ import { InstantiateMsg as ValenceAccountInstatiateMessage } from "@/codegen/ts-
 import { baseToMicroDenomString } from "@/utils/denom-math";
 import { RebalancerData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { CreateRebalancerForm } from "@/types/rebalancer";
-import { fromHex, toUtf8 } from "@cosmjs/encoding";
-import { jsonToBase64, jsonToUtf8, numberToUint128 } from "@/utils";
+import { fromBase64, fromHex, fromUtf8, toUtf8 } from "@cosmjs/encoding";
+import { jsonToBase64, jsonToUtf8, numberToUint128, utf8ToJson } from "@/utils";
 import {
   MsgExecuteContract,
   MsgInstantiateContract2,
@@ -28,8 +28,10 @@ export const makeCreateRebalancerMessages = async ({
 }> => {
   const valenceAccountCodeId = chainConfig.codeIds.Account;
 
-  // supporting just "one" rebalancer per user for now
-  const salt = "valence" + creatorAddress;
+  /**
+   * The salt used to generate a predictable valence account address.
+   */
+  const salt = `valence-ui-v1`;
 
   // deterministically generate account address
   const predictableValenceAddress = await generatePredictableAddress({
@@ -109,13 +111,42 @@ const makeInstantiateMessageBody = ({
     sender: creatorAddress,
     admin: creatorAddress,
     codeId: BigInt(codeId),
-    label: "Valence Account",
+    label: "Rebalancer Account",
     msg: jsonToUtf8({
       services_manager: chainConfig.addresses.servicesManager,
     } as ValenceAccountInstatiateMessage),
     funds: convertedFunds,
     salt: toUtf8(salt),
     fixMsg: false,
+  };
+};
+
+export const decodeInstatiateMessage = (obj: EncodeObject): any => {
+  return {
+    ...obj,
+    value: {
+      ...obj.value,
+      msg: utf8ToJson(obj.value.msg),
+      salt: fromUtf8(obj.value.salt),
+    },
+  };
+};
+
+export const decodeRegisterMessage = (obj: EncodeObject): any => {
+  const msg = utf8ToJson(obj.value.msg);
+  const data = fromBase64(msg.register_to_service.data);
+  return {
+    ...obj,
+    value: {
+      ...obj.value,
+      msg: {
+        ...msg,
+        register_to_service: {
+          ...msg.register_to_service,
+          data: utf8ToJson(data),
+        },
+      },
+    },
   };
 };
 
@@ -135,7 +166,9 @@ const makeRegisterMessage = ({
       i: parseFloat(config.pid.i).toString(),
       d: parseFloat(config.pid.d).toString(),
     },
-    max_limit_bps: config.maxLimit,
+    ...(!!config.maxLimit && {
+      max_limit_bps: config.maxLimit,
+    }),
     target_override_strategy: config.targetOverrideStrategy,
     targets: config.targets.filter(hasDenom).map((target) => ({
       denom: target.denom,

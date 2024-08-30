@@ -25,3 +25,4 @@ export * from "./LoadingSkeleton";
 export * from "./ValenceProductBrand";
 export * from "./ConnectWalletButton";
 export * from "./WithQuestionTooltip";
+export * from "./CollapsibleSection";

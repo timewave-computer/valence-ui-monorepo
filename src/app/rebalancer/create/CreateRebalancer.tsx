@@ -20,6 +20,7 @@ import {
   SelectAmounts,
   ConfigureSettings,
   AdvancedSettings,
+  PreviewMessage,
 } from "@/app/rebalancer/create/components";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -141,6 +142,12 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     }) => {
       const { valenceAddress, result } = output;
       const formValues = form.getValues();
+      const initialAssets: CreateRebalancerForm["initialAssets"] =
+        formValues.initialAssets.filter(
+          (initialAsset: CreateRebalancerForm["initialAssets"][number]) =>
+            !!initialAsset && !!initialAsset.startingAmount,
+        );
+
       // add config to query cache
       queryClient.setQueryData(
         [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, valenceAddress],
@@ -173,12 +180,11 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       );
       queryClient.setQueryData(
         [QUERY_KEYS.ACCOUNT_BALANCES, valenceAddress],
-        formValues.initialAssets.map((asset) => ({
+        initialAssets.map((asset) => ({
           denom: asset.denom,
           amount: asset.startingAmount,
         })),
       );
-
       queryClient.setQueryData(
         [QUERY_KEYS.AUCTION_BALANCES, valenceAddress],
         [],
@@ -204,10 +210,10 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
           </p>
         </ToastMessage>,
       );
-      router.push(`/rebalancer?account=${valenceAddress}&scale=w`);
+      router.push(`/rebalancer?account=${valenceAddress}&scale=m`);
     },
     onError: (e) => {
-      console.log("create rebalancer error", e);
+      console.log("create rebalancer error", JSON.stringify(e));
       toast.error(
         <ToastMessage title="Failed to set up rebalancer" variant="error">
           {ErrorHandler.constructText("", e)}
@@ -245,9 +251,10 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
                 By continuing, you accept the risks associated with using beta
                 software.
               </p>
-              <div className="no-wrap flex flex-row items-center justify-end gap-4 pt-4">
+              <div className="flex flex-row flex-wrap items-center justify-end gap-4 pt-4">
                 <DialogClose asChild>
                   <Button
+                    className="text no-wrap"
                     onClick={() => {
                       router.back();
                     }}
@@ -282,7 +289,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
         />
         <ConfigureSettings address={walletAddress} form={form} />
         <AdvancedSettings address={walletAddress} form={form} />
-
+        <PreviewMessage address={walletAddress} form={form} />
         {isCreatePending ? (
           <div className="flex min-h-11 min-w-60 items-center justify-center bg-valence-black">
             <LoadingIndicator />

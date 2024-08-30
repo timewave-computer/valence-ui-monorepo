@@ -3,6 +3,9 @@ import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
   Dropdown,
   DropdownOption,
+  CollapsibleSectionContent,
+  CollapsibleSectionHeader,
+  CollapsibleSectionRoot,
   LinkText,
   QuestionTooltipContent,
   RadioGroup,
@@ -15,7 +18,6 @@ import { useWhitelistedDenoms } from "@/hooks";
 import { useAssetCache } from "@/app/rebalancer/hooks";
 import { cn } from "@/utils";
 import { RebalancerFormTooltipCopy } from "../../copy";
-import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 
 export const AdvancedSettings: React.FC<{
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
@@ -26,7 +28,6 @@ export const AdvancedSettings: React.FC<{
   const strategy = watch("targetOverrideStrategy");
   const { data: whitelistedDenoms } = useWhitelistedDenoms();
   const { getOriginAsset } = useAssetCache();
-  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const baseDenomDropdownOptions: DropdownOption<string>[] = useMemo(() => {
     if (!whitelistedDenoms?.base_denom_whitelist) return [];
@@ -42,36 +43,16 @@ export const AdvancedSettings: React.FC<{
   const [allowOtherAddressInput, setAllowOtherAddressInput] = useState(false);
 
   return (
-    <section className="flex w-full flex-col gap-6 ">
-      <div className="flex flex-col gap-2">
-        <button
-          onClick={() => {
-            setShowAdvancedSettings(!showAdvancedSettings);
-          }}
-          className="flex flex-row items-center gap-2 pt-2"
-        >
-          <span className="text-lg font-bold">Advanced settings</span>
-          {showAdvancedSettings ? (
-            <FaChevronDown
-              onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
-              className={cn("h-4 w-4")}
-            />
-          ) : (
-            <FaChevronLeft
-              onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
-              className={cn("h-4 w-4")}
-            />
-          )}
-        </button>
-        {showAdvancedSettings && (
+    <CollapsibleSectionRoot defaultIsOpen={false}>
+      <CollapsibleSectionHeader>
+        <span className="text-lg font-bold">Advanced settings</span>
+      </CollapsibleSectionHeader>
+      <CollapsibleSectionContent>
+        <div className="flex flex-col gap-6">
           <p className="text-sm">
             Advanced settings are pre-filled with recommended defaults, but can
             support more advanced requirements if needed.
           </p>
-        )}
-      </div>
-      {showAdvancedSettings && (
-        <>
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
@@ -215,9 +196,9 @@ export const AdvancedSettings: React.FC<{
               </div>
             </div>
           </div>
-        </>
-      )}
-    </section>
+        </div>
+      </CollapsibleSectionContent>
+    </CollapsibleSectionRoot>
   );
 };
 
