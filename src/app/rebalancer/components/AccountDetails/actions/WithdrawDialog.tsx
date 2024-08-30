@@ -12,7 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
 import { AccountClient } from "@/codegen/ts-codegen/Account.client";
 import { toast } from "sonner";
-import { InputTableCell, WarnText } from "@/app/rebalancer/create/components";
+import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";
 import {
   BalanceReturnValue,
@@ -125,7 +125,6 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
 
   const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
 
-  if (!config) return;
   return (
     <Dialog open={isWithdrawDialogOpen} onOpenChange={setIsWithdrawDialogOpen}>
       <DialogTrigger asChild>
@@ -236,7 +235,7 @@ const WithdrawForm: React.FC<{
             })}
 
             {isOverMax ? (
-              <WarnText text={maxLimitMsg} className="text-warn" />
+              <WarnTextV2 text={maxLimitMsg} variant="warn" />
             ) : (
               <div className="min-h-4 w-full"></div>
             )}

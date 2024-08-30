@@ -125,12 +125,10 @@ export const PauseOrUnpauseButton: React.FC<{}> = () => {
     },
   });
 
-  if (!config) return;
-
   return (
     <>
       {" "}
-      {!config.isPaused ? (
+      {!config?.isPaused ? (
         <Button
           isLoading={isPausePending}
           className="h-fit"

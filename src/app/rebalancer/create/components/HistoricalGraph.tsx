@@ -178,7 +178,7 @@ export const HistoricalGraph: React.FC<{
       return (
         <StatusBar
           variant="error"
-          text="Could not load historical data for account"
+          text="Error loading historical data"
           icon={<FiAlertTriangle />}
         />
       );

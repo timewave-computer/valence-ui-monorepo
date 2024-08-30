@@ -1,16 +1,18 @@
-import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
+import {
+  CreateRebalancerCopy,
+  RebalancerFormTooltipCopy,
+} from "@/app/rebalancer/create/copy";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
   Dropdown,
-  IconButton,
+  LinkText,
   QuestionTooltipContent,
   WithQuestionTooltip,
 } from "@/components";
 import { useState } from "react";
 import { cn } from "@/utils";
-import { TargetOverrideStrategy } from "@/types/rebalancer";
-import { WarnText } from "@/app/rebalancer/create/components";
+import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import {
   Line,
   LineChart,
@@ -29,7 +31,6 @@ import {
 } from "@/app/rebalancer/const";
 import { useAssetCache, useProjectionGraphV2 } from "@/app/rebalancer/hooks";
 import { ValueTooltip } from "@/app/rebalancer/components";
-import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 
 type PidKey = keyof CreateRebalancerForm["pid"];
 const AdvancedPid = "advanced-pid";
@@ -39,11 +40,9 @@ export const ConfigureSettings: React.FC<{
 }> = ({ form }) => {
   const { watch, setValue, register } = form;
   const [showPid, setShowPid] = useState(false);
-  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const pid = watch("pid");
   const targets = watch("targets");
-  const strategy = watch("targetOverrideStrategy");
   const { getOriginAsset } = useAssetCache();
 
   const {
@@ -68,11 +67,13 @@ export const ConfigureSettings: React.FC<{
         <div className="col-span-1 flex flex-col gap-2">
           <WithQuestionTooltip
             tooltipContent={
-              <QuestionTooltipContent title="Rebalance speed" subtext="TODO" />
+              <QuestionTooltipContent
+                {...RebalancerFormTooltipCopy.rebalanceSpeed}
+              />
             }
           >
             <div className="h-fit pb-1 text-xs font-medium">
-              Rebalance speed
+              {RebalancerFormTooltipCopy.rebalanceSpeed.title}
             </div>
           </WithQuestionTooltip>
           <Dropdown
@@ -97,55 +98,37 @@ export const ConfigureSettings: React.FC<{
 
       {showPid && (
         <div>
-          <p className="py-2 text-sm">
-            {CreateRebalancerCopy.step_Settings.infoPid}
+          <p className=" text-sm">
+            The Rebalancer uses a{" "}
+            <LinkText
+              className=" border-valence-blue text-valence-blue hover:border-b"
+              href="https://en.wikipedia.org/wiki/Proportional–integral–derivative_controller"
+              openInNewTab={true}
+            >
+              PID
+            </LinkText>{" "}
+            controller to determine the amounts to send to Rebalance each day.
+            You can configure each parameter below.
           </p>
           <div className="grid grid-cols-[auto_auto_auto] gap-x-8 gap-y-2 pt-4">
             <div
               role="columnheader"
               className="font-base font-base   flex items-end  text-xs"
             >
-              <WithQuestionTooltip
-                tooltipContent={
-                  <QuestionTooltipContent
-                    title="Proportional parameter"
-                    subtext="TODO"
-                  />
-                }
-              >
-                Proportional
-              </WithQuestionTooltip>
+              Proportional
             </div>
 
             <div
               role="columnheader"
               className="font-base font-base  flex items-end  text-xs"
             >
-              <WithQuestionTooltip
-                tooltipContent={
-                  <QuestionTooltipContent
-                    title="Integral parameter"
-                    subtext="TODO"
-                  />
-                }
-              >
-                Integral Parameter
-              </WithQuestionTooltip>
+              Integral Parameter
             </div>
             <div
               role="columnheader"
               className="font-base font-base  flex items-end  text-xs"
             >
-              <WithQuestionTooltip
-                tooltipContent={
-                  <QuestionTooltipContent
-                    title="Derivative parameter"
-                    subtext="TODO"
-                  />
-                }
-              >
-                Derivative
-              </WithQuestionTooltip>
+              Derivative
             </div>
 
             {Object.keys(pid).map((key) => {
@@ -179,9 +162,9 @@ export const ConfigureSettings: React.FC<{
             const value = parseFloat(pid[key as PidKey]);
             return value < 0 || value >= 1;
           }) && (
-            <WarnText
-              className="pt-2 text-warn"
+            <WarnTextV2
               text="All values must be between 0 and 1 (example: 0.1)"
+              variant="warn"
             />
           )}
         </div>
@@ -190,24 +173,23 @@ export const ConfigureSettings: React.FC<{
       <div className="flex flex-col gap-2">
         <WithQuestionTooltip
           tooltipContent={
-            <QuestionTooltipContent
-              title="Projection"
-              subtext="Simulation of how balances in your Rebalancer account will change with the current settings. The projection assumes a constant price."
-            />
+            <QuestionTooltipContent {...RebalancerFormTooltipCopy.projection} />
           }
         >
-          <div className="h-fit pb-1 text-xs font-medium">Projection</div>
+          <div className="h-fit pb-1 text-xs font-medium">
+            {RebalancerFormTooltipCopy.projection.title}
+          </div>
         </WithQuestionTooltip>
         {isProjectionError && (
-          <WarnText
-            className="text-warn"
+          <WarnTextV2
+            variant="warn"
             text="Error: unable to generate projection with these inputs."
           />
         )}
         {!isProjectionEnabled && (
-          <WarnText
-            className="text-valence-gray"
-            text="Select initial deposits and at least two targets to generate projected balances."
+          <WarnTextV2
+            variant="info"
+            text="Select an initial deposit and two targets to a generate projection."
           />
         )}
         <div className="overflow-clip  bg-valence-lightgray">
@@ -284,73 +266,6 @@ export const ConfigureSettings: React.FC<{
           </ResponsiveContainer>
         </div>
       </div>
-
-      <div className="flex flex-col gap-6 ">
-        <button
-          onClick={() => {
-            setShowAdvancedSettings(!showAdvancedSettings);
-          }}
-          className="flex flex-row items-center gap-2 pt-2"
-        >
-          <span className="text-sm">Advanced settings</span>
-
-          <IconButton
-            className="h-3 w-3"
-            Icon={showAdvancedSettings ? FaChevronDown : FaChevronLeft}
-          />
-        </button>
-        {showAdvancedSettings && (
-          <div className="grid grid-cols-[1fr_1fr_1fr] gap-y-4">
-            <div className="col-span-1 col-start-1 flex flex-col gap-2">
-              <div className="h-fit pb-1 text-xs font-medium">
-                <WithQuestionTooltip
-                  tooltipContent={
-                    <QuestionTooltipContent
-                      title="Target override strategy"
-                      subtext="TODO"
-                    />
-                  }
-                >
-                  Target override strategy
-                </WithQuestionTooltip>
-              </div>
-
-              <Dropdown
-                selected={strategy}
-                onSelected={(value) => {
-                  setValue("targetOverrideStrategy", value);
-                }}
-                options={TargetOverrideStartegyOptions}
-              />
-            </div>
-            <div className="col-span-1 col-start-1 flex flex-col gap-2 ">
-              <div className="h-fit pb-1 text-xs font-medium">
-                <WithQuestionTooltip
-                  tooltipContent={
-                    <QuestionTooltipContent
-                      title="Maximum daily limit"
-                      subtext="TODO"
-                    />
-                  }
-                >
-                  Maximum daily limit
-                </WithQuestionTooltip>
-              </div>
-
-              <div className="relative flex items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue ">
-                <input
-                  placeholder="0.00"
-                  // @ts-ignore
-                  onWheel={(e) => e.target?.blur()} // prevent scroll
-                  className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
-                  type="number"
-                  {...register(`maxLimit`)}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
     </section>
   );
 };
@@ -369,18 +284,4 @@ const RebalanceSpeedOptions = [
     value: "0.2",
   },
   { label: "Advanced", value: AdvancedPid },
-];
-
-const TargetOverrideStartegyOptions: Array<{
-  label: string;
-  value: TargetOverrideStrategy;
-}> = [
-  {
-    label: "Proportional",
-    value: "proportional",
-  },
-  {
-    label: "Priority",
-    value: "priority",
-  },
 ];

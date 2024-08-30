@@ -19,7 +19,7 @@ import {
   SelectRebalancerTargets,
   SelectAmounts,
   ConfigureSettings,
-  SelectTrustee,
+  AdvancedSettings,
 } from "@/app/rebalancer/create/components";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -281,7 +281,8 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
           isCleanStartingAmountEnabled={true}
         />
         <ConfigureSettings address={walletAddress} form={form} />
-        <SelectTrustee address={walletAddress} form={form} />
+        <AdvancedSettings address={walletAddress} form={form} />
+
         {isCreatePending ? (
           <div className="flex min-h-11 min-w-60 items-center justify-center bg-valence-black">
             <LoadingIndicator />
@@ -357,8 +358,8 @@ export const RebalancerFormHeader = ({
   children?: React.ReactNode;
 }) => {
   const title = isEdit
-    ? "Edit Rebalancer Account"
-    : "Set up a Rebalancer account for this wallet";
+    ? "Edit Rebalancer account"
+    : "Set up Rebalancer account";
 
   const router = useRouter();
 
@@ -368,12 +369,13 @@ export const RebalancerFormHeader = ({
         <h1 className="text-xl font-bold">{title}</h1>
 
         {!!address.length && (
-          <span className="font-mono text-sm font-medium">{`(${address})`}</span>
+          <span className="font-mono text-sm font-medium">{`(wallet: ${address})`}</span>
         )}
       </div>
       <div className="flex flex-col gap-1">
         <p className=" max-w-60% text-wrap text-sm">
-          Learn more about how the Rebalancer works{" "}
+          The Rebalancer enables automated treasury management. Learn more about
+          how the Rebalancer works{" "}
           <LinkText
             openInNewTab={true}
             className=" border-valence-blue text-valence-blue hover:border-b"
@@ -386,7 +388,7 @@ export const RebalancerFormHeader = ({
 
         {children}
       </div>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 pt-2">
         <Button
           onClick={() => router.back()}
           className="flex w-fit flex-row gap-1 transition-all hover:bg-valence-black hover:text-valence-white"
@@ -399,6 +401,7 @@ export const RebalancerFormHeader = ({
           </span>
         </Button>
         {isEdit && (
+          // TODO: enable for create too, but rest not working for table 1
           <Button
             onClick={() => form.reset()}
             className="flex w-fit flex-row gap-1 transition-all hover:bg-valence-black hover:text-valence-white"

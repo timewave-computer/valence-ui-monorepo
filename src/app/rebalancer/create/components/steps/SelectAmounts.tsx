@@ -1,4 +1,7 @@
-import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
+import {
+  CreateRebalancerCopy,
+  RebalancerFormTooltipCopy,
+} from "@/app/rebalancer/create/copy";
 import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
@@ -9,7 +12,8 @@ import {
   InsufficientFundsWarning,
   useInsufficientFundsWarning,
   InputTableCell,
-  WarnText,
+  WarnTextV2,
+  MissingServiceFeeWarning,
 } from "@/app/rebalancer/create/components";
 import {
   Checkbox,
@@ -20,10 +24,12 @@ import {
 import {
   useAssetCache,
   useBaseTokenValue,
+  useMinimumRequiredValue,
   usePrefetchData,
 } from "@/app/rebalancer/hooks";
 import { chainConfig } from "@/const/config";
 import { BsExclamationCircle } from "react-icons/bs";
+import { get } from "lodash";
 
 export const SelectAmounts: React.FC<{
   address: string;
@@ -59,6 +65,7 @@ export const SelectAmounts: React.FC<{
   );
   const { isLoading: isCacheLoading } = usePrefetchData();
   const baseTokenDenom = watch("baseTokenDenom");
+  const initialAmounts = watch("initialAssets");
 
   const { calculateValue, baseTokenAsset } = useBaseTokenValue({
     baseTokenDenom,
@@ -70,9 +77,25 @@ export const SelectAmounts: React.FC<{
   const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
     useInsufficientFundsWarning(address);
 
+  const totalDepositValue = initialAmounts?.reduce((acc, balance) => {
+    const value = calculateValue({
+      denom: balance.denom,
+      amount: balance.startingAmount,
+    });
+    return acc + value;
+  }, 0);
+
+  const { value: totalRequiredValue, symbol: requiredValueSymbol } =
+    useMinimumRequiredValue(baseTokenDenom ?? "");
+  const minimumValueDisplayString = displayValue({
+    value: totalRequiredValue,
+    symbol: requiredValueSymbol,
+  });
+
   if (isLoadingBalances || isCacheLoading)
     return (
       <SelectAmountsLayout
+        baseDenom={baseTokenDenom}
         subContent={<LoadingSkeleton className="min-h-56" />}
       ></SelectAmountsLayout>
     );
@@ -80,14 +103,12 @@ export const SelectAmounts: React.FC<{
   if (!isWalletConnected) {
     return (
       <SelectAmountsLayout
+        baseDenom={baseTokenDenom}
         subContent={
           <div className="mt-2 flex flex-row items-center gap-4 border border-warn p-4">
             <BsExclamationCircle className="h-8 w-8 text-warn " />
             <div className="flex flex-col gap-0.5">
-              <WarnText
-                className="text-base font-semibold text-warn"
-                text="No wallet connected."
-              />
+              <WarnTextV2 variant="warn" text="No wallet connected." />
               <p className="text-sm">Connect a wallet to continue.</p>
             </div>
           </div>
@@ -95,14 +116,14 @@ export const SelectAmounts: React.FC<{
       />
     );
   }
-  if (isBalancesFetched && (!isHoldingMinimumFee || !isHoldingAtLeastOneAsset))
+  if (isBalancesFetched && !isHoldingAtLeastOneAsset)
     return (
       <SelectAmountsLayout
+        baseDenom={baseTokenDenom}
         subContent={
           <InsufficientFundsWarning
             baseDenom={baseTokenDenom}
             isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
-            isHoldingMinimumFee={isHoldingMinimumFee}
           />
         }
       ></SelectAmountsLayout>
@@ -110,30 +131,18 @@ export const SelectAmounts: React.FC<{
 
   return (
     <SelectAmountsLayout
-      subContent={
-        <>
-          <p className="w-3/4 text-sm">
-            {CreateRebalancerCopy.step_SelectAssets.subTitle}
-          </p>
-          <InsufficientFundsWarning // here to handle if missing service fee
-            baseDenom={baseTokenDenom}
-            isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
-            isHoldingMinimumFee={isHoldingMinimumFee}
-          />
-        </>
-      }
+      baseDenom={baseTokenDenom}
+      subContent={<>{!isHoldingMinimumFee && <MissingServiceFeeWarning />}</>}
     >
       <div className="flex flex-row items-center gap-2">
         <Checkbox
+          disabled={!isHoldingMinimumFee}
           checked={isServiceFeeIncluded}
           onChange={(value) => setValue("isServiceFeeIncluded", value)}
         />
         <WithQuestionTooltip
           tooltipContent={
-            <QuestionTooltipContent
-              title="Service fee"
-              subtext="TODO: explain why a service fee is collected"
-            />
+            <QuestionTooltipContent {...RebalancerFormTooltipCopy.serviceFee} />
           }
         >
           <span className="text-sm">
@@ -143,13 +152,13 @@ export const SelectAmounts: React.FC<{
         </WithQuestionTooltip>
       </div>
 
-      <div className="flex max-w-[90%] flex-row gap-20">
+      <div className="flex max-w-[90%] flex-col gap-2">
         <div
           role="grid"
           className="grid grid-cols-[1fr_1fr_2fr_2fr] justify-items-start gap-x-8 gap-y-2"
         >
           <InputTableCell variant="header">Available funds</InputTableCell>
-          <InputTableCell variant="header">Value</InputTableCell>
+          <InputTableCell variant="header">Total value</InputTableCell>
           <InputTableCell className="justify-start" variant="header">
             Initial Deposit
           </InputTableCell>
@@ -257,6 +266,47 @@ export const SelectAmounts: React.FC<{
               );
             })}
         </div>
+
+        {balances
+          ?.filter((b) => {
+            const asset = getOriginAsset(b.denom);
+            return !!asset;
+          })
+          ?.some((balance, index) => {
+            const asset = getOriginAsset(balance.denom);
+
+            let baseBalance = 0;
+            if (asset) {
+              baseBalance = microToBase(balance.amount, asset.decimals);
+            }
+            if (
+              asset?.denom === chainConfig.serviceFee.denom &&
+              isServiceFeeIncluded
+            ) {
+              baseBalance -= chainConfig.serviceFee.amount;
+            }
+            const selectedAmount = getValues(
+              `initialAssets.${index}.startingAmount`,
+            );
+            const isOverMax = Number(selectedAmount ?? 0) > baseBalance;
+            return isOverMax;
+          }) && (
+          <WarnTextV2
+            variant="error"
+            text="Deposit greater than available funds."
+          />
+        )}
+
+        {initialAmounts?.length > 0 &&
+          initialAmounts.some(
+            (a) => a.startingAmount && a.startingAmount > 0,
+          ) &&
+          totalDepositValue < totalRequiredValue && (
+            <WarnTextV2
+              variant="warn"
+              text={`Minumum deposit must be at least ${minimumValueDisplayString} in value.`}
+            />
+          )}
       </div>
     </SelectAmountsLayout>
   );
@@ -265,14 +315,35 @@ export const SelectAmounts: React.FC<{
 const SelectAmountsLayout: React.FC<{
   children?: ReactNode;
   subContent?: React.ReactNode;
-}> = ({ children, subContent }) => {
+  baseDenom?: string;
+}> = ({ children, subContent, baseDenom }) => {
+  const { value, symbol } = useMinimumRequiredValue(baseDenom ?? "");
+
+  const minimumValueDisplayString = displayValue({ value, symbol });
+
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-lg font-bold">
           {CreateRebalancerCopy.step_SelectAssets.title}
         </h1>
-
+        <p className=" text-sm">
+          {CreateRebalancerCopy.step_SelectAssets.subTitle}
+        </p>
+        <p className=" text-sm">
+          Account must hold a minimum value of {minimumValueDisplayString} to
+          enable rebalancing. Supported assets are:{" "}
+          {chainConfig.supportedAssets.map((a, i) => {
+            return (
+              <>
+                {" "}
+                <span className="font-semibold">{a.symbol}</span>
+                {i !== chainConfig.supportedAssets.length - 1 && ", "}
+              </>
+            );
+          })}
+          .
+        </p>
         {subContent}
       </div>
       {children}

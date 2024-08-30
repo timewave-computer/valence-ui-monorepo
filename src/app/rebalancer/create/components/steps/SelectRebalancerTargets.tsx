@@ -1,5 +1,8 @@
-import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
-import { Fragment, useCallback, useMemo } from "react";
+import {
+  CreateRebalancerCopy,
+  RebalancerFormTooltipCopy,
+} from "@/app/rebalancer/create/copy";
+import { Fragment, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { cn, displayNumber } from "@/utils";
 import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
@@ -9,13 +12,12 @@ import {
   TooltipContent,
   TooltipTrigger,
   Dropdown,
-  DropdownOption,
   IconButton,
   LoadingSkeleton,
   QuestionTooltipContent,
   WithQuestionTooltip,
 } from "@/components";
-import { InputTableCell } from "@/app/rebalancer/create/components";
+import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
 import { useWhitelistedDenoms } from "@/hooks";
@@ -34,20 +36,21 @@ export const SelectRebalancerTargets: React.FC<{
     baseTokenDenom,
   });
   const { getOriginAsset } = useAssetCache();
-  const { data: whitelistedDenoms } = useWhitelistedDenoms();
+  const { data: whitelist } = useWhitelistedDenoms();
 
-  const dropdownOptions: DropdownOption<string>[] = useMemo(() => {
-    if (!whitelistedDenoms?.base_denom_whitelist) return [];
-    return whitelistedDenoms?.base_denom_whitelist.map((a) => {
-      const asset = getOriginAsset(a.denom);
-      return {
-        value: a.denom,
-        label: asset?.symbol ?? "",
-      };
-    });
-  }, [whitelistedDenoms?.base_denom_whitelist, getOriginAsset]);
+  // this is needed to display everything correctly in dropdown
+  const allDenomDropdownOptions = !!whitelist?.denom_whitelist?.length
+    ? whitelist?.denom_whitelist.map((denom) => {
+        const asset = getOriginAsset(denom);
+        return {
+          value: denom,
+          label: asset?.symbol ?? "",
+        };
+      })
+    : [];
 
-  const availableDropdownOptions = dropdownOptions.filter(
+  // give a filtered subset based on what is already selected
+  const availableDropdownOptions = allDenomDropdownOptions.filter(
     (option) => !targets.find((t) => t.denom === option.value),
   );
 
@@ -117,36 +120,11 @@ export const SelectRebalancerTargets: React.FC<{
           {CreateRebalancerCopy.step_SelectTargets.subTitle}
         </p>
       </div>
-
-      <div className="grid w-full max-w-[90%] grid-cols-[1fr_1fr_2fr_2fr_auto]">
-        <div className="flex flex-col gap-2">
-          <WithQuestionTooltip
-            tooltipContent={
-              <QuestionTooltipContent
-                title="Base token denomination"
-                subtext="TODO"
-              />
-            }
-          >
-            <div className="col-span-2 h-fit pb-1 text-xs font-medium ">
-              Base token denomination
-            </div>
-          </WithQuestionTooltip>
-
-          <Dropdown
-            containerClassName=" min-w-32"
-            selected={watch(`baseTokenDenom`)}
-            onSelected={(value) => setValue(`baseTokenDenom`, value)}
-            options={dropdownOptions ?? []}
-          />
-        </div>
-      </div>
-
       <div className="flex w-full max-w-[90%] flex-row gap-20">
         {isValueLoading ? (
           <LoadingSkeleton className="min-h-36" />
         ) : (
-          <>
+          <div className="flex flex-col gap-2">
             <div className="grid h-fit grid-cols-[1fr_1fr_2fr_2fr_auto] gap-x-8 gap-y-2">
               <InputTableCell className="justify-start" variant="header">
                 Asset
@@ -161,21 +139,17 @@ export const SelectRebalancerTargets: React.FC<{
                 <WithQuestionTooltip
                   tooltipContent={
                     <QuestionTooltipContent
-                      title="Minimum balance"
-                      subtext="TODO"
+                      {...RebalancerFormTooltipCopy.minBalance}
                     />
                   }
                 >
-                  {" "}
-                  Minimum Balance (Optional)
+                  {RebalancerFormTooltipCopy.minBalance.title}
                 </WithQuestionTooltip>
               </InputTableCell>
               <InputTableCell
                 className="h-full flex-col items-center justify-center"
                 variant="header"
-              >
-                <IconButton onClick={addEmptyAsset} Icon={BsPlus} />
-              </InputTableCell>
+              ></InputTableCell>
 
               {targets?.map((field, index: number) => {
                 const initialAsset = getValues("initialAssets")
@@ -202,8 +176,8 @@ export const SelectRebalancerTargets: React.FC<{
                     <InputTableCell className="relative flex items-center justify-start   ">
                       <Dropdown
                         containerClassName="min-w-32"
-                        availableOptions={availableDropdownOptions}
-                        options={dropdownOptions}
+                        availableOptions={availableDropdownOptions} // to give field access to the values of what is selected
+                        options={allDenomDropdownOptions} // only allow user to select what is not already selected
                         onSelected={(value) => {
                           const current = getValues(`targets.${index}`);
                           if (current?.denom)
@@ -309,39 +283,49 @@ export const SelectRebalancerTargets: React.FC<{
                 );
               })}
 
-              <div className="col-span-full">
-                {initialAssets?.every(
-                  (a) => !a.startingAmount || a.startingAmount === 0,
-                ) && (
-                  <InputTableCell className="col-span-full flex items-center  text-sm font-medium tracking-wide text-valence-gray ">
-                    Select at least one starting amount in Step 1 to continue.
-                  </InputTableCell>
-                )}
-              </div>
-
-              <div className="col-span-full">
-                {targets?.length > 0 &&
-                  targets.some((t) => Number(t.bps) > 0) &&
-                  targets.reduce((acc, target) => acc + target.bps, 0) !==
-                    100 && (
-                    <InputTableCell className="col-span-full flex items-center text-sm  font-medium tracking-wide text-warn  ">
-                      Total distribution must equal 100%
-                    </InputTableCell>
-                  )}
-              </div>
-
-              <div className="col-span-full">
-                {targets?.length > 0 &&
-                  targets.some(
-                    (t) => Number(t.bps) === 0 || Number(t.bps) === 100,
-                  ) && (
-                    <InputTableCell className="col-span-full flex items-center text-sm  font-medium tracking-wide text-warn  ">
-                      Percentages must be between .01% and 99.99%
-                    </InputTableCell>
-                  )}
-              </div>
+              <InputTableCell className="" variant="header">
+                <IconButton onClick={addEmptyAsset} Icon={BsPlus} />
+              </InputTableCell>
             </div>
-          </>
+            <div className="flex flex-col gap-2">
+              {initialAssets?.every(
+                (a) => !a.startingAmount || a.startingAmount === 0,
+              ) && (
+                <WarnTextV2
+                  text=" Select at least one starting amount in Step 1 to continue.
+                  "
+                  variant="info"
+                />
+              )}
+
+              {targets?.length < 2 && (
+                <WarnTextV2
+                  text="Select at least two targets.
+                  "
+                  variant="info"
+                />
+              )}
+              {targets?.length > 0 &&
+                targets.some((t) => Number(t.bps) > 0) &&
+                targets.reduce((acc, target) => acc + target.bps, 0) !==
+                  100 && (
+                  <WarnTextV2
+                    text=" Total distribution must equal 100%"
+                    variant="warn"
+                  />
+                )}
+
+              {targets?.length > 0 &&
+                targets.some(
+                  (t) => Number(t.bps) === 0 || Number(t.bps) === 100,
+                ) && (
+                  <WarnTextV2
+                    text="Percentages must be between .01% and 99.99%."
+                    variant="warn"
+                  />
+                )}
+            </div>
+          </div>
         )}
       </div>
     </section>

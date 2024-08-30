@@ -2,21 +2,21 @@ import React, { ReactNode } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components";
 import { BsQuestion } from "react-icons/bs";
 import { useIsServer } from "@/hooks";
+
 export const QuestionTooltipContent: React.FC<{
   title?: string;
-  subtext?: string;
+  text?: string;
   children?: ReactNode;
-}> = ({ title, subtext, children }) => {
+}> = ({ title, text, children }) => {
   return (
-    <div className="flex max-w-52 flex-col  gap-2">
-      {children}
-      {(subtext || title) && (
+    <div className="flex max-w-56 flex-col  gap-2">
+      {(text || title) && (
         <div className="flex flex-col gap-2">
-          {title && <h3 className="text-sm font-bold">{title}</h3>}
-          {subtext && <p className="text-xs">{subtext}</p>}
+          {title && <h3 className="text-base font-bold">{title}</h3>}
+          {text && <p className="text-wrap  text-sm font-normal">{text}</p>}
         </div>
       )}
-      {children && <div>{children}</div>}
+      {children && <div className="text-sm font-normal">{children}</div>}
     </div>
   );
 };

@@ -1,7 +1,6 @@
 "use client";
 import { useWallet } from "@/hooks/use-wallet";
 import { RebalancerFormHeader } from "../../create/CreateRebalancer";
-import { RebalancerUpdateData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { useForm } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import {
@@ -11,9 +10,9 @@ import {
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  AdvancedSettings,
   ConfigureSettings,
   SelectRebalancerTargets,
-  SelectTrustee,
 } from "@/app/rebalancer/create/components";
 import { Button, ToastMessage } from "@/components";
 import { SelectAssetsFromAccount } from "@/app/rebalancer/create/components/";
@@ -185,7 +184,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
           isCleanStartingAmountEnabled={false}
         />
         <ConfigureSettings address={address} form={form} />
-        <SelectTrustee address={address} form={form} />
+        <AdvancedSettings address={address} form={form} />
         <Button
           isLoading={isUpdatePending}
           className="w-fit"

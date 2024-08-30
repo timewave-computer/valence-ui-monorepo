@@ -24,4 +24,4 @@ export * from "./colored-dot";
 export * from "./LoadingSkeleton";
 export * from "./ValenceProductBrand";
 export * from "./ConnectWalletButton";
-export * from "./WithQuesionTooltip";
+export * from "./WithQuestionTooltip";

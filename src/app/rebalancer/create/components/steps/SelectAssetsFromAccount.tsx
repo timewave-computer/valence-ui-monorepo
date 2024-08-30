@@ -13,8 +13,10 @@ import { Button, Checkbox, LoadingSkeleton } from "@/components";
 import {
   useBaseTokenValue,
   useLivePortfolio,
+  useMinimumRequiredValue,
   usePrefetchData,
 } from "@/app/rebalancer/hooks";
+import { chainConfig } from "@/const/config";
 
 export const SelectAssetsFromAccount: React.FC<{
   address: string;
@@ -77,6 +79,7 @@ export const SelectAssetsFromAccount: React.FC<{
   if (isLoadingBalances || isCacheLoading)
     return (
       <SelectAmountsLayout
+        baseDenom={baseTokenDenom}
         subContent={<LoadingSkeleton className="min-h-56" />}
       ></SelectAmountsLayout>
     );
@@ -84,25 +87,19 @@ export const SelectAssetsFromAccount: React.FC<{
   if (isBalancesFetched && (!isHoldingMinimumFee || !isHoldingAtLeastOneAsset))
     return (
       <SelectAmountsLayout
+        baseDenom={baseTokenDenom}
         subContent={
           <InsufficientFundsWarning
             isEdit={true}
             baseDenom={baseTokenDenom}
             isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
-            isHoldingMinimumFee={isHoldingMinimumFee}
           />
         }
       ></SelectAmountsLayout>
     );
 
   return (
-    <SelectAmountsLayout
-      subContent={
-        <p className="w-3/4 text-sm">
-          {CreateRebalancerCopy.step_edit_SelectAssets.subTitle}
-        </p>
-      }
-    >
+    <SelectAmountsLayout baseDenom={baseTokenDenom}>
       <div className="flex max-w-[90%] flex-row gap-20">
         <div
           role="grid"
@@ -162,13 +159,35 @@ export const SelectAssetsFromAccount: React.FC<{
 const SelectAmountsLayout: React.FC<{
   children?: ReactNode;
   subContent?: React.ReactNode;
-}> = ({ children, subContent }) => {
+  baseDenom?: string;
+}> = ({ children, subContent, baseDenom }) => {
+  const { value, symbol } = useMinimumRequiredValue(baseDenom ?? "");
+
+  const minimumValueDisplayString = displayValue({ value, symbol });
+
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-lg font-bold">
           {CreateRebalancerCopy.step_edit_SelectAssets.title}
         </h1>
+        <p className="w-3/4 text-sm">
+          {CreateRebalancerCopy.step_edit_SelectAssets.subTitle}
+        </p>
+        <p className=" text-sm">
+          Account must hold a minimum value of {minimumValueDisplayString} to
+          enable rebalancing. Supported assets are:{" "}
+          {chainConfig.supportedAssets.map((a, i) => {
+            return (
+              <>
+                {" "}
+                <span className="font-semibold">{a.symbol}</span>
+                {i !== chainConfig.supportedAssets.length - 1 && ", "}
+              </>
+            );
+          })}
+          .
+        </p>
 
         {subContent}
       </div>

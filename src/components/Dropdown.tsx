@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/utils";
+import { rest } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { BsCheck2, BsChevronDown } from "react-icons/bs";
 
@@ -52,6 +53,7 @@ export const Dropdown = <T extends string>({
   isLoading,
   isDisabled,
   availableOptions,
+  className,
   ...props
 }: DropdownProps<T> & React.HTMLAttributes<HTMLDivElement>) => {
   const [visible, setVisible] = useState(false);
@@ -85,7 +87,7 @@ export const Dropdown = <T extends string>({
   const dropdownOptions = availableOptions ? availableOptions : options;
 
   return (
-    <div className="relative" ref={containerRef} {...props}>
+    <div className={cn("relative", className)} ref={containerRef} {...props}>
       {isLoading ? (
         <button
           disabled={true}

@@ -61,7 +61,7 @@ export type IndexerRebalancerAccountConfig = z.infer<
 export const IndexerPausedAccountSchema = z.object({
   is_paused: z.boolean(),
   pauser: z.string(),
-  reason: z.object({ account_reason: z.string() }),
+  reason: z.any(), // can be a nested object. we dont use this in the UI so fine for now.
   config: IndexerRebalancerConfigResponseSchema.omit({ is_paused: true }),
 });
 

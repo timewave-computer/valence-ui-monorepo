@@ -55,7 +55,6 @@ export async function fetchRebalancerAccountConfiguration({
   const configData = await configRes.json();
 
   let config: IndexerRebalancerAccountConfig;
-
   const checkIfPaused = IndexerPausedAccountSchema.safeParse(configData);
 
   if (checkIfPaused.success) {
