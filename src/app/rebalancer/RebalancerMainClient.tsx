@@ -2,10 +2,9 @@
 import { ComingSoonTooltipContent } from "@/components";
 import { useMemo, useState } from "react";
 import {
-  Table,
-  SidePanel,
   SidePanelV2,
   AccountDetailsPanel,
+  HistoricalGraph,
 } from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
@@ -13,15 +12,8 @@ import {
   useLivePortfolio,
 } from "@/app/rebalancer/hooks";
 import { LOAD_CONFIG_ERROR, accountAtom } from "@/app/rebalancer/const";
-import { StatusBar } from "@/components/StatusBar";
-import { FiAlertTriangle } from "react-icons/fi";
-import { LinkText } from "@/components";
-import Image from "next/image";
-import { X_HANDLE, X_URL } from "@/const/socials";
-import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { cn } from "@/utils";
 import { useAtom } from "jotai";
-import { HistoricalGraph } from "./create/components/HistoricalGraph";
 
 export const RebalancerMainClient = () => {
   const [account] = useAtom(accountAtom);
@@ -48,10 +40,6 @@ export const RebalancerMainClient = () => {
     accountAddress: account,
     targets,
   });
-
-  const isNewLayoutEnabled = useFeatureFlag(
-    FeatureFlags.REBALANCER_ACTIONS_LAYOUT,
-  );
 
   // used to track when hovering over scrollable side panel
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -88,23 +76,12 @@ export const RebalancerMainClient = () => {
           <ComingSoonTooltipContent />
         </div>
       )}
-
-      {isNewLayoutEnabled ? (
-        <SidePanelV2
-          rerouteOnConnect={true}
-          setCursorPosition={setCursorPosition}
-          debouncedMouseEnter={debouncedMouseEnter}
-          debouncedMouseLeave={debouncedMouseLeave}
-        />
-      ) : (
-        <SidePanelV1
-          setCursorPosition={setCursorPosition}
-          isLoading={accountConfigQuery.isLoading}
-          isValidAccount={isValidAccount}
-          debouncedMouseEnter={debouncedMouseEnter}
-          debouncedMouseLeave={debouncedMouseLeave}
-        />
-      )}
+      <SidePanelV2
+        rerouteOnConnect={true}
+        setCursorPosition={setCursorPosition}
+        debouncedMouseEnter={debouncedMouseEnter}
+        debouncedMouseLeave={debouncedMouseLeave}
+      />
       <div className="flex min-w-[824px] grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
         <HistoricalGraph
           isLoading={
@@ -112,89 +89,9 @@ export const RebalancerMainClient = () => {
           }
           isError={accountConfigQuery.isError || historicValuesQuery.isError}
         />
-        {isNewLayoutEnabled ? (
-          <AccountDetailsPanel selectedAddress={account} />
-        ) : (
-          <div className="grow overflow-x-auto bg-valence-white">
-            <Table
-              isLoading={livePortfolioQuery.isLoading}
-              livePortfolio={livePortfolioQuery.data}
-              targets={targets}
-            />
-            {livePortfolioQuery.isError &&
-              !accountConfigQuery.isError &&
-              !historicValuesQuery.isError &&
-              !historicValuesQuery.isLoading && (
-                <StatusBar
-                  className="border-0"
-                  variant="error"
-                  text="Could not load live portfolio"
-                  icon={<FiAlertTriangle />}
-                />
-              )}
-          </div>
-        )}
+
+        <AccountDetailsPanel selectedAddress={account} />
       </div>
-    </div>
-  );
-};
-
-export const SidePanelV1 = ({
-  isLoading,
-  isValidAccount,
-  setCursorPosition,
-  isDisabled = false,
-  debouncedMouseEnter,
-  debouncedMouseLeave,
-}: {
-  debouncedMouseEnter?: () => void;
-  debouncedMouseLeave?: () => void;
-  isLoading: boolean;
-  isDisabled?: boolean;
-  isValidAccount: boolean;
-  setCursorPosition?: React.Dispatch<
-    React.SetStateAction<{ x: number; y: number }>
-  >;
-}) => {
-  // to track cursor when it moves
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    setCursorPosition &&
-      setCursorPosition({ x: event.clientX, y: event.clientY });
-  };
-
-  return (
-    <div
-      onPointerMove={handlePointerMove}
-      className="flex w-96 shrink-0 flex-col items-stretch overflow-hidden overflow-y-auto border-r border-valence-black"
-    >
-      <div className="flex flex-col gap-2 border-valence-black px-4">
-        <Image
-          className="mb-6 mt-8"
-          src="/img/rebalancer.svg"
-          alt="Rebalancer illustration"
-          width={236}
-          height={140}
-        />
-        <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
-        <p>
-          Contact{" "}
-          <LinkText
-            className="border-valence-black font-medium text-valence-black hover:border-b"
-            href={X_URL}
-          >
-            {X_HANDLE}
-          </LinkText>{" "}
-          if you or your DAO want early access to the Rebalancer.
-        </p>
-      </div>
-
-      <SidePanel
-        isDisabled={isDisabled}
-        isValidAccount={isValidAccount}
-        isLoading={isLoading}
-        debouncedMouseEnter={debouncedMouseEnter}
-        debouncedMouseLeave={debouncedMouseLeave}
-      />
     </div>
   );
 };

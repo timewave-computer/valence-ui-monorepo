@@ -1,21 +1,13 @@
 "use client";
-import { ComingSoonTooltipContent, Dropdown } from "@/components";
+import { Dropdown } from "@/components";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
-import {
-  Graph,
-  Table,
-  ValueTooltip,
-  SidePanel,
-  SidePanelV2,
-  AccountDetailsPanel,
-} from "@/app/rebalancer/components";
+import { Graph, ValueTooltip } from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
   useAssetCache,
   useGraphOverlay,
   useHistoricValues,
-  usePrefetchData,
   useLivePortfolio,
   useHistoricalGraphV2,
   useValenceAccount,
@@ -36,14 +28,12 @@ import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
 import { StatusBar } from "@/components/StatusBar";
 import { FiAlertTriangle } from "react-icons/fi";
-import { LinkText } from "@/components";
-import Image from "next/image";
-import { X_HANDLE, X_URL } from "@/const/socials";
 import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { cn } from "@/utils";
 import { useAtom } from "jotai";
 import { useWallet } from "@/hooks";
 import { useRouter } from "next/navigation";
+
 export const HistoricalGraph: React.FC<{
   isError: boolean;
   isLoading: boolean;

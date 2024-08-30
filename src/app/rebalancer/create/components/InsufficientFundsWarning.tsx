@@ -5,8 +5,6 @@ import { BsExclamationCircle } from "react-icons/bs";
 import { useWalletBalances } from "@/hooks";
 import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import { HiMiniArrowRight } from "react-icons/hi2";
-import { useMinimumRequiredValue } from "../../hooks";
-import { displayValue } from "@/utils";
 
 export const MissingServiceFeeWarning: React.FC<{}> = () => {
   return (
@@ -28,15 +26,15 @@ export const MissingServiceFeeWarning: React.FC<{}> = () => {
 
 export const InsufficientFundsWarning: React.FC<{
   isHoldingAtLeastOneAsset: boolean;
-  baseDenom: string;
   isEdit?: boolean;
-}> = ({ isHoldingAtLeastOneAsset, isEdit = false }) => {
+  address: string;
+}> = ({ isHoldingAtLeastOneAsset, isEdit = false, address }) => {
   return (
     <div className="mt-2 flex flex-col gap-2 border border-warn p-4">
       {!isHoldingAtLeastOneAsset && (
         <>
           {isEdit ? (
-            <NoSupportedAssetsInAccountMessage />
+            <NoSupportedAssetsInAccountMessage address={address} />
           ) : (
             <NoSupportedAssetsInWalletMessage />
           )}
@@ -75,6 +73,7 @@ export const InsufficientFundsWarning: React.FC<{
   );
 };
 
+// for create
 const NoSupportedAssetsInWalletMessage = () => (
   <>
     <div className="flex items-center gap-2 ">
@@ -85,41 +84,29 @@ const NoSupportedAssetsInWalletMessage = () => (
       />
     </div>
     <p className="text-sm">
-      Deposit at least one asset supported by the Rebalancer, and{" "}
-      {chainConfig.serviceFee.amount} {chainConfig.serviceFee.symbol} for the
-      service fee.
+      Deposit at least one supported asset and {chainConfig.serviceFee.amount}{" "}
+      {chainConfig.serviceFee.symbol} for the service fee.
     </p>
   </>
 );
 
 // for edit
-const NoSupportedAssetsInAccountMessage = () => (
+const NoSupportedAssetsInAccountMessage = ({
+  address,
+}: {
+  address: string;
+}) => (
   <>
     <div className="flex items-center gap-2 ">
       <BsExclamationCircle className="h-6 w-6 text-warn " />
       <WarnTextV2
         variant="warn"
-        text="This account does not hold any assets supported by the Rebalancer."
+        text="Rebalancer account does not hold any assets supported by the Rebalancer."
       />
     </div>
     <p className="text-sm">
-      Deposit at least one asset supported by the Rebalancer.
-    </p>
-  </>
-);
-
-const MinimumFeeMessage = (
-  <>
-    <div className="flex items-center gap-2 ">
-      <BsExclamationCircle className="h-6 w-6 text-warn " />
-      <WarnTextV2
-        variant="warn"
-        text={`A service fee is required to enable rebalancing.`}
-      />
-    </div>
-    <p className="text-sm">
-      Deposit {chainConfig.serviceFee.amount} {chainConfig.serviceFee.symbol}{" "}
-      into the wallet.
+      Deposit funds into the Rebalancer account to continue{" "}
+      <span className="font-mono text-sm font-light">({address})</span>.
     </p>
   </>
 );

@@ -6,10 +6,8 @@ import {
 } from "@/const/socials";
 
 import { Suspense } from "react";
-import { FeatureFlags, isFeatureFlagEnabled } from "@/utils";
-import { AccountDetailsPanel, SidePanelV2, Table } from "./components";
-import { HistoricalGraph } from "./create/components/HistoricalGraph";
-import { SidePanelV1 } from "./RebalancerMainClient";
+import { AccountDetailsPanel, SidePanelV2 } from "./components";
+import { HistoricalGraph } from "./components/HistoricalGraph";
 import RebalancerMainServerComponent from "./RebalancerMainServer";
 
 export const metadata: Metadata = {
@@ -30,39 +28,15 @@ export const metadata: Metadata = {
 };
 
 function RebalancerMainSuspenseFallback() {
-  const enabled = isFeatureFlagEnabled(FeatureFlags.REBALANCER_ACTIONS_LAYOUT);
-
-  if (enabled)
-    return (
-      <div className=" flex w-full flex-row">
-        <SidePanelV2 />
-        <div className="flex min-w-[824px] grow  flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
-          <HistoricalGraph isLoading={true} isError={false} />
-          <AccountDetailsPanel selectedAddress="" />
-        </div>
+  return (
+    <div className=" flex w-full flex-row">
+      <SidePanelV2 />
+      <div className="flex min-w-[824px] grow  flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
+        <HistoricalGraph isLoading={true} isError={false} />
+        <AccountDetailsPanel selectedAddress="" />
       </div>
-    );
-  else
-    return (
-      <div className=" flex w-full flex-row">
-        <SidePanelV1
-          isLoading={true}
-          isValidAccount={false}
-          isDisabled={true}
-        />
-        <div className="flex min-w-[824px] grow  flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
-          <HistoricalGraph isLoading={true} isError={false} />
-          <Table
-            isLoading={true}
-            livePortfolio={{
-              balances: [],
-              totalValue: 0,
-            }}
-            targets={[]}
-          />
-        </div>
-      </div>
-    );
+    </div>
+  );
 }
 
 export default async function RebalancerPage({

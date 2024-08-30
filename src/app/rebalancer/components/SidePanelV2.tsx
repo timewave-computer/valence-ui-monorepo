@@ -124,49 +124,50 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
             No featured accounts to show for {chainConfig.chain.pretty_name}.
           </p>
         )}
-        {isWalletConnected && isMultipleValenceAccountsEnabled ? (
-          <button
-            key={`discover-${valenceAddress}`}
-            onClick={() => {
-              router.push(`/rebalancer/create`);
-            }}
-            className={cn(
-              "w-full border-l border-r border-t border-valence-gray transition-all",
-              "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
+        {isWalletConnected &&
+          (isMultipleValenceAccountsEnabled ? (
+            <button
+              key={`discover-${valenceAddress}`}
+              onClick={() => {
+                router.push(`/rebalancer/create`);
+              }}
+              className={cn(
+                "w-full border-l border-r border-t border-valence-gray transition-all",
+                "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
 
-              account !== valenceAddress &&
-                "hover:bg-valence-lightgray hover:text-valence-black",
-            )}
-          >
-            <span className="flex flex-row justify-between gap-2 ">
-              <span className="text-left">Create new account</span>
-            </span>
-          </button>
-        ) : (
-          <button
-            key={`discover-${valenceAddress}`}
-            onClick={() => {
-              if (valenceAddress)
-                router.push(
-                  `/rebalancer?account=${valenceAddress}&scale=${scale}`,
-                );
-              else router.push(`/rebalancer/`);
-            }}
-            className={cn(
-              "w-full border-l border-r border-t border-valence-gray transition-all",
+                account !== valenceAddress &&
+                  "hover:bg-valence-lightgray hover:text-valence-black",
+              )}
+            >
+              <span className="flex flex-row justify-between gap-2 ">
+                <span className="text-left">Create new account</span>
+              </span>
+            </button>
+          ) : (
+            <button
+              key={`discover-${valenceAddress}`}
+              onClick={() => {
+                if (valenceAddress)
+                  router.push(
+                    `/rebalancer?account=${valenceAddress}&scale=${scale}`,
+                  );
+                else router.push(`/rebalancer/`);
+              }}
+              className={cn(
+                "w-full border-l border-r border-t border-valence-gray transition-all",
 
-              "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
-              (account === valenceAddress || (!account && !valenceAddress)) &&
-                "bg-valence-black text-valence-white",
-              account !== valenceAddress &&
-                "hover:bg-valence-lightgray hover:text-valence-black",
-            )}
-          >
-            <span className="flex flex-row justify-between gap-2 ">
-              <span className="text-left">Your account</span>
-            </span>
-          </button>
-        )}
+                "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
+                (account === valenceAddress || (!account && !valenceAddress)) &&
+                  "bg-valence-black text-valence-white",
+                account !== valenceAddress &&
+                  "hover:bg-valence-lightgray hover:text-valence-black",
+              )}
+            >
+              <span className="flex flex-row justify-between gap-2 ">
+                <span className="text-left">Your account</span>
+              </span>
+            </button>
+          ))}
 
         {isMultipleValenceAccountsEnabled && !!allValenceAccounts?.length && (
           <>

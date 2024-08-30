@@ -29,7 +29,6 @@ import {
 } from "@/app/rebalancer/hooks";
 import { chainConfig } from "@/const/config";
 import { BsExclamationCircle } from "react-icons/bs";
-import { get } from "lodash";
 
 export const SelectAmounts: React.FC<{
   address: string;
@@ -122,7 +121,7 @@ export const SelectAmounts: React.FC<{
         baseDenom={baseTokenDenom}
         subContent={
           <InsufficientFundsWarning
-            baseDenom={baseTokenDenom}
+            address={address}
             isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
           />
         }
