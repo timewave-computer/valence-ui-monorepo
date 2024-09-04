@@ -29,7 +29,6 @@ import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
 import { useAtom } from "jotai";
 import { accountAtom } from "@/app/rebalancer/const";
-import { CelatoneUrl } from "@/const/celatone";
 
 type WithdrawInputForm = {
   amounts: Coin[];

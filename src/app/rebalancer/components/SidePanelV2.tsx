@@ -47,6 +47,13 @@ export const SidePanelV2: React.FC<{
       setCursorPosition({ x: event.clientX, y: event.clientY });
   };
 
+  const router = useRouter();
+  const [scale] = useAtom(scaleAtom);
+
+  const handleSearchByAddress = (address: string) => {
+    router.push(`/rebalancer?account=${address}&scale=${scale}`);
+  };
+
   return (
     <div
       onPointerMove={handlePointerMove}
@@ -89,7 +96,7 @@ export const SidePanelV2: React.FC<{
 
           <TextInput
             input={account}
-            onChange={(value) => setAccountUrlParam(value)}
+            onChange={(value) => handleSearchByAddress(value)}
             textClassName="font-mono"
             containerClassName="w-full"
             placeholder="neutron12345..."

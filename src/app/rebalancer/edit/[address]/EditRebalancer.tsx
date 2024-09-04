@@ -11,7 +11,7 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AdvancedSettings,
-  ConfigureSettings,
+  SpeedSettings,
   SelectRebalancerTargets,
 } from "@/app/rebalancer/create/components";
 import { Button, ToastMessage } from "@/components";
@@ -183,7 +183,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
           form={form}
           isCleanStartingAmountEnabled={false}
         />
-        <ConfigureSettings address={address} form={form} />
+        <SpeedSettings address={address} form={form} />
         <AdvancedSettings address={address} form={form} />
         <Button
           isLoading={isUpdatePending}

@@ -1,6 +1,6 @@
 export * from "./SelectAmounts";
 export * from "./SelectRebalancerTargets";
-export * from "./ConfigureSettings";
+export * from "./SpeedSettings";
 export * from "./SelectAssetsFromAccount";
 export * from "./AdvancedSettings";
 export * from "./PreviewMessage";

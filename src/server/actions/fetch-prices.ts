@@ -17,7 +17,11 @@ export const getPrices = async (
   }
   const promises = coingeckoIds.map(async (id) => {
     try {
-      const data = await fetchMaybeCached(CACHE_KEYS.COINGECKO_PRICE, { id });
+      const data = await fetchMaybeCached(
+        CACHE_KEYS.COINGECKO_PRICE,
+        { id },
+        { cache: "no-store" },
+      );
       const validated = z.number().safeParse(data);
       if (!validated.success) {
         throw ErrorHandler.makeError(

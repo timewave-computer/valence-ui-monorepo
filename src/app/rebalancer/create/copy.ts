@@ -62,9 +62,17 @@ A priority strategy will spread the override amount in order of priority. Priori
     text: `This is in bps (basis points). Maximum percentage value of the portfolio that can be sold each day.`,
   },
   trustee: {
-    title: "Trustee (optional)",
+    title: "Trustee",
     text: `Only trustees can pause and resume rebalancing.
 
 You can grant permission to another wallet to pause and resume rebalancing in case of emergency. Trustees do NOT have permission to make configuration changes or withdrawals. `,
   },
+};
+
+export const BetaDisclaimer = {
+  title: "Valence UI is in Beta.",
+  text: [
+    `VALENCE TOOLING IS PROVIDED “AS IS”, AT YOUR OWN RISK, AND WITHOUT WARRANTIES OF ANY KIND. No developer or entity involved in creating the Valence UI or smart contracts will be liable for any claims or damages whatsoever associated with your use, inability to use, or your interaction with other users of Valence tooling, including any direct, indirect, incidental, special, exemplary, punitive or consequential damages, or loss of profits, cryptocurrencies, tokens, or anything else of value.`,
+    `By using Valence tooling, you acknowledge and agree to the risks associated with using beta software. If you do not agree to these terms, do not use Valence tooling.`,
+  ],
 };

@@ -40,11 +40,9 @@ export const ToastMessage: React.FC<{
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-col gap-0.5">
-        {titleBody}
-        {children}
-      </div>
+    <div className="flex flex-col gap-1.5">
+      {titleBody}
+      <div className="flex flex-col gap-1">{children}</div>
 
       {transactionHash && (
         <LinkText href={CelatoneUrl.trasaction(transactionHash)}>

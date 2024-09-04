@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import {
   SelectRebalancerTargets,
   SelectAmounts,
-  ConfigureSettings,
+  SpeedSettings,
   AdvancedSettings,
   PreviewMessage,
 } from "@/app/rebalancer/create/components";
@@ -36,6 +36,8 @@ import {
 } from "@radix-ui/react-hover-card";
 import { useBaseTokenValue, useMinimumRequiredValue } from "../hooks";
 import { HiMiniArrowLeft } from "react-icons/hi2";
+import { BetaDisclaimer } from "./copy";
+import { X_HANDLE, X_URL } from "@/const/socials";
 
 type CreateRebalancerProps = {};
 
@@ -215,8 +217,18 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     onError: (e) => {
       console.log("create rebalancer error", JSON.stringify(e));
       toast.error(
-        <ToastMessage title="Failed to set up rebalancer" variant="error">
-          {ErrorHandler.constructText("", e)}
+        <ToastMessage title="Failed to set up Rebalancer" variant="error">
+          <p>{ErrorHandler.constructText("", e)}</p>
+          <p>
+            Try refreshing the page and reconnecting your wallet, or contact{" "}
+            <LinkText
+              className="border-valence-black font-medium text-valence-black hover:border-b"
+              href={X_URL}
+            >
+              {X_HANDLE}
+            </LinkText>{" "}
+            for help.
+          </p>
         </ToastMessage>,
       );
     },
@@ -239,18 +251,20 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
             onInteractOutside={(e) => {
               e.preventDefault();
             }}
-            className=" max-w-[40%]"
+            className=" max-w-[50%]"
           >
-            <div className=" flex flex-col gap-2">
-              <div className="flex items-center gap-2 ">
-                <h1 className="text-xl font-bold  ">
-                  This feature is in beta.
-                </h1>
+            <div className=" flex flex-col gap-4">
+              <div className="flex items-center gap-4 ">
+                <h1 className="text-xl font-bold  ">{BetaDisclaimer.title}</h1>
               </div>
-              <p className="text-sm">
-                By continuing, you accept the risks associated with using beta
-                software.
-              </p>
+              <div className="flex flex-col gap-2">
+                {BetaDisclaimer.text.map((t, i) => (
+                  <p key={`disclaimer-${i}`} className="text-sm">
+                    {t}
+                  </p>
+                ))}
+              </div>
+
               <div className="flex flex-row flex-wrap items-center justify-end gap-4 pt-4">
                 <DialogClose asChild>
                   <Button
@@ -268,7 +282,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
                   onClick={() => setIsBetaWarningVisible(false)}
                   variant="primary"
                 >
-                  Continue
+                  I agree to these terms
                 </Button>
               </div>
             </div>
@@ -287,7 +301,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
           form={form}
           isCleanStartingAmountEnabled={true}
         />
-        <ConfigureSettings address={walletAddress} form={form} />
+        <SpeedSettings address={walletAddress} form={form} />
         <AdvancedSettings address={walletAddress} form={form} />
         <PreviewMessage address={walletAddress} form={form} />
         {isCreatePending ? (

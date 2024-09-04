@@ -13,7 +13,7 @@ import { addDays } from "date-fns";
 import Decimal from "decimal.js";
 import { GraphData } from "@/app/rebalancer/components";
 import { OriginAsset } from "@/types/ibc";
-import { GraphKey } from "@/app/rebalancer/const";
+import { GraphKey, KeyTag } from "@/app/rebalancer/const";
 
 const yTickCount = 200;
 
@@ -92,6 +92,10 @@ const calculateTargetBalance = ({
   return targetAmount;
 };
 
+const isGraphedKey = (key: string): boolean =>
+  key.includes(KeyTag.projectedValue) ||
+  key.includes(KeyTag.projectedTargetValue);
+
 const generateYAxisTicks = (data: GraphData) => {
   if (!data || !data.length)
     return new Array(yTickCount).fill(0).map((_, i) => {
@@ -105,9 +109,8 @@ const generateYAxisTicks = (data: GraphData) => {
     const dItems = Object.entries(d);
 
     const graphedYValues = dItems
-      .filter(([key, value]) => key !== "timestamp")
+      .filter(([key, value]) => isGraphedKey(key))
       .map(([key, value]) => value);
-
     const localMax = Math.max(...graphedYValues);
     const localMin = Math.min(...graphedYValues);
     yMax = Math.max(yMax, localMax);
@@ -117,7 +120,6 @@ const generateYAxisTicks = (data: GraphData) => {
   const yRange = yMax - yMin;
   const yTickInterval = yRange / yTickCount;
 
-  // the +1 adds extra space on top
   return new Array(yTickCount + 1).fill(0).map((_, i) => {
     return yMin + yTickInterval * i;
   });

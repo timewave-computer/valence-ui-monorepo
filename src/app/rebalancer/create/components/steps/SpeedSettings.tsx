@@ -34,7 +34,8 @@ import { ValueTooltip } from "@/app/rebalancer/components";
 
 type PidKey = keyof CreateRebalancerForm["pid"];
 const AdvancedPid = "advanced-pid";
-export const ConfigureSettings: React.FC<{
+
+export const SpeedSettings: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
 }> = ({ form }) => {
@@ -231,6 +232,8 @@ export const ConfigureSettings: React.FC<{
                 axisLine={{ stroke: "white" }}
                 className="font-sans text-xs text-valence-black"
               />
+
+              <CartesianGrid syncWithTicks stroke="white" />
               {targets
                 .filter((t) => !!t.denom)
                 .map((target) => {
@@ -261,7 +264,6 @@ export const ConfigureSettings: React.FC<{
                     </>
                   );
                 })}
-              <CartesianGrid syncWithTicks stroke="white" />
             </LineChart>
           </ResponsiveContainer>
         </div>
