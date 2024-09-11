@@ -19,7 +19,11 @@ export async function fetchRebalancerAccountConfiguration({
 }: {
   address: string;
 }): Promise<FetchAccountConfigReturnValue> {
-  const adminRequest = fetch(IndexerUrl.accountAdmin(address));
+  const adminRequest = fetch(IndexerUrl.accountAdmin(address), {
+    next: {
+      revalidate: 5, // 5 minutes
+    },
+  });
 
   const configRequest = fetch(IndexerUrl.accountConfig(address), {
     next: {

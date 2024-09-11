@@ -6,7 +6,7 @@ import { IndexerValenceAccountsResponseSchema } from "@/types/rebalancer";
 
 export const fetchValenceAccounts = async (
   walletAddress: string,
-): Promise<any> => {
+): Promise<string[]> => {
   const url = IndexerUrl.accounts(walletAddress);
   const res = await fetch(url, {
     next: {

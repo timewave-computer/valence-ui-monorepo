@@ -9,7 +9,7 @@ import {
   useGraphOverlay,
   useHistoricValues,
   useLivePortfolio,
-  useHistoricalGraphV2,
+  useHistoricalGraph,
   useValenceAccount,
 } from "@/app/rebalancer/hooks";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
@@ -33,6 +33,7 @@ import { cn } from "@/utils";
 import { useAtom } from "jotai";
 import { useWallet } from "@/hooks";
 import { useRouter } from "next/navigation";
+import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 
 export const HistoricalGraph: React.FC<{
   isError: boolean;
@@ -70,7 +71,8 @@ export const HistoricalGraph: React.FC<{
     isPending: isGraphPending,
     isLoading: isGraphLoading,
     isError: isGraphError,
-  } = useHistoricalGraphV2({
+    error: graphError,
+  } = useHistoricalGraph({
     scale,
     rebalancerAddress: account,
     livePortfolio: livePortfolioQuery,
@@ -151,6 +153,12 @@ export const HistoricalGraph: React.FC<{
     ) {
       return <StatusBar variant="loading" />;
     } else if (accountConfigQuery.isError || isGraphError) {
+      if (isGraphError) {
+        ErrorHandler.makeError(
+          ERROR_MESSAGES.HISTORICAL_GRAPH_RENDER_ERROR,
+          graphError,
+        );
+      }
       return accountConfigQuery.error === LOAD_CONFIG_ERROR.INVALID_ACCOUNT ? (
         <StatusBar
           variant="error"
@@ -165,6 +173,10 @@ export const HistoricalGraph: React.FC<{
         />
       );
     } else if (historicValuesQuery.isError) {
+      ErrorHandler.makeError(
+        ERROR_MESSAGES.HISTORICAL_GRAPH_LOAD_ERROR,
+        historicValuesQuery.error,
+      );
       return (
         <StatusBar
           variant="error"

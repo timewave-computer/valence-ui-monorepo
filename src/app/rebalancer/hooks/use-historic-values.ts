@@ -53,19 +53,20 @@ export const useHistoricValues = ({
         const ts = historicBalanceData.timestamp;
         const tokens: FetchHistoricalValuesReturnValue["values"][number]["tokens"] =
           [];
-        historicBalanceData.balances.forEach((balance) => {
+        targets.forEach((target) => {
+          const balance = historicBalanceData.balances.find(
+            (b) => b.denom === target.denom,
+          );
           const prices = queryClient.getQueryData<CoinGeckoHistoricPrices>([
             QUERY_KEYS.HISTORIC_PRICES,
-            balance.denom,
+            target.denom,
           ]);
-
           tokens.push({
-            denom: balance.denom,
-            amount: balance.amount,
+            denom: target.denom,
+            amount: balance?.amount ?? 0,
             price: findClosestCoingeckoPrice(ts, prices ?? []),
           });
         });
-
         tempMergedData.push({
           timestamp: ts,
           tokens,
@@ -87,6 +88,11 @@ export const useHistoricValues = ({
       balanceQuery.isError ||
       targetQuery.isError ||
       historicalValues.isError,
+    error: [
+      balanceQuery.error,
+      targetQuery.error,
+      historicalValues.error,
+    ].toString(),
     data: historicalValues.data,
     historicTargets: targetQuery.data as IndexerHistoricalTargetsResponse,
   } as UseHistoricalValuesReturnValue;
@@ -95,6 +101,7 @@ export const useHistoricValues = ({
 export type UseHistoricalValuesReturnValue = {
   isLoading: boolean;
   isError: boolean;
+  error: any;
   data: {
     timestamp: number;
     readableDate: string;

@@ -15,7 +15,7 @@ import { GraphData } from "@/app/rebalancer/components";
 import { OriginAsset } from "@/types/ibc";
 import { GraphKey, KeyTag } from "@/app/rebalancer/const";
 
-const yTickCount = 200;
+const historicalYTickCount = 200;
 
 type ProjectionInput = {
   symbol: string;
@@ -98,7 +98,7 @@ const isGraphedKey = (key: string): boolean =>
 
 const generateYAxisTicks = (data: GraphData) => {
   if (!data || !data.length)
-    return new Array(yTickCount).fill(0).map((_, i) => {
+    return new Array(historicalYTickCount).fill(0).map((_, i) => {
       return 5000 * i;
     });
 
@@ -118,9 +118,9 @@ const generateYAxisTicks = (data: GraphData) => {
   });
 
   const yRange = yMax - yMin;
-  const yTickInterval = yRange / yTickCount;
+  const yTickInterval = yRange / historicalYTickCount;
 
-  return new Array(yTickCount + 1).fill(0).map((_, i) => {
+  return new Array(historicalYTickCount + 1).fill(0).map((_, i) => {
     return yMin + yTickInterval * i;
   });
 };
@@ -178,7 +178,7 @@ const generateProjectionGraphData = async ({
   });
 
   const today = new UTCDate();
-  const timestamps = Array.from({ length: yTickCount }, (_, i) => {
+  const timestamps = Array.from({ length: historicalYTickCount }, (_, i) => {
     const d = addDays(today, i);
     return d.getTime();
   });

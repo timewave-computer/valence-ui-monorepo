@@ -9,7 +9,7 @@ export const QuestionTooltipContent: React.FC<{
   children?: ReactNode;
 }> = ({ title, text, children }) => {
   return (
-    <div className="flex max-w-56 flex-col  gap-2">
+    <div className="flex max-w-64 flex-col  gap-2">
       {(text || title) && (
         <div className="flex flex-col gap-2">
           {title && <h3 className="text-base font-bold">{title}</h3>}

@@ -16,6 +16,11 @@ export const fetchHistoricalBalances = async (
       startDate: new UTCDate(startDate),
       endDate: new UTCDate(endDate),
     }),
+    {
+      next: {
+        revalidate: 5, // 5 minutes
+      },
+    },
   );
   if (!res.ok) {
     throw ErrorHandler.makeError(

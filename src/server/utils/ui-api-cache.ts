@@ -20,7 +20,7 @@ export const fetchMaybeCached = async (
   const url =
     API_CACHE_URL + "/q/" + queryName + "?" + new URLSearchParams(args);
 
-  const cacheOptions = options?.cache ?? "force-cache";
+  const cacheOptions = options?.cache ?? "no-store";
   const response = await fetch(url, {
     cache: cacheOptions,
     method: "GET",

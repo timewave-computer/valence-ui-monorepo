@@ -2,11 +2,12 @@ import {
   Scale,
   GraphKey,
   KeyTag,
-  projectionLength,
-  yTickCount,
-  dayCountForScale,
-  minTimestampGenerator,
+  historicalYTickCount,
   scaleTickCount,
+  dataPointCount,
+  xTickGenerator,
+  maxHistoryDataPoints,
+  minTimestampGenerator,
 } from "@/app/rebalancer/const/graph";
 import {
   FetchAccountConfigReturnValue,
@@ -26,10 +27,9 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { OriginAsset } from "@/types/ibc";
-import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 
-export const useHistoricalGraphV2 = ({
+export const useHistoricalGraph = ({
   scale = Scale.Month,
   rebalancerAddress,
   config,
@@ -108,12 +108,21 @@ export const useHistoricalGraphV2 = ({
       });
 
       const allData = projectedGraphData.length
-        ? [...historialGraphData, ...projectedGraphData]
+        ? [...historialGraphData, ...projectedGraphData].slice(
+            0,
+            dataPointCount[scale] + 1,
+          ) // we generate a larger projection, trim off what we dont need
         : [];
 
-      const xAxisTicks = generateXAxisTicks({ data: allData, scale });
+      const oldXAxisTicks = generateXAxisTicks({ data: allData, scale });
 
       const yAxisTicks = generateYAxisTicks({
+        data: allData,
+        scale,
+        keysToGraph: keysToGraph,
+      });
+
+      const xAxisTicks = generateXAxisTicksV2({
         data: allData,
         scale,
         keysToGraph: keysToGraph,
@@ -151,9 +160,8 @@ const getMinTimestamp = ({
     const mostRecentEntry = rawData[rawData.length - 1];
     ts = mostRecentEntry.timestamp;
   }
-
   const dataSize = rawData.length;
-  const dayCount = dayCountForScale[scale];
+  const dayCount = maxHistoryDataPoints[scale];
   // handle if data is smaller than the graph window
   if (dataSize < dayCount) return minTimestampGenerator(ts, dayCount);
   // otherwise, return the first timestamp within the window
@@ -207,7 +215,7 @@ const generateHistoricalGraphData = ({
     const values: { [key: string]: number } = {};
     const targetValues: { [key: string]: number } = {};
     config?.targets.forEach((target) => {
-      const value = graphDataPoint.tokens.find((t) => t.denom === target.denom);
+      let value = graphDataPoint.tokens.find((t) => t.denom === target.denom);
       if (!value) {
         // should not happen but handle it just in case
         return;
@@ -284,7 +292,7 @@ const generateProjectedData = ({
     p,
     i,
     d,
-    projectionLength[scale],
+    dataPointCount[scale], // generate most data points in case there is no history
     simulationInput,
   );
 
@@ -387,11 +395,45 @@ const generateXAxisTicks = ({
       }
     }
     return monthTicks;
+  } else if (scale === Scale.Week) {
+    // we can only have 20 ticks
+    const dayTicks = data.map((t) => {
+      return t.timestamp;
+    });
+    // work backwards and pad array
+    if (dayTicks.length < scaleTickCount[Scale.Week]) {
+      const first = dayTicks[0];
+      const ticksToAdd = scaleTickCount[Scale.Week] - dayTicks.length;
+      console;
+
+      for (let i = 1; i < ticksToAdd; i++) {
+        const newDate = subDays(new UTCDate(first), i);
+        dayTicks.unshift(newDate.getTime());
+      }
+    }
+    return dayTicks;
   } else {
+    // should not happen but just in case
     return data.map((t) => {
       return t.timestamp;
     });
   }
+};
+
+const generateXAxisTicksV2 = ({
+  data,
+  scale,
+  keysToGraph,
+}: {
+  data: GraphData;
+  scale: Scale;
+  keysToGraph: string[];
+}) => {
+  const minTimestamp = data[0].timestamp;
+  const minDate = new UTCDate(minTimestamp).setHours(0, 0, 0, 0);
+  const startTs = new UTCDate(minDate);
+  const ticks = xTickGenerator[scale](startTs);
+  return ticks;
 };
 
 const generateYAxisTicks = ({
@@ -404,7 +446,7 @@ const generateYAxisTicks = ({
   keysToGraph: string[];
 }) => {
   if (!data || !data.length)
-    return new Array(yTickCount).fill(0).map((_, i) => {
+    return new Array(historicalYTickCount).fill(0).map((_, i) => {
       return 5000 * i;
     });
 
@@ -424,10 +466,10 @@ const generateYAxisTicks = ({
   });
 
   const yRange = yMax - yMin;
-  const yTickInterval = yRange / yTickCount;
+  const yTickInterval = yRange / historicalYTickCount;
 
   // the +1 adds extra space on top
-  return new Array(yTickCount + 1).fill(0).map((_, i) => {
+  return new Array(historicalYTickCount + 1).fill(0).map((_, i) => {
     return yMin + yTickInterval * i;
   });
 };

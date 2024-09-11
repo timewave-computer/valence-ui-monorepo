@@ -19,7 +19,11 @@ export const fetchOraclePrices = async (
     endDate: new UTCDate(),
     baseDenom: options?.baseDenom,
   });
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    next: {
+      revalidate: 1,
+    },
+  });
   if (!res.ok) {
     throw ErrorHandler.makeError(
       `${ERROR_MESSAGES.INDEXER_HISTORICAL_PRICES_ERROR}, API Error: ${res.status}, ${res.statusText}`,

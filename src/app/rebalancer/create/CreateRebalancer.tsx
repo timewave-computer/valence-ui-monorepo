@@ -34,7 +34,10 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@radix-ui/react-hover-card";
-import { useBaseTokenValue, useMinimumRequiredValue } from "../hooks";
+import {
+  useBaseTokenValue,
+  useMinimumRequiredValue,
+} from "@/app/rebalancer/hooks";
 import { HiMiniArrowLeft } from "react-icons/hi2";
 import { BetaDisclaimer } from "./copy";
 import { X_HANDLE, X_URL } from "@/const/socials";
@@ -176,7 +179,8 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       );
       queryClient.setQueryData(
         [QUERY_KEYS.VALENCE_ACCOUNT, walletAddress],
-        (old: string[]) => {
+        (old: string[] | undefined) => {
+          if (!old) return [valenceAddress]; // bandaid for API call failing (only on testnet)
           return [...old, valenceAddress];
         },
       );
@@ -212,10 +216,11 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
           </p>
         </ToastMessage>,
       );
-      router.push(`/rebalancer?account=${valenceAddress}&scale=m`);
+      router.push(`/rebalancer?account=${valenceAddress}&scale=w`);
     },
     onError: (e) => {
-      console.log("create rebalancer error", JSON.stringify(e));
+      const error = ErrorHandler.constructText("create rebalancer error", e);
+      console.log(ErrorHandler.constructText("create rebalancer error", e));
       toast.error(
         <ToastMessage title="Failed to set up Rebalancer" variant="error">
           <p>{ErrorHandler.constructText("", e)}</p>
@@ -327,7 +332,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
                 <ul>
                   {!isServiceFeeIncluded && (
                     <li className="">
-                      - A service fee of {chainConfig.serviceFee.amount}{" "}
+                      - Service fee of {chainConfig.serviceFee.amount}{" "}
                       {chainConfig.serviceFee.symbol} must be included with the
                       deposit.
                     </li>

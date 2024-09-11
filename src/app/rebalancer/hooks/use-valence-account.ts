@@ -26,8 +26,8 @@ export const getValenceAccountQueryArgs = (walletAddress?: string) => ({
   queryKey: [QUERY_KEYS.VALENCE_ACCOUNT, walletAddress],
   enabled: !!walletAddress,
   retry: 1,
-  queryFn: async () => {
-    if (!walletAddress) return;
-    return fetchValenceAccounts(walletAddress) as Promise<string[]>;
+  queryFn: async (): Promise<string[]> => {
+    if (!walletAddress) return [];
+    return fetchValenceAccounts(walletAddress);
   },
 });

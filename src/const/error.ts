@@ -19,6 +19,8 @@ export const ERROR_MESSAGES = {
   INDEXER_HISTORICAL_TARGETS_ERROR: "Failed to fetch historical targets",
   INDEXER_VALENCE_ACCOUNTS_ERROR: "Failed to fetch valence accounts",
   HISTORICAL_GRAPH_ERROR: "Failed to fetch historical graph",
+  HISTORICAL_GRAPH_LOAD_ERROR: "Failed to load historical graph",
+  HISTORICAL_GRAPH_RENDER_ERROR: "Failed to render historical graph",
 
   // create rebalancer
   CREATE_REBALANCER_CODE_ID_ERROR:
@@ -42,7 +44,7 @@ export class ErrorHandler {
     let errorMessage = "";
     // handle all weird cases of errors
     if (error instanceof TypeError) {
-      errorMessage = JSON.stringify(error);
+      errorMessage = error.message;
     } else if (error instanceof Error) errorMessage = error.message;
     else if (
       error &&

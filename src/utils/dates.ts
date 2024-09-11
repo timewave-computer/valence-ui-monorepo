@@ -11,3 +11,9 @@ export const useDateRange = () => {
   const endDate = midnightUTC;
   return { startDate, endDate };
 };
+
+export const getFirstOfMonth = (date: UTCDate): UTCDate => {
+  const firstOfMonth = new UTCDate(date);
+  firstOfMonth.setUTCDate(1);
+  return firstOfMonth;
+};

@@ -25,7 +25,7 @@ const getAuctionBalances = async (
 ): Promise<Record<string, number>> => {
   const res = await fetch(IndexerUrl.fundsInAuction(address), {
     next: {
-      revalidate: 5, // 5 minutes
+      revalidate: 1, // 1 minute
     },
   });
   if (!res.ok) {
