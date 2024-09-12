@@ -3,6 +3,7 @@ import { Coin } from "@cosmjs/stargate";
 import { IndexerUrl } from "@/server/utils";
 import { ErrorHandler, ERROR_MESSAGES } from "@/const/error";
 import { IndexerFundsInAuctionSchema } from "@/types/rebalancer";
+import { minutesToSeconds } from "date-fns";
 
 export async function fetchAuctionBalances({
   address,
@@ -25,7 +26,7 @@ const getAuctionBalances = async (
 ): Promise<Record<string, number>> => {
   const res = await fetch(IndexerUrl.fundsInAuction(address), {
     next: {
-      revalidate: 1, // 1 minute
+      revalidate: minutesToSeconds(1),
     },
   });
   if (!res.ok) {

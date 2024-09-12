@@ -11,17 +11,11 @@ export const fetchHistoricalPricesV2 = async (asset: {
   denom: string;
   coingeckoId: string;
 }): Promise<CoinGeckoHistoricPrices> => {
-  const response = await fetchMaybeCached(
-    CACHE_KEYS.COINGECKO_PRICE_HISTORY,
-    {
-      id: asset.coingeckoId,
-      range: "year",
-      interval: "daily",
-    },
-    {
-      cache: "force-cache",
-    },
-  );
+  const response = await fetchMaybeCached(CACHE_KEYS.COINGECKO_PRICE_HISTORY, {
+    id: asset.coingeckoId,
+    range: "year",
+    interval: "daily",
+  });
 
   const validated = CoinGeckoHistoricPricesSchema.safeParse(response);
 

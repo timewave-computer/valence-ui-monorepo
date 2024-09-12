@@ -14,15 +14,14 @@ export const fetchMaybeCached = async (
   queryName: string,
   args: { [r: string]: any },
   options?: {
-    cache?: "force-cache" | "no-store";
+    cache?: "no-store" | "force-cache";
   },
 ): Promise<unknown> => {
   const url =
     API_CACHE_URL + "/q/" + queryName + "?" + new URLSearchParams(args);
 
-  const cacheOptions = options?.cache ?? "no-store";
   const response = await fetch(url, {
-    cache: cacheOptions,
+    cache: options?.cache ?? "no-store",
     method: "GET",
     headers: {
       accept: "application/json",

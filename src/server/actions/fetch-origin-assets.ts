@@ -1,6 +1,7 @@
 "use server";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { OriginAssetResponse, OriginAssetResponseSchema } from "@/types/ibc";
+import { hoursToSeconds } from "date-fns";
 
 const SKIP_URL = "https://api.skip.money";
 
@@ -9,10 +10,12 @@ export const fetchOriginAssets = async (
 ): Promise<OriginAssetResponse["origin_assets"]> => {
   const res = await fetch(SKIP_URL + "/v1/fungible/ibc_origin_assets", {
     method: "POST",
-    cache: "no-cache",
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
+    },
+    next: {
+      revalidate: hoursToSeconds(6),
     },
     body: JSON.stringify({
       assets: assets,

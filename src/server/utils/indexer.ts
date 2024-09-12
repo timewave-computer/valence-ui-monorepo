@@ -47,7 +47,7 @@ export class IndexerUrl {
   }
 
   // by default composes prices in USDC_DENOM
-  static orcaleHistoricPrices(
+  static historicOraclePrices(
     denom: string,
     {
       baseDenom = USDC_DENOM,

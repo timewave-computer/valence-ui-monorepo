@@ -12,6 +12,7 @@ import {
   RawTarget,
   TargetOverrideStrategy,
 } from "@/types/rebalancer";
+import { hoursToSeconds, minutesToSeconds } from "date-fns";
 import { z } from "zod";
 
 export async function fetchRebalancerAccountConfiguration({
@@ -21,13 +22,13 @@ export async function fetchRebalancerAccountConfiguration({
 }): Promise<FetchAccountConfigReturnValue> {
   const adminRequest = fetch(IndexerUrl.accountAdmin(address), {
     next: {
-      revalidate: 5, // 5 minutes
+      revalidate: hoursToSeconds(1),
     },
   });
 
   const configRequest = fetch(IndexerUrl.accountConfig(address), {
     next: {
-      revalidate: 5, // 5 minutes
+      revalidate: minutesToSeconds(5),
     },
   });
 

@@ -3,6 +3,7 @@
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { IndexerUrl } from "@/server/utils";
 import { IndexerValenceAccountsResponseSchema } from "@/types/rebalancer";
+import { minutesToSeconds } from "date-fns";
 
 export const fetchValenceAccounts = async (
   walletAddress: string,
@@ -10,7 +11,7 @@ export const fetchValenceAccounts = async (
   const url = IndexerUrl.accounts(walletAddress);
   const res = await fetch(url, {
     next: {
-      revalidate: 5, // 5 minutes
+      revalidate: minutesToSeconds(1),
     },
   });
 

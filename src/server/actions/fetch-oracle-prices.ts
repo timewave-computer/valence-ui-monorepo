@@ -2,7 +2,7 @@ import { ErrorHandler, ERROR_MESSAGES } from "@/const/error";
 import { UTCDate } from "@date-fns/utc";
 import { IndexerUrl } from "@/server/utils";
 import { z } from "zod";
-import { subDays } from "date-fns";
+import { hoursToSeconds, subDays } from "date-fns";
 
 /**
  * for fetching oracle prices from the indexer. Not used currently but here if needed
@@ -14,14 +14,14 @@ export const fetchOraclePrices = async (
     baseDenom?: string;
   },
 ): Promise<IndexerOraclePricesResponse> => {
-  const url = IndexerUrl.orcaleHistoricPrices(denom, {
+  const url = IndexerUrl.historicOraclePrices(denom, {
     startDate: subDays(new UTCDate(), 365),
     endDate: new UTCDate(),
     baseDenom: options?.baseDenom,
   });
   const res = await fetch(url, {
     next: {
-      revalidate: 1,
+      revalidate: hoursToSeconds(1),
     },
   });
   if (!res.ok) {

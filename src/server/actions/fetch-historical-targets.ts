@@ -6,6 +6,7 @@ import {
   IndexerHistoricalTargetsResponse,
   IndexerHistoricalTargetsResponseSchema,
 } from "@/types/rebalancer";
+import { hoursToSeconds } from "date-fns";
 
 export async function fetchHistoricalTargets({
   address,
@@ -20,7 +21,11 @@ export async function fetchHistoricalTargets({
     startDate: new UTCDate(startDate),
     endDate: new UTCDate(endDate),
   });
-  const res = await fetch(url, { cache: "no-cache" });
+  const res = await fetch(url, {
+    next: {
+      revalidate: hoursToSeconds(1),
+    },
+  });
   if (!res.ok) {
     throw ErrorHandler.makeError(
       `${ERROR_MESSAGES.INDEXER_HISTORICAL_TARGETS_ERROR}, API Error: ${res.status}, ${res.statusText}`,

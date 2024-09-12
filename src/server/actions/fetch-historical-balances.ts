@@ -6,6 +6,7 @@ import {
   IndexerHistoricalBalancesResponse,
   IndexerHistoricalBalancesResponseSchema,
 } from "@/types/rebalancer";
+import { hoursToSeconds } from "date-fns";
 
 export const fetchHistoricalBalances = async (
   address: string,
@@ -18,7 +19,7 @@ export const fetchHistoricalBalances = async (
     }),
     {
       next: {
-        revalidate: 5, // 5 minutes
+        revalidate: hoursToSeconds(1),
       },
     },
   );
