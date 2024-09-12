@@ -34,6 +34,7 @@ type SupportedChainConfig = {
     rebalancer: string;
     oracle: string;
     servicesManager: string;
+    auctionsManager: string;
   };
   defaultBaseTokenDenom: string;
   featuredAccounts: FeaturedAccount[];
@@ -74,6 +75,8 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
         "neutron1s8uqyh0mmh8g66s2dectf56c08y6fvusp39undp8kf4v678ededsy6tstf",
       servicesManager:
         "neutron1gantvpnat0la8kkkzrnj48d5d8wxdjllh5r2w4r2hcrpwy00s69quypupa",
+      auctionsManager:
+        "neutron13exc5wdc7y5qpqazc34djnu934lqvfw2dru30j52ahhjep6jzx8ssjxcyz",
     },
     featuredAccounts: getFeaturedAccounts("neutron-1", process.env.NODE_ENV),
     defaultBaseTokenDenom: USDC_DENOM,
@@ -106,6 +109,8 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
         "neutron1g4qcmk65nw57hmqlzk6cejnftg20zmctky0l2epdfz3npw3x2cmqprul6f",
       servicesManager:
         "neutron13ncggwefau3xla04vlugy20meap7g7a9lf2d2sxwgwvgr9mnn3yqkpjzs6",
+      auctionsManager:
+        "neutron13exc5wdc7y5qpqazc34djnu934lqvfw2dru30j52ahhjep6jzx8ssjxcyz",
     },
     featuredAccounts: getFeaturedAccounts("pion-1", process.env.NODE_ENV),
     defaultBaseTokenDenom: "untrn",

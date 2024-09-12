@@ -10,3 +10,4 @@ export * from "./fetch-origin-assets";
 export * from "./fetch-valence-accounts";
 export * from "./fetch-auction-balances";
 export * from "./fetch-rebalancer-whitelist";
+export * from "./fetch-auction-statuses";

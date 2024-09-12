@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { RebalancerMainClient } from "./RebalancerMainClient";
 import {
+  prefetchAuctionData,
   prefetchHistoricalData,
   prefetchLiveAccountData,
   prefetchMetadata,
@@ -22,6 +23,7 @@ export default async function RebalancerMainServerComponent({
 }) {
   const queryClient = new QueryClient();
   await prefetchMetadata(queryClient);
+  await prefetchAuctionData(queryClient);
   await prefetchHistoricalData(queryClient, account);
   if (account && account.length > 0) {
     await prefetchLiveAccountData(queryClient, account);

@@ -6,6 +6,10 @@ codegen
     contracts: [
       { name: "Account", dir: "contract-schema/account/schema" },
       { name: "Rebalancer", dir: "contract-schema/rebalancer/schema" },
+      {
+        name: "AuctionsManager",
+        dir: "contract-schema/auctions-manager/schema",
+      },
     ],
     outPath: "src/codegen/ts-codegen",
     // options are completely optional ;)

@@ -1,13 +1,17 @@
 import { QUERY_KEYS } from "@/const/query-keys";
-import { fetchAccountBalances, fetchAuctionBalances } from "@/server/actions";
-import { useQueries } from "@tanstack/react-query";
+import {
+  fetchAccountBalances,
+  fetchAuctionBalances,
+  fetchAuctionStatuses,
+} from "@/server/actions";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import {
   useAssetCache,
   usePrefetchData,
   usePriceCache,
 } from "@/app/rebalancer/hooks";
 import { microToBase } from "@/utils";
-import { ErrorHandler } from "@/const/error";
+import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { chainConfig } from "@/const/config";
 
 export type UseLivePortfolioReturnValue = {
@@ -37,10 +41,21 @@ export const useLivePortfolio = ({
   accountAddress: string;
 }): UseLivePortfolioReturnValue => {
   const { isFetched: isCacheFetched } = usePrefetchData();
-  const isFetchEnabled = isCacheFetched && !!accountAddress?.length;
 
   const { getOriginAsset } = useAssetCache();
   const { getPrice } = usePriceCache();
+
+  const { data: auctionStatus, isFetched: isAuctionStatusFetched } = useQuery({
+    queryKey: [QUERY_KEYS.AUCTION_STATUSES],
+    queryFn: async () => {
+      return fetchAuctionStatuses();
+    },
+    retry: (errorCount) => errorCount < 1,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  const isFetchEnabled =
+    isCacheFetched && isAuctionStatusFetched && !!accountAddress?.length;
 
   return useQueries({
     queries: [
@@ -87,29 +102,43 @@ export const useLivePortfolio = ({
         retry: (errorCount) => {
           return errorCount < 2;
         },
-        queryKey: [QUERY_KEYS.AUCTION_BALANCES, accountAddress],
+        queryKey: [QUERY_KEYS.AUCTION_BALANCES, accountAddress, auctionStatus],
         queryFn: async (): Promise<BalanceReturnValue> => {
-          return new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => {
-              reject(new Error("Request timed out"));
-            }, 5000);
+          const auctionBalances = await fetchAuctionBalances({
+            address: accountAddress,
+          });
 
-            fetchAuctionBalances({
-              address: accountAddress,
-            })
-              .then((response) => {
-                clearTimeout(timeout);
-                resolve(
-                  response.map((balance) => ({
-                    amount: parseFloat(balance.amount ?? 0),
-                    denom: balance.denom,
-                  })),
-                );
-              })
-              .catch((error) => {
-                clearTimeout(timeout);
-                throw ErrorHandler.makeError("Request timed out", error);
-              });
+          const activeAuctions = auctionBalances.amounts.filter((auction) => {
+            const status = auctionStatus?.find((auctionStatus) => {
+              return (
+                auctionStatus.pair[0] === auction.pair[0] &&
+                auctionStatus.pair[1] === auction.pair[1]
+              );
+            });
+            if (!status) {
+              throw ErrorHandler.makeError(
+                ERROR_MESSAGES.AUCTION_STATUS_NOT_FOUND,
+              );
+            }
+            return status.isActive;
+          });
+          const totalAmountsOnAuction: Record<string, number> = {};
+
+          activeAuctions.forEach((auctionData) => {
+            const denom = auctionData.pair[0];
+            const amount = parseFloat(auctionData.amount);
+            if (totalAmountsOnAuction[denom]) {
+              totalAmountsOnAuction[denom] += amount;
+            } else {
+              totalAmountsOnAuction[denom] = amount;
+            }
+          });
+
+          return Object.keys(totalAmountsOnAuction).map((denom) => {
+            return {
+              denom,
+              amount: totalAmountsOnAuction[denom],
+            };
           });
         },
       },

@@ -8,15 +8,16 @@ const TargetOverrideStrategySchema = z.union([
 export type TargetOverrideStrategy = z.infer<
   typeof TargetOverrideStrategySchema
 >;
+
+export const IndexerAuctionSchema = z.object({
+  pair: z.tuple([z.string(), z.string()]),
+  amount: z.string(),
+});
+export type IndexerAuction = z.infer<typeof IndexerAuctionSchema>;
 /***
  * funds in auction endpoint
  */
-export const IndexerFundsInAuctionSchema = z.array(
-  z.object({
-    pair: z.tuple([z.string(), z.string()]),
-    amount: z.string(),
-  }),
-);
+export const IndexerFundsInAuctionSchema = z.array(IndexerAuctionSchema);
 
 /**
  * rebalancer config endpoint

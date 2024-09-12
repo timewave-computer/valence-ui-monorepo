@@ -3,6 +3,7 @@ export const QUERY_KEYS = {
   REBALANCER_ACCOUNT_CONFIG: "rebalancer-account-config",
   ACCOUNT_BALANCES: "account-balances",
   AUCTION_BALANCES: "auction-balances",
+  AUCTION_STATUSES: "auction-statuses",
   HISTORIC_VALUES: "historic-values",
   WALLET_BALANCES: "wallet-balances",
   COINGECKO_PRICE: "coingecko-price",

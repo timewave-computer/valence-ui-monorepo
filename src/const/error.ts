@@ -21,6 +21,7 @@ export const ERROR_MESSAGES = {
   HISTORICAL_GRAPH_ERROR: "Failed to fetch historical graph",
   HISTORICAL_GRAPH_LOAD_ERROR: "Failed to load historical graph",
   HISTORICAL_GRAPH_RENDER_ERROR: "Failed to render historical graph",
+  AUCTION_STATUS_NOT_FOUND: "Auction status not found",
 
   // create rebalancer
   CREATE_REBALANCER_CODE_ID_ERROR:

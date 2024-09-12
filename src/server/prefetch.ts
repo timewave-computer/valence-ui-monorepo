@@ -1,8 +1,4 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
   fetchHistoricalBalances,
@@ -11,6 +7,7 @@ import {
   fetchOriginAssets,
   fetchRebalancerAccountConfiguration,
   getPrices,
+  fetchAuctionStatuses,
 } from "@/server/actions";
 import { chainConfig } from "@/const/config";
 import { withTimeout } from "@/app/rebalancer/hooks";
@@ -54,6 +51,15 @@ export const prefetchMetadata = async (queryClient: QueryClient) => {
     );
   });
   await Promise.all([...prefetchAssetRequests, ...prefetchPrices]);
+};
+
+export const prefetchAuctionData = async (queryClient: QueryClient) => {
+  return queryClient.prefetchQuery({
+    queryFn: async () => fetchAuctionStatuses(),
+    queryKey: [QUERY_KEYS.AUCTION_STATUSES],
+    retry: (errorCount) => errorCount < 1,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 };
 
 // fetch historical prices, and if account fetch balances and targets
