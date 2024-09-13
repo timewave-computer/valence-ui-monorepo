@@ -5,6 +5,8 @@ author: test
 description: This blog post will build up the concept of “liquidity,” describe how it relates to protocol-owned liquidity (POL), and explain four ways your crypto-native community can benefit from POL today. 
 ---
 
+![Intro](/img/blog/4-ways.png)
+
 This blog post will build up the concept of “liquidity,” describe how it relates to protocol-owned liquidity (POL), and explain four ways your crypto-native community can benefit from POL today. 
 
 # What is Liquidity
