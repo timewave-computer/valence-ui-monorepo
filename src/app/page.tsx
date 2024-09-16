@@ -2,11 +2,59 @@ import { Button, Footer } from "@/components";
 import { LinkText } from "@/components/LinkText";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
+import { cn } from "@/utils";
+import Link from "next/link";
+
+const Hero = ({ className }: { className?: string }) => {
+  return (
+    <>
+      <h2
+        className={cn(
+          "text-balance px-6  font-serif text-[2.5rem] leading-[0.9]  md:text-[3rem] md:text-[4.7rem]",
+          className,
+        )}
+      >
+        Tools for long-term, permissionless collaboration
+      </h2>
+
+      <Image
+        src="/img/hero.svg"
+        alt="Valence illustration"
+        width={140}
+        height={140}
+        className="mb-10 self-center md:hidden"
+      />
+    </>
+  );
+};
+
+const InterchainGuild = ({ className }: { className?: string }) => {
+  return (
+    <div
+      className={cn(
+        "flex flex-col  border-t border-valence-black p-4 px-4 pb-16",
+        className,
+      )}
+    >
+      <h2 className="text-lg font-semibold">Interchain Guild</h2>
+
+      <p className="mb-4 mt-2 ">
+        Free and open source software is the foundation of crypto-native
+        institutions. Valence develops the Interchain Guild to support essential
+        public goods infrastructure.
+      </p>
+
+      <Button variant="secondary" className="w-fit" disabled>
+        Coming soon
+      </Button>
+    </div>
+  );
+};
 
 const HomePage = () => {
   return (
     <main className="h-screen grow overflow-auto bg-valence-white px-4 pt-8 text-valence-black transition-[padding]">
-      <div className="mx-auto flex max-w-5xl flex-col">
+      <div className=" mx-auto flex max-w-5xl flex-col">
         <div className="hidden flex-col items-center self-start px-4 pb-8 md:flex">
           <Image
             src="/img/valence_vertical.svg"
@@ -14,6 +62,15 @@ const HomePage = () => {
             width={120}
             height={92}
           />
+        </div>
+
+        {/* on mobile this should show at the top, on desktop it is in the center of the layout */}
+        <div
+          className="mb-4 flex grow basis-0 flex-col justify-between gap-4 border-b 
+        border-valence-black md:mb-8  md:hidden
+        "
+        >
+          <Hero className="" />
         </div>
 
         <div className="flex flex-col gap-x-10  md:grid md:grid-cols-2">
@@ -27,18 +84,27 @@ const HomePage = () => {
             agreements. Covenants improve execution quality and strengthen
             economic integration between token communities.
           </p>
-          <Button
-            className="col-start-1 row-start-3 mx-4 w-fit transition-all hover:bg-valence-black hover:text-valence-white"
-            variant="secondary"
-          >
-            <LinkText
-              className=" flex flex-row items-center gap-1.5 self-start"
-              href="/covenants"
-            >
-              Create a Covenant
-              <HiMiniArrowRight className="h-4 w-4" />
-            </LinkText>
-          </Button>
+          <div className="col-start-1 row-start-3 mx-4 flex flex-row flex-wrap gap-4 ">
+            <Link href={`/covenants`}>
+              <Button
+                className="flex w-fit flex-row justify-center gap-1"
+                variant="primary"
+              >
+                Create a Covenant
+                <HiMiniArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/blog/Covenants_Protocol-to-Protocol_Deals">
+              <Button
+                className="flex w-fit flex-row justify-center gap-1"
+                variant="secondary"
+              >
+                Learn more
+                <HiMiniArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+
           <Image
             src="/img/covenant.svg"
             alt="Covenant illustration"
@@ -58,19 +124,27 @@ const HomePage = () => {
             portfolio. The Rebalancer is custom-built to address the needs of
             blockchains, protocols, and decentralized autonomous organizations.
           </p>
+          <div className="col-start-2 row-start-3 mx-4 flex flex-row flex-wrap gap-4 ">
+            <Link href="/rebalancer">
+              <Button
+                className="flex w-fit flex-row justify-center gap-1"
+                variant="primary"
+              >
+                Rebalance Assets
+                <HiMiniArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
 
-          <Button
-            className="col-start-2 row-start-3 mx-4 w-fit transition-all hover:bg-valence-black hover:text-valence-white "
-            variant="secondary"
-          >
-            <LinkText
-              className=" flex flex-row items-center gap-1.5 self-start"
-              href="/rebalancer"
-            >
-              Rebalance Assets
-              <HiMiniArrowRight className="h-4 w-4" />
-            </LinkText>
-          </Button>
+            <Link href="/blog/Rebalancer-Protocol-Asset-Management">
+              <Button
+                className="flex w-fit flex-row justify-center gap-1"
+                variant="secondary"
+              >
+                Learn more
+                <HiMiniArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
           <Image
             src="/img/rebalancer.svg"
             alt="Rebalancer illustration"
@@ -81,38 +155,12 @@ const HomePage = () => {
           <div className=" col-start-2 row-start-5 mt-12 border-b border-black" />
         </div>
 
-        <div className="flex flex-col gap-x-10 border-b  border-valence-black md:flex-row  ">
-          <div className="flex grow basis-0 flex-col justify-between md:gap-20">
-            <h2 className="text-balance px-6 py-8 font-serif text-[3rem] leading-[0.9] md:text-[4.7rem]">
-              Tools for long-term, permissionless collaboration
-            </h2>
+        <div className="flex flex-col gap-x-10 border-valence-black  sm:border-b md:flex-row  ">
+          {/* only for desktop. rendered in column below for mobile */}
+          <div className="hidden grow basis-0 flex-col justify-between md:flex md:gap-20">
+            <Hero className=" py-8 " />
 
-            <Image
-              src="/img/hero.svg"
-              alt="Valence illustration"
-              width={140}
-              height={140}
-              className="mb-10 self-center md:hidden"
-            />
-
-            <div className="flex flex-col  border-t border-valence-black px-4 pb-16 pt-8">
-              <h2 className="text-lg font-semibold">Interchain Guild</h2>
-
-              <p className="mt-2">
-                Free and open source software is the foundation of crypto-native
-                institutions. Valence develops the Interchain Guild to support
-                essential public goods infrastructure.
-              </p>
-
-              <Button variant="secondary" asChild disabled>
-                <LinkText
-                  className="mt-6 flex flex-row items-center gap-1.5 self-start"
-                  href=""
-                >
-                  Coming soon
-                </LinkText>
-              </Button>
-            </div>
+            <InterchainGuild />
           </div>
 
           <div className="hidden grow basis-0 flex-col items-center md:flex">
@@ -125,6 +173,8 @@ const HomePage = () => {
             />
           </div>
         </div>
+        {/* rendered in different part of the layout for mobile */}
+        <InterchainGuild className="mb-4 border-b border-t-0 md:hidden" />
         <Footer className="p-4 pb-12" />
       </div>
     </main>

@@ -1,14 +1,12 @@
 ---
 title: "Covenants: Protocol-to-Protocol Deals"
 date: 2024-06-20 11:32:00 -0400
-author: test
+heroImagePath: /img/blog/covenant-more-whitespace.svg
 description: Valence’s Covenant system is a way for protocols—such as blockchains, dApps, rollups, and DAOs—to transact with other protocols in a programmatic, trust-minimized way. This post will explore the roadblocks inhibiting protocol-to-protocol deals, how protocols can benefit from using the Covenant system, and the kinds of liquidity sharing deal structures that the Covenant system unlocks.
 ---
 
-![Covenant Header](/img/blog/covenant-bw.png)
-
 # Introducing Covenants
- 
+
 Valence’s Covenant system is a way for protocols—such as blockchains, dApps, rollups, and DAOs—to transact with other protocols in a programmatic, trust-minimized way. This post will explore the roadblocks inhibiting protocol-to-protocol deals, how protocols can benefit from using the Covenant system, and the kinds of liquidity sharing deal structures that the Covenant system unlocks.
 
 Informal audited the v1 Covenant library and Oak Security has now completed an audit of the v2 Covenant system, alongside our extensive suite of end-to-end testing. At the time of writing two Covenants have been deployed to production, Nolus–Neutron and Stargaze–Neutron, with more to be announced in the coming weeks. The Covenant system is now production-ready for any protocol with Interchain Accounts or Polytone to initiate a cross-chain liquidity deal.
@@ -30,7 +28,7 @@ While protocols can use the Covenant system for simple transactions, such as a t
 **3. Enables alliance formation:** If two protocols have competing products, they are likely to engage in zero-sum, or potentially negative-sum, activity. A liquidity sharing deal between protocols can reduce the incentive to engage in destructive activity and instead enable both parties to focus on positive-sum activity.
 
 **4. Creates an environment for innovation:** Protocol-to-protocol deals are cutting edge. By closing deals with other protocols, protocols demonstrate sophistication, technical capability, and ecosystem alignment, which can help the protocol attract talent, capital, and integrations.
- 
+
 # Structuring protocol-to-protocol liquidity deals
 
 The Covenant system provides various ways to structure protocol-to-protocol liquidity deals, including the following:
@@ -44,30 +42,30 @@ This unilateral POL is what the Cosmos Hub is doing with proposition [800](https
 ![Covenant Figure 1](/img/blog/covenant-fig-1.png)
 _Figure 1. Flow of funds for Cosmos Hub proposition 800._
 
-The Covenant system currently supports liquid staking with Stride and Persistence, and will soon support additional liquid staking and liquid restaking protocols. If you are developing a liquid staking or liquid restaking protocol and want to integrate, [get in touch](https://x.com/ValenceZone). 
+The Covenant system currently supports liquid staking with Stride and Persistence, and will soon support additional liquid staking and liquid restaking protocols. If you are developing a liquid staking or liquid restaking protocol and want to integrate, [get in touch](https://x.com/ValenceZone).
 
 ## Bilateral POL on one DEX
 
 Two protocols may mutually wish to deepen the liquidity between their native tokens on a single DEX. To do so, they could each pass governance proposals to commit their native tokens to the deal and pair the tokens on a DEX.
 
-This bilateral POL agreement on one DEX is what Neutron and ApolloDAO are accomplishing together with Proposition [A-33](https://governance.neutron.org/proposals/A/33). According to this deal, Neutron contributes $500K worth of its native token NTRN and ApolloDAO contributes $500K worth of its native token APOLLO to provide a total of $1M worth of liquidity support for the NTRN:APOLLO token pair on the Astroport DEX. 
+This bilateral POL agreement on one DEX is what Neutron and ApolloDAO are accomplishing together with Proposition [A-33](https://governance.neutron.org/proposals/A/33). According to this deal, Neutron contributes $500K worth of its native token NTRN and ApolloDAO contributes $500K worth of its native token APOLLO to provide a total of $1M worth of liquidity support for the NTRN:APOLLO token pair on the Astroport DEX.
 
 ![Covenant Figure 2](/img/blog/covenant-fig-2.png)
 _Figure 2. Flow of funds for Neutron liquidity deal with ApolloDAO via Proposition A-33._
 
-The Covenant system currently supports dealmaking between up to two parties at a time. The Covenant system can support deals with three or more parties by adding additional governance proposals. 
+The Covenant system currently supports dealmaking between up to two parties at a time. The Covenant system can support deals with three or more parties by adding additional governance proposals.
 
 ## Bilateral POL on more than one DEX
 
 Two protocols may mutually wish to deepen the liquidity between their native tokens on two different DEXs. The desire for two DEXes often occurs when each party has a native DEX that they want to support. To do so, they could each pass governance proposals to commit their native tokens to the deal, use a fraction of the funds to pair on one DEX, and use the remaining funds to pair the other DEX.
 
-This bilateral POL on more than one DEX is what Neutron and MantaDAO are doing together with Proposition [A-32](https://governance.neutron.org/proposals/A/32). According to this deal, Neutron contributes $150K worth of NTRN and MantaDAO contributes $150K worth of MANTA to provide $150K worth of liquidity support to the NTRN:MANTA pair on the Astroport DEX **AND** $150K worth of liquidity support to the NTRN:MANTA pair on the Kujira’s DEX FIN. 
+This bilateral POL on more than one DEX is what Neutron and MantaDAO are doing together with Proposition [A-32](https://governance.neutron.org/proposals/A/32). According to this deal, Neutron contributes $150K worth of NTRN and MantaDAO contributes $150K worth of MANTA to provide $150K worth of liquidity support to the NTRN:MANTA pair on the Astroport DEX **AND** $150K worth of liquidity support to the NTRN:MANTA pair on the Kujira’s DEX FIN.
 
 ![Covenant Figure 3](/img/blog/covenant-fig-3.png)
 _Figure 3. Flow of funds for Neutron liquidity deal with MantaDAO via Proposition A-32._
 
-The Covenant system currently supports supplying liquidity on two DEXs: Astroport (on Neutron) and Osmosis. The Covenant system can support deals with two or more DEXs by adding additional governance proposals. Covenants will soon support additional DeFi protocols, including lending protocols. If you are a member of a DeFi protocol that wants to integrate, [get in touch](https://x.com/ValenceZone). 
- 
+The Covenant system currently supports supplying liquidity on two DEXs: Astroport (on Neutron) and Osmosis. The Covenant system can support deals with two or more DEXs by adding additional governance proposals. Covenants will soon support additional DeFi protocols, including lending protocols. If you are a member of a DeFi protocol that wants to integrate, [get in touch](https://x.com/ValenceZone).
+
 # Advanced features supported by the Covenant system
 
 ## Price fluctuation tolerance

@@ -126,10 +126,10 @@ export const Nav = () => {
           <SheetTrigger asChild className="outline-none">
             <Button
               variant="secondary"
-              className="transform border-none  transition-transform active:scale-90
+              className=" min-w-0 transform border-none  transition-transform active:scale-90
                "
             >
-              <IoMdMenu className="h-6 w-6 " />
+              <IoMdMenu className="h-6 w-6  " />
             </Button>
           </SheetTrigger>
 

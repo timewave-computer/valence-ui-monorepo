@@ -40,6 +40,7 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 0; /* For horizontal scrollbars */
 }
 
+/* For layout debugging */
 /* * {
-  border:0.5px solid blue;
+  border: 1px solid red;
 } */

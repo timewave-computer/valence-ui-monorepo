@@ -5,12 +5,12 @@ import React from "react";
 import { LoadingIndicator } from "@/components";
 
 const buttonVariants = cva(
-  "text-center py-1.5 px-2  min-h-9 min-w-20  transition-colors flex flex-row items-center justify-center border-valence-black border",
+  "text-center py-1.5 px-2  min-h-9 min-w-20  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border",
   {
     variants: {
       variant: {
         primary:
-          "bg-valence-black text-valence-white   focus:bg-valence-white focus:text-valence-black hover:bg-valence-white  hover:text-valence-black  ",
+          "bg-valence-black text-valence-white  border-valence-black hover:bg-valence-white hover:text-valence-black focus:bg-valence-white focus:text-valence-black focus:border-valence-black",
         secondary:
           "bg-valence-white text-valence-black  hover:bg-valence-black transition-all hover:text-valence-white  ",
         loading: "bg-valence-mediumgray ",

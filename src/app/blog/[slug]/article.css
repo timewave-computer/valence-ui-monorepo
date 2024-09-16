@@ -1,21 +1,25 @@
 /* BLOG POSTS STYLING */
 article {
-  @apply flex max-w-3xl flex-col gap-3 font-sans;
+  @apply flex max-w-5xl flex-col gap-2 md:grid md:grid-cols-5  md:gap-x-8 md:gap-y-4;
 }
-article > h1 {
-  @apply pt-5 font-serif text-2xl font-medium;
-  line-height: 1.6;
+article > .h1-container {
+  @apply col-span-5 grid-cols-5 gap-x-8 border-b-[1px] border-valence-black font-serif text-2xl  font-medium md:grid;
 }
-article > h2 {
-  @apply pt-4 font-serif text-xl font-medium;
-  line-height: 1.4;
+article > .h1-container > h1 {
+  @apply col-span-2 col-start-1 text-balance text-pretty pb-1 pt-4 font-serif text-2xl  font-medium md:pt-2;
+}
+article > .h2-container {
+  @apply col-span-5 grid-cols-5 gap-x-8 md:grid;
+}
+article > .h2-container > h2 {
+  @apply col-span-3 col-start-3 w-fit text-pretty border-b border-valence-black pt-2 font-serif text-xl font-medium md:pt-0  md:text-2xl;
 }
 
 article > em {
   @apply italic;
 }
 article > p {
-  @apply text-lg;
+  @apply col-span-3 col-start-3 text-balance text-lg;
 }
 
 article > p > strong {
@@ -23,11 +27,15 @@ article > p > strong {
 }
 
 article > ul {
-  @apply flex list-disc flex-col gap-2 pl-3;
+  @apply col-span-3 col-start-3 flex list-disc flex-col gap-2 pl-3;
 }
 
 article > ol {
-  @apply flex list-decimal flex-col gap-2 pl-4;
+  @apply col-span-3 col-start-3 flex list-decimal flex-col gap-2 pl-4;
+}
+
+.image-paragraph {
+  @apply col-span-3 col-start-3;
 }
 
 article > p > img {

@@ -23,8 +23,6 @@ export const aminoTypes = new AminoTypes({
 
 const signerOptions: SignerOptions = {
   preferredSignType: () => "amino",
-  // cosmos-kit expects aminotypes from stargate 32.3. only the 'register' function is different, should have no impact
-  // @ts-expect-error
   signingStargate: () => {
     return {
       gasPrice: GasPrice.fromString("0.001untrn"), // TODO: fetch dynamically
