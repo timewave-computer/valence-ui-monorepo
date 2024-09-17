@@ -4,21 +4,19 @@ import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { displayNumber, displayValue } from "@/utils";
 import { produce } from "immer";
-import {
-  InsufficientFundsWarning,
-  useInsufficientFundsWarning,
-  InputTableCell,
-} from "@/app/rebalancer/create/components";
-import { Button, Checkbox, LoadingSkeleton } from "@/components";
+import { InputTableCell } from "@/app/rebalancer/create/components";
+import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
 import {
   useBaseTokenValue,
   useLivePortfolio,
   useMinimumRequiredValue,
   usePrefetchData,
+  useNoSupportedAssetsWarning,
 } from "@/app/rebalancer/hooks";
 import { chainConfig } from "@/const/config";
+import { NoFundsActionItems } from "@/app/rebalancer/components";
 
-export const SelectAssetsFromAccount: React.FC<{
+export const EditAssetsForAccount: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
 }> = ({ form, address }) => {
@@ -74,32 +72,42 @@ export const SelectAssetsFromAccount: React.FC<{
   });
 
   const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
-    useInsufficientFundsWarning(address);
+    useNoSupportedAssetsWarning(address);
 
   if (isLoadingBalances || isCacheLoading)
     return (
-      <SelectAmountsLayout
+      <DepositAssetsLayout
         baseDenom={baseTokenDenom}
         subContent={<LoadingSkeleton className="min-h-56" />}
-      ></SelectAmountsLayout>
+      ></DepositAssetsLayout>
     );
 
   if (isBalancesFetched && (!isHoldingMinimumFee || !isHoldingAtLeastOneAsset))
     return (
-      <SelectAmountsLayout
+      <DepositAssetsLayout
         baseDenom={baseTokenDenom}
         subContent={
-          <InsufficientFundsWarning
-            isEdit={true}
-            address={address}
-            isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
-          />
+          <>
+            {!isHoldingAtLeastOneAsset && (
+              <CalloutBox
+                variant="warn"
+                title="Rebalancer account does not hold any assets supported by the Rebalancer."
+              >
+                Deposit funds into the Rebalancer account to continue{" "}
+                <span className="font-mono text-sm font-light">
+                  ({address})
+                </span>
+                .
+                <NoFundsActionItems />
+              </CalloutBox>
+            )}
+          </>
         }
-      ></SelectAmountsLayout>
+      ></DepositAssetsLayout>
     );
 
   return (
-    <SelectAmountsLayout baseDenom={baseTokenDenom}>
+    <DepositAssetsLayout baseDenom={baseTokenDenom}>
       <div className="flex max-w-[90%] flex-row gap-20">
         <div
           role="grid"
@@ -152,11 +160,11 @@ export const SelectAssetsFromAccount: React.FC<{
             })}
         </div>
       </div>
-    </SelectAmountsLayout>
+    </DepositAssetsLayout>
   );
 };
 
-const SelectAmountsLayout: React.FC<{
+const DepositAssetsLayout: React.FC<{
   children?: ReactNode;
   subContent?: React.ReactNode;
   baseDenom?: string;

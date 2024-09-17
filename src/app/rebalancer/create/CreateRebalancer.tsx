@@ -16,8 +16,8 @@ import { displayValue, useDateRange } from "@/utils";
 import { chainConfig } from "@/const/config";
 import { toast } from "sonner";
 import {
-  SelectRebalancerTargets,
-  SelectAmounts,
+  SetTargets,
+  DepositAssets,
   SpeedSettings,
   AdvancedSettings,
   PreviewMessage,
@@ -300,8 +300,8 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
         isEdit={false}
       />
       <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
-        <SelectAmounts form={form} address={walletAddress} />
-        <SelectRebalancerTargets
+        <DepositAssets form={form} address={walletAddress} />
+        <SetTargets
           address={walletAddress}
           form={form}
           isCleanStartingAmountEnabled={true}

@@ -19,6 +19,10 @@ interface WarnTextProps
     VariantProps<typeof variants> {
   text: string;
 }
-export const WarnTextV2: React.FC<WarnTextProps> = ({ text, variant }) => {
-  return <span className={cn(variants({ variant }))}>{text}</span>;
+export const WarnTextV2: React.FC<WarnTextProps> = ({
+  text,
+  variant,
+  className,
+}) => {
+  return <span className={cn(variants({ variant, className }))}>{text}</span>;
 };

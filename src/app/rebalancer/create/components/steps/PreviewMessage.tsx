@@ -1,3 +1,4 @@
+"use client";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {

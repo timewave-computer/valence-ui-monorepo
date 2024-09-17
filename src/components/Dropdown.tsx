@@ -1,11 +1,11 @@
 "use client";
 import { cn } from "@/utils";
-import { rest } from "lodash";
-import { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { BsCheck2, BsChevronDown } from "react-icons/bs";
 
 export type DropdownOption<T extends string> = {
   label: string;
+  display?: ReactNode;
   value: T;
 };
 
@@ -42,6 +42,10 @@ export type DropdownProps<T extends string> = {
    * Option to limit what is shown
    */
   availableOptions?: DropdownOption<T>[];
+  /***
+   * Accept HTML element to render the option, if text is not sufficient
+   */
+  selectedDisplay?: React.ReactNode;
 };
 
 export const Dropdown = <T extends string>({
@@ -54,6 +58,7 @@ export const Dropdown = <T extends string>({
   isDisabled,
   availableOptions,
   className,
+  selectedDisplay,
   ...props
 }: DropdownProps<T> & React.HTMLAttributes<HTMLDivElement>) => {
   const [visible, setVisible] = useState(false);
@@ -110,7 +115,9 @@ export const Dropdown = <T extends string>({
           onClick={() => setVisible(!visible)}
         >
           <span className="max-w-3/4 overflow-hidden">
-            {selectedOption?.label ?? placeholder}
+            {selectedDisplay
+              ? selectedDisplay
+              : selectedOption?.label ?? placeholder}
           </span>
 
           <BsChevronDown className="h-4 w-4 shrink-0" />
@@ -133,7 +140,7 @@ export const Dropdown = <T extends string>({
                 setVisible(false);
               }}
             >
-              {option.label}
+              {option.display ?? option.label}
               {selectedOption === option && (
                 <BsCheck2 className="h-5 w-5 shrink-0" />
               )}

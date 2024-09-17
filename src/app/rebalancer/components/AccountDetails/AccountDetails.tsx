@@ -1,6 +1,6 @@
 "use client";
 import {
-  TableV2,
+  LiveBalancesTable,
   WithdrawDialog,
   PauseOrUnpauseButton,
 } from "@/app/rebalancer/components";
@@ -140,7 +140,7 @@ export const AccountDetailsPanel: React.FC<{
       </section>
       <section className="flex w-full grow  flex-col gap-4 px-4">
         <h2 className="pt-4 text-sm font-bold">Live balances</h2>
-        <TableV2 />
+        <LiveBalancesTable />
       </section>
     </div>
   );

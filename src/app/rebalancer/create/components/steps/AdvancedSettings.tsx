@@ -1,3 +1,4 @@
+"use client";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
@@ -18,6 +19,7 @@ import { useWhitelistedDenoms } from "@/hooks";
 import { useAssetCache } from "@/app/rebalancer/hooks";
 import { cn } from "@/utils";
 import { RebalancerFormTooltipCopy } from "../../copy";
+import { Asset } from "@/app/rebalancer/components";
 
 export const AdvancedSettings: React.FC<{
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
@@ -36,9 +38,12 @@ export const AdvancedSettings: React.FC<{
       return {
         value: a.denom,
         label: asset?.symbol ?? "",
+        display: <Asset symbol={asset?.symbol} />,
       };
     });
   }, [whitelistedDenoms?.base_denom_whitelist, getOriginAsset]);
+  const selectedBaseDenom = watch("baseTokenDenom");
+  const selectedBaseDenomAsset = getOriginAsset(selectedBaseDenom);
 
   const [allowOtherAddressInput, setAllowOtherAddressInput] = useState(false);
 
@@ -73,6 +78,9 @@ export const AdvancedSettings: React.FC<{
                   selected={watch(`baseTokenDenom`)}
                   onSelected={(value) => setValue(`baseTokenDenom`, value)}
                   options={baseDenomDropdownOptions ?? []}
+                  selectedDisplay={
+                    <Asset symbol={selectedBaseDenomAsset?.symbol} />
+                  }
                 />
               </div>
               <div className="flex flex-col gap-2">

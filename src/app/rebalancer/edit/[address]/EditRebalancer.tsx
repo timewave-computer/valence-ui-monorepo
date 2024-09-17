@@ -12,10 +12,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AdvancedSettings,
   SpeedSettings,
-  SelectRebalancerTargets,
+  SetTargets,
 } from "@/app/rebalancer/create/components";
 import { Button, ToastMessage } from "@/components";
-import { SelectAssetsFromAccount } from "@/app/rebalancer/create/components/";
+import { EditAssetsForAccount } from "@/app/rebalancer/edit/components/";
 import { OriginAsset } from "@/types/ibc";
 import { useMemo } from "react";
 import { makeUpdateRebalancerMessage } from "@/app/rebalancer/utils";
@@ -177,8 +177,8 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
       ></RebalancerFormHeader>
 
       <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
-        <SelectAssetsFromAccount form={form} address={address} />
-        <SelectRebalancerTargets
+        <EditAssetsForAccount form={form} address={address} />
+        <SetTargets
           address={address}
           form={form}
           isCleanStartingAmountEnabled={false}

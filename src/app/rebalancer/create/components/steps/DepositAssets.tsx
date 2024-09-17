@@ -8,14 +8,9 @@ import { UseFormReturn } from "react-hook-form";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
+import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import {
-  InsufficientFundsWarning,
-  useInsufficientFundsWarning,
-  InputTableCell,
-  WarnTextV2,
-  MissingServiceFeeWarning,
-} from "@/app/rebalancer/create/components";
-import {
+  CalloutBox,
   Checkbox,
   LoadingSkeleton,
   QuestionTooltipContent,
@@ -26,11 +21,13 @@ import {
   useBaseTokenValue,
   useMinimumRequiredValue,
   usePrefetchData,
+  useNoSupportedAssetsWarning,
 } from "@/app/rebalancer/hooks";
 import { chainConfig } from "@/const/config";
 import { BsExclamationCircle } from "react-icons/bs";
+import { Asset, NoFundsActionItems } from "@/app/rebalancer/components";
 
-export const SelectAmounts: React.FC<{
+export const DepositAssets: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
 }> = ({ form, address }) => {
@@ -74,7 +71,7 @@ export const SelectAmounts: React.FC<{
   const isServiceFeeIncluded = form.watch("isServiceFeeIncluded");
 
   const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
-    useInsufficientFundsWarning(address);
+    useNoSupportedAssetsWarning(address);
 
   const totalDepositValue = initialAmounts?.reduce((acc, balance) => {
     const value = calculateValue({
@@ -84,8 +81,24 @@ export const SelectAmounts: React.FC<{
     return acc + value;
   }, 0);
 
+  // little redundant as this is done again below, but easier to read this way
+  const totalAccountValue =
+    balances?.reduce((acc, balance) => {
+      const asset = getOriginAsset(balance.denom);
+      return (
+        acc +
+        calculateValue({
+          denom: balance.denom,
+          amount: microToBase(balance.amount, asset?.decimals ?? 0),
+        })
+      );
+    }, 0) ?? 0;
+
   const { value: totalRequiredValue, symbol: requiredValueSymbol } =
     useMinimumRequiredValue(baseTokenDenom ?? "");
+
+  const isAccountHoldingMinumumValue = totalAccountValue >= totalRequiredValue;
+
   const minimumValueDisplayString = displayValue({
     value: totalRequiredValue,
     symbol: requiredValueSymbol,
@@ -93,15 +106,15 @@ export const SelectAmounts: React.FC<{
 
   if (isLoadingBalances || isCacheLoading)
     return (
-      <SelectAmountsLayout
+      <DepositAssetsLayout
         baseDenom={baseTokenDenom}
         subContent={<LoadingSkeleton className="min-h-56" />}
-      ></SelectAmountsLayout>
+      ></DepositAssetsLayout>
     );
 
   if (!isWalletConnected) {
     return (
-      <SelectAmountsLayout
+      <DepositAssetsLayout
         baseDenom={baseTokenDenom}
         subContent={
           <div className="mt-2 flex flex-row items-center gap-4 border border-warn p-4">
@@ -117,21 +130,51 @@ export const SelectAmounts: React.FC<{
   }
   if (isBalancesFetched && !isHoldingAtLeastOneAsset)
     return (
-      <SelectAmountsLayout
+      <DepositAssetsLayout
         baseDenom={baseTokenDenom}
         subContent={
-          <InsufficientFundsWarning
-            address={address}
-            isHoldingAtLeastOneAsset={isHoldingAtLeastOneAsset}
-          />
+          <>
+            !{isHoldingAtLeastOneAsset} &&
+            <CalloutBox
+              variant="warn"
+              title="This wallet does not hold any assets supported by the Rebalancer."
+              text={`Deposit at least one supported asset and ${chainConfig.serviceFee.amount} ${chainConfig.serviceFee.symbol} for the service fee.`}
+            >
+              <NoFundsActionItems />
+            </CalloutBox>
+          </>
         }
-      ></SelectAmountsLayout>
+      ></DepositAssetsLayout>
     );
 
   return (
-    <SelectAmountsLayout
+    <DepositAssetsLayout
       baseDenom={baseTokenDenom}
-      subContent={<>{!isHoldingMinimumFee && <MissingServiceFeeWarning />}</>}
+      subContent={
+        <div className="flex flex-col gap-2">
+          {(!isHoldingMinimumFee || !isAccountHoldingMinumumValue) && (
+            <CalloutBox
+              variant="error"
+              title={`Account does not meet the minimum requirements.`}
+            >
+              {!isHoldingMinimumFee && (
+                <p>
+                  <span className="font-semibold"> Missing service fee: </span>
+                  deposit {chainConfig.serviceFee.amount}{" "}
+                  {chainConfig.serviceFee.symbol} into the wallet.
+                </p>
+              )}
+              {!isAccountHoldingMinumumValue && (
+                <p>
+                  <span className="font-semibold">Insufficient funds:</span>{" "}
+                  deposit at a minimum value of {minimumValueDisplayString} into
+                  the wallet.
+                </p>
+              )}
+            </CalloutBox>
+          )}
+        </div>
+      }
     >
       <div className="flex flex-row items-center gap-2">
         <Checkbox
@@ -154,9 +197,10 @@ export const SelectAmounts: React.FC<{
       <div className="flex max-w-[90%] flex-col gap-2">
         <div
           role="grid"
-          className="grid grid-cols-[1fr_1fr_2fr_2fr] justify-items-start gap-x-8 gap-y-2"
+          className="grid grid-cols-[1fr_1fr_1fr_2fr_1fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputTableCell variant="header">Available funds</InputTableCell>
+          <InputTableCell variant="header">Asset</InputTableCell>
+          <InputTableCell variant="header">Amount available</InputTableCell>
           <InputTableCell variant="header">Total value</InputTableCell>
           <InputTableCell className="justify-start" variant="header">
             Initial Deposit
@@ -208,6 +252,10 @@ export const SelectAmounts: React.FC<{
 
               return (
                 <Fragment key={`wallet-balance-row-${balance.denom}`}>
+                  <InputTableCell className="flex flex-row items-center gap-2">
+                    <Asset symbol={asset?.symbol} asChild />
+                  </InputTableCell>
+
                   <InputTableCell
                     className={cn(
                       "flex gap-2",
@@ -215,7 +263,6 @@ export const SelectAmounts: React.FC<{
                     )}
                   >
                     <span>{displayNumber(baseBalance, { precision: 2 })}</span>
-                    <span>{asset?.symbol ?? ""}</span>
                   </InputTableCell>
 
                   <InputTableCell>{toalValueDisplayString}</InputTableCell>
@@ -295,7 +342,6 @@ export const SelectAmounts: React.FC<{
             text="Deposit greater than available funds."
           />
         )}
-
         {initialAmounts?.length > 0 &&
           initialAmounts.some(
             (a) => a.startingAmount && a.startingAmount > 0,
@@ -307,11 +353,11 @@ export const SelectAmounts: React.FC<{
             />
           )}
       </div>
-    </SelectAmountsLayout>
+    </DepositAssetsLayout>
   );
 };
 
-const SelectAmountsLayout: React.FC<{
+const DepositAssetsLayout: React.FC<{
   children?: ReactNode;
   subContent?: React.ReactNode;
   baseDenom?: string;

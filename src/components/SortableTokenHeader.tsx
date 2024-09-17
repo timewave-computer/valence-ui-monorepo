@@ -1,6 +1,7 @@
 import { cn } from "@/utils";
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
+import { WithQuestionTooltip } from "./WithQuestionTooltip";
 
 export type Sorter<T> = {
   key: string;
@@ -40,6 +41,10 @@ export type SortableTableHeaderProps<T> = {
    * An optional class name for the button.
    */
   textClassName?: string;
+  /***
+   * An optional hover tooltip.
+   */
+  hoverTooltip?: React.ReactNode;
 };
 
 export const SortableTableHeader = <T extends unknown>({
@@ -51,6 +56,7 @@ export const SortableTableHeader = <T extends unknown>({
   setSortAscending,
   buttonClassName,
   textClassName,
+  hoverTooltip,
 }: SortableTableHeaderProps<T>) => {
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
 
@@ -69,7 +75,13 @@ export const SortableTableHeader = <T extends unknown>({
         }
       }}
     >
-      <p className={cn("text-sm font-bold", textClassName)}>{label}</p>
+      <WithQuestionTooltip
+        className="items-top flex flex-row justify-end gap-0.5"
+        side="top"
+        tooltipContent={hoverTooltip}
+      >
+        <p className={cn("text-sm font-bold", textClassName)}>{label}</p>
+      </WithQuestionTooltip>
       {currentSorter.key === sorterKey && <SortIcon />}
     </button>
   );

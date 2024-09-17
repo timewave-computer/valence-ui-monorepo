@@ -6,6 +6,7 @@ import { Fragment, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { cn, displayNumber } from "@/utils";
 import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
+import { Asset } from "@/app/rebalancer/components";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
   Tooltip,
@@ -22,7 +23,7 @@ import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
 import { useWhitelistedDenoms } from "@/hooks";
 
-export const SelectRebalancerTargets: React.FC<{
+export const SetTargets: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
   isCleanStartingAmountEnabled?: boolean; // bandaid fix for supporting edit
@@ -45,6 +46,7 @@ export const SelectRebalancerTargets: React.FC<{
         return {
           value: denom,
           label: asset?.symbol ?? "",
+          display: <Asset symbol={asset?.symbol} />,
         };
       })
     : [];
@@ -175,6 +177,9 @@ export const SelectRebalancerTargets: React.FC<{
                   <Fragment key={`target-select-row-${index}`}>
                     <InputTableCell className="relative flex items-center justify-start   ">
                       <Dropdown
+                        selectedDisplay={
+                          <Asset symbol={assetMetadata?.symbol} />
+                        }
                         containerClassName="min-w-32"
                         availableOptions={availableDropdownOptions} // to give field access to the values of what is selected
                         options={allDenomDropdownOptions} // only allow user to select what is not already selected

@@ -2,3 +2,4 @@ export * from "./graph";
 export * from "./load-config-error";
 export * from "./default";
 export * from "./globals";
+export * from "./copy";

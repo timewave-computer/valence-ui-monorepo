@@ -1,3 +1,3 @@
-export * from "./table-v2";
+export * from "./LiveBalancesTable";
 export * from "./actions";
 export * from "./AccountDetails";

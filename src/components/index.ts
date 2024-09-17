@@ -26,3 +26,4 @@ export * from "./ValenceProductBrand";
 export * from "./ConnectWalletButton";
 export * from "./WithQuestionTooltip";
 export * from "./CollapsibleSection";
+export * from "./CalloutBox";

@@ -1,5 +1,10 @@
 "use client";
-import { SortableTableHeader, Sorter, LoadingSkeleton } from "@/components";
+import {
+  SortableTableHeader,
+  Sorter,
+  LoadingSkeleton,
+  QuestionTooltipContent,
+} from "@/components";
 import {
   Dispatch,
   Fragment,
@@ -15,7 +20,8 @@ import {
   useLivePortfolio,
 } from "@/app/rebalancer/hooks";
 import { useAtom } from "jotai";
-import { accountAtom } from "@/app/rebalancer/const";
+import { accountAtom, LivePortfolioTooltipCopy } from "@/app/rebalancer/const";
+import { Asset } from "@/app/rebalancer/components";
 
 export type TableData = {
   symbol: string;
@@ -25,9 +31,10 @@ export type TableData = {
   distribution: number;
   target: number;
   auction: number;
+  amountWithdrawable: number;
 };
 
-export const TableV2: React.FC<{}> = ({}) => {
+export const LiveBalancesTable: React.FC<{}> = ({}) => {
   const [sorterKey, setSorter] = useState<string>(SORTER_KEYS.VALUE);
   const [sortAscending, setSortAscending] = useState(true);
   const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
@@ -51,6 +58,7 @@ export const TableV2: React.FC<{}> = ({}) => {
             symbol: lineItem.symbol,
             name: lineItem.name,
             amount: lineItem.balance.total,
+            amountWithdrawable: lineItem.balance.account,
             auction: lineItem.balance.auction,
             price: lineItem.price,
             distribution: lineItem.distribution,
@@ -77,29 +85,29 @@ export const TableV2: React.FC<{}> = ({}) => {
 
   if (isLoading) {
     return (
-      <TableV2Layout
+      <LiveBalancesTableLayout
         sorter={sorter}
         sortAscending={sortAscending}
         setSortAscending={setSortAscending}
         setSorter={setSorter}
       >
         <LoadingRows />
-      </TableV2Layout>
+      </LiveBalancesTableLayout>
     );
   } else if (tableData.length === 0) {
     return (
-      <TableV2Layout
+      <LiveBalancesTableLayout
         sorter={sorter}
         sortAscending={sortAscending}
         setSortAscending={setSortAscending}
         setSorter={setSorter}
       >
         <EmptyRow />{" "}
-      </TableV2Layout>
+      </LiveBalancesTableLayout>
     );
   } else
     return (
-      <TableV2Layout
+      <LiveBalancesTableLayout
         sorter={sorter}
         sortAscending={sortAscending}
         setSortAscending={setSortAscending}
@@ -114,13 +122,7 @@ export const TableV2: React.FC<{}> = ({}) => {
                   "flex flex-row items-center justify-start gap-2 border-b border-valence-mediumgray px-0 py-4",
                 )}
               >
-                <div
-                  className="h-4 w-4 shrink-0 rounded-full"
-                  style={{
-                    backgroundColor: SymbolColors.get(holding.symbol),
-                  }}
-                ></div>
-                <p className="text-sm font-bold">{holding.name}</p>
+                <Asset asChild symbol={holding.symbol} />
               </div>
 
               <p
@@ -148,7 +150,7 @@ export const TableV2: React.FC<{}> = ({}) => {
                   "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
                 )}
               >
-                {displayNumber(holding.auction, { precision: 2 })}
+                {displayNumber(holding.amountWithdrawable, { precision: 2 })}
               </p>
               <p
                 className={cn(
@@ -179,11 +181,11 @@ export const TableV2: React.FC<{}> = ({}) => {
         })}
 
         <TotalValueRow total={totalValue} />
-      </TableV2Layout>
+      </LiveBalancesTableLayout>
     );
 };
 
-const TableV2Layout: React.FC<{
+const LiveBalancesTableLayout: React.FC<{
   children: ReactNode;
   sorter: Sorter<TableData>;
   setSorter: Dispatch<SetStateAction<string>>;
@@ -225,14 +227,19 @@ const TableV2Layout: React.FC<{
           textClassName=" text-xs font-base "
         />
         <SortableTableHeader
-          label="Holdings in Auction"
-          sorterKey={SORTER_KEYS.HOLDINGS}
+          label="Amount Withdrawable"
+          sorterKey={SORTER_KEYS.WITHDRAWABLE}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
           buttonClassName="pt-0 justify-end px-0  border-y-0"
           textClassName=" text-xs font-base "
+          hoverTooltip={
+            <QuestionTooltipContent
+              {...LivePortfolioTooltipCopy.withdrawable}
+            />
+          }
         />
         <SortableTableHeader
           label="Total Holdings"
@@ -287,6 +294,7 @@ enum SORTER_KEYS {
   HOLDINGS = "holdings",
   PRICE = "price",
   VALUE = "value",
+  WITHDRAWABLE = "withdrawable",
   DISTRIBUTION = "distribution",
   TARGET = "target",
 }
@@ -295,6 +303,11 @@ export const SORTERS: Sorter<TableData>[] = [
   {
     key: SORTER_KEYS.TICKER,
     sort: (a, b, ascending) => compareStrings(a.symbol, b.symbol, ascending),
+  },
+  {
+    key: SORTER_KEYS.WITHDRAWABLE,
+    sort: (a, b, ascending) =>
+      compareNumbers(a.amountWithdrawable, b.amountWithdrawable, ascending),
   },
   {
     key: SORTER_KEYS.HOLDINGS,
