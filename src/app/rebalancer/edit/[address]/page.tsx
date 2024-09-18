@@ -50,9 +50,7 @@ type EditRebalancerProps = {
 export default async function CreateRebalancerPage({
   params: { address },
 }: EditRebalancerProps) {
-  const enabled = isFeatureFlagEnabled(FeatureFlags.REBALANCER_CREATE);
-
-  if (!enabled || !address) {
+  if (!address) {
     redirect("/rebalancer");
   }
 

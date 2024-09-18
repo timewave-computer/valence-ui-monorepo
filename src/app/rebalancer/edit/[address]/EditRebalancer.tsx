@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
 import { ErrorHandler } from "@/const/error";
 import { EncodeObject } from "@cosmjs/proto-signing";
-import { MsgExecuteContract } from "@/app/smol_telescope/cosmwasm";
+import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { DeliverTxResponse } from "@cosmjs/cosmwasm-stargate";
 
 export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {

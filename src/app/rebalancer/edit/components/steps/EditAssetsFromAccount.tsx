@@ -13,8 +13,10 @@ import {
   usePrefetchData,
   useNoSupportedAssetsWarning,
 } from "@/app/rebalancer/hooks";
-import { chainConfig } from "@/const/config";
-import { NoFundsActionItems } from "@/app/rebalancer/components";
+import {
+  NoFundsActionItems,
+  SupportedAssets,
+} from "@/app/rebalancer/components";
 
 export const EditAssetsForAccount: React.FC<{
   address: string;
@@ -93,11 +95,13 @@ export const EditAssetsForAccount: React.FC<{
                 variant="warn"
                 title="Rebalancer account does not hold any assets supported by the Rebalancer."
               >
-                Deposit funds into the Rebalancer account to continue{" "}
-                <span className="font-mono text-sm font-light">
-                  ({address})
-                </span>
-                .
+                <p>
+                  Deposit funds into the Rebalancer account to continue{" "}
+                  <span className="font-mono text-sm font-light">
+                    ({address})
+                  </span>
+                  .
+                </p>
                 <NoFundsActionItems />
               </CalloutBox>
             )}
@@ -184,17 +188,7 @@ const DepositAssetsLayout: React.FC<{
         </p>
         <p className=" text-sm">
           Account must hold a minimum value of {minimumValueDisplayString} to
-          enable rebalancing. Supported assets are:{" "}
-          {chainConfig.supportedAssets.map((a, i) => {
-            return (
-              <>
-                {" "}
-                <span className="font-semibold">{a.symbol}</span>
-                {i !== chainConfig.supportedAssets.length - 1 && ", "}
-              </>
-            );
-          })}
-          .
+          enable rebalancing. Supported assets are: <SupportedAssets />.
         </p>
 
         {subContent}

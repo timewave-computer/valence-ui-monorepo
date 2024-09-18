@@ -8,7 +8,7 @@ const calloutBoxVariants = cva("", {
   variants: {
     variant: {
       warn: "border-warn",
-      info: "border-valence-blue",
+      info: "border-valence-gray",
       error: "border-valence-red",
     },
   },

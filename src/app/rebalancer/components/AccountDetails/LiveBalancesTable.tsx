@@ -13,7 +13,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { SymbolColors } from "@/app/rebalancer/const/graph";
 import { cn, displayNumber } from "@/utils";
 import {
   useAccountConfigQuery,
@@ -234,7 +233,7 @@ const LiveBalancesTableLayout: React.FC<{
           setSorter={setSorter}
           setSortAscending={setSortAscending}
           buttonClassName="pt-0 justify-end px-0  border-y-0"
-          textClassName=" text-xs font-base "
+          textClassName=" text-xs font-base text-wrap "
           hoverTooltip={
             <QuestionTooltipContent
               {...LivePortfolioTooltipCopy.withdrawable}

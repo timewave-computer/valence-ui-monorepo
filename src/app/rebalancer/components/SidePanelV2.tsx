@@ -39,8 +39,6 @@ export const SidePanelV2: React.FC<{
     setAccount(accountUrlParam);
   }, [setAccount, accountUrlParam]);
 
-  const isConnectWalletEnabled = useFeatureFlag(FeatureFlags.REBALANCER_CREATE);
-
   // to track cursor when it moves
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     setCursorPosition &&
@@ -88,7 +86,6 @@ export const SidePanelV2: React.FC<{
           connectCta="Connect your wallet to start rebalancing funds."
           debouncedMouseEnter={debouncedMouseEnter}
           debouncedMouseLeave={debouncedMouseLeave}
-          disabled={!isConnectWalletEnabled}
         />
 
         <div className="flex flex-col gap-2  ">

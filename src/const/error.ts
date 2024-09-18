@@ -3,6 +3,7 @@ export const ERROR_MESSAGES = {
   COSMWASM_SIGNER_FAIL: "Error getting signing cosmwasm client",
   SUBMIT_EMAIL_FAIL: "Failed to submit email",
   SUBMIT_WITHDRAW_FAIL: "Failed to submit withdraw",
+  SUBMIT_DEPOSIT_FAIL: "Failed to submit deposit",
   SUBMIT_WITHDRAW_CACHE_FAIL: "Failed to fetch asset metadata during withdraw",
   DISPLAY_UTC_TIME_FAIL: "Failed to format date to UTC Time",
   COSMWASM_CONNECT_FAIL: "RPC connect failed, could not create cosmwasm client",

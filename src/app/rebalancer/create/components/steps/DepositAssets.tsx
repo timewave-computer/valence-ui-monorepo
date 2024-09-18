@@ -25,7 +25,11 @@ import {
 } from "@/app/rebalancer/hooks";
 import { chainConfig } from "@/const/config";
 import { BsExclamationCircle } from "react-icons/bs";
-import { Asset, NoFundsActionItems } from "@/app/rebalancer/components";
+import {
+  Asset,
+  NoFundsActionItems,
+  SupportedAssets,
+} from "@/app/rebalancer/components";
 
 export const DepositAssets: React.FC<{
   address: string;
@@ -377,17 +381,7 @@ const DepositAssetsLayout: React.FC<{
         </p>
         <p className=" text-sm">
           Account must hold a minimum value of {minimumValueDisplayString} to
-          enable rebalancing. Supported assets are:{" "}
-          {chainConfig.supportedAssets.map((a, i) => {
-            return (
-              <>
-                {" "}
-                <span className="font-semibold">{a.symbol}</span>
-                {i !== chainConfig.supportedAssets.length - 1 && ", "}
-              </>
-            );
-          })}
-          .
+          enable rebalancing. Supported assets are: <SupportedAssets />.
         </p>
         {subContent}
       </div>

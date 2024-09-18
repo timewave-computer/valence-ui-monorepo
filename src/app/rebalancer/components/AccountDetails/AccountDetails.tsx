@@ -3,6 +3,7 @@ import {
   LiveBalancesTable,
   WithdrawDialog,
   PauseOrUnpauseButton,
+  DepositDialog,
 } from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
@@ -14,7 +15,12 @@ import React, { useMemo, useState } from "react";
 import { useWallet } from "@/hooks";
 import { Label } from "@/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
-import { displayMinBalance, displayPid } from "@/utils";
+import {
+  displayMinBalance,
+  displayPid,
+  FeatureFlags,
+  useFeatureFlag,
+} from "@/utils";
 import { Button, LoadingSkeleton } from "@/components";
 import Link from "next/link";
 
@@ -164,6 +170,8 @@ const AccountDetailsHeader: React.FC<{
   const isOwnAccount =
     isWalletConnected && allValenceAccounts?.includes(selectedAddress);
 
+  const isDepositEnabled = useFeatureFlag(FeatureFlags.REBALANCER_DEPOSIT);
+
   if (
     isWalletConnecting ||
     isLoadingValenceAccount ||
@@ -188,6 +196,7 @@ const AccountDetailsHeader: React.FC<{
         {(hasValenceAccount ||
           allValenceAccounts?.includes(selectedAddress)) && (
           <div className="flex flex-row flex-nowrap gap-2 ">
+            {isDepositEnabled && <DepositDialog />}
             <PauseOrUnpauseButton />
             <WithdrawDialog />
             <Link href={`/rebalancer/edit/${selectedAddress}`}>

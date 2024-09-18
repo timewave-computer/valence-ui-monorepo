@@ -47,25 +47,8 @@ export const RebalancerMainClient = () => {
     );
   };
 
-  const isConnectWalletEnabled = useFeatureFlag(FeatureFlags.REBALANCER_CREATE);
-
   return (
     <div className="flex grow flex-row overflow-hidden">
-      {isDisabledElementHovered && !isConnectWalletEnabled && (
-        <div
-          onMouseEnter={debouncedMouseEnter}
-          onMouseLeave={debouncedMouseLeave}
-          style={{
-            top: `${cursorPosition.y - 88}px`, // assign height of tooltip dynamically
-          }}
-          className={cn(
-            "absolute left-[392px] z-50 flex w-64 grow border-[0.5px]",
-            "animate-in  fade-in-0 zoom-in-95 border-valence-black bg-valence-white p-4 drop-shadow-md",
-          )}
-        >
-          <ComingSoonTooltipContent />
-        </div>
-      )}
       <SidePanelV2
         rerouteOnConnect={true}
         setCursorPosition={setCursorPosition}

@@ -61,7 +61,7 @@ export const SortableTableHeader = <T extends unknown>({
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
 
   return (
-    <button
+    <div
       className={cn(
         "flex flex-row items-center gap-2 text-nowrap border-y border-valence-black p-4 outline-none",
         buttonClassName,
@@ -80,9 +80,11 @@ export const SortableTableHeader = <T extends unknown>({
         side="top"
         tooltipContent={hoverTooltip}
       >
-        <p className={cn("text-sm font-bold", textClassName)}>{label}</p>
+        <button className={cn("text-sm font-bold", textClassName)}>
+          {label}
+        </button>
       </WithQuestionTooltip>
       {currentSorter.key === sorterKey && <SortIcon />}
-    </button>
+    </div>
   );
 };

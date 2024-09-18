@@ -37,12 +37,6 @@ export const metadata: Metadata = {
 type CreateRebalancerProps = {};
 
 export default async function CreateRebalancerPage({}: CreateRebalancerProps) {
-  const enabled = isFeatureFlagEnabled(FeatureFlags.REBALANCER_CREATE);
-
-  if (!enabled) {
-    redirect("/rebalancer");
-  }
-
   const queryClient = new QueryClient();
   await prefetchMetadata(queryClient);
   await queryClient.prefetchQuery({

@@ -11,7 +11,7 @@ import { jsonToBase64, jsonToUtf8, numberToUint128, utf8ToJson } from "@/utils";
 import {
   MsgExecuteContract,
   MsgInstantiateContract2,
-} from "@/app/smol_telescope/cosmwasm";
+} from "@/smol_telescope/generated-files";
 import { hasDenom } from "@/app/rebalancer/utils";
 
 export const makeCreateRebalancerMessages = async ({

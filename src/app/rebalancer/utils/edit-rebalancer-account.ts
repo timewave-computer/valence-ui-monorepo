@@ -1,7 +1,7 @@
 import { RebalancerUpdateData } from "@/codegen/ts-codegen/Rebalancer.types";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { jsonToBase64, jsonToUtf8, numberToUint128 } from "@/utils";
-import { MsgExecuteContract } from "@/app/smol_telescope/cosmwasm";
+import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { hasDenom } from "@/app/rebalancer/utils";
 
 export const makeUpdateRebalancerMessage = ({

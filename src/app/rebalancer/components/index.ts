@@ -5,3 +5,4 @@ export * from "./AccountDetails";
 export * from "./HistoricalGraph";
 export * from "./Asset";
 export * from "./NoFundsActionItems";
+export * from "./SupportedAssets";

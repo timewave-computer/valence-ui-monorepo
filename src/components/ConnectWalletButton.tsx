@@ -8,13 +8,13 @@ import { WalletStatus } from "@cosmos-kit/core";
 import { toast } from "sonner";
 
 export const ConnectWalletButton: React.FC<{
-  disabled: boolean;
+  disabled?: boolean;
   debouncedMouseEnter?: () => void;
   debouncedMouseLeave?: () => void;
   connectCta: string;
   rerouteOnConnect?: boolean;
 }> = ({
-  disabled,
+  disabled = false,
   debouncedMouseEnter,
   debouncedMouseLeave,
   connectCta,
