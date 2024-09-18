@@ -5,6 +5,7 @@ export enum KeyTag {
   projectedAmount = ".projected-amount",
   historicalTargetValue = ".historical-target-value",
   projectedTargetValue = ".projected-target-value",
+  price = ".price",
 }
 
 export class GraphKey {
@@ -26,5 +27,9 @@ export class GraphKey {
   }
   static projectedTargetValue(symbol: string) {
     return `${symbol}${KeyTag.projectedTargetValue}`;
+  }
+
+  static price(symbol: string) {
+    return `${symbol}${KeyTag.price}`;
   }
 }

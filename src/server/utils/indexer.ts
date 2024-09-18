@@ -22,17 +22,18 @@ export class IndexerUrl {
   static accountConfig(valenceAddress: string) {
     return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${valenceAddress}/valence/account/rebalancerConfig`;
   }
-  static fundsInAuction(valenceAddress: string) {
+  static fundsInAuction = (valenceAddress: string) => {
     return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${valenceAddress}/valence/account/fundsInAuction`;
-  }
-  static historicalTargets(
+  };
+  static historicalTargets = (
     valenceAddress: string,
     { startDate, endDate }: { startDate: Date; endDate: Date },
-  ) {
+  ) => {
     const range = getRange(startDate, endDate);
     return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${valenceAddress}/valence/account/rebalancerTargets?times=${range}&timeStep=${timeStep}`;
-  }
-  static historicalBalances(
+  };
+
+  static historicalBalances = (
     valenceAddress: string,
     {
       startDate,
@@ -41,13 +42,12 @@ export class IndexerUrl {
       startDate: Date;
       endDate: Date;
     },
-  ) {
+  ) => {
     const range = getRange(startDate, endDate);
     return `${INDEXER_URL}/${INDEXER_API_KEY}/wallet/${valenceAddress}/bank/balances?times=${range}&timeStep=${timeStep}`;
-  }
+  };
 
-  // by default composes prices in USDC_DENOM
-  static historicOraclePrices(
+  static historicOraclePrices = (
     denom: string,
     {
       baseDenom = USDC_DENOM,
@@ -58,9 +58,9 @@ export class IndexerUrl {
       startDate: Date;
       endDate: Date;
     },
-  ) {
+  ) => {
     const range = getRange(startDate, endDate);
     const pair = `${denom},${baseDenom}`; // pair: “untrn,ibc/ABC”
     return `${INDEXER_URL}/${INDEXER_API_KEY}/contract/${ORACLE_ADDRESS}/valence/oracle/price?pair=${pair}&times=${range}&timeStep=${timeStep}`;
-  }
+  };
 }

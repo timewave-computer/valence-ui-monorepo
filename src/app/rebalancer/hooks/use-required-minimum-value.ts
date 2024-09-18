@@ -2,8 +2,6 @@ import { useWhitelistedDenoms } from "@/hooks";
 import { useAssetCache } from "./use-cached-data";
 import { displayValue, microToBase } from "@/utils";
 import { useMemo } from "react";
-import { useAtom } from "jotai";
-import { baseDenomAtom } from "../const";
 
 const DEFAULT_MIN_VALUE = {
   value: 10,

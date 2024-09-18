@@ -15,6 +15,7 @@ import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
 import { OriginAsset } from "@/types/ibc";
 import { microToBase } from "@/utils";
+import { fetchOraclePrices } from "./actions/fetch-oracle-prices";
 
 const getOriginAssetQueryArgs = (denom: string) => ({
   queryKey: [QUERY_KEYS.ORIGIN_ASSET, denom],
@@ -70,15 +71,12 @@ export const prefetchHistoricalData = async (
   const prefetchedHistoricPrices = chainConfig.supportedAssets.map((asset) => {
     return queryClient.prefetchQuery({
       staleTime: 60 * 1000 * 10, // 10 mins
-      queryKey: [QUERY_KEYS.HISTORIC_PRICES, asset.denom],
+      queryKey: [QUERY_KEYS.HISTORIC_PRICES_ORACLE, asset.denom],
       retry: (errorCount: number) => errorCount < 1,
       queryFn: () =>
         withTimeout(async () => {
-          return fetchHistoricalPricesV2({
-            denom: asset.denom,
-            coingeckoId: asset.coingeckoId,
-          });
-        }, QUERY_KEYS.HISTORIC_PRICES),
+          return fetchOraclePrices(asset.denom);
+        }, QUERY_KEYS.HISTORIC_PRICES_ORACLE),
     });
   });
 

@@ -28,6 +28,8 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { OriginAsset } from "@/types/ibc";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
+import { useAtom } from "jotai";
+import { priceSourceAtom } from "@/app/rebalancer/globals";
 
 export const useHistoricalGraph = ({
   scale = Scale.Month,
@@ -43,6 +45,7 @@ export const useHistoricalGraph = ({
   historicalValues: UseHistoricalValuesReturnValue;
 }) => {
   const { getOriginAsset } = useAssetCache();
+  const [priceSource] = useAtom(priceSourceAtom);
   const { isFetched: isCacheFetched } = usePrefetchData();
   return useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
@@ -53,6 +56,7 @@ export const useHistoricalGraph = ({
       config,
       livePortfolio,
       historicalValues?.data?.length,
+      priceSource,
     ],
     enabled:
       !config.isLoading &&
@@ -214,6 +218,7 @@ const generateHistoricalGraphData = ({
     const balances: { [key: string]: number } = {};
     const values: { [key: string]: number } = {};
     const targetValues: { [key: string]: number } = {};
+    const prices: { [key: string]: number } = {};
     config?.targets.forEach((target) => {
       let value = graphDataPoint.tokens.find((t) => t.denom === target.denom);
       if (!value) {
@@ -224,6 +229,7 @@ const generateHistoricalGraphData = ({
       const assetSymbol = asset?.symbol ?? "";
 
       // write target value for each asset
+      prices[GraphKey.price(assetSymbol)] = value.price;
       balances[GraphKey.historicalAmount(assetSymbol)] = value.amount;
       values[GraphKey.historicalValue(assetSymbol)] =
         value.amount * value.price;
@@ -254,6 +260,7 @@ const generateHistoricalGraphData = ({
       ...values,
       ...balances,
       ...targetValues,
+      ...prices,
     };
   });
   return historialGraphData;
@@ -323,6 +330,7 @@ const generateProjectedData = ({
 
           return {
             ...acc,
+            [GraphKey.price(assetSymbol)]: price,
             [GraphKey.projectedValue(assetSymbol)]: amount * price,
             [GraphKey.projectedAmount(assetSymbol)]: amount,
             [GraphKey.projectedTargetValue(assetSymbol)]:

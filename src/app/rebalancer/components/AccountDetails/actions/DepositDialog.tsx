@@ -19,9 +19,9 @@ import { useForm } from "react-hook-form";
 import { Coin, DeliverTxResponse } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { useAtom } from "jotai";
-import { accountAtom } from "@/app/rebalancer/const";
+import { accountAtom } from "@/app/rebalancer/globals";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
-import { SupportedAssets } from "../../SupportedAssets";
+import { SupportedAssets } from "@/app/rebalancer/components";
 
 type DepositInputForm = {
   amounts: Coin[];

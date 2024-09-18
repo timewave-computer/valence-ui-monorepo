@@ -19,10 +19,13 @@ import {
   LOAD_CONFIG_ERROR,
   SymbolColors,
   GraphStyles,
+} from "@/app/rebalancer/const";
+import {
   scaleAtom,
   accountAtom,
   baseDenomAtom,
-} from "@/app/rebalancer/const";
+  priceSourceAtom,
+} from "@/app/rebalancer/globals";
 import { USDC_DENOM } from "@/const/chain-data";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
@@ -39,6 +42,8 @@ export const HistoricalGraph: React.FC<{
   isError: boolean;
   isLoading: boolean;
 }> = ({ isError, isLoading }) => {
+  const [priceSource, setPriceSource] = useAtom(priceSourceAtom);
+
   const [scaleUrlParam, setScaleUrlParam] = useQueryState(
     "scale",
     parseAsStringEnum<Scale>(Object.values(Scale)).withDefault(Scale.Month),
@@ -92,6 +97,10 @@ export const HistoricalGraph: React.FC<{
 
   const isNonUsdValueEnabled = useFeatureFlag(
     FeatureFlags.REBALANCER_NONUSDC_VALUE,
+  );
+
+  const isPriceSourceEnabled = useFeatureFlag(
+    FeatureFlags.REBALANCE_PRICE_SOURCE_TOGGLE,
   );
 
   const [showTargets, setShowTargets] = useState(false);
@@ -223,17 +232,39 @@ export const HistoricalGraph: React.FC<{
             </div>
           ))}
         </div>
-
-        <button
-          disabled={!data?.graphData.length}
-          className={cn(
-            "text-nowrap text-sm",
-            !data?.graphData.length && "cursor-not-allowed  text-valence-gray",
+        <div className="flex flex-row gap-4">
+          {isPriceSourceEnabled && (
+            <button
+              disabled={!data?.graphData.length}
+              className={cn(
+                "text-nowrap text-sm",
+                !data?.graphData.length &&
+                  "cursor-not-allowed  text-valence-gray",
+              )}
+              onClick={() => {
+                setPriceSource(
+                  priceSource === "oracle" ? "coingecko" : "oracle",
+                );
+              }}
+            >
+              {priceSource === "oracle"
+                ? "Price source: Oracle"
+                : "Price Source: CoinGecko"}
+            </button>
           )}
-          onClick={() => setShowTargets(!showTargets)}
-        >
-          {showTargets ? "Hide Targets" : "Show Targets"}
-        </button>
+
+          <button
+            disabled={!data?.graphData.length}
+            className={cn(
+              "text-nowrap text-sm",
+              !data?.graphData.length &&
+                "cursor-not-allowed  text-valence-gray",
+            )}
+            onClick={() => setShowTargets(!showTargets)}
+          >
+            {showTargets ? "Hide Targets" : "Show Targets"}
+          </button>
+        </div>
       </div>
       {graphRef?.current &&
         GraphMessages() &&

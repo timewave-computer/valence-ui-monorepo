@@ -1,18 +1,21 @@
-import { ErrorHandler } from "@/const/error";
-import {
-  fetchHistoricalBalances,
-  fetchRebalancerAccountConfiguration,
-} from "@/server/actions";
-import {
-  IndexerOraclePricesResponse,
-  fetchOraclePrices,
-} from "@/server/actions/fetch-oracle-prices";
-import { microToBase, findClosestCoingeckoPrice } from "@/utils";
-import { UTCDate } from "@date-fns/utc";
-import { subDays } from "date-fns";
-import { NextResponse } from "next/server";
-import Papa from "papaparse";
+// import { ErrorHandler } from "@/const/error";
+// import {
+//   fetchHistoricalBalances,
+//   fetchRebalancerAccountConfiguration,
+// } from "@/server/actions";
+// import {
+//   IndexerOraclePricesResponse,
+//   fetchOraclePrices,
+// } from "@/server/actions/fetch-oracle-prices";
+// import { microToBase, findClosestCoingeckoPrice } from "@/utils";
+// import { UTCDate } from "@date-fns/utc";
+// import { subDays } from "date-fns";
+// import { NextResponse } from "next/server";
+// import Papa from "papaparse";
 
+export async function GET(req: Request) {
+  return new Response("Hello world!");
+}
 // export async function GET(req: Request) {
 //   const { searchParams } = new URL(req?.url ?? "");
 //   const address = searchParams.get("address");

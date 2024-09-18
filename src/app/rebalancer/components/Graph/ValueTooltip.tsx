@@ -66,6 +66,7 @@ export const ValueTooltip = ({
           <TableRow>
             <AssetCell placeholderDot={true} symbol="Asset" />
             <HeaderCell className="text-end">Amount</HeaderCell>
+            <HeaderCell className="text-end">Price</HeaderCell>
             <HeaderCell className="text-end">USD Value</HeaderCell>
           </TableRow>
         </thead>
@@ -79,12 +80,16 @@ export const ValueTooltip = ({
                   if (isNaN(amount)) amount = 0;
                   let value = data[GraphKey.projectedValue(symbol)];
                   if (isNaN(value)) value = 0;
+                  const price = data[GraphKey.price(symbol)];
 
                   return (
                     <TableRow key={`tooltip-${label}-${k}`}>
                       <AssetCell symbol={symbol} />
                       <NumberCell className="text-end">
-                        {displayNumber(amount, { precision: null })}
+                        {displayNumber(amount, { precision: 2 })}
+                      </NumberCell>
+                      <NumberCell className="text-end">
+                        {displayNumber(price, { precision: 2 })}
                       </NumberCell>
                       <NumberCell className="text-end">{`$${displayNumber(value, { precision: 2 })}`}</NumberCell>
                     </TableRow>
@@ -97,11 +102,15 @@ export const ValueTooltip = ({
                   let amount = data[GraphKey.historicalAmount(symbol)];
                   if (isNaN(amount)) amount = 0;
                   const value = data[GraphKey.historicalValue(symbol)];
+                  const price = data[GraphKey.price(symbol)];
                   return (
                     <TableRow key={`tooltip-${label}-${k}`}>
                       <AssetCell symbol={symbol} />
                       <NumberCell className="text-end">
-                        {displayNumber(amount, { precision: null })}
+                        {displayNumber(amount, { precision: 2 })}
+                      </NumberCell>
+                      <NumberCell className="text-end">
+                        {displayNumber(price, { precision: 2 })}
                       </NumberCell>
                       <NumberCell className="text-end">{`$${displayNumber(value, { precision: 2 })}`}</NumberCell>
                     </TableRow>
@@ -110,6 +119,8 @@ export const ValueTooltip = ({
           <TableRow className="border-t-[0.5px] border-valence-gray">
             <AssetCell placeholderDot={true} symbol="Total" />
             <TextCell></TextCell>
+            <TextCell></TextCell>
+
             <NumberCell className="text-end">{`$${displayNumber(totalValue, { precision: 2 })}`}</NumberCell>
           </TableRow>
         </tbody>

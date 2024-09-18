@@ -4,11 +4,11 @@ import { X_HANDLE, X_URL } from "@/const/socials";
 import { useWallet } from "@/hooks";
 import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
-import { accountAtom } from "@/app/rebalancer/const";
+import { scaleAtom, accountAtom } from "@/app/rebalancer/globals";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { DEFAULT_ACCOUNT, scaleAtom } from "@/app/rebalancer/const";
+import { DEFAULT_ACCOUNT } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
 import {

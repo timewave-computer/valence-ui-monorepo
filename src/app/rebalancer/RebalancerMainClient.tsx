@@ -1,5 +1,4 @@
 "use client";
-import { ComingSoonTooltipContent } from "@/components";
 import { useMemo, useState } from "react";
 import {
   SidePanelV2,
@@ -9,14 +8,13 @@ import {
 import {
   useAccountConfigQuery,
   useHistoricValues,
-  useLivePortfolio,
 } from "@/app/rebalancer/hooks";
-import { LOAD_CONFIG_ERROR, accountAtom } from "@/app/rebalancer/const";
-import { cn, FeatureFlags, useFeatureFlag } from "@/utils";
+import { accountAtom } from "@/app/rebalancer/globals";
 import { useAtom } from "jotai";
 
 export const RebalancerMainClient = () => {
   const [account] = useAtom(accountAtom);
+
   const accountConfigQuery = useAccountConfigQuery({
     account: account,
   });

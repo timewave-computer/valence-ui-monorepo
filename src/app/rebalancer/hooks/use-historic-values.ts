@@ -12,8 +12,15 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { CoinGeckoHistoricPrices } from "@/types/coingecko";
-import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
+import {
+  IndexerHistoricalTargetsResponse,
+  IndexerOraclePricesResponse,
+} from "@/types/rebalancer";
 import { UTCDate } from "@date-fns/utc";
+import { ErrorHandler } from "@/const/error";
+import { USDC_DENOM } from "@/const/chain-data";
+import { priceSourceAtom } from "@/app/rebalancer/globals";
+import { useAtom } from "jotai";
 
 export const useHistoricValues = ({
   accountAddress,
@@ -39,12 +46,14 @@ export const useHistoricValues = ({
     endDate,
   });
   const queryClient = useQueryClient();
+  const [priceSource] = useAtom(priceSourceAtom);
 
   const historicalValues = useQuery({
     queryKey: [
       QUERY_KEYS.COMBINED_HISTORICAL_VALUE_DATA,
       targets,
       accountAddress,
+      priceSource,
     ],
     enabled: isCacheFetched && balanceQuery.isFetched && targetQuery.isFetched,
     queryFn: () => {
@@ -57,15 +66,37 @@ export const useHistoricValues = ({
           const balance = historicBalanceData.balances.find(
             (b) => b.denom === target.denom,
           );
-          const prices = queryClient.getQueryData<CoinGeckoHistoricPrices>([
-            QUERY_KEYS.HISTORIC_PRICES,
-            target.denom,
-          ]);
-          tokens.push({
-            denom: target.denom,
-            amount: balance?.amount ?? 0,
-            price: findClosestCoingeckoPrice(ts, prices ?? []),
-          });
+
+          if (priceSource === "oracle") {
+            const prices =
+              queryClient.getQueryData<IndexerOraclePricesResponse>([
+                QUERY_KEYS.HISTORIC_PRICES_ORACLE,
+                target.denom,
+              ]);
+            if (target.denom === USDC_DENOM) {
+              tokens.push({
+                denom: target.denom,
+                amount: balance?.amount ?? 0,
+                price: 1,
+              });
+            } else {
+              tokens.push({
+                denom: target.denom,
+                amount: balance?.amount ?? 0,
+                price: findClosestOraclePrice(ts, prices ?? []),
+              });
+            }
+          } else {
+            const prices = queryClient.getQueryData<CoinGeckoHistoricPrices>([
+              QUERY_KEYS.HISTORIC_PRICES_COINGECKO,
+              target.denom,
+            ]);
+            tokens.push({
+              denom: target.denom,
+              amount: balance?.amount ?? 0,
+              price: findClosestCoingeckoPrice(ts, prices ?? []),
+            });
+          }
         });
         tempMergedData.push({
           timestamp: ts,
@@ -113,3 +144,20 @@ export type UseHistoricalValuesReturnValue = {
   }[];
   historicTargets: IndexerHistoricalTargetsResponse;
 };
+
+// Helper function to find the price with the closest timestamp
+function findClosestOraclePrice(
+  balanceTimestamp: number,
+  prices: IndexerOraclePricesResponse,
+): number {
+  if (prices.length === 0) {
+    ErrorHandler.warn("No prices found for denom");
+    return 0;
+  }
+  const sorted = prices.sort(
+    (a, b) =>
+      Math.abs(balanceTimestamp - Number(a.at)) - // prices are in form [timestamp, price]  [ 1714611745449, 1.0007257446162172 ],
+      Math.abs(balanceTimestamp - Number(b.at)),
+  );
+  return Number(sorted[0].value?.price); // take first element, extract price
+}

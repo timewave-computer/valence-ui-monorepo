@@ -19,7 +19,8 @@ import {
   useLivePortfolio,
 } from "@/app/rebalancer/hooks";
 import { useAtom } from "jotai";
-import { accountAtom, LivePortfolioTooltipCopy } from "@/app/rebalancer/const";
+import { accountAtom } from "@/app/rebalancer/globals";
+import { LivePortfolioTooltipCopy } from "@/app/rebalancer/const";
 import { Asset } from "@/app/rebalancer/components";
 
 export type TableData = {

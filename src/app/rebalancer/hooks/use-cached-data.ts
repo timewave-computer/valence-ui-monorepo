@@ -10,6 +10,7 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { chainConfig } from "@/const/config";
 import { OriginAsset } from "@/types/ibc";
 import { withTimeout } from "./use-historic-targets";
+import { fetchOraclePrices } from "@/server/actions/fetch-oracle-prices";
 
 const getOriginAssetQueryArgs = (denom: string) => ({
   queryKey: [QUERY_KEYS.ORIGIN_ASSET, denom],
@@ -95,10 +96,10 @@ export const usePrefetchData = () => {
     ),
   });
 
-  const historicPriceQueries = useQueries({
+  const historicCoingeckoPriceQueries = useQueries({
     queries: chainConfig.supportedAssets.map((asset) => ({
       staleTime: 60 * 1000 * 10, // 10 mins
-      queryKey: [QUERY_KEYS.HISTORIC_PRICES, asset.denom],
+      queryKey: [QUERY_KEYS.HISTORIC_PRICES_COINGECKO, asset.denom],
       refetchInterval: 0,
       retry: (errorCount: number) => errorCount < 1,
       queryFn: () =>
@@ -107,7 +108,20 @@ export const usePrefetchData = () => {
             denom: asset.denom,
             coingeckoId: asset.coingeckoId,
           });
-        }, QUERY_KEYS.HISTORIC_PRICES),
+        }, QUERY_KEYS.HISTORIC_PRICES_COINGECKO),
+    })),
+  });
+
+  const historicOraclePriceQueries = useQueries({
+    queries: chainConfig.supportedAssets.map((asset) => ({
+      staleTime: 60 * 1000 * 10, // 10 mins
+      queryKey: [QUERY_KEYS.HISTORIC_PRICES_ORACLE, asset.denom],
+      refetchInterval: 0,
+      retry: (errorCount: number) => errorCount < 1,
+      queryFn: () =>
+        withTimeout(async () => {
+          return fetchOraclePrices(asset.denom);
+        }, QUERY_KEYS.HISTORIC_PRICES_ORACLE),
     })),
   });
 
@@ -115,14 +129,18 @@ export const usePrefetchData = () => {
     isError:
       originAssetQueries.some((q) => q.isError) ||
       livePriceQueries.some((q) => q.isError) ||
-      historicPriceQueries.some((q) => q.isError),
+      historicOraclePriceQueries.some((q) => q.isError) ||
+      historicCoingeckoPriceQueries.some((q) => q.isError),
+
     isLoading:
       originAssetQueries.some((q) => q.isLoading) ||
       livePriceQueries.some((q) => q.isLoading) ||
-      historicPriceQueries.some((q) => q.isLoading),
+      historicOraclePriceQueries.some((q) => q.isLoading) ||
+      historicCoingeckoPriceQueries.some((q) => q.isLoading),
     isFetched:
-      originAssetQueries.every((q) => q.isFetched) &&
-      livePriceQueries.every((q) => q.isFetched) &&
-      historicPriceQueries.every((q) => q.isFetched),
+      (originAssetQueries.every((q) => q.isFetched) &&
+        livePriceQueries.every((q) => q.isFetched) &&
+        historicOraclePriceQueries.every((q) => q.isFetched)) ||
+      historicCoingeckoPriceQueries.every((q) => q.isFetched),
   };
 };

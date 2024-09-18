@@ -1,8 +1,12 @@
+"use server";
 import { ErrorHandler, ERROR_MESSAGES } from "@/const/error";
 import { UTCDate } from "@date-fns/utc";
 import { IndexerUrl } from "@/server/utils";
-import { z } from "zod";
 import { hoursToSeconds, subDays } from "date-fns";
+import {
+  IndexerOraclePricesResponse,
+  IndexerOraclePricesResponseSchema,
+} from "@/types/rebalancer";
 
 /**
  * for fetching oracle prices from the indexer. Not used currently but here if needed
@@ -39,23 +43,3 @@ export const fetchOraclePrices = async (
   }
   return validated.data;
 };
-
-export const IndexerOraclePriceSchema = z.object({
-  pair: z.tuple([z.string(), z.string()]),
-  price: z.string(),
-  time: z.string(),
-});
-export type IndexerOraclePrice = z.infer<typeof IndexerOraclePriceSchema>;
-
-export const IndexerOraclePricesResponseSchema = z.array(
-  z.object({
-    at: z.string(),
-    blockHeight: z.number(),
-    blockTimeUnixMs: z.number(),
-    value: IndexerOraclePriceSchema.nullable(),
-  }),
-);
-
-export type IndexerOraclePricesResponse = z.infer<
-  typeof IndexerOraclePricesResponseSchema
->;

@@ -28,7 +28,7 @@ import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
 import { useAtom } from "jotai";
-import { accountAtom } from "@/app/rebalancer/const";
+import { accountAtom } from "@/app/rebalancer/globals";
 
 type WithdrawInputForm = {
   amounts: Coin[];

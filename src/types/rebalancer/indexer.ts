@@ -114,3 +114,23 @@ export const IndexerValenceAccountsResponseSchema = z.array(z.string());
 export type IndexerValenceAccountsResponse = z.infer<
   typeof IndexerValenceAccountsResponseSchema
 >;
+
+export const IndexerOraclePriceSchema = z.object({
+  pair: z.tuple([z.string(), z.string()]),
+  price: z.string(),
+  time: z.string(),
+});
+export type IndexerOraclePrice = z.infer<typeof IndexerOraclePriceSchema>;
+
+export const IndexerOraclePricesResponseSchema = z.array(
+  z.object({
+    at: z.string(),
+    blockHeight: z.number(),
+    blockTimeUnixMs: z.number(),
+    value: IndexerOraclePriceSchema.nullable(),
+  }),
+);
+
+export type IndexerOraclePricesResponse = z.infer<
+  typeof IndexerOraclePricesResponseSchema
+>;

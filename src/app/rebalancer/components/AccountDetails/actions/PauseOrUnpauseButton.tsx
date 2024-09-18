@@ -1,7 +1,7 @@
 "use client";
 import { useAtom } from "jotai";
 import { useAccountConfigQuery } from "@/app/rebalancer/hooks";
-import { accountAtom } from "@/app/rebalancer/const";
+import { accountAtom } from "@/app/rebalancer/globals";
 import { Button, ToastMessage } from "@/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
