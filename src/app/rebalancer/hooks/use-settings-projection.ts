@@ -23,7 +23,10 @@ type ProjectionInput = {
   targetBalance: number;
   price: number;
 };
-export const useProjectionGraphV2 = (
+/***
+ * for projection in the create form
+ */
+export const useSettingsProjection = (
   form: UseFormReturn<CreateRebalancerForm, any, undefined>,
 ) => {
   const { watch } = form;
@@ -107,7 +110,6 @@ const generateYAxisTicks = (data: GraphData) => {
 
   data.forEach((d) => {
     const dItems = Object.entries(d);
-
     const graphedYValues = dItems
       .filter(([key, value]) => isGraphedKey(key))
       .map(([key, value]) => value);
@@ -236,6 +238,7 @@ const generateProjectionGraphData = async ({
           result[GraphKey.projectedAmount(denomData.symbol)] = roundedBalance;
           result[GraphKey.projectedValue(denomData.symbol)] =
             roundedBalance * denomData.price;
+          result[GraphKey.price(denomData.symbol)] = denomData.price;
           result[GraphKey.projectedTargetValue(denomData.symbol)] =
             parseFloat(denomData.targetBalance) * denomData.price;
         });

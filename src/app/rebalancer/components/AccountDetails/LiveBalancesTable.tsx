@@ -3,7 +3,7 @@ import {
   SortableTableHeader,
   Sorter,
   LoadingSkeleton,
-  QuestionTooltipContent,
+  IconTooltipContent,
 } from "@/components";
 import {
   Dispatch,
@@ -236,9 +236,7 @@ const LiveBalancesTableLayout: React.FC<{
           buttonClassName="pt-0 justify-end px-0  border-y-0"
           textClassName=" text-xs font-base text-wrap "
           hoverTooltip={
-            <QuestionTooltipContent
-              {...LivePortfolioTooltipCopy.withdrawable}
-            />
+            <IconTooltipContent {...LivePortfolioTooltipCopy.withdrawable} />
           }
         />
         <SortableTableHeader

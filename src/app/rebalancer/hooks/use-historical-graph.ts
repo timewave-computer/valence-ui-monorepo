@@ -30,6 +30,7 @@ import { OriginAsset } from "@/types/ibc";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 import { useAtom } from "jotai";
 import { priceSourceAtom } from "@/app/rebalancer/globals";
+import { Coin } from "@cosmjs/amino";
 
 export const useHistoricalGraph = ({
   scale = Scale.Month,
@@ -110,15 +111,12 @@ export const useHistoricalGraph = ({
         config: config?.data,
         scale,
       });
-
       const allData = projectedGraphData.length
         ? [...historialGraphData, ...projectedGraphData].slice(
             0,
             dataPointCount[scale] + 1,
           ) // we generate a larger projection, trim off what we dont need
         : [];
-
-      const oldXAxisTicks = generateXAxisTicks({ data: allData, scale });
 
       const yAxisTicks = generateYAxisTicks({
         data: allData,

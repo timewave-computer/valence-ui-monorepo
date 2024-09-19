@@ -5,10 +5,8 @@ export const Asset: React.FC<{
   symbol?: string;
   asChild?: boolean;
 }> = ({ symbol, asChild = false }) => {
-  const Comp = asChild ? Fragment : "div";
-
-  return (
-    <Comp className="flex flex-row items-center gap-2">
+  const AssetWithDot = (
+    <>
       <div
         className="h-4 w-4 shrink-0 rounded-full bg-valence-gray"
         style={{
@@ -16,6 +14,12 @@ export const Asset: React.FC<{
         }}
       ></div>
       <span className="text-sm font-bold">{symbol ?? ""}</span>
-    </Comp>
+    </>
   );
+
+  if (asChild) {
+    return <Fragment> {AssetWithDot}</Fragment>;
+  }
+
+  return <div className="flex flex-row items-center gap-2">{AssetWithDot}</div>;
 };

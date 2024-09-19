@@ -14,6 +14,17 @@ import {
 } from "@/smol_telescope/generated-files";
 import { hasDenom } from "@/app/rebalancer/utils";
 
+/**
+ * If the value starts with a decimal point, add a leading zero.
+ */
+const ifDecimalPadWithLeadingZero = (value: number | string): string => {
+  let numString: string = typeof value === "string" ? value : value.toString();
+  if (numString.startsWith(".")) {
+    numString = `0${numString}`;
+  }
+  return numString;
+};
+
 export const makeCreateRebalancerMessages = async ({
   creatorAddress,
   cosmwasmClient,
@@ -87,13 +98,16 @@ const makeInstantiateMessageBody = ({
           denom: asset.denom,
           amount: baseToMicroDenomString(
             Number(asset.startingAmount) + SERVICE_FEE.amount,
-            6,
-          ), // TODO: get correct decimals
+            SERVICE_FEE.decimalPoints,
+          ),
         } as Coin;
       } else
         return {
           denom: asset.denom,
-          amount: baseToMicroDenomString(asset.startingAmount ?? 0, 6), // TODO: get correct decimals
+          amount: baseToMicroDenomString(
+            asset.startingAmount ?? 0,
+            SERVICE_FEE.decimalPoints,
+          ),
         } as Coin;
     })
     .filter((f) => f.amount !== "0")
@@ -103,7 +117,10 @@ const makeInstantiateMessageBody = ({
   if (!convertedFunds.find((f) => f.denom === SERVICE_FEE.denom)) {
     convertedFunds.push({
       denom: SERVICE_FEE.denom,
-      amount: baseToMicroDenomString(SERVICE_FEE.amount, 6),
+      amount: baseToMicroDenomString(
+        SERVICE_FEE.amount,
+        SERVICE_FEE.decimalPoints,
+      ),
     } as Coin);
   }
 
@@ -162,12 +179,12 @@ const makeRegisterMessage = ({
   const data: RebalancerData = {
     base_denom: config.baseTokenDenom,
     pid: {
-      p: parseFloat(config.pid.p).toString(),
-      i: parseFloat(config.pid.i).toString(),
-      d: parseFloat(config.pid.d).toString(),
+      p: ifDecimalPadWithLeadingZero(parseFloat(config.pid.p).toString()),
+      i: ifDecimalPadWithLeadingZero(parseFloat(config.pid.i).toString()),
+      d: ifDecimalPadWithLeadingZero(parseFloat(config.pid.d).toString()),
     },
     ...(!!config.maxLimit && {
-      max_limit_bps: config.maxLimit,
+      max_limit_bps: config.maxLimit * 100, // ("10%"=> 1000)
     }),
     target_override_strategy: config.targetOverrideStrategy,
     targets: config.targets.filter(hasDenom).map((target) => ({

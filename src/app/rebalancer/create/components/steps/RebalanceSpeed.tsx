@@ -8,8 +8,8 @@ import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
   Dropdown,
   LinkText,
-  QuestionTooltipContent,
-  WithQuestionTooltip,
+  IconTooltipContent,
+  WithIconAndTooltip,
 } from "@/components";
 import { useState } from "react";
 import { cn } from "@/utils";
@@ -30,13 +30,13 @@ import {
   scaleFormatter,
   SymbolColors,
 } from "@/app/rebalancer/const";
-import { useAssetCache, useProjectionGraphV2 } from "@/app/rebalancer/hooks";
+import { useAssetCache, useSettingsProjection } from "@/app/rebalancer/hooks";
 import { ValueTooltip } from "@/app/rebalancer/components";
 
 type PidKey = keyof CreateRebalancerForm["pid"];
-const AdvancedPid = "advanced-pid";
+const CustomPid = "custom-pid";
 
-export const SpeedSettings: React.FC<{
+export const RebalanceSpeed: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
 }> = ({ form }) => {
@@ -51,7 +51,7 @@ export const SpeedSettings: React.FC<{
     isEnabled: isProjectionEnabled,
     data: projection,
     isError: isProjectionError,
-  } = useProjectionGraphV2(form);
+  } = useSettingsProjection(form);
 
   return (
     <section className="flex w-full flex-col gap-6">
@@ -67,9 +67,9 @@ export const SpeedSettings: React.FC<{
       </div>
       <div className="grid grid-cols-[1fr_1fr_1fr]">
         <div className="col-span-1 flex flex-col gap-2">
-          <WithQuestionTooltip
+          <WithIconAndTooltip
             tooltipContent={
-              <QuestionTooltipContent
+              <IconTooltipContent
                 {...RebalancerFormTooltipCopy.rebalanceSpeed}
               />
             }
@@ -77,12 +77,12 @@ export const SpeedSettings: React.FC<{
             <div className="h-fit pb-1 text-xs font-medium">
               {RebalancerFormTooltipCopy.rebalanceSpeed.title}
             </div>
-          </WithQuestionTooltip>
+          </WithIconAndTooltip>
           <Dropdown
             containerClassName="min-w-80"
-            selected={showPid ? AdvancedPid : watch(`pid.p`)}
+            selected={showPid ? CustomPid : watch(`pid.p`)}
             onSelected={(value) => {
-              if (value === AdvancedPid) {
+              if (value === CustomPid) {
                 setShowPid(true);
               } else {
                 setShowPid(false);
@@ -134,6 +134,8 @@ export const SpeedSettings: React.FC<{
             </div>
 
             {Object.keys(pid).map((key) => {
+              const value = parseFloat(pid[key as PidKey]);
+
               return (
                 <div
                   key={`pid-input-${key}`}
@@ -143,6 +145,7 @@ export const SpeedSettings: React.FC<{
                     "font-mono",
                     "border-valence-lightgray bg-valence-lightgray",
                     "relative flex items-center border-[1.5px]  focus-within:border-valence-blue",
+                    value < 0 || (value > 1 && "!border-valence-red"),
                   )}
                 >
                   <input
@@ -153,7 +156,7 @@ export const SpeedSettings: React.FC<{
                       "h-full w-full bg-transparent p-1 focus:outline-none",
                     )}
                     type="number"
-                    placeholder="0.00"
+                    placeholder="0"
                     {...register(`pid.${key as PidKey}`)}
                   />
                 </div>
@@ -162,26 +165,27 @@ export const SpeedSettings: React.FC<{
           </div>
           {Object.keys(pid).some((key) => {
             const value = parseFloat(pid[key as PidKey]);
-            return value < 0 || value >= 1;
+            return value < 0 || value > 1;
           }) && (
             <WarnTextV2
+              className="pt-2"
               text="All values must be between 0 and 1 (example: 0.1)"
-              variant="warn"
+              variant="error"
             />
           )}
         </div>
       )}
 
       <div className="flex flex-col gap-2">
-        <WithQuestionTooltip
+        <WithIconAndTooltip
           tooltipContent={
-            <QuestionTooltipContent {...RebalancerFormTooltipCopy.projection} />
+            <IconTooltipContent {...RebalancerFormTooltipCopy.projection} />
           }
         >
           <div className="h-fit pb-1 text-xs font-medium">
             {RebalancerFormTooltipCopy.projection.title}
           </div>
-        </WithQuestionTooltip>
+        </WithIconAndTooltip>
         {isProjectionError && (
           <WarnTextV2
             variant="warn"
@@ -286,5 +290,5 @@ const RebalanceSpeedOptions = [
     label: "Fast (rebalance 20% daily)",
     value: "0.2",
   },
-  { label: "Advanced", value: AdvancedPid },
+  { label: "Custom", value: CustomPid },
 ];

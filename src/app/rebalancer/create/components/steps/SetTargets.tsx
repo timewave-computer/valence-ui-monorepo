@@ -15,8 +15,8 @@ import {
   Dropdown,
   IconButton,
   LoadingSkeleton,
-  QuestionTooltipContent,
-  WithQuestionTooltip,
+  IconTooltipContent,
+  WithIconAndTooltip,
 } from "@/components";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
@@ -138,15 +138,15 @@ export const SetTargets: React.FC<{
                 Target Distribution
               </InputTableCell>
               <InputTableCell className="justify-start" variant="header">
-                <WithQuestionTooltip
+                <WithIconAndTooltip
                   tooltipContent={
-                    <QuestionTooltipContent
+                    <IconTooltipContent
                       {...RebalancerFormTooltipCopy.minBalance}
                     />
                   }
                 >
                   {RebalancerFormTooltipCopy.minBalance.title}
-                </WithQuestionTooltip>
+                </WithIconAndTooltip>
               </InputTableCell>
               <InputTableCell
                 className="h-full flex-col items-center justify-center"

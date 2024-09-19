@@ -24,6 +24,6 @@ export * from "./colored-dot";
 export * from "./LoadingSkeleton";
 export * from "./ValenceProductBrand";
 export * from "./ConnectWalletButton";
-export * from "./WithQuestionTooltip";
+export * from "./WithIconAndTooltip";
 export * from "./CollapsibleSection";
 export * from "./CalloutBox";

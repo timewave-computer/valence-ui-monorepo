@@ -42,6 +42,7 @@ type SupportedChainConfig = {
     denom: string;
     amount: number;
     symbol: string;
+    decimalPoints: number;
   };
   celatoneUrl: string;
 };
@@ -84,6 +85,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       denom: "untrn",
       amount: 1,
       symbol: "NTRN",
+      decimalPoints: 6,
     },
     celatoneUrl: "https://neutron.celat.one/neutron-1/",
   },
@@ -118,6 +120,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       symbol: "NTRN",
       denom: "untrn",
       amount: 0.001,
+      decimalPoints: 6,
     },
     celatoneUrl: "https://neutron.celat.one/pion-1/",
   },

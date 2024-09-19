@@ -1,7 +1,7 @@
 import { cn } from "@/utils";
 import React, { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
-import { WithQuestionTooltip } from "./WithQuestionTooltip";
+import { WithIconAndTooltip } from "./WithIconAndTooltip";
 
 export type Sorter<T> = {
   key: string;
@@ -75,7 +75,7 @@ export const SortableTableHeader = <T extends unknown>({
         }
       }}
     >
-      <WithQuestionTooltip
+      <WithIconAndTooltip
         className="items-top flex flex-row justify-end gap-0.5"
         side="top"
         tooltipContent={hoverTooltip}
@@ -83,7 +83,7 @@ export const SortableTableHeader = <T extends unknown>({
         <button className={cn("text-sm font-bold", textClassName)}>
           {label}
         </button>
-      </WithQuestionTooltip>
+      </WithIconAndTooltip>
       {currentSorter.key === sorterKey && <SortIcon />}
     </div>
   );

@@ -9,7 +9,6 @@ import {
 import { QUERY_KEYS } from "@/const/query-keys";
 import { chainConfig } from "@/const/config";
 import { OriginAsset } from "@/types/ibc";
-import { withTimeout } from "./use-historic-targets";
 import { fetchOraclePrices } from "@/server/actions/fetch-oracle-prices";
 
 const getOriginAssetQueryArgs = (denom: string) => ({
@@ -103,35 +102,32 @@ export const usePrefetchData = () => {
       refetchInterval: 0,
       retry: (errorCount: number) => errorCount < 1,
       queryFn: () =>
-        withTimeout(async () => {
-          return fetchHistoricalPricesV2({
-            denom: asset.denom,
-            coingeckoId: asset.coingeckoId,
-          });
-        }, QUERY_KEYS.HISTORIC_PRICES_COINGECKO),
+        fetchHistoricalPricesV2({
+          denom: asset.denom,
+          coingeckoId: asset.coingeckoId,
+        }),
     })),
   });
-
   const historicOraclePriceQueries = useQueries({
     queries: chainConfig.supportedAssets.map((asset) => ({
       staleTime: 60 * 1000 * 10, // 10 mins
       queryKey: [QUERY_KEYS.HISTORIC_PRICES_ORACLE, asset.denom],
       refetchInterval: 0,
       retry: (errorCount: number) => errorCount < 1,
-      queryFn: () =>
-        withTimeout(async () => {
-          return fetchOraclePrices(asset.denom);
-        }, QUERY_KEYS.HISTORIC_PRICES_ORACLE),
+      queryFn: () => fetchOraclePrices(asset.denom),
     })),
   });
-
   return {
     isError:
       originAssetQueries.some((q) => q.isError) ||
       livePriceQueries.some((q) => q.isError) ||
       historicOraclePriceQueries.some((q) => q.isError) ||
       historicCoingeckoPriceQueries.some((q) => q.isError),
-
+    error:
+      originAssetQueries.find((q) => q.isError)?.error ||
+      livePriceQueries.find((q) => q.isError)?.error ||
+      historicOraclePriceQueries.find((q) => q.isError)?.error ||
+      historicCoingeckoPriceQueries.find((q) => q.isError)?.error,
     isLoading:
       originAssetQueries.some((q) => q.isLoading) ||
       livePriceQueries.some((q) => q.isLoading) ||

@@ -8,10 +8,10 @@ import {
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
   LinkText,
-  QuestionTooltipContent,
+  IconTooltipContent,
   RadioGroup,
   RadioGroupItem,
-  WithQuestionTooltip,
+  WithIconAndTooltip,
 } from "@/components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
@@ -61,9 +61,9 @@ export const AdvancedSettings: React.FC<{
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
-                <WithQuestionTooltip
+                <WithIconAndTooltip
                   tooltipContent={
-                    <QuestionTooltipContent
+                    <IconTooltipContent
                       {...RebalancerFormTooltipCopy.baseDenom}
                     />
                   }
@@ -71,7 +71,7 @@ export const AdvancedSettings: React.FC<{
                   <div className="col-span-2 h-fit pb-1 text-xs font-medium ">
                     {RebalancerFormTooltipCopy.baseDenom.title}
                   </div>
-                </WithQuestionTooltip>
+                </WithIconAndTooltip>
 
                 <Dropdown
                   className="max-w-[30%]"
@@ -85,9 +85,9 @@ export const AdvancedSettings: React.FC<{
               </div>
               <div className="flex flex-col gap-2">
                 <div className="h-fit pb-1 text-xs font-normal">
-                  <WithQuestionTooltip
+                  <WithIconAndTooltip
                     tooltipContent={
-                      <QuestionTooltipContent
+                      <IconTooltipContent
                         {...RebalancerFormTooltipCopy.strategy}
                       >
                         See{" "}
@@ -100,11 +100,11 @@ export const AdvancedSettings: React.FC<{
                           here
                         </LinkText>{" "}
                         for an explanation with examples.
-                      </QuestionTooltipContent>
+                      </IconTooltipContent>
                     }
                   >
                     {RebalancerFormTooltipCopy.strategy.title}
-                  </WithQuestionTooltip>
+                  </WithIconAndTooltip>
                 </div>
 
                 <Dropdown
@@ -118,15 +118,15 @@ export const AdvancedSettings: React.FC<{
               </div>
               <div className="flex flex-col gap-2 ">
                 <div className="h-fit pb-1 text-xs font-medium">
-                  <WithQuestionTooltip
+                  <WithIconAndTooltip
                     tooltipContent={
-                      <QuestionTooltipContent
+                      <IconTooltipContent
                         {...RebalancerFormTooltipCopy.maxLimit}
                       />
                     }
                   >
                     {RebalancerFormTooltipCopy.maxLimit.title}
-                  </WithQuestionTooltip>
+                  </WithIconAndTooltip>
                 </div>
 
                 <div className="relative flex max-w-[30%] items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue ">
@@ -138,12 +138,15 @@ export const AdvancedSettings: React.FC<{
                     type="number"
                     {...register(`maxLimit`)}
                   />
+                  <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
+                    %
+                  </span>
                 </div>
               </div>
               <div className="flex flex-col gap-2 ">
-                <WithQuestionTooltip
+                <WithIconAndTooltip
                   tooltipContent={
-                    <QuestionTooltipContent
+                    <IconTooltipContent
                       {...RebalancerFormTooltipCopy.trustee}
                     />
                   }
@@ -151,7 +154,7 @@ export const AdvancedSettings: React.FC<{
                   <div className="h-fit pb-1 text-xs font-medium">
                     {RebalancerFormTooltipCopy.trustee.title}
                   </div>
-                </WithQuestionTooltip>
+                </WithIconAndTooltip>
                 <RadioGroup
                   onValueChange={() => {
                     setAllowOtherAddressInput(!allowOtherAddressInput);

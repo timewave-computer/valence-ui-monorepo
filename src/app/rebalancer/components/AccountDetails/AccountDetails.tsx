@@ -4,16 +4,19 @@ import {
   WithdrawDialog,
   PauseOrUnpauseButton,
   DepositDialog,
+  DoneRebalancingTooltip,
+  RebalanceInProgressTooltip,
 } from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
   useAssetCache,
+  useLivePortfolio,
   useMultipleValenceAccounts,
-  useValenceAccount,
+  useRebalanceStatusQuery,
 } from "@/app/rebalancer/hooks";
 import React, { useMemo, useState } from "react";
 import { useWallet } from "@/hooks";
-import { Label } from "@/components";
+import { Label, WithIconAndTooltip } from "@/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import {
   displayMinBalance,
@@ -23,6 +26,7 @@ import {
 } from "@/utils";
 import { Button, LoadingSkeleton } from "@/components";
 import Link from "next/link";
+import { BsCheck, BsInfo } from "react-icons/bs";
 
 export const AccountDetailsPanel: React.FC<{
   selectedAddress: string;
@@ -104,11 +108,7 @@ export const AccountDetailsPanel: React.FC<{
             setIsConfigOpen(!isConfigOpen);
           }}
         >
-          <span className="flex flex-row items-center gap-2">
-            <span className="text-sm font-bold">Configuration</span>
-
-            {config?.isPaused && <Label text="PAUSED" />}
-          </span>
+          <span className="text-sm font-bold">Configuration</span>
 
           {isConfigOpen ? (
             <FaChevronDown className="h-4 w-4" />
@@ -160,9 +160,6 @@ const AccountDetailsHeader: React.FC<{
     isWalletConnecting,
     address: walletAddress,
   } = useWallet();
-  const { data: valenceAccountAddress, isLoading: isLoadingValenceAccount } =
-    useValenceAccount(walletAddress);
-  const hasValenceAccount = !!valenceAccountAddress;
 
   const { data: allValenceAccounts, isLoading: isLoadingAllValenceAccounts } =
     useMultipleValenceAccounts(walletAddress);
@@ -172,11 +169,20 @@ const AccountDetailsHeader: React.FC<{
 
   const isDepositEnabled = useFeatureFlag(FeatureFlags.REBALANCER_DEPOSIT);
 
-  if (
-    isWalletConnecting ||
-    isLoadingValenceAccount ||
-    isLoadingAllValenceAccounts
-  ) {
+  const { data: config } = useAccountConfigQuery({
+    account: selectedAddress,
+  });
+
+  const { data: livePortfolio } = useLivePortfolio({
+    accountAddress: selectedAddress,
+  });
+
+  const { data: rebalanceStatus, isFetched: isRebalanceStatusFetched } =
+    useRebalanceStatusQuery({
+      accountAddress: selectedAddress,
+    });
+
+  if (isWalletConnecting || isLoadingAllValenceAccounts) {
     return (
       <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
         <LoadingSkeleton className="min-h-[43px] w-full" />
@@ -184,43 +190,58 @@ const AccountDetailsHeader: React.FC<{
     );
   }
 
-  if (isWalletConnected && isOwnAccount) {
-    return (
-      <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
-        <div className="flex flex-col gap-1 ">
-          <h1 className="text-base font-bold">Your Rebalancer Account</h1>
-          {selectedAddress.length > 0 && (
-            <span className="font-mono text-xs">{selectedAddress}</span>
-          )}
-        </div>
-        {(hasValenceAccount ||
-          allValenceAccounts?.includes(selectedAddress)) && (
-          <div className="flex flex-row flex-nowrap gap-2 ">
-            {isDepositEnabled && <DepositDialog />}
-            <PauseOrUnpauseButton />
-            <WithdrawDialog />
-            <Link href={`/rebalancer/edit/${selectedAddress}`}>
-              <Button className="h-fit" variant="secondary">
-                Edit
-              </Button>
-            </Link>
-          </div>
-        )}
-      </section>
-    );
-  }
-
-  // default
   return (
     <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-base font-bold">Rebalancer Account</h1>
+      <div className="flex flex-col gap-1 ">
+        <div className="flex flex-row items-center gap-1">
+          {isOwnAccount ? (
+            <h1 className="text-base font-bold">Your Rebalancer Account</h1>
+          ) : (
+            <h1 className="text-base font-bold">Rebalancer Account</h1>
+          )}
+
+          <div className="flex flex-row items-center gap-2">
+            {config?.isPaused && <Label text="PAUSED" />}
+            {!config?.isPaused &&
+              selectedAddress.length > 0 &&
+              !livePortfolio?.balances.every(
+                (lineItem) => lineItem.balance.total === 0,
+              ) && (
+                <WithIconAndTooltip
+                  isLoading={!isRebalanceStatusFetched}
+                  variant="info"
+                  Icon={rebalanceStatus?.isRebalanceComplete ? BsCheck : BsInfo}
+                  tooltipContent={
+                    rebalanceStatus?.isRebalanceComplete ? (
+                      <DoneRebalancingTooltip address={selectedAddress} />
+                    ) : (
+                      <RebalanceInProgressTooltip address={selectedAddress} />
+                    )
+                  }
+                />
+              )}
+          </div>
+        </div>
         {selectedAddress.length > 0 ? (
           <span className="font-mono text-xs">{selectedAddress}</span>
         ) : (
-          <span className="text-xs">No account selected</span>
+          <span className="text-xs text-valence-black">
+            No account selected
+          </span>
         )}
       </div>
+      {isOwnAccount && (
+        <div className="flex flex-row flex-nowrap gap-2 ">
+          {isDepositEnabled && <DepositDialog />}
+          <PauseOrUnpauseButton />
+          <WithdrawDialog />
+          <Link href={`/rebalancer/edit/${selectedAddress}`}>
+            <Button className="h-fit" variant="secondary">
+              Edit
+            </Button>
+          </Link>
+        </div>
+      )}
     </section>
   );
 };

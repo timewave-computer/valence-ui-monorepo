@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import {
   SetTargets,
   DepositAssets,
-  SpeedSettings,
+  RebalanceSpeed,
   AdvancedSettings,
   PreviewMessage,
 } from "@/app/rebalancer/create/components";
@@ -306,7 +306,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
           form={form}
           isCleanStartingAmountEnabled={true}
         />
-        <SpeedSettings address={walletAddress} form={form} />
+        <RebalanceSpeed address={walletAddress} form={form} />
         <AdvancedSettings address={walletAddress} form={form} />
         <PreviewMessage address={walletAddress} form={form} />
         {isCreatePending ? (

@@ -13,8 +13,8 @@ import {
   CalloutBox,
   Checkbox,
   LoadingSkeleton,
-  QuestionTooltipContent,
-  WithQuestionTooltip,
+  IconTooltipContent,
+  WithIconAndTooltip,
 } from "@/components";
 import {
   useAssetCache,
@@ -186,16 +186,16 @@ export const DepositAssets: React.FC<{
           checked={isServiceFeeIncluded}
           onChange={(value) => setValue("isServiceFeeIncluded", value)}
         />
-        <WithQuestionTooltip
+        <WithIconAndTooltip
           tooltipContent={
-            <QuestionTooltipContent {...RebalancerFormTooltipCopy.serviceFee} />
+            <IconTooltipContent {...RebalancerFormTooltipCopy.serviceFee} />
           }
         >
           <span className="text-sm">
             Accept service fee of {chainConfig.serviceFee.amount}{" "}
             {chainConfig.serviceFee.symbol}
           </span>
-        </WithQuestionTooltip>
+        </WithIconAndTooltip>
       </div>
 
       <div className="flex max-w-[90%] flex-col gap-2">

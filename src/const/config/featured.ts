@@ -27,7 +27,7 @@ const featuredAccounts: Record<
     development: [
       ...PROD_FEATURED_ACCOUNTS,
       {
-        label: "(dev) Lena's Highly Productive DAO",
+        label: "(dev) Lena's Highly Unproductive DAO",
         value:
           "neutron1vw0zuapgkpnq49ffyvkt4s4chy9lnf78s2ezuwwvd95lq065fpes277xkt",
       },

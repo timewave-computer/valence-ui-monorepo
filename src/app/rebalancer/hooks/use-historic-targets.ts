@@ -23,18 +23,13 @@ export const useHistoricTargets = ({
       startDate.toISOString(),
       endDate.toISOString(),
     ],
-    queryFn: () =>
-      withTimeout(
-        async () => {
-          return fetchHistoricalTargets({
-            address: accountAddress,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-          });
-        },
-        QUERY_KEYS.HISTORIC_TARGETS,
-        10000,
-      ),
+    queryFn: () => {
+      return fetchHistoricalTargets({
+        address: accountAddress,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      });
+    },
   });
 };
 

@@ -21,6 +21,7 @@ import { ErrorHandler } from "@/const/error";
 import { USDC_DENOM } from "@/const/chain-data";
 import { priceSourceAtom } from "@/app/rebalancer/globals";
 import { useAtom } from "jotai";
+import { cache } from "react";
 
 export const useHistoricValues = ({
   accountAddress,
@@ -34,6 +35,7 @@ export const useHistoricValues = ({
     isFetched: isCacheFetched,
     isLoading: isCacheLoading,
     isError: isCacheError,
+    error: cacheError,
   } = usePrefetchData();
   const balanceQuery = useHistoricBalances({
     accountAddress,
@@ -57,7 +59,7 @@ export const useHistoricValues = ({
     ],
     enabled: isCacheFetched && balanceQuery.isFetched && targetQuery.isFetched,
     queryFn: () => {
-      const tempMergedData: FetchHistoricalValuesReturnValue["values"] = [];
+      const mergedData: FetchHistoricalValuesReturnValue["values"] = [];
       balanceQuery.data?.forEach((historicBalanceData) => {
         const ts = historicBalanceData.timestamp;
         const tokens: FetchHistoricalValuesReturnValue["values"][number]["tokens"] =
@@ -98,16 +100,15 @@ export const useHistoricValues = ({
             });
           }
         });
-        tempMergedData.push({
+        mergedData.push({
           timestamp: ts,
           tokens,
           readableDate: new UTCDate(ts).toISOString(),
         });
       });
-      return tempMergedData;
+      return mergedData;
     },
   });
-
   return {
     isLoading:
       historicalValues.isLoading ||
@@ -120,6 +121,7 @@ export const useHistoricValues = ({
       targetQuery.isError ||
       historicalValues.isError,
     error: [
+      cacheError,
       balanceQuery.error,
       targetQuery.error,
       historicalValues.error,

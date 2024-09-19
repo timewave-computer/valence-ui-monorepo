@@ -33,6 +33,8 @@ const config: Config = {
         "graph-yellow": "#C2C600",
         "graph-purple": "#8476DE",
         "graph-teal": "#17CFCF",
+
+        "valence-mediumred": "#FF2A00B2",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
