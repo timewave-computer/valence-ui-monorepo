@@ -22,7 +22,7 @@ export async function fetchHistoricalTargets({
     endDate: new UTCDate(endDate),
   });
   const res = await fetch(url, {
-    // signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(10000),
     next: {
       revalidate: hoursToSeconds(1),
     },
