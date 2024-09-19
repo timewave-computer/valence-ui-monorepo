@@ -24,6 +24,7 @@ export const fetchOraclePrices = async (
     baseDenom: options?.baseDenom,
   });
   const res = await fetch(url, {
+    // signal: AbortSignal.timeout(10000),
     next: {
       revalidate: hoursToSeconds(1),
     },

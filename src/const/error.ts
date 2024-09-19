@@ -1,4 +1,5 @@
 export const ERROR_MESSAGES = {
+  SIGNER_CONNECTION_ERROR: "Error connecting to RPC",
   STARGATE_SIGNER_FAIL: "Error getting signing stargate client",
   COSMWASM_SIGNER_FAIL: "Error getting signing cosmwasm client",
   SUBMIT_EMAIL_FAIL: "Failed to submit email",

@@ -6,6 +6,7 @@ import { CreateRebalancerForm } from "@/types/rebalancer";
 import {
   BalanceReturnValue,
   useAccountConfigQuery,
+  useTestSignerConnection,
 } from "@/app/rebalancer/hooks";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,6 +32,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
   const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
   const { data: config } = useAccountConfigQuery({ account: address });
   const queryClient = useQueryClient();
+  useTestSignerConnection();
 
   const defaultValues: CreateRebalancerForm = useMemo(() => {
     const balances = queryClient.getQueryData<BalanceReturnValue>([

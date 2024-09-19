@@ -15,3 +15,4 @@ export * from "./use-required-minimum-value";
 export * from "./use-no-supported-assets-warning";
 export * from "./use-rebalance-status";
 export * from "./use-auction-limits";
+export * from "./use-test-signer-connection";

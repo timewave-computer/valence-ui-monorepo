@@ -22,12 +22,12 @@ import {
   AdvancedSettings,
   PreviewMessage,
 } from "@/app/rebalancer/create/components";
-import { ErrorHandler } from "@/const/error";
+import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Dialog, DialogContent } from "@/components";
 import {
   HoverCard,
@@ -37,6 +37,7 @@ import {
 import {
   useBaseTokenValue,
   useMinimumRequiredValue,
+  useTestSignerConnection,
 } from "@/app/rebalancer/hooks";
 import { HiMiniArrowLeft } from "react-icons/hi2";
 import { BetaDisclaimer } from "./copy";
@@ -52,6 +53,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     isWalletConnecting,
     getCosmWasmClient,
     getSigningStargateClient,
+    isWalletConnected,
   } = useWallet();
 
   const walletAddress = _walletAddress ?? "";
@@ -111,7 +113,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     isServiceFeeIncluded &&
     isMinimumValueMet;
 
-  const createRebalancer = useCallback(async () => {
+  const createRebalancerAccount = useCallback(async () => {
     // should not happen but here to make typescript happy
     if (!walletAddress)
       throw new Error(
@@ -140,7 +142,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
   const { startDate, endDate } = useDateRange();
 
   const { mutate: handleCreate, isPending: isCreatePending } = useMutation({
-    mutationFn: createRebalancer,
+    mutationFn: createRebalancerAccount,
     onSuccess: (output: {
       valenceAddress: string;
       result: DeliverTxResponse;
@@ -204,7 +206,12 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
         [],
       );
 
-      console.log("created rebalancer at", valenceAddress, "tx:", result);
+      console.log(
+        "created rebalancer account at",
+        valenceAddress,
+        "tx:",
+        result,
+      );
       toast.success(
         <ToastMessage
           transactionHash={result.transactionHash}
@@ -239,6 +246,8 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     },
   });
   const isServer = useIsServer();
+
+  useTestSignerConnection();
 
   if (isWalletConnecting) {
     return <LoadingSkeleton className="min-h-screen" />;

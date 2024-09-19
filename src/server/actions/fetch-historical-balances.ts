@@ -18,6 +18,7 @@ export const fetchHistoricalBalances = async (
       endDate: new UTCDate(endDate),
     }),
     {
+      // signal: AbortSignal.timeout(10000),
       next: {
         revalidate: hoursToSeconds(1),
       },
