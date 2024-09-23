@@ -1,12 +1,12 @@
-//@ts-nocheck
 import {
   MsgExecuteContract,
   MsgInstantiateContract2,
   MsgSend,
 } from "./generated-files";
+import { AminoConverters } from "@cosmjs/stargate";
 
 // paired down version just with what we need
-export const AminoConverter = {
+export const aminoConverters: AminoConverters = {
   "/cosmwasm.wasm.v1.MsgInstantiateContract2": {
     aminoType: "wasm/MsgInstantiateContract2",
     toAmino: MsgInstantiateContract2.toAmino,
@@ -18,7 +18,7 @@ export const AminoConverter = {
     fromAmino: MsgExecuteContract.fromAmino,
   },
   "/cosmos.bank.v1beta1.MsgSend": {
-    animoType: "cosmos-sdk/MsgSend",
+    aminoType: "cosmos-sdk/MsgSend",
     toAmino: MsgSend.toAmino,
     fromAmino: MsgSend.fromAmino,
   },

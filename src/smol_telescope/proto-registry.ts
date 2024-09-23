@@ -1,4 +1,4 @@
-//@ts-nocheck - error on Registry type
+//@ts-nocheck - incompatible 'writer types'. copied from the generated files
 import { GeneratedType } from "@cosmjs/proto-signing";
 import {
   MsgExecuteContract,

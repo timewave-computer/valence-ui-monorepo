@@ -10,16 +10,15 @@ import { GeneratedType, Registry } from "@cosmjs/proto-signing";
  * only the small amount of types we need, extracted from telescope codegen
  */
 import { protoRegistry } from "@/smol_telescope/proto-registry";
-import { AminoConverter } from "@/smol_telescope/amino-converter";
+import { aminoConverters } from "@/smol_telescope/amino-converters";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
 ];
 export const protobufRegistry = new Registry(protobufTypes);
 
-// @ts-expect-error
 export const aminoTypes = new AminoTypes({
-  ...AminoConverter,
+  ...aminoConverters,
 });
 
 const signerOptions: SignerOptions = {
