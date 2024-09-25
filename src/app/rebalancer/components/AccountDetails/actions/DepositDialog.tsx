@@ -170,7 +170,7 @@ const DepositForm: React.FC<{
 
   return (
     <>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-6">
         <h1 className="text-xl font-bold">Deposit Funds</h1>
         {convertedNonZeroBalances.length === 0 ? (
           <div className="flex flex-col gap-1">
