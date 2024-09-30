@@ -6,9 +6,10 @@ import { ErrorHandler } from "@/const/error";
 import {
   useAuctionLimits,
   useAccountConfigQuery,
-  useAssetCache,
+  useAssetMetadata,
   useLivePortfolio,
 } from "@/app/rebalancer/hooks";
+import { difference } from "next/dist/build/utils";
 
 type TradeStatusData = {
   currentValue: number;
@@ -29,7 +30,7 @@ export const useRebalanceStatusQuery = ({
   const { data: auctionLimits } = useAuctionLimits();
 
   const { data: livePortfolio } = useLivePortfolio({ accountAddress });
-  const getOriginAsset = useAssetCache().getOriginAsset;
+  const getOriginAsset = useAssetMetadata().getOriginAsset;
 
   return useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
@@ -97,7 +98,9 @@ export const useRebalanceStatusQuery = ({
           ErrorHandler.makeError("No auction limit found for " + t.denom);
           return;
         }
-        const tradeAmount = Math.abs(nextValue - currentValue);
+        // can be negative
+        const tradeAmount = nextValue - currentValue;
+
         trades.push({
           currentValue,
           nextValue,
@@ -108,7 +111,9 @@ export const useRebalanceStatusQuery = ({
       });
       return {
         trades,
-        isRebalanceComplete: trades.some((t) => t.tradeAmount < t.limit),
+        isRebalanceComplete: trades.some(
+          (t) => Math.abs(t.tradeAmount) < t.limit,
+        ),
       };
     },
   });

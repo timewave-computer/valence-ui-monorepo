@@ -1,15 +1,16 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { RebalancerMainClient } from "./RebalancerMainClient";
 import {
-  prefetchAuctionData,
-  prefetchHistoricalData,
-  prefetchLiveAccountData,
+  prefetchAuctionLimits,
+  prefetchAuctionStatuses,
+  prefetchHistoricalPrices,
+  prefetchAccountConfiguration,
   prefetchMetadata,
+  prefetchHistoricalTargets,
+  prefetchHistoricalBalances,
+  prefetchLivePrices,
 } from "@/server/prefetch";
+import { getQueryClient } from "@/utils/get-query-client";
 
 /***
  * making own server component to prefetch data with a manual suspense boundary to provide search params as a key
@@ -21,17 +22,28 @@ export default async function RebalancerMainServerComponent({
     account: string;
   };
 }) {
-  const queryClient = new QueryClient();
-  await prefetchMetadata(queryClient);
-  await prefetchAuctionData(queryClient);
-  await prefetchHistoricalData(queryClient, account);
+  const queryClient = getQueryClient();
+  const requests = [
+    prefetchMetadata(queryClient),
+    prefetchLivePrices(queryClient),
+    prefetchAuctionLimits(queryClient),
+    prefetchAuctionStatuses(queryClient),
+    prefetchHistoricalPrices(queryClient),
+  ];
+
   if (account && account.length > 0) {
-    await prefetchLiveAccountData(queryClient, account);
+    const accountSpecificRequests = [
+      prefetchAccountConfiguration(queryClient, account),
+      prefetchHistoricalTargets(queryClient, account),
+      prefetchHistoricalBalances(queryClient, account),
+    ];
+    requests.concat(accountSpecificRequests);
   }
+  await Promise.all(requests);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <RebalancerMainClient />
+      <RebalancerMainClient account={account} />
     </HydrationBoundary>
   );
 }

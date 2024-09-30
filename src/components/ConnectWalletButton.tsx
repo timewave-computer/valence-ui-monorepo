@@ -34,9 +34,11 @@ export const ConnectWalletButton: React.FC<{
 
   // for calling effect only when connect wallet is clicked
   const [connectWalletClicked, setConnectWalletClicked] = useState(false);
+  const [isInstallKeplrAlertSeen, setIsInstallKeplrAlertSeen] = useState(false);
 
   useEffect(() => {
-    if (walletStatus === WalletStatus.NotExist) {
+    if (walletStatus === WalletStatus.NotExist && !isInstallKeplrAlertSeen) {
+      setIsInstallKeplrAlertSeen(true);
       toast.error(
         <ToastMessage variant="error" title="Please install keplr.">
           Support for more wallets will be added soon.
@@ -53,7 +55,7 @@ export const ConnectWalletButton: React.FC<{
         </ToastMessage>,
       );
     }
-  }, [walletStatus]);
+  }, [walletStatus, isInstallKeplrAlertSeen]);
 
   // redirect to rebalancer page after wallet is connected and data is fetched
   useEffect(() => {

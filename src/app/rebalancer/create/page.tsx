@@ -1,13 +1,11 @@
 import { SidePanelV2 } from "@/app/rebalancer/components";
 import CreateRebalancer from "./CreateRebalancer";
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import {
   ABSOLUTE_URL,
   CREATE_REBALANCER_DESCRIPTION,
   X_HANDLE,
 } from "@/const/socials";
-import { FeatureFlags, isFeatureFlagEnabled } from "@/utils";
 import { fetchRebalancerWhitelist } from "@/server/actions";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
@@ -15,7 +13,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { prefetchMetadata } from "@/server/prefetch";
+import { prefetchMetadata, prefetchLivePrices } from "@/server/prefetch";
 
 export const metadata: Metadata = {
   title: "Start Rebalancing",
@@ -38,11 +36,16 @@ type CreateRebalancerProps = {};
 
 export default async function CreateRebalancerPage({}: CreateRebalancerProps) {
   const queryClient = new QueryClient();
-  await prefetchMetadata(queryClient);
-  await queryClient.prefetchQuery({
-    queryKey: [QUERY_KEYS.REBALANCER_WHITELIST],
-    queryFn: () => fetchRebalancerWhitelist(),
-  });
+  const prefetchRequests = [
+    prefetchMetadata(queryClient),
+    prefetchLivePrices(queryClient),
+    queryClient.prefetchQuery({
+      queryKey: [QUERY_KEYS.REBALANCER_WHITELIST],
+      queryFn: () => fetchRebalancerWhitelist(),
+    }),
+  ];
+
+  await Promise.all(prefetchRequests);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

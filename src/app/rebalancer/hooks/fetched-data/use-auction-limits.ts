@@ -5,6 +5,7 @@ import { fetchAuctionLimits } from "@/server/actions";
 
 export const useAuctionLimits = () => {
   return useQuery({
+    refetchInterval: 0,
     queryKey: [QUERY_KEYS.AUCTION_LIMITS],
     queryFn: async () => {
       return await fetchAuctionLimits();

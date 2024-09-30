@@ -59,7 +59,7 @@ export const displayNumber = (
     // pad with zeros to amount of precision
     return value.toFixed(precision);
   }
-  if (value >= 0.1) {
+  if (Math.abs(value) >= 0.1) {
     // If the value is greater than or equal to 0.1, format it with two decimal points
     return value.toFixed(precision);
   } else {

@@ -6,8 +6,8 @@ import { findClosestCoingeckoPrice, useDateRange } from "@/utils";
 
 import {
   useHistoricBalances,
+  useHistoricPrices,
   useHistoricTargets,
-  usePrefetchData,
 } from "@/app/rebalancer/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
@@ -21,7 +21,6 @@ import { ErrorHandler } from "@/const/error";
 import { USDC_DENOM } from "@/const/chain-data";
 import { priceSourceAtom } from "@/app/rebalancer/globals";
 import { useAtom } from "jotai";
-import { cache } from "react";
 
 export const useHistoricValues = ({
   accountAddress,
@@ -31,12 +30,6 @@ export const useHistoricValues = ({
   targets: Array<AccountTarget>;
 }) => {
   const { startDate, endDate } = useDateRange();
-  const {
-    isFetched: isCacheFetched,
-    isLoading: isCacheLoading,
-    isError: isCacheError,
-    error: cacheError,
-  } = usePrefetchData();
   const balanceQuery = useHistoricBalances({
     accountAddress,
     startDate,
@@ -50,6 +43,15 @@ export const useHistoricValues = ({
   const queryClient = useQueryClient();
   const [priceSource] = useAtom(priceSourceAtom);
 
+  const {
+    state: {
+      isLoading: isHistoricPricesLoading,
+      isError: isHistoricPricesError,
+      error: historicPricesError,
+      isFetched: isHistoricPricesFetched,
+    },
+  } = useHistoricPrices();
+
   const historicalValues = useQuery({
     queryKey: [
       QUERY_KEYS.COMBINED_HISTORICAL_VALUE_DATA,
@@ -57,7 +59,10 @@ export const useHistoricValues = ({
       accountAddress,
       priceSource,
     ],
-    enabled: isCacheFetched && balanceQuery.isFetched && targetQuery.isFetched,
+    enabled:
+      balanceQuery.isFetched &&
+      targetQuery.isFetched &&
+      isHistoricPricesFetched,
     queryFn: () => {
       const mergedData: FetchHistoricalValuesReturnValue["values"] = [];
       balanceQuery.data?.forEach((historicBalanceData) => {
@@ -111,17 +116,17 @@ export const useHistoricValues = ({
   });
   return {
     isLoading:
+      isHistoricPricesLoading ||
       historicalValues.isLoading ||
       balanceQuery.isLoading ||
-      targetQuery.isLoading ||
-      isCacheLoading,
+      targetQuery.isLoading,
     isError:
-      isCacheError ||
+      isHistoricPricesError ||
       balanceQuery.isError ||
       targetQuery.isError ||
       historicalValues.isError,
     error: [
-      cacheError,
+      historicPricesError,
       balanceQuery.error,
       targetQuery.error,
       historicalValues.error,

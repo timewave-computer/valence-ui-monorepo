@@ -5,7 +5,7 @@ import { parseAsStringEnum, useQueryState } from "nuqs";
 import { Graph, ValueTooltip } from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
-  useAssetCache,
+  useAssetMetadata,
   useGraphOverlay,
   useHistoricValues,
   useLivePortfolio,
@@ -119,7 +119,7 @@ export const HistoricalGraph: React.FC<{
   const isHasAccountInput = !!account && account !== "";
 
   const router = useRouter();
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
 
   const GraphMessages = () => {
     if (!isHasAccountInput) {

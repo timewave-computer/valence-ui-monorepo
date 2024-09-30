@@ -1,6 +1,6 @@
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
 import { useCallback } from "react";
-import { useAssetCache, usePriceCache } from "@/app/rebalancer/hooks";
+import { useAssetMetadata, useLivePrices } from "@/app/rebalancer/hooks";
 
 export const getBalance = (
   denom?: string,
@@ -39,8 +39,8 @@ export const useBaseTokenValue = ({
 }: {
   baseTokenDenom?: string;
 }) => {
-  const { getOriginAsset } = useAssetCache();
-  const { getPrice } = usePriceCache();
+  const { getOriginAsset } = useAssetMetadata();
+  const { getPrice } = useLivePrices();
   const baseAsset = getOriginAsset(baseTokenDenom ?? "");
   const basePrice = getPrice(baseTokenDenom ?? "");
 

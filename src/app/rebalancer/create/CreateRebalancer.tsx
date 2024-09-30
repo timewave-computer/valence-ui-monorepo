@@ -205,13 +205,6 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
         [QUERY_KEYS.HISTORIC_TARGETS, valenceAddress, startDate, endDate],
         [],
       );
-
-      console.log(
-        "created rebalancer account at",
-        valenceAddress,
-        "tx:",
-        result,
-      );
       toast.success(
         <ToastMessage
           transactionHash={result.transactionHash}

@@ -3,8 +3,8 @@ import { CreateRebalancerForm } from "@/types/rebalancer";
 import { useQuery } from "@tanstack/react-query";
 import { UseFormReturn } from "react-hook-form";
 import {
-  useAssetCache,
-  usePriceCache,
+  useAssetMetadata,
+  useLivePrices,
   useBaseTokenValue,
 } from "@/app/rebalancer/hooks";
 import { UTCDate } from "@date-fns/utc";
@@ -48,8 +48,8 @@ export const useSettingsProjection = (
   const pid = watch("pid");
   const baseTokenDenom = watch("baseTokenDenom");
 
-  const { getPrice } = usePriceCache();
-  const { getOriginAsset } = useAssetCache();
+  const { getPrice } = useLivePrices();
+  const { getOriginAsset } = useAssetMetadata();
 
   const { calculateValue } = useBaseTokenValue({
     baseTokenDenom,
@@ -213,7 +213,7 @@ const generateProjectionGraphData = async ({
 
       if (keepTrading) {
         convertedInitialData.forEach((denomData) => {
-          let { i, value } = do_pid({
+          let { i, value, ...rest } = do_pid({
             pid: convertedPids,
             input: denomData.currentBalance,
             target: denomData.targetBalance,

@@ -5,11 +5,7 @@ import {
   fetchAuctionStatuses,
 } from "@/server/actions";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import {
-  useAssetCache,
-  usePrefetchData,
-  usePriceCache,
-} from "@/app/rebalancer/hooks";
+import { useAssetMetadata, useLivePrices } from "@/app/rebalancer/hooks";
 import { microToBase } from "@/utils";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { chainConfig } from "@/const/config";
@@ -40,13 +36,12 @@ export const useLivePortfolio = ({
 }: {
   accountAddress: string;
 }): UseLivePortfolioReturnValue => {
-  const { isFetched: isCacheFetched } = usePrefetchData();
-
-  const { getOriginAsset } = useAssetCache();
-  const { getPrice } = usePriceCache();
+  const { getOriginAsset } = useAssetMetadata();
+  const { getPrice } = useLivePrices();
 
   const { data: auctionStatus, isFetched: isAuctionStatusFetched } = useQuery({
     queryKey: [QUERY_KEYS.AUCTION_STATUSES],
+    refetchInterval: 30 * 1000, // 30s
     queryFn: async () => {
       return fetchAuctionStatuses();
     },
@@ -54,8 +49,7 @@ export const useLivePortfolio = ({
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const isFetchEnabled =
-    isCacheFetched && isAuctionStatusFetched && !!accountAddress?.length;
+  const isFetchEnabled = isAuctionStatusFetched && !!accountAddress?.length;
 
   return useQueries({
     queries: [

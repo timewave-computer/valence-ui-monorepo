@@ -17,7 +17,7 @@ import { Fragment, useState } from "react";
 import {
   BalanceReturnValue,
   useAccountConfigQuery,
-  useAssetCache,
+  useAssetMetadata,
   useLivePortfolio,
   UseLivePortfolioReturnValue,
 } from "@/app/rebalancer/hooks";
@@ -35,7 +35,7 @@ type WithdrawInputForm = {
 };
 export const WithdrawDialog: React.FC<{}> = ({}) => {
   const queryClient = useQueryClient();
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
   const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
   const [accountAddress] = useAtom(accountAtom);
   const { data: config } = useAccountConfigQuery({ account: accountAddress });
@@ -155,7 +155,7 @@ const WithdrawForm: React.FC<{
   balances: UseLivePortfolioReturnValue["data"]["balances"];
   isFundsInAuction: boolean;
 }> = ({ balances, isFundsInAuction, isSubmitPending, handleSubmit }) => {
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
 
   const {
     register,

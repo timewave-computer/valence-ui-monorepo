@@ -6,7 +6,7 @@ import {
   EDIT_REBALANCER_DESCRIPTION,
   X_HANDLE,
 } from "@/const/socials";
-import { FeatureFlags, isFeatureFlagEnabled, microToBase } from "@/utils";
+import { microToBase } from "@/utils";
 import { EditRebalancer } from "./EditRebalancer";
 import {
   dehydrate,
@@ -16,13 +16,16 @@ import {
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
   fetchAccountBalances,
-  fetchRebalancerAccountConfiguration,
   fetchRebalancerWhitelist,
 } from "@/server/actions";
 import { BalanceReturnValue } from "../../hooks";
 import { OriginAsset } from "@/types/ibc";
 import { ErrorHandler } from "@/const/error";
-import { prefetchMetadata } from "@/server/prefetch";
+import {
+  prefetchAccountConfiguration,
+  prefetchMetadata,
+  prefetchLivePrices,
+} from "@/server/prefetch";
 
 export const metadata: Metadata = {
   title: "Edit Rebalancer",
@@ -56,55 +59,54 @@ export default async function CreateRebalancerPage({
 
   const queryClient = new QueryClient();
   await prefetchMetadata(queryClient);
-  await queryClient.prefetchQuery({
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    queryKey: [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, address],
-    queryFn: async () =>
-      fetchRebalancerAccountConfiguration({
-        address,
-      }),
-  });
+  prefetchLivePrices(queryClient);
 
-  await queryClient.prefetchQuery({
-    retry: (errorCount) => {
-      return errorCount < 2;
-    },
-    queryKey: [QUERY_KEYS.ACCOUNT_BALANCES, address],
-    queryFn: (): Promise<BalanceReturnValue> => {
-      return new Promise(async (resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error("Request timed out"));
-        }, 5000);
+  const prefetchRequests = [
+    prefetchMetadata(queryClient),
+    prefetchLivePrices(queryClient),
+    prefetchAccountConfiguration(queryClient, address),
+    queryClient.prefetchQuery({
+      queryKey: [QUERY_KEYS.REBALANCER_WHITELIST],
+      queryFn: () => fetchRebalancerWhitelist(),
+    }),
+    queryClient.prefetchQuery({
+      retry: (errorCount) => {
+        return errorCount < 2;
+      },
+      queryKey: [QUERY_KEYS.ACCOUNT_BALANCES, address],
+      queryFn: (): Promise<BalanceReturnValue> => {
+        return new Promise(async (resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error("Request timed out"));
+          }, 5000);
 
-        try {
-          const rawBalances = await fetchAccountBalances({
-            address: address,
-          });
-          clearTimeout(timeout);
-          // balances from stargate client returned in micro units
-          const processedBalances = rawBalances.map((balance) => {
-            const asset = queryClient.getQueryData<OriginAsset>([
-              QUERY_KEYS.ORIGIN_ASSET,
-              balance.denom,
-            ]);
-            return {
-              denom: balance.denom,
-              amount: microToBase(balance.amount ?? 0, asset?.decimals ?? 6),
-            };
-          });
-          resolve(processedBalances);
-        } catch (error) {
-          clearTimeout(timeout);
-          throw ErrorHandler.makeError("Request timed out", error);
-        }
-      });
-    },
-  });
+          try {
+            const rawBalances = await fetchAccountBalances({
+              address: address,
+            });
+            clearTimeout(timeout);
+            // balances from stargate client returned in micro units
+            const processedBalances = rawBalances.map((balance) => {
+              const asset = queryClient.getQueryData<OriginAsset>([
+                QUERY_KEYS.ORIGIN_ASSET,
+                balance.denom,
+              ]);
+              return {
+                denom: balance.denom,
+                amount: microToBase(balance.amount ?? 0, asset?.decimals ?? 6),
+              };
+            });
+            resolve(processedBalances);
+          } catch (error) {
+            clearTimeout(timeout);
+            throw ErrorHandler.makeError("Request timed out", error);
+          }
+        });
+      },
+    }),
+  ];
 
-  await queryClient.prefetchQuery({
-    queryKey: [QUERY_KEYS.REBALANCER_WHITELIST],
-    queryFn: () => fetchRebalancerWhitelist(),
-  });
+  await Promise.all(prefetchRequests);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -16,7 +16,7 @@ import {
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
 import { useWhitelistedDenoms } from "@/hooks";
-import { useAssetCache } from "@/app/rebalancer/hooks";
+import { useAssetMetadata } from "@/app/rebalancer/hooks";
 import { cn } from "@/utils";
 import { RebalancerFormTooltipCopy } from "../../copy";
 import { Asset } from "@/app/rebalancer/components";
@@ -29,7 +29,7 @@ export const AdvancedSettings: React.FC<{
 
   const strategy = watch("targetOverrideStrategy");
   const { data: whitelistedDenoms } = useWhitelistedDenoms();
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
 
   const baseDenomDropdownOptions: DropdownOption<string>[] = useMemo(() => {
     if (!whitelistedDenoms?.base_denom_whitelist) return [];

@@ -5,7 +5,7 @@ import {
 import { Fragment, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { cn, displayNumber } from "@/utils";
-import { useAssetCache, useBaseTokenValue } from "@/app/rebalancer/hooks";
+import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { Asset } from "@/app/rebalancer/components";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
@@ -36,7 +36,7 @@ export const SetTargets: React.FC<{
   const { isLoading: isValueLoading, calculateValue } = useBaseTokenValue({
     baseTokenDenom,
   });
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
   const { data: whitelist } = useWhitelistedDenoms();
 
   // this is needed to display everything correctly in dropdown

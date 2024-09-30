@@ -30,7 +30,10 @@ import {
   scaleFormatter,
   SymbolColors,
 } from "@/app/rebalancer/const";
-import { useAssetCache, useSettingsProjection } from "@/app/rebalancer/hooks";
+import {
+  useAssetMetadata,
+  useSettingsProjection,
+} from "@/app/rebalancer/hooks";
 import { ValueTooltip } from "@/app/rebalancer/components";
 
 type PidKey = keyof CreateRebalancerForm["pid"];
@@ -45,7 +48,7 @@ export const RebalanceSpeed: React.FC<{
 
   const pid = watch("pid");
   const targets = watch("targets");
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
 
   const {
     isEnabled: isProjectionEnabled,

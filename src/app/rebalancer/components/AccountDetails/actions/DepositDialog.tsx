@@ -13,7 +13,7 @@ import { useWallet, useWalletBalances } from "@/hooks";
 import { toast } from "sonner";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";
-import { BalanceReturnValue, useAssetCache } from "@/app/rebalancer/hooks";
+import { BalanceReturnValue, useAssetMetadata } from "@/app/rebalancer/hooks";
 import { baseToMicro, cn, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
 import { Coin, DeliverTxResponse } from "@cosmjs/stargate";
@@ -30,7 +30,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
   const queryClient = useQueryClient();
   const { address: walletAddress, getSigningStargateClient } = useWallet();
   const [accountAddress] = useAtom(accountAtom);
-  const getOriginAsset = useAssetCache().getOriginAsset;
+  const getOriginAsset = useAssetMetadata().getOriginAsset;
 
   const deposit = async (amounts: DepositInputForm["amounts"]) => {
     const stargateClient = await getSigningStargateClient();
@@ -137,7 +137,7 @@ const DepositForm: React.FC<{
   balances: FetchSupportedBalancesReturnValue;
   walletAddress: string;
 }> = ({ balances, isSubmitPending, handleSubmit, walletAddress }) => {
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
 
   const {
     register,

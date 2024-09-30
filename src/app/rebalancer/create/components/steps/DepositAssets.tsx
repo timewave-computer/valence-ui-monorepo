@@ -17,10 +17,9 @@ import {
   WithIconAndTooltip,
 } from "@/components";
 import {
-  useAssetCache,
+  useAssetMetadata,
   useBaseTokenValue,
   useMinimumRequiredValue,
-  usePrefetchData,
   useNoSupportedAssetsWarning,
 } from "@/app/rebalancer/hooks";
 import { chainConfig } from "@/const/config";
@@ -63,7 +62,7 @@ export const DepositAssets: React.FC<{
     },
     [setValue, getValues],
   );
-  const { isLoading: isCacheLoading } = usePrefetchData();
+
   const baseTokenDenom = watch("baseTokenDenom");
   const initialAmounts = watch("initialAssets");
 
@@ -71,7 +70,7 @@ export const DepositAssets: React.FC<{
     baseTokenDenom,
   });
 
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
   const isServiceFeeIncluded = form.watch("isServiceFeeIncluded");
 
   const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
@@ -108,7 +107,7 @@ export const DepositAssets: React.FC<{
     symbol: requiredValueSymbol,
   });
 
-  if (isLoadingBalances || isCacheLoading)
+  if (isLoadingBalances)
     return (
       <DepositAssetsLayout
         baseDenom={baseTokenDenom}
@@ -159,7 +158,7 @@ export const DepositAssets: React.FC<{
           {(!isHoldingMinimumFee || !isAccountHoldingMinumumValue) && (
             <CalloutBox
               variant="error"
-              title={`Account does not meet the minimum requirements.`}
+              title={`Wallet does not meet the minimum requirements.`}
             >
               {!isHoldingMinimumFee && (
                 <p>
@@ -170,9 +169,10 @@ export const DepositAssets: React.FC<{
               )}
               {!isAccountHoldingMinumumValue && (
                 <p>
-                  <span className="font-semibold">Insufficient funds:</span>{" "}
-                  deposit at a minimum value of {minimumValueDisplayString} into
-                  the wallet.
+                  This wallet holds less than {minimumValueDisplayString} in
+                  value. A minimum deposit value of {minimumValueDisplayString}{" "}
+                  is required to enable rebalancing. Please transfer additional
+                  funds to the wallet.
                 </p>
               )}
             </CalloutBox>

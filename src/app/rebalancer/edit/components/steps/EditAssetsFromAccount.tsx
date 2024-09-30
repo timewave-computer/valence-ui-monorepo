@@ -10,7 +10,6 @@ import {
   useBaseTokenValue,
   useLivePortfolio,
   useMinimumRequiredValue,
-  usePrefetchData,
   useNoSupportedAssetsWarning,
 } from "@/app/rebalancer/hooks";
 import {
@@ -22,8 +21,6 @@ export const EditAssetsForAccount: React.FC<{
   address: string;
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
 }> = ({ form, address }) => {
-  const { isLoading: isCacheLoading } = usePrefetchData();
-
   const {
     data: livePortfolio,
     isLoading: isLoadingBalances,
@@ -76,7 +73,7 @@ export const EditAssetsForAccount: React.FC<{
   const { isHoldingMinimumFee, isHoldingAtLeastOneAsset } =
     useNoSupportedAssetsWarning(address);
 
-  if (isLoadingBalances || isCacheLoading)
+  if (isLoadingBalances)
     return (
       <DepositAssetsLayout
         baseDenom={baseTokenDenom}

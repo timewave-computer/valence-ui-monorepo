@@ -18,11 +18,10 @@ import { UTCDate } from "@date-fns/utc";
 import { addDays, subDays } from "date-fns";
 import type { GraphData } from "@/app/rebalancer/components/Graph/graph";
 import {
-  useAssetCache,
+  useAssetMetadata,
   UseLivePortfolioReturnValue,
   UseHistoricalValuesReturnValue,
   UseAccountConfigQueryReturnValue,
-  usePrefetchData,
 } from "@/app/rebalancer/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
@@ -30,7 +29,6 @@ import { OriginAsset } from "@/types/ibc";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 import { useAtom } from "jotai";
 import { priceSourceAtom } from "@/app/rebalancer/globals";
-import { Coin } from "@cosmjs/amino";
 
 export const useHistoricalGraph = ({
   scale = Scale.Month,
@@ -45,9 +43,8 @@ export const useHistoricalGraph = ({
   livePortfolio: UseLivePortfolioReturnValue;
   historicalValues: UseHistoricalValuesReturnValue;
 }) => {
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
   const [priceSource] = useAtom(priceSourceAtom);
-  const { isFetched: isCacheFetched } = usePrefetchData();
   return useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: [
@@ -63,8 +60,7 @@ export const useHistoricalGraph = ({
       !config.isLoading &&
       !livePortfolio.isLoading &&
       !historicalValues.isLoading &&
-      !!rebalancerAddress &&
-      isCacheFetched,
+      !!rebalancerAddress,
     queryFn: () => {
       const _keysToGraph = config.data?.targets?.reduce(
         (acc: string[], target) => {

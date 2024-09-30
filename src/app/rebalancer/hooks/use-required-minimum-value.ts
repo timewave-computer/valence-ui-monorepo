@@ -1,7 +1,7 @@
 import { useWhitelistedDenoms } from "@/hooks";
-import { useAssetCache } from "./use-cached-data";
 import { displayValue, microToBase } from "@/utils";
 import { useMemo } from "react";
+import { useAssetMetadata } from "@/app/rebalancer/hooks";
 
 const DEFAULT_MIN_VALUE = {
   value: 10,
@@ -9,7 +9,7 @@ const DEFAULT_MIN_VALUE = {
 };
 
 export const useMinimumRequiredValue = (baseDenom: string) => {
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
   const { data: whitelistedDenoms } = useWhitelistedDenoms();
 
   const minimumRequiredValue: {

@@ -9,7 +9,7 @@ import {
 } from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
-  useAssetCache,
+  useAssetMetadata,
   useLivePortfolio,
   useMultipleValenceAccounts,
   useRebalanceStatusQuery,
@@ -37,7 +37,7 @@ export const AccountDetailsPanel: React.FC<{
 
   const targets = config?.targets ?? [];
 
-  const { getOriginAsset } = useAssetCache();
+  const { getOriginAsset } = useAssetMetadata();
   const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   const configData: Array<{ title: string; content: string | number }> =
@@ -203,7 +203,7 @@ const AccountDetailsHeader: React.FC<{
           <div className="flex flex-row items-center gap-2">
             {config?.isPaused && <Label text="PAUSED" />}
             {!config?.isPaused &&
-              selectedAddress.length > 0 &&
+              selectedAddress?.length > 0 &&
               !livePortfolio?.balances.every(
                 (lineItem) => lineItem.balance.total === 0,
               ) && (
@@ -213,7 +213,7 @@ const AccountDetailsHeader: React.FC<{
                   Icon={rebalanceStatus?.isRebalanceComplete ? BsCheck : BsInfo}
                   tooltipContent={
                     rebalanceStatus?.isRebalanceComplete ? (
-                      <DoneRebalancingTooltip address={selectedAddress} />
+                      <DoneRebalancingTooltip address={selectedAddress ?? ""} />
                     ) : (
                       <RebalanceInProgressTooltip address={selectedAddress} />
                     )
@@ -232,9 +232,9 @@ const AccountDetailsHeader: React.FC<{
       </div>
       {isOwnAccount && (
         <div className="flex flex-row flex-nowrap gap-2 ">
+          <WithdrawDialog />
           {isDepositEnabled && <DepositDialog />}
           <PauseOrUnpauseButton />
-          <WithdrawDialog />
           <Link href={`/rebalancer/edit/${selectedAddress}`}>
             <Button className="h-fit" variant="secondary">
               Edit

@@ -42,4 +42,5 @@ export const fetchMaybeCached = async (
 export const CACHE_KEYS = {
   COINGECKO_PRICE: "coingecko-price",
   COINGECKO_PRICE_HISTORY: "coingecko-price-history",
+  ORIGIN_ASSET: "origin-asset",
 };

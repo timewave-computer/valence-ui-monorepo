@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   SidePanelV2,
   AccountDetailsPanel,
@@ -9,50 +9,23 @@ import {
   useAccountConfigQuery,
   useHistoricValues,
 } from "@/app/rebalancer/hooks";
-import { accountAtom } from "@/app/rebalancer/globals";
-import { useAtom } from "jotai";
 
-export const RebalancerMainClient = () => {
-  const [account] = useAtom(accountAtom);
-
+export const RebalancerMainClient = ({ account }: { account?: string }) => {
   const accountConfigQuery = useAccountConfigQuery({
-    account: account,
+    account: account ?? "",
   });
   const targets = useMemo(
     () => accountConfigQuery.data?.targets ?? [],
     [accountConfigQuery.data?.targets],
   );
   const historicValuesQuery = useHistoricValues({
-    accountAddress: account,
+    accountAddress: account ?? "",
     targets,
   });
 
-  // used to track when hovering over scrollable side panel
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-
-  const [isDisabledElementHovered, setIsDisabledElementHovered] =
-    useState(false);
-  const [delayHandler, setDelayHandler] = useState<number | null>(null); // hack to keep tooltip open when moving mouse towards it
-  const debouncedMouseEnter = () => {
-    setIsDisabledElementHovered(true);
-    if (delayHandler !== null) clearTimeout(delayHandler);
-  };
-  const debouncedMouseLeave = () => {
-    setDelayHandler(
-      window.setTimeout(() => {
-        setIsDisabledElementHovered(false);
-      }, 100),
-    );
-  };
-
   return (
     <div className="flex grow flex-row overflow-hidden">
-      <SidePanelV2
-        rerouteOnConnect={true}
-        setCursorPosition={setCursorPosition}
-        debouncedMouseEnter={debouncedMouseEnter}
-        debouncedMouseLeave={debouncedMouseLeave}
-      />
+      <SidePanelV2 rerouteOnConnect={true} />
       <div className="flex min-w-[824px] grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
         <HistoricalGraph
           isLoading={
@@ -61,7 +34,7 @@ export const RebalancerMainClient = () => {
           isError={accountConfigQuery.isError || historicValuesQuery.isError}
         />
 
-        <AccountDetailsPanel selectedAddress={account} />
+        <AccountDetailsPanel selectedAddress={account ?? ""} />
       </div>
     </div>
   );
