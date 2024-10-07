@@ -25,7 +25,7 @@ export const RebalancerMainClient = ({ account }: { account?: string }) => {
 
   return (
     <div className="flex grow flex-row overflow-hidden">
-      <SidePanelV2 rerouteOnConnect={true} />
+      <SidePanelV2 />
       <div className="flex min-w-[824px] grow flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
         <HistoricalGraph
           isLoading={

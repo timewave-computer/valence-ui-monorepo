@@ -42,6 +42,11 @@ export const displayUtcTime = (date: Date) => {
   }
 };
 
+// handles formatting with commas. Need to check that all situations in V1 are covered before removing old function
+export const displayNumberV2 = (number: number, options = {}) => {
+  return new Intl.NumberFormat("en-US", options).format(number);
+};
+
 export const displayNumber = (
   _value: number,
   { precision }: { precision: number | null },

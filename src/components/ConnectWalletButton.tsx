@@ -3,7 +3,10 @@ import { Button, ToastMessage } from "@/components";
 import { useIsServer, useWallet } from "@/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useValenceAccount } from "@/app/rebalancer/hooks";
+import {
+  useFetchValenceAccount,
+  useValenceAccount,
+} from "@/app/rebalancer/hooks";
 import { WalletStatus } from "@cosmos-kit/core";
 import { toast } from "sonner";
 
@@ -31,6 +34,8 @@ export const ConnectWalletButton: React.FC<{
   const { data: valenceAccount, isLoading: isValenceAccountLoading } =
     useValenceAccount(address);
   const router = useRouter();
+
+  const { fetchValenceAccount } = useFetchValenceAccount();
 
   // for calling effect only when connect wallet is clicked
   const [connectWalletClicked, setConnectWalletClicked] = useState(false);
@@ -61,17 +66,14 @@ export const ConnectWalletButton: React.FC<{
   useEffect(() => {
     if (!rerouteOnConnect) return;
     if (!connectWalletClicked) return;
-    if (isValenceAccountLoading) return;
-    if (valenceAccount) {
-      router.push(`/rebalancer?account=${valenceAccount}`);
-    } else router.push(`/rebalancer/`);
-  }, [
-    rerouteOnConnect,
-    connectWalletClicked,
-    address,
-    valenceAccount,
-    isValenceAccountLoading,
-  ]);
+
+    (async () => {
+      const account = await fetchValenceAccount(address ?? "");
+      if (account) {
+        router.push(`/rebalancer?account=${account}`);
+      } else router.push(`/rebalancer/`);
+    })();
+  }, [fetchValenceAccount, rerouteOnConnect, connectWalletClicked, address]);
 
   if (isServer)
     return (

@@ -111,7 +111,7 @@ export default async function CreateRebalancerPage({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className=" flex w-full flex-row">
-        <SidePanelV2 />
+        <SidePanelV2 rerouteOnConnect={false} />
         <EditRebalancer address={address} />
       </div>
     </HydrationBoundary>

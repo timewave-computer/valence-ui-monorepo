@@ -6,3 +6,4 @@ export * from "./HistoricalGraph";
 export * from "./Asset";
 export * from "./NoFundsActionItems";
 export * from "./SupportedAssets";
+export * from "./CreateAccountCTA";

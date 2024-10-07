@@ -137,14 +137,15 @@ export const DepositAssets: React.FC<{
         baseDenom={baseTokenDenom}
         subContent={
           <>
-            !{isHoldingAtLeastOneAsset} &&
-            <CalloutBox
-              variant="warn"
-              title="This wallet does not hold any assets supported by the Rebalancer."
-              text={`Deposit at least one supported asset and ${chainConfig.serviceFee.amount} ${chainConfig.serviceFee.symbol} for the service fee.`}
-            >
-              <NoFundsActionItems />
-            </CalloutBox>
+            {!isHoldingAtLeastOneAsset && (
+              <CalloutBox
+                variant="warn"
+                title="This wallet does not hold any assets supported by the Rebalancer."
+                text={`Deposit at least one supported asset and ${chainConfig.serviceFee.amount} ${chainConfig.serviceFee.symbol} for the service fee.`}
+              >
+                <NoFundsActionItems />
+              </CalloutBox>
+            )}
           </>
         }
       ></DepositAssetsLayout>

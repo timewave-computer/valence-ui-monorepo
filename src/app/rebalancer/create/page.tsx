@@ -50,7 +50,7 @@ export default async function CreateRebalancerPage({}: CreateRebalancerProps) {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className=" flex w-full flex-row">
-        <SidePanelV2 />
+        <SidePanelV2 rerouteOnConnect={false} />
         <CreateRebalancer />
       </div>
     </HydrationBoundary>

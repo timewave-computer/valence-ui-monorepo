@@ -1,5 +1,5 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { fetchValenceAccounts } from "@/server/actions";
 
@@ -8,6 +8,22 @@ import { fetchValenceAccounts } from "@/server/actions";
  */
 export const useValenceAccountQuery = (walletAddress?: string) => {
   return useQuery(getValenceAccountQueryArgs(walletAddress));
+};
+
+export const useFetchValenceAccount = () => {
+  const queryClient = useQueryClient();
+  const fetchValenceAccount = async (walletAddress: string) => {
+    const accounts = await queryClient.fetchQuery(
+      getValenceAccountQueryArgs(walletAddress),
+    );
+    if (accounts?.length) {
+      return accounts[0];
+    } else return null;
+  };
+
+  return {
+    fetchValenceAccount,
+  };
 };
 
 export const useValenceAccount = (walletAddress?: string) => {

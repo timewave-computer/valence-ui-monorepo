@@ -2,7 +2,11 @@
 import { Dropdown } from "@/components";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
-import { Graph, ValueTooltip } from "@/app/rebalancer/components";
+import {
+  Graph,
+  ValueTooltip,
+  CreateAccountCTA,
+} from "@/app/rebalancer/components";
 import {
   useAccountConfigQuery,
   useAssetMetadata,
@@ -35,7 +39,6 @@ import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { cn } from "@/utils";
 import { useAtom } from "jotai";
 import { useWallet } from "@/hooks";
-import { useRouter } from "next/navigation";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 
 export const HistoricalGraph: React.FC<{
@@ -118,7 +121,6 @@ export const HistoricalGraph: React.FC<{
 
   const isHasAccountInput = !!account && account !== "";
 
-  const router = useRouter();
   const { getOriginAsset } = useAssetMetadata();
 
   const GraphMessages = () => {
@@ -132,26 +134,12 @@ export const HistoricalGraph: React.FC<{
           !valenceAccountQuery?.data &&
           !isWalletConnecting
         ) {
-          return (
-            <div className="mt-7 flex flex-col items-center justify-center  gap-2">
-              <StatusBar
-                asButton={true}
-                className="w-fit border border-valence-black transition-all hover:bg-valence-white hover:text-valence-black"
-                onClick={() => {
-                  router.push("/rebalancer/create");
-                }}
-                variant="primary"
-                text="Start rebalancing funds"
-              />
-              <p className="text-sm">
-                This wallet does not yet have a rebalancer account.
-              </p>
-            </div>
-          );
+          return <CreateAccountCTA />;
         }
         return <StatusBar variant="primary" text="Please enter an account" />;
       }
     } else if (
+      isWalletConnecting ||
       valenceAccountQuery.isLoading ||
       isGraphLoading ||
       isGraphPending ||

@@ -29,12 +29,12 @@ export const SidePanelV2: React.FC<{
   debouncedMouseEnter,
   debouncedMouseLeave,
   setCursorPosition,
-  rerouteOnConnect,
+  rerouteOnConnect = true,
 }) => {
-  const [accountUrlParam, setAccountUrlParam] = useQueryState("account", {
+  const [accountUrlParam] = useQueryState("account", {
     defaultValue: DEFAULT_ACCOUNT,
   });
-  const [account, setAccount] = useAtom(accountAtom);
+  const [_, setAccount] = useAtom(accountAtom);
   useMemo(() => {
     setAccount(accountUrlParam);
   }, [setAccount, accountUrlParam]);
