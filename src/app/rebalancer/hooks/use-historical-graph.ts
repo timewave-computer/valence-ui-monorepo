@@ -59,6 +59,8 @@ export const useHistoricalGraph = ({
     enabled:
       !config.isLoading &&
       !livePortfolio.isLoading &&
+      !!livePortfolio.data &&
+      !!historicalValues.data &&
       !historicalValues.isLoading &&
       !!rebalancerAddress,
     queryFn: () => {

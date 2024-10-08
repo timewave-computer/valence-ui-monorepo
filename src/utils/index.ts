@@ -7,3 +7,4 @@ export * from "./feature-flags";
 export * from "./encoding";
 export * from "./closest-price";
 export * from "./dates";
+export * from "./sleep";

@@ -23,23 +23,23 @@ export default async function RebalancerMainServerComponent({
   };
 }) {
   const queryClient = getQueryClient();
-  const requests = [
-    prefetchMetadata(queryClient),
-    prefetchLivePrices(queryClient),
-    prefetchAuctionLimits(queryClient),
-    prefetchAuctionStatuses(queryClient),
-    prefetchHistoricalPrices(queryClient),
-  ];
 
   if (account && account.length > 0) {
+    const requests = [
+      prefetchMetadata(queryClient),
+      prefetchLivePrices(queryClient),
+      prefetchAuctionLimits(queryClient),
+      prefetchAuctionStatuses(queryClient),
+      prefetchHistoricalPrices(queryClient),
+    ];
     const accountSpecificRequests = [
       prefetchAccountConfiguration(queryClient, account),
       prefetchHistoricalTargets(queryClient, account),
       prefetchHistoricalBalances(queryClient, account),
     ];
     requests.concat(accountSpecificRequests);
+    await Promise.all(requests);
   }
-  await Promise.all(requests);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

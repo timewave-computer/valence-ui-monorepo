@@ -62,8 +62,11 @@ export const ConnectWalletButton: React.FC<{
     }
   }, [walletStatus, isInstallKeplrAlertSeen]);
 
+  const [isExecutedOnce, setIsExecutedOnce] = useState(false);
+
   // redirect to rebalancer page after wallet is connected and data is fetched
   useEffect(() => {
+    if (isExecutedOnce) return;
     if (!rerouteOnConnect) return;
     if (!connectWalletClicked) return;
 
@@ -72,8 +75,17 @@ export const ConnectWalletButton: React.FC<{
       if (account) {
         router.push(`/rebalancer?account=${account}`);
       } else router.push(`/rebalancer/`);
+      setIsExecutedOnce(true);
     })();
-  }, [fetchValenceAccount, rerouteOnConnect, connectWalletClicked, address]);
+  }, [
+    fetchValenceAccount,
+    rerouteOnConnect,
+    connectWalletClicked,
+    address,
+    router,
+    isExecutedOnce,
+    setIsExecutedOnce,
+  ]);
 
   if (isServer)
     return (

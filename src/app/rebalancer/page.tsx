@@ -4,7 +4,6 @@ import {
   REBALANCER_DESCRIPTION,
   X_HANDLE,
 } from "@/const/socials";
-
 import { Suspense } from "react";
 import { AccountDetailsPanel, SidePanelV2 } from "./components";
 import { HistoricalGraph } from "./components/HistoricalGraph";
@@ -27,13 +26,13 @@ export const metadata: Metadata = {
   },
 };
 
-function RebalancerMainSuspenseFallback({ address }: { address?: string }) {
+function RebalancerMainSuspenseFallback() {
   return (
     <div className=" flex w-full flex-row">
       <SidePanelV2 />
       <div className="flex min-w-[824px] grow  flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
-        <HistoricalGraph isLoading={true} isError={false} />
-        <AccountDetailsPanel selectedAddress={address ?? ""} />
+        <HistoricalGraph isLoading={false} isError={false} />
+        <AccountDetailsPanel />
       </div>
     </div>
   );
@@ -48,10 +47,7 @@ export default async function RebalancerPage({
 }) {
   return (
     // doing this instead of loading.tsx to provide search param as a key, to trigger loading state on account change
-    <Suspense
-      key={account}
-      fallback={<RebalancerMainSuspenseFallback address={account} />}
-    >
+    <Suspense key={account} fallback={<RebalancerMainSuspenseFallback />}>
       <RebalancerMainServerComponent searchParams={{ account }} />
     </Suspense>
   );

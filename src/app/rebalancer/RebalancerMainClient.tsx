@@ -34,7 +34,7 @@ export const RebalancerMainClient = ({ account }: { account?: string }) => {
           isError={accountConfigQuery.isError || historicValuesQuery.isError}
         />
 
-        <AccountDetailsPanel selectedAddress={account ?? ""} />
+        <AccountDetailsPanel />
       </div>
     </div>
   );

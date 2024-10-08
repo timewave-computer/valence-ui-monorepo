@@ -31,5 +31,5 @@ export const useTestSignerConnection = () => {
 
   useEffect(() => {
     if (isWalletConnected) testConnection();
-  }, [isWalletConnected, isConnectionTestRun]);
+  }, [isWalletConnected, isConnectionTestRun, testConnection]);
 };

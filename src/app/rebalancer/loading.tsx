@@ -10,7 +10,7 @@ export default function RebalancerMainSuspenseFallback() {
       <SidePanelV2 />
       <div className="flex min-w-[824px] grow  flex-col overflow-clip overflow-y-auto bg-valence-lightgray text-sm">
         <HistoricalGraph isLoading={true} isError={false} />
-        <AccountDetailsPanel selectedAddress="" />
+        <AccountDetailsPanel />
       </div>
     </div>
   );

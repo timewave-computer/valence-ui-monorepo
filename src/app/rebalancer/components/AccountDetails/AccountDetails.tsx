@@ -27,10 +27,11 @@ import {
 import { Button, LoadingSkeleton } from "@/components";
 import Link from "next/link";
 import { BsCheck, BsInfo } from "react-icons/bs";
+import { useSearchParams } from "next/navigation";
 
-export const AccountDetailsPanel: React.FC<{
-  selectedAddress: string;
-}> = ({ selectedAddress }) => {
+export const AccountDetailsPanel: React.FC<{}> = ({}) => {
+  const searchParams = useSearchParams();
+  const selectedAddress = searchParams.get("account") ?? "";
   const { data: config } = useAccountConfigQuery({
     account: selectedAddress,
   });

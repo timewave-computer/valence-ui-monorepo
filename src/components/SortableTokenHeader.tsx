@@ -80,7 +80,7 @@ export const SortableTableHeader = <T extends unknown>({
         side="top"
         tooltipContent={hoverTooltip}
       >
-        <button className={cn("text-sm font-bold", textClassName)}>
+        <button className={cn("text-nowrap text-sm font-bold", textClassName)}>
           {label}
         </button>
       </WithIconAndTooltip>
