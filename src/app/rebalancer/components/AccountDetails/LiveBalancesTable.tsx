@@ -13,7 +13,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { cn, displayNumber } from "@/utils";
+import { cn, compareNumbers, compareStrings, displayNumber } from "@/utils";
 import {
   useAccountConfigQuery,
   useLivePortfolio,
@@ -23,7 +23,7 @@ import { accountAtom } from "@/app/rebalancer/globals";
 import { LivePortfolioTooltipCopy } from "@/app/rebalancer/const";
 import { Asset } from "@/app/rebalancer/components";
 
-export type TableData = {
+export type LiveBalancesTableData = {
   symbol: string;
   name: string;
   amount: number;
@@ -35,9 +35,13 @@ export type TableData = {
 };
 
 export const LiveBalancesTable: React.FC<{}> = ({}) => {
-  const [sorterKey, setSorter] = useState<string>(SORTER_KEYS.VALUE);
+  const [sorterKey, setSorter] = useState<string>(
+    LIVE_BALANCES_SORTER_KEYS.VALUE,
+  );
   const [sortAscending, setSortAscending] = useState(true);
-  const sorter = SORTERS.find((s) => s.key === sorterKey) ?? SORTERS[0];
+  const sorter =
+    LIVE_BALANCES_SORTERS.find((s) => s.key === sorterKey) ??
+    LIVE_BALANCES_SORTERS[0];
   const [selectedAddress] = useAtom(accountAtom);
 
   const { data: config, isLoading: isConfigLoading } = useAccountConfigQuery({
@@ -48,7 +52,7 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
       accountAddress: selectedAddress,
     });
 
-  const unsortedTableData: TableData[] = useMemo(() => {
+  const unsortedTableData: LiveBalancesTableData[] = useMemo(() => {
     if (!livePortfolio?.balances || !config?.targets) return [];
     return livePortfolio?.balances
       .reduce((acc, lineItem) => {
@@ -66,7 +70,7 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
           });
         }
         return acc;
-      }, [] as TableData[])
+      }, [] as LiveBalancesTableData[])
       .sort((a, b) => sorter.sort(a, b, sortAscending));
   }, [livePortfolio?.balances, sorter, sortAscending, config?.targets]);
 
@@ -187,7 +191,7 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
 
 const LiveBalancesTableLayout: React.FC<{
   children: ReactNode;
-  sorter: Sorter<TableData>;
+  sorter: Sorter<LiveBalancesTableData>;
   setSorter: Dispatch<SetStateAction<string>>;
   sortAscending: boolean;
   setSortAscending: Dispatch<SetStateAction<boolean>>;
@@ -197,7 +201,7 @@ const LiveBalancesTableLayout: React.FC<{
       <div className="grid grid-cols-[0.5fr_1fr_1fr_1.5fr_1.5fr_1fr_1.5fr]">
         <SortableTableHeader
           label="Ticker"
-          sorterKey={SORTER_KEYS.TICKER}
+          sorterKey={LIVE_BALANCES_SORTER_KEYS.TICKER}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -208,7 +212,7 @@ const LiveBalancesTableLayout: React.FC<{
 
         <SortableTableHeader
           label="Distribution"
-          sorterKey={SORTER_KEYS.DISTRIBUTION}
+          sorterKey={LIVE_BALANCES_SORTER_KEYS.DISTRIBUTION}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -218,7 +222,7 @@ const LiveBalancesTableLayout: React.FC<{
         />
         <SortableTableHeader
           label="Target"
-          sorterKey={SORTER_KEYS.TARGET}
+          sorterKey={LIVE_BALANCES_SORTER_KEYS.TARGET}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -228,7 +232,7 @@ const LiveBalancesTableLayout: React.FC<{
         />
         <SortableTableHeader
           label="Amount Withdrawable"
-          sorterKey={SORTER_KEYS.WITHDRAWABLE}
+          sorterKey={LIVE_BALANCES_SORTER_KEYS.WITHDRAWABLE}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -241,7 +245,7 @@ const LiveBalancesTableLayout: React.FC<{
         />
         <SortableTableHeader
           label="Total Holdings"
-          sorterKey={SORTER_KEYS.HOLDINGS}
+          sorterKey={LIVE_BALANCES_SORTER_KEYS.HOLDINGS}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -251,7 +255,7 @@ const LiveBalancesTableLayout: React.FC<{
         />
         <SortableTableHeader
           label="Price"
-          sorterKey={SORTER_KEYS.PRICE}
+          sorterKey={LIVE_BALANCES_SORTER_KEYS.PRICE}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -262,7 +266,7 @@ const LiveBalancesTableLayout: React.FC<{
 
         <SortableTableHeader
           label="USD Value"
-          sorterKey={SORTER_KEYS.VALUE}
+          sorterKey={LIVE_BALANCES_SORTER_KEYS.VALUE}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
@@ -276,18 +280,11 @@ const LiveBalancesTableLayout: React.FC<{
   );
 };
 
-function compareStrings<T extends string>(a: T, b: T, ascending: boolean) {
-  return ascending ? a.localeCompare(b) : b.localeCompare(a);
-}
-function compareNumbers<T extends number>(a: T, b: T, ascending: boolean) {
-  return ascending ? a - b : b - a;
-}
-
-function calcValue(holding: TableData) {
+function calcValue(holding: LiveBalancesTableData) {
   return holding.amount * holding.price;
 }
 
-enum SORTER_KEYS {
+enum LIVE_BALANCES_SORTER_KEYS {
   TICKER = "ticker",
   HOLDINGS = "holdings",
   PRICE = "price",
@@ -297,39 +294,39 @@ enum SORTER_KEYS {
   TARGET = "target",
 }
 
-export const SORTERS: Sorter<TableData>[] = [
+export const LIVE_BALANCES_SORTERS: Sorter<LiveBalancesTableData>[] = [
   {
-    key: SORTER_KEYS.TICKER,
+    key: LIVE_BALANCES_SORTER_KEYS.TICKER,
     sort: (a, b, ascending) => compareStrings(a.symbol, b.symbol, ascending),
   },
   {
-    key: SORTER_KEYS.WITHDRAWABLE,
+    key: LIVE_BALANCES_SORTER_KEYS.WITHDRAWABLE,
     sort: (a, b, ascending) =>
       compareNumbers(a.amountWithdrawable, b.amountWithdrawable, ascending),
   },
   {
-    key: SORTER_KEYS.HOLDINGS,
+    key: LIVE_BALANCES_SORTER_KEYS.HOLDINGS,
     sort: (a, b, ascending) => compareNumbers(a.amount, b.amount, ascending),
   },
   {
-    key: SORTER_KEYS.PRICE,
+    key: LIVE_BALANCES_SORTER_KEYS.PRICE,
 
     sort: (a, b, ascending) => compareNumbers(a.price, b.price, ascending),
   },
   {
-    key: SORTER_KEYS.VALUE,
+    key: LIVE_BALANCES_SORTER_KEYS.VALUE,
 
     sort: (a, b, ascending) =>
       compareNumbers(calcValue(a), calcValue(b), ascending),
   },
   {
-    key: SORTER_KEYS.DISTRIBUTION,
+    key: LIVE_BALANCES_SORTER_KEYS.DISTRIBUTION,
 
     sort: (a, b, ascending) =>
       compareNumbers(a.distribution, b.distribution, ascending),
   },
   {
-    key: SORTER_KEYS.TARGET,
+    key: LIVE_BALANCES_SORTER_KEYS.TARGET,
     sort: (a, b, ascending) => compareNumbers(a.target, b.target, ascending),
   },
 ];

@@ -1,13 +1,12 @@
 "use client";
-import { cn, displayAddress } from "@/utils";
-import { usePathname, useRouter } from "next/navigation";
+import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
 import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
-import { useValenceAccount } from "@/app/rebalancer/hooks";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -48,10 +47,17 @@ export const Nav = () => {
   // TODO: hydrate this on server so we dont have to call it unless user decides to click 'create'
   useWalletBalances(address);
 
+  const isAuctionsEnabled = useFeatureFlag(
+    FeatureFlags.AUCTIONS_LIVE_AGGREGATE,
+  );
+
   const links = (
     <>
       <NavLink href="/covenants" label="Covenants" path={path} />
       <NavLink href="/rebalancer" label="Rebalancer" path={path} />
+      {isAuctionsEnabled && (
+        <NavLink href="/auctions" label="Auctions" path={path} />
+      )}
       <NavLink href="/blog" label="Blog" path={path} />
     </>
   );

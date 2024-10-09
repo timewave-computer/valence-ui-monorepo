@@ -1,7 +1,7 @@
 import { cn } from "@/utils";
 import React, { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
-import { WithIconAndTooltip } from "./WithIconAndTooltip";
+import { WithIconAndTooltip } from "@/components";
 
 export type Sorter<T> = {
   key: string;

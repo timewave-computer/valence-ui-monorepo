@@ -8,7 +8,6 @@ import { ToastMessage } from "@/components";
 export const useTestSignerConnection = () => {
   const {
     address: _walletAddress,
-
     getSigningStargateClient,
     isWalletConnected,
   } = useWallet();
@@ -31,5 +30,7 @@ export const useTestSignerConnection = () => {
 
   useEffect(() => {
     if (isWalletConnected) testConnection();
-  }, [isWalletConnected, isConnectionTestRun, testConnection]);
+    // adding testConnection makes component rerender and error shows consistent
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isWalletConnected, isConnectionTestRun]);
 };

@@ -18,12 +18,7 @@ import React, { useMemo, useState } from "react";
 import { useWallet } from "@/hooks";
 import { Label, WithIconAndTooltip } from "@/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
-import {
-  displayMinBalance,
-  displayPid,
-  FeatureFlags,
-  useFeatureFlag,
-} from "@/utils";
+import { displayMinBalance, displayPid } from "@/utils";
 import { Button, LoadingSkeleton } from "@/components";
 import Link from "next/link";
 import { BsCheck, BsInfo } from "react-icons/bs";
@@ -168,8 +163,6 @@ const AccountDetailsHeader: React.FC<{
   const isOwnAccount =
     isWalletConnected && allValenceAccounts?.includes(selectedAddress);
 
-  const isDepositEnabled = useFeatureFlag(FeatureFlags.REBALANCER_DEPOSIT);
-
   const { data: config } = useAccountConfigQuery({
     account: selectedAddress,
   });
@@ -234,7 +227,7 @@ const AccountDetailsHeader: React.FC<{
       {isOwnAccount && (
         <div className="flex flex-row flex-nowrap gap-2 ">
           <WithdrawDialog />
-          {isDepositEnabled && <DepositDialog />}
+          <DepositDialog />
           <PauseOrUnpauseButton />
           <Link href={`/rebalancer/edit/${selectedAddress}`}>
             <Button className="h-fit" variant="secondary">

@@ -46,6 +46,9 @@ const config: Config = {
         serif: ["Times", "Times New Roman", ...defaultTheme.fontFamily.serif],
         mono: ["SF Mono", "SFMono-Regular", ...defaultTheme.fontFamily.mono],
       },
+      fontSize: {
+        xxs: ["0.625rem", "0.875rem"], // 10px text, 14px line height
+      },
     },
   },
   plugins: [],

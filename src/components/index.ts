@@ -3,7 +3,7 @@ export * from "./Checkbox";
 export * from "./Header";
 export * from "./Nav";
 export * from "./NumberInput";
-export * from "./SortableTokenHeader";
+export * from "./table";
 export * from "./TextInput";
 export * from "./Tooltip";
 export * from "./DropdowTextField";

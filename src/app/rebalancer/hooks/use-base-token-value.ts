@@ -57,7 +57,7 @@ export const useBaseTokenValue = ({
         baseTokenPrice: basePrice,
       });
     },
-    [baseAsset, getPrice, getOriginAsset, basePrice],
+    [baseAsset, getPrice, basePrice],
   );
 
   return {
