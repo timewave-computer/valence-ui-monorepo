@@ -4,7 +4,8 @@ export const QUERY_KEYS = {
   ACCOUNT_BALANCES: "account-balances",
   AUCTION_BALANCES: "auction-balances",
   AUCTION_LIMITS: "auction-limits",
-  AUCTION_STATUSES: "auction-statuses",
+  AUCTION_STATUSES: "auction-statuses", // DEPRECATED
+  LIVE_AUCTIONS: "live-auctions",
   HISTORIC_VALUES: "historic-values",
   WALLET_BALANCES: "wallet-balances",
   COINGECKO_PRICE: "coingecko-price",

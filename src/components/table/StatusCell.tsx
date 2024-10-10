@@ -2,7 +2,7 @@ import { cn } from "@/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
 const statusCellVariants = cva(
-  "text-xxs font-semibold h-fit w-fit min-w-16 px-1 py-0.5 text-center",
+  "font-semibold h-fit w-fit min-w-16 px-1 py-0.5 text-center",
   {
     variants: {
       variant: {
@@ -34,12 +34,12 @@ export const StatusCell = ({
   return (
     <div
       className={cn(
-        "flex justify-center px-1 py-2 font-mono",
+        "flex justify-center px-1 py-2 font-mono text-xxs",
         "border-x border-valence-lightgray",
         className,
       )}
     >
-      <div className={cn("", statusCellVariants({ variant }))}>{children}</div>
+      <div className={cn(statusCellVariants({ variant }))}>{children}</div>
     </div>
   );
 };

@@ -9,6 +9,7 @@ import {
   getPrices,
   fetchAuctionStatuses,
   fetchAuctionLimits,
+  fetchLiveAuctions,
 } from "@/server/actions";
 import { chainConfig } from "@/const/config";
 import { withTimeout } from "@/app/rebalancer/hooks";
@@ -72,6 +73,14 @@ export const prefetchAuctionLimits = async (queryClient: QueryClient) => {
   return queryClient.prefetchQuery({
     queryFn: async () => fetchAuctionLimits(),
     queryKey: [QUERY_KEYS.AUCTION_LIMITS],
+    retry: (errorCount) => errorCount < 1,
+  });
+};
+
+export const prefetchLiveAuctions = async (queryClient: QueryClient) => {
+  return queryClient.prefetchQuery({
+    queryFn: async () => fetchLiveAuctions(),
+    queryKey: [QUERY_KEYS.LIVE_AUCTIONS],
     retry: (errorCount) => errorCount < 1,
   });
 };

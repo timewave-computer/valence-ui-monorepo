@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
-    "gen:cosmos-ts": "rm -rf ./src/codegen/ts-codegen && ts-node ./scripts/ts-codegen.ts",
-    "gen:cosmos-proto": "rm -rf ./src/codegen/telescope && node ./telescope.js"
+    "gen:cosmos-ts": "rm -rf ./src/codegen/ts-codegen && ts-node ./scripts/ts-codegen.ts"
   },
   "dependencies": {
     "@chain-registry/client": "^1.33.0",

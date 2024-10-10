@@ -1,18 +1,139 @@
 "use client";
+import { useAssetMetadata } from "@/app/rebalancer/hooks";
 import {
   SortableTableHeader,
   Sorter,
   TextCell,
   LinkCell,
   StatusCell,
-  StatusCellVariant,
   StatusCellProps,
 } from "@/components";
-import { displayAddress } from "@/utils";
+import { CelatoneUrl } from "@/const/celatone";
+import { useLiveAuctions } from "@/hooks/use-live-auctions";
+import { LiveAuctionStatus } from "@/server/actions";
+import { displayAddress, displayNumberV2, microToBase } from "@/utils";
 import { compareStrings } from "@/utils/table-sorters";
 import { Fragment, useState } from "react";
 
-const headers: Array<{
+export function LiveAuctionsTable({}: {}) {
+  const { data: auctionsData } = useLiveAuctions();
+  const [sorterKey, setSorter] = useState<string>(
+    LIVE_AUCTION_SORTER_KEYS.PAIR,
+  );
+  const [sortAscending, setSortAscending] = useState(true);
+  const sorter =
+    LIVE_AUCTION_SORTERS.find((s) => s.key === sorterKey) ??
+    LIVE_AUCTION_SORTERS[0];
+
+  const { getOriginAsset } = useAssetMetadata();
+
+  return (
+    <div className="w-full max-w-[1600px] p-4">
+      <div className="  ">
+        <div className="h-6 border border-valence-mediumgray bg-valence-mediumgray" />
+        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
+          {liveAuctionsTableHeaders.map((header) => (
+            <SortableTableHeader
+              textClassName="font-semibold"
+              buttonClassName="border-x border-y py-1 px-1 flex justify-center text-sm border border-valence-lightgray"
+              key={`live-auction-header-cell-${header.sorterKey}`}
+              label={header.label}
+              sorterKey={header.sorterKey}
+              currentSorter={sorter}
+              ascending={sortAscending}
+              setSorter={setSorter}
+              setSortAscending={setSortAscending}
+            />
+          ))}
+          {auctionsData?.auctions?.map((row) => {
+            const [sellDenom, buyDenom] = row.pair;
+
+            const sellAsset = getOriginAsset(sellDenom);
+            const buyAsset = getOriginAsset(buyDenom);
+
+            const pairString = `${sellAsset?.symbol}/${buyAsset?.symbol}`;
+
+            const initialAmount = microToBase(
+              row.auction.total_amount,
+              sellAsset?.decimals ?? 6,
+            );
+
+            const amountRemaining = microToBase(
+              row.auction.available_amount,
+              sellAsset?.decimals ?? 6,
+            );
+
+            const isClosed = row.auction.status === AuctionStatus.Closed;
+            const price = auctionsData.prices.find(
+              (a) => a?.address === row.address,
+            )?.price;
+
+            const displayPrice = price
+              ? displayNumberV2(price, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+              : "-";
+
+            return (
+              <Fragment key={"row-" + row.pair}>
+                <TextCell>{pairString}</TextCell>
+                <TextCell>{displayPrice}</TextCell>
+                <TextCell>
+                  {isClosed
+                    ? "-"
+                    : displayNumberV2(parseFloat(row.auction.start_price), {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                </TextCell>
+                <TextCell>
+                  {isClosed
+                    ? "-"
+                    : displayNumberV2(parseFloat(row.auction.end_price), {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                </TextCell>
+                <StatusCell
+                  variant={auctionStatusCellVariant[row.auction.status]}
+                >
+                  {row.auction.status.toUpperCase()}
+                </StatusCell>
+                <TextCell>
+                  {isClosed
+                    ? "-"
+                    : displayNumberV2(amountRemaining, {
+                        minimumFractionDigits: 2,
+                      })}
+                </TextCell>
+                <TextCell>
+                  {isClosed
+                    ? "-"
+                    : displayNumberV2(initialAmount, {
+                        minimumFractionDigits: 2,
+                      })}
+                </TextCell>
+                <LinkCell href={CelatoneUrl.block(row.auction.start_block)}>
+                  {isClosed ? "-" : row.auction.start_block.toString()}
+                </LinkCell>
+                <LinkCell href={CelatoneUrl.block(row.auction.end_block)}>
+                  {isClosed ? "-" : row.auction.end_block.toString()}
+                </LinkCell>
+                <TextCell>{isClosed ? "-" : "TODO # bids"}</TextCell>
+                <LinkCell href={CelatoneUrl.contract(row.address)}>
+                  {displayAddress(row.address)}
+                </LinkCell>
+              </Fragment>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const liveAuctionsTableHeaders: Array<{
   label: string;
   sorterKey: string;
   cell?: React.FC<any>;
@@ -27,7 +148,7 @@ const headers: Array<{
   },
   {
     label: "Start price",
-    sorterKey: "endPrice",
+    sorterKey: "startPrice",
   },
   {
     label: "End price",
@@ -64,108 +185,6 @@ const headers: Array<{
   },
 ];
 
-const data = [
-  {
-    pair: "USDC/NTRN",
-    currentPrice: "0.0001",
-    startPrice: "0.000000000001",
-    initialAmount: "0.0001",
-    amountRemaining: "0.0001",
-    status: "Active",
-    endPrice: "0.0001",
-    startBlock: "15188836",
-    endBlock: "15188836",
-    address:
-      "neutron13exc5wdc7y5qpqazc34djnu934lqvfw2dru30j52ahhjep6jzx8ssjxcyz",
-    initlaAmount: "0.0001",
-    bids: "0",
-  },
-  {
-    pair: "NTRN/USDC",
-    currentPrice: "0.0002",
-    startPrice: "0.0001",
-    amountRemaining: "0.0001",
-    initlaAmount: "0.000000000000001",
-    status: "Finished",
-    startBlock: "15188836",
-    endBlock: "15188836",
-    bids: "0",
-    address:
-      "neutron13exc5wdc7y5qpqazc34djnu934lqvfw2dru30j52ahhjep6jzx8ssjxcyz",
-    endPrice: "0.0001",
-  },
-  {
-    pair: "NTRN/USDC",
-    currentPrice: "0.0002",
-    startPrice: "0.0001",
-    amountRemaining: "0.0001",
-    initlaAmount: "0.000000000000001",
-    status: "Closed",
-    startBlock: "15188836",
-    endBlock: "15188836",
-    bids: "0",
-    address:
-      "neutron13exc5wdc7y5qpqazc34djnu934lqvfw2dru30j52ahhjep6jzx8ssjxcyz",
-    endPrice: "0.0001",
-  },
-];
-
-export function LiveAuctionsTable() {
-  const [sorterKey, setSorter] = useState<string>(
-    LIVE_AUCTION_SORTER_KEYS.PAIR,
-  );
-  const [sortAscending, setSortAscending] = useState(true);
-  const sorter =
-    LIVE_AUCTION_SORTERS.find((s) => s.key === sorterKey) ??
-    LIVE_AUCTION_SORTERS[0];
-
-  return (
-    <div className="w-screen p-4 ">
-      <div className=" w-full overflow-x-auto  ">
-        <div className="h-6 w-full border border-valence-mediumgray bg-valence-mediumgray" />
-        <div className=" grid w-full grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
-          {headers.map((header) => (
-            <SortableTableHeader
-              textClassName="font-semibold"
-              buttonClassName="border-x border-y py-1 px-1 flex justify-center text-sm border border-valence-lightgray"
-              key={`live-auction-header-cell-${header.sorterKey}`}
-              label={header.label}
-              sorterKey={header.sorterKey}
-              currentSorter={sorter}
-              ascending={sortAscending}
-              setSorter={setSorter}
-              setSortAscending={setSortAscending}
-            />
-          ))}
-          {data.map((row) => {
-            return (
-              <Fragment key={"row-" + row.pair}>
-                <TextCell>{row.pair}</TextCell>
-                <TextCell>{row.currentPrice}</TextCell>
-                <TextCell>{row.startPrice}</TextCell>
-                <TextCell>{row.endPrice}</TextCell>
-                <StatusCell
-                  variant={
-                    auctionStatusCellVariant[row.status as AuctionStatus]
-                  }
-                >
-                  {row.status.toUpperCase()}
-                </StatusCell>
-                <TextCell>{row.amountRemaining}</TextCell>
-                <TextCell>{row.initialAmount}</TextCell>
-                <LinkCell href="sa">{row.startBlock}</LinkCell>
-                <LinkCell href="sa">{row.endBlock}</LinkCell>
-                <TextCell>{row.bids}</TextCell>
-                <LinkCell href="sa">{displayAddress(row.address)}</LinkCell>
-              </Fragment>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 const LIVE_AUCTION_SORTER_KEYS = {
   PAIR: "pair",
 };
@@ -180,13 +199,13 @@ export const LIVE_AUCTION_SORTERS: Sorter<LiveAuctionTableData>[] = [
 ];
 
 export enum AuctionStatus {
-  Active = "Active",
-  Finished = "Finished",
-  Closed = "Closed",
+  Active = "started",
+  Finished = "finished",
+  Closed = "closed",
 }
 
 export const auctionStatusCellVariant: Record<
-  AuctionStatus,
+  LiveAuctionStatus,
   StatusCellProps["variant"]
 > = {
   [AuctionStatus.Active]: "green",

@@ -6,6 +6,9 @@ import { AuctionsManagerQueryClient } from "@/codegen/ts-codegen/AuctionsManager
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { z } from "zod";
 
+/***
+ * TODO: remove this and replace with getLiveAuctions
+ */
 export type FetchAuctionReturnValue = Array<{
   pair: IndexerAuction["pair"];
   address: string;

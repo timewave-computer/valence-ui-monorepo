@@ -10,6 +10,10 @@ codegen
         name: "AuctionsManager",
         dir: "contract-schema/auctions-manager/schema",
       },
+      {
+        name: "Auction",
+        dir: "contract-schema/auction/schema",
+      },
     ],
     outPath: "src/codegen/ts-codegen",
     // options are completely optional ;)

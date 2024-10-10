@@ -19,7 +19,7 @@ export const LinkCell = ({
         className,
       )}
     >
-      <div className="border-b-[1.6px] border-valence-lightgray hover:border-b-[1.6px] hover:border-valence-black">
+      <div className="border-b-[1.6px] border-valence-lightgray hover:border-b-[1.6px] hover:border-valence-mediumgray">
         {children}
       </div>
     </a>

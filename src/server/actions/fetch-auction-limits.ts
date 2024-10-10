@@ -1,9 +1,12 @@
 "use server";
-import { AuctionsManagerQueryClient } from "@/codegen/ts-codegen/AuctionsManager.client";
 import { getCosmwasmClient } from "@/server/utils";
 import { chainConfig } from "@/const/config";
 import { MinAmount } from "@/codegen/ts-codegen/AuctionsManager.types";
+import { AuctionsManagerQueryClient } from "@/codegen/ts-codegen/AuctionsManager.client";
 
+/***
+ * for surfacing whether upcoming trade is above the minimum
+ */
 export const fetchAuctionLimits = async (): Promise<
   Array<{ denom: string; data: MinAmount }>
 > => {

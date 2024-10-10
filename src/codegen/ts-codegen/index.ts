@@ -10,6 +10,8 @@ import * as _2 from "./Rebalancer.types";
 import * as _3 from "./Rebalancer.client";
 import * as _4 from "./AuctionsManager.types";
 import * as _5 from "./AuctionsManager.client";
+import * as _6 from "./Auction.types";
+import * as _7 from "./Auction.client";
 export namespace contracts {
   export const Account = {
     ..._0,
@@ -22,5 +24,9 @@ export namespace contracts {
   export const AuctionsManager = {
     ..._4,
     ..._5,
+  };
+  export const Auction = {
+    ..._6,
+    ..._7,
   };
 }
