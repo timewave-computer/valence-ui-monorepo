@@ -6,6 +6,28 @@ import { prefetchLiveAuctions, prefetchMetadata } from "@/server/prefetch";
 import { Suspense } from "react";
 import { LoadingSkeleton } from "@/components";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Metadata } from "next";
+import { ABSOLUTE_URL, AUCTIONS_DESCRIPTION, X_HANDLE } from "@/const/socials";
+
+// stale data blinks
+export const revalidate = false;
+
+export const metadata: Metadata = {
+  title: "Valence Auctions",
+  description: AUCTIONS_DESCRIPTION,
+  openGraph: {
+    siteName: "Valence",
+    description: AUCTIONS_DESCRIPTION,
+    url: `${ABSOLUTE_URL}/auctions`,
+    images: ["/img/auctions.svg"],
+  },
+  twitter: {
+    creator: X_HANDLE,
+    card: "summary",
+    images: ["/img/auctions.svg"],
+    description: AUCTIONS_DESCRIPTION,
+  },
+};
 
 export default async function AuctionsLivePageWithSuspense() {
   const isEnabled = isFeatureFlagEnabled(FeatureFlags.AUCTIONS_LIVE_AGGREGATE);
@@ -22,7 +44,6 @@ export default async function AuctionsLivePageWithSuspense() {
     </main>
   );
 }
-
 async function AuctionsLivePage() {
   const queryClient = getQueryClient();
   await Promise.all([
