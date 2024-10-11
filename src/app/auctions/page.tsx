@@ -69,7 +69,7 @@ const LiveAuctionsLoadingSkeleton = () => {
   return (
     <>
       <LoadingSkeleton className="h-12 w-1/2" />
-      <div className="flex w-full max-w-[1600px] grow flex-col p-4">
+      <div className="flex w-full max-w-[1600px] grow flex-col pt-4">
         <LoadingSkeleton className=" h-full w-full grow" />
       </div>
     </>

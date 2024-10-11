@@ -34,7 +34,7 @@ export const StatusCell = ({
   return (
     <div
       className={cn(
-        "flex justify-center px-1 py-2 font-mono text-xxs",
+        "flex justify-center px-1.5 py-2 font-mono text-xxs",
         "border-x border-valence-lightgray",
         className,
       )}

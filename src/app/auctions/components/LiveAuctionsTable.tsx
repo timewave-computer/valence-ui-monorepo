@@ -11,12 +11,13 @@ import {
 import { CelatoneUrl } from "@/const/celatone";
 import { useLiveAuctions } from "@/hooks/use-live-auctions";
 import { LiveAuctionStatus } from "@/server/actions";
-import { displayAddress, displayNumberV2, microToBase } from "@/utils";
+import { cn, displayAddress, displayNumberV2, microToBase } from "@/utils";
 import { compareStrings } from "@/utils/table-sorters";
 import { Fragment, useState } from "react";
 
 export function LiveAuctionsTable({}: {}) {
-  const { data: auctionsData } = useLiveAuctions();
+  const { data: auctionsData, isFetching: isAuctionsDataFetching } =
+    useLiveAuctions();
   const [sorterKey, setSorter] = useState<string>(
     LIVE_AUCTION_SORTER_KEYS.PAIR,
   );
@@ -28,10 +29,15 @@ export function LiveAuctionsTable({}: {}) {
   const { getOriginAsset } = useAssetMetadata();
 
   return (
-    <div className="w-full max-w-[1600px] p-4">
-      <span className="font-mono text-xs font-light">
-        Current block: {auctionsData?.currentBlock}
-      </span>
+    <div className="w-full max-w-[1600px] pt-4">
+      <p className="font-mono text-xs font-light">
+        Current block:{" "}
+        <span
+          className={cn(isAuctionsDataFetching && "animate-pulse-fetching")}
+        >
+          {auctionsData?.currentBlock}
+        </span>
+      </p>
       <div className="h-6 border border-valence-mediumgray bg-valence-mediumgray" />
       <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
         {liveAuctionsTableHeaders.map((header) => (
@@ -80,7 +86,15 @@ export function LiveAuctionsTable({}: {}) {
           return (
             <Fragment key={"row-" + row.pair}>
               <TextCell>{pairString}</TextCell>
-              <TextCell>{displayPrice}</TextCell>
+              <TextCell>
+                <span
+                  className={cn(
+                    isAuctionsDataFetching && " animate-pulse-fetching",
+                  )}
+                >
+                  {displayPrice.toString()}
+                </span>
+              </TextCell>
               <TextCell>
                 {isClosed
                   ? "-"
@@ -103,11 +117,17 @@ export function LiveAuctionsTable({}: {}) {
                 {row.auction.status.toUpperCase()}
               </StatusCell>
               <TextCell>
-                {isClosed
-                  ? "-"
-                  : displayNumberV2(amountRemaining, {
-                      minimumFractionDigits: 2,
-                    })}
+                <span
+                  className={cn(
+                    isAuctionsDataFetching && " animate-pulse-fetching",
+                  )}
+                >
+                  {isClosed
+                    ? "-"
+                    : displayNumberV2(amountRemaining, {
+                        minimumFractionDigits: 2,
+                      })}
+                </span>
               </TextCell>
               <TextCell>
                 {isClosed
@@ -122,7 +142,15 @@ export function LiveAuctionsTable({}: {}) {
               <LinkCell href={CelatoneUrl.block(row.auction.end_block)}>
                 {row.auction.end_block.toString()}
               </LinkCell>
-              <TextCell>{isClosed ? "-" : "TODO # bids"}</TextCell>
+              <TextCell>
+                <span
+                  className={cn(
+                    isAuctionsDataFetching && " animate-pulse-fetching",
+                  )}
+                >
+                  {isClosed ? "-" : "TODO # bids"}
+                </span>
+              </TextCell>
               <LinkCell href={CelatoneUrl.contract(row.address)}>
                 {displayAddress(row.address)}
               </LinkCell>

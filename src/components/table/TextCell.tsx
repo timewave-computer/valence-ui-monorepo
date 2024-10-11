@@ -5,7 +5,7 @@ export const TextCell = ({
   className,
   href,
 }: {
-  children?: string;
+  children?: string | React.ReactNode;
   className?: string;
   href?: string;
 }) => {
@@ -15,7 +15,7 @@ export const TextCell = ({
     <Comp
       {...(href ? { target: "_blank" } : {})}
       className={cn(
-        "flex justify-center px-1 py-2 font-mono  text-xs",
+        "flex justify-center px-1.5 py-2 font-mono  text-xs",
         "border-x border-valence-lightgray",
         "text-nowrap",
         href && "hover:border-b-[1.6px] hover:border-valence-black",

@@ -14,7 +14,7 @@ export const LinkCell = ({
       href={href}
       target="_blank"
       className={cn(
-        "flex justify-center px-1 py-2 font-mono text-xs",
+        "flex justify-center px-1.5 py-2 font-mono text-xs",
         "border-x border-valence-lightgray",
         className,
       )}

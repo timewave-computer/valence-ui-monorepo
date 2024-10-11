@@ -6,7 +6,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const useLiveAuctions = () => {
   return useSuspenseQuery({
-    refetchInterval: 30 * 1000, // 30 seconds
+    refetchInterval: 5 * 1000, // 5 seconds
     queryFn: () => fetchLiveAuctions(),
     queryKey: [QUERY_KEYS.LIVE_AUCTIONS],
     retry: (errorCount) => errorCount < 1,

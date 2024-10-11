@@ -49,6 +49,17 @@ const config: Config = {
       fontSize: {
         xxs: ["0.625rem", "0.875rem"], // 10px text, 14px line height
       },
+
+      animation: {
+        "pulse-fetching":
+          "pulse-fetching 5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      },
+      keyframes: {
+        "pulse-fetching": {
+          "0%, 50%, 100%": { opacity: "1", transform: "scale(1)" },
+          "25%, 75%": { opacity: "0.3", transform: "scale(0.98)" },
+        },
+      },
     },
   },
   plugins: [],
