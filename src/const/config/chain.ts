@@ -45,6 +45,7 @@ type SupportedChainConfig = {
     decimalPoints: number;
   };
   celatoneUrl: string;
+  estBlockTime: number; // seconds
 };
 
 const isSupportedChainId = (id: string): id is SupportedChainId =>
@@ -88,6 +89,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       decimalPoints: 6,
     },
     celatoneUrl: "https://neutron.celat.one/neutron-1/",
+    estBlockTime: 2.42,
   },
   "pion-1": {
     chain: NEUTRON_TESTNET_CHAIN,
@@ -123,6 +125,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       decimalPoints: 6,
     },
     celatoneUrl: "https://neutron.celat.one/pion-1/",
+    estBlockTime: 2.42,
   },
 };
 

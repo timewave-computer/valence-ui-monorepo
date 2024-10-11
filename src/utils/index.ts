@@ -9,3 +9,4 @@ export * from "./closest-price";
 export * from "./dates";
 export * from "./sleep";
 export * from "./table-sorters";
+export * from "./block-time";

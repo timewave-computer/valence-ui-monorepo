@@ -1,15 +1,11 @@
 "use server";
-
 import { getCosmwasmClient, getStargateClient } from "@/server/utils";
-import { chainConfig } from "@/const/config";
 import { AuctionsManagerQueryClient } from "@/codegen/ts-codegen/AuctionsManager.client";
 import {
   ActiveAuction,
-  ActiveAuctionStatus,
-  Addr,
   GetPriceResponse,
-  Uint128,
 } from "@/codegen/ts-codegen/Auction.types";
+import { SanitizedAuctionStatus, chainConfig } from "@/const";
 
 export async function fetchLiveAuctions() {
   // get auction addresses
@@ -38,11 +34,22 @@ export async function fetchLiveAuctions() {
 
     // this ensures we await the nested promises in Promise.all
     return auctionPromise.then((auction) => {
-      // handles case where response can be { auction_closed: [] }
-      let sanitizedStatus =
-        typeof auction.status === "string" ? auction.status : "closed";
-
-      //  status not 100% reliable. check if end block passed, or amount = 0.
+      let sanitizedStatus: SanitizedAuctionStatus = "closed";
+      switch (auction.status) {
+        case "started":
+          sanitizedStatus = "active";
+          break;
+        case "finished":
+          sanitizedStatus = "finished";
+          break;
+        case "auction_closed":
+          sanitizedStatus = "closed";
+          break;
+        default:
+          // handles case where response can be { auction_closed: [] }
+          sanitizedStatus = "closed";
+      }
+      //  additional checks. status not 100% reliable. check if end block passed, or amount = 0.
       if (parseFloat(auction.available_amount) === 0)
         sanitizedStatus = "finished";
       if (auction.end_block < currentBlock) sanitizedStatus = "closed";
@@ -52,7 +59,7 @@ export async function fetchLiveAuctions() {
         address: auctionAddress,
         auction: {
           ...auction,
-          status: sanitizedStatus as SanitizedAuctionStatus,
+          status: sanitizedStatus,
         },
       };
     });
@@ -89,10 +96,4 @@ export async function fetchLiveAuctions() {
 }
 
 type FunctionReturnType = ReturnType<typeof fetchLiveAuctions>;
-type SanitizedAuctionStatus = Exclude<
-  ActiveAuctionStatus | "closed",
-  { close_auction: [Addr | null, Uint128, Uint128] } | "auction_closed"
->;
-
 export type FetchLiveAuctionsReturnType = Awaited<FunctionReturnType>;
-export type LiveAuctionStatus = SanitizedAuctionStatus;

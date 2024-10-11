@@ -1,5 +1,5 @@
 import { KeyTag, GraphKey, SymbolColors } from "@/app/rebalancer/const/graph";
-import { cn, displayNumber, displayUtcTime } from "@/utils";
+import { cn, displayNumber, displayUtcToLocal } from "@/utils";
 import { TooltipProps } from "recharts";
 import {
   NameType,
@@ -58,7 +58,7 @@ export const ValueTooltip = ({
               year: "numeric",
             })}{" "}
           </span>
-          <span>{displayUtcTime(date)}</span>{" "}
+          <span>{displayUtcToLocal(date)}</span>{" "}
         </div>
       </div>
       <table className="">

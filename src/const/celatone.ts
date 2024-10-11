@@ -4,7 +4,7 @@ class CelatoneUrl {
   static trasaction = (transactionHash: string) => {
     return `${chainConfig.celatoneUrl}/txs/${transactionHash}`;
   };
-  static block = (blockHeight: number) => {
+  static block = (blockHeight: number | string) => {
     return `${chainConfig.celatoneUrl}/blocks/${blockHeight}`;
   };
   static contract = (address: string) => {
