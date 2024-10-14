@@ -56,80 +56,76 @@ export function LiveAuctionsTable({}: {}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auctionsData?.auctions]);
 
-  const unsortedTableData: AuctionTableData[] = useMemo(() => {
-    if (!auctionsData?.auctions) return [];
+  const tableData: AuctionTableData[] = !auctionsData?.auctions
+    ? []
+    : auctionsData?.auctions
+        .map((row) => {
+          const [sellDenom, buyDenom] = row.pair;
+          const sellAsset = getOriginAsset(sellDenom);
+          const buyAsset = getOriginAsset(buyDenom);
+          const pairString = `${sellAsset?.symbol}/${buyAsset?.symbol}`;
 
-    return auctionsData?.auctions.map((row) => {
-      const [sellDenom, buyDenom] = row.pair;
-      const sellAsset = getOriginAsset(sellDenom);
-      const buyAsset = getOriginAsset(buyDenom);
-      const pairString = `${sellAsset?.symbol}/${buyAsset?.symbol}`;
-
-      const initialAmount = microToBase(
-        row.auction.total_amount,
-        sellAsset?.decimals ?? 6,
-      );
-
-      const amountRemaining = microToBase(
-        row.auction.available_amount,
-        sellAsset?.decimals ?? 6,
-      );
-
-      let price: number | null = null;
-
-      switch (row.auction.status) {
-        case LiveAuctionStatus.Active:
-          const livePrice = auctionsData.prices.find(
-            (a) => a?.address === row.address,
+          const initialAmount = microToBase(
+            row.auction.total_amount,
+            sellAsset?.decimals ?? 6,
           );
-          price = livePrice?.price ?? null;
-          break;
-        case LiveAuctionStatus.Finished:
-          const resolvedAmount = microToBase(
-            parseFloat(row.auction.resolved_amount),
-            buyAsset?.decimals ?? 6,
+
+          const amountRemaining = microToBase(
+            row.auction.available_amount,
+            sellAsset?.decimals ?? 6,
           );
-          price = resolvedAmount / initialAmount;
-          break;
-        case LiveAuctionStatus.Closed:
-          break;
-      }
 
-      const displayPrice = price ? displayNumberV2(price) : "-";
+          let price: number | null = null;
 
-      return {
-        pair: pairString,
-        price: displayPrice,
-        startPrice: displayNumberV2(parseFloat(row.auction.start_price)),
-        endPrice: displayNumberV2(parseFloat(row.auction.end_price)),
-        status: row.auction.status,
-        amountRemaining: displayNumberV2(amountRemaining, {
-          maximumFractionDigits: 6,
-          minimumFractionDigits: 6,
-        }),
-        initialAmount: displayNumberV2(initialAmount, {
-          maximumFractionDigits: 6,
-          minimumFractionDigits: 6,
-        }),
-        startBlock: row.auction.start_block,
-        endBlock: row.auction.end_block,
-        // bids: "TODO",
-        auctionAddress: row.address,
-        buyAsset: {
-          symbol: buyAsset?.symbol ?? "",
-          denom: buyAsset?.denom ?? "",
-        },
-        sellAsset: {
-          symbol: sellAsset?.symbol ?? "",
-          denom: sellAsset?.denom ?? "",
-        },
-      };
-    });
-  }, [auctionsData?.auctions]);
+          switch (row.auction.status) {
+            case LiveAuctionStatus.Active:
+              const livePrice = auctionsData.prices.find(
+                (a) => a?.address === row.address,
+              );
+              price = livePrice?.price ?? null;
+              break;
+            case LiveAuctionStatus.Finished:
+              const resolvedAmount = microToBase(
+                parseFloat(row.auction.resolved_amount),
+                buyAsset?.decimals ?? 6,
+              );
+              price = resolvedAmount / initialAmount;
+              break;
+            case LiveAuctionStatus.Closed:
+              break;
+          }
 
-  const sortedTableData = useMemo(() => {
-    return unsortedTableData.sort((a, b) => sorter.sort(a, b, sortAscending));
-  }, [sorterKey, sortAscending, unsortedTableData]);
+          const displayPrice = price ? displayNumberV2(price) : "-";
+
+          return {
+            pair: pairString,
+            price: displayPrice,
+            startPrice: displayNumberV2(parseFloat(row.auction.start_price)),
+            endPrice: displayNumberV2(parseFloat(row.auction.end_price)),
+            status: row.auction.status,
+            amountRemaining: displayNumberV2(amountRemaining, {
+              maximumFractionDigits: 6,
+              minimumFractionDigits: 6,
+            }),
+            initialAmount: displayNumberV2(initialAmount, {
+              maximumFractionDigits: 6,
+              minimumFractionDigits: 6,
+            }),
+            startBlock: row.auction.start_block,
+            endBlock: row.auction.end_block,
+            // bids: "TODO",
+            auctionAddress: row.address,
+            buyAsset: {
+              symbol: buyAsset?.symbol ?? "",
+              denom: buyAsset?.denom ?? "",
+            },
+            sellAsset: {
+              symbol: sellAsset?.symbol ?? "",
+              denom: sellAsset?.denom ?? "",
+            },
+          };
+        })
+        .sort((a, b) => sorter.sort(a, b, sortAscending));
 
   const now = new Date();
   const [localStartDate, setLocalStartDate] = useState<Date>(now);
@@ -152,7 +148,7 @@ export function LiveAuctionsTable({}: {}) {
       </div>
       <div className="w-full max-w-[1600px] pt-4">
         <div className="border border-valence-mediumgray bg-valence-mediumgray px-1.5 py-1">
-          <p className="text-sm font-semibold text-valence-black">
+          <p className="text-xs font-semibold text-valence-black">
             Current block:{" "}
             <span
               className={cn(isAuctionsDataFetching && "animate-pulse-fetching")}
@@ -175,7 +171,7 @@ export function LiveAuctionsTable({}: {}) {
               setSortAscending={setSortAscending}
             />
           ))}
-          {sortedTableData.map((row) => {
+          {tableData.map((row) => {
             const isClosed = row.status === LiveAuctionStatus.Closed;
             const isActive = row.status === LiveAuctionStatus.Active;
             const isFinished = row.status === LiveAuctionStatus.Finished;
