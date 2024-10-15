@@ -9,8 +9,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
 import { ABSOLUTE_URL, AUCTIONS_DESCRIPTION, X_HANDLE } from "@/const/socials";
 
-// stale data blinks
-export const revalidate = false;
+export const dynamic = "force-dynamic"; // prevent stale cached data from flashing in
 
 export const metadata: Metadata = {
   title: "Valence Auctions",
@@ -19,12 +18,12 @@ export const metadata: Metadata = {
     siteName: "Valence",
     description: AUCTIONS_DESCRIPTION,
     url: `${ABSOLUTE_URL}/auctions`,
-    images: ["/img/auctions.svg"],
+    images: ["/img/opengraph/auctions-og.png"],
   },
   twitter: {
     creator: X_HANDLE,
     card: "summary",
-    images: ["/img/auctions.svg"],
+    images: ["/img/opengraph/auctions-og.png"],
     description: AUCTIONS_DESCRIPTION,
   },
 };

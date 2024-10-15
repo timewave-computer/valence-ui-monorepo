@@ -26,27 +26,26 @@ export const displayMinBalance = (
 ) => {
   return `${microToBase(minBalance, decimals)} ${symbol}`;
 };
-export const displayUtcToLocal = (
-  date: Date,
-  options?: {
-    excludeTz?: boolean;
-  },
-) => {
+
+export const displayLocalTimezone = (date: Date) => {
   try {
     const dateStringWithTimezone = new Intl.DateTimeFormat("en-US", {
       timeZoneName: "short",
     }).format(date);
-    const time = format(date, "hh:mm a");
-
-    if (options?.excludeTz) {
-      return time;
-    }
 
     const tz = dateStringWithTimezone.substring(
       dateStringWithTimezone.length - 3,
     );
+    return tz;
+  } catch (e) {
+    ErrorHandler.warn(ERROR_MESSAGES.DISPLAY_UTC_TIME_FAIL, e);
+  }
+};
 
-    return `${time} ${tz}`;
+export const displayUtcToLocal = (date: Date) => {
+  try {
+    const time = format(date, "hh:mm a");
+    return time;
   } catch (e) {
     ErrorHandler.warn(ERROR_MESSAGES.DISPLAY_UTC_TIME_FAIL, e);
   }

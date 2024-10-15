@@ -33,7 +33,7 @@ export async function fetchLiveAuctions() {
     ) as Promise<ActiveAuction>;
 
     // this ensures we await the nested promises in Promise.all
-    return auctionPromise.then((auction) => {
+    return auctionPromise.then(async (auction) => {
       let sanitizedStatus: SanitizedAuctionStatus = "closed";
       switch (auction.status) {
         case "started":

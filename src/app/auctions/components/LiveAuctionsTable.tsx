@@ -4,7 +4,6 @@ import {
   SortableTableHeader,
   Sorter,
   TextCell,
-  LinkCell,
   StatusCell,
   StatusCellProps,
 } from "@/components";
@@ -15,16 +14,19 @@ import {
   LiveAuctionStatus,
 } from "@/const";
 import { useLiveAuctions } from "@/hooks/use-live-auctions";
+import { FetchLiveAuctionsReturnType } from "@/server/actions";
 import {
   cn,
   displayAddress,
   displayNumberV2,
+  displayLocalTimezone,
   displayUtcToLocal,
   getBlockDate,
   microToBase,
 } from "@/utils";
 import { compareNumbers, compareStrings } from "@/utils/table-sorters";
 import { Fragment, useEffect, useMemo, useState } from "react";
+import { BenchmarkCell } from "@/app/auctions/components";
 
 export function LiveAuctionsTable({}: {}) {
   const { data: auctionsData, isFetching: isAuctionsDataFetching } =
@@ -98,6 +100,7 @@ export function LiveAuctionsTable({}: {}) {
           const displayPrice = price ? displayNumberV2(price) : "-";
 
           return {
+            raw: row,
             pair: pairString,
             price: displayPrice,
             startPrice: displayNumberV2(parseFloat(row.auction.start_price)),
@@ -113,7 +116,6 @@ export function LiveAuctionsTable({}: {}) {
             }),
             startBlock: row.auction.start_block,
             endBlock: row.auction.end_block,
-            // bids: "TODO",
             auctionAddress: row.address,
             buyAsset: {
               symbol: buyAsset?.symbol ?? "",
@@ -136,11 +138,10 @@ export function LiveAuctionsTable({}: {}) {
     setLocalEndDate(new Date(endTime));
   }, [startTime, endTime]);
 
-  const timeDisplayString = `${localStartDate.toLocaleDateString()} ${displayUtcToLocal(localStartDate, { excludeTz: true })} - ${localEndDate.toLocaleDateString()} ${displayUtcToLocal(localEndDate)} (est.)`;
-
+  const timeDisplayString = `${displayUtcToLocal(localStartDate)} ${localStartDate.toLocaleDateString()} -  ${displayUtcToLocal(localEndDate)} ${localEndDate.toLocaleDateString()} ${displayLocalTimezone(localStartDate)}`;
   return (
     <>
-      <h1 className="text-xl font-bold">Auction Cycle [todo]</h1>
+      <h1 className="text-xl font-bold">Live Auctions</h1>
       <div className="font-mono text-xs font-light">
         <p className="text-center" suppressHydrationWarning>
           {timeDisplayString}
@@ -157,14 +158,14 @@ export function LiveAuctionsTable({}: {}) {
             </span>
           </p>
         </div>
-        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
+        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
           {liveAuctionsTableHeaders.map((header) => (
             <SortableTableHeader
               textClassName="font-semibold"
               buttonClassName="border-x border-y py-1 px-1.5 flex justify-center text-sm border border-valence-lightgray"
               key={`live-auction-header-cell-${header.sorterKey}`}
               label={header.label}
-              sorterKey={header.sorterKey}
+              sorterKey={header.sorterKey ?? ""}
               currentSorter={sorter}
               ascending={sortAscending}
               setSorter={setSorter}
@@ -187,15 +188,18 @@ export function LiveAuctionsTable({}: {}) {
                     )}
                   >
                     {row.price}
-                    <span>
-                      {" "}
-                      {row.buyAsset.symbol}/{row.sellAsset.symbol}
-                    </span>
+                    {!isClosed && (
+                      <span>
+                        {" "}
+                        {row.buyAsset.symbol}/{row.sellAsset.symbol}
+                      </span>
+                    )}
                   </span>
                   {isFinished && (
                     <span className="self-start text-xxs font-light">*</span>
                   )}
                 </TextCell>
+                <BenchmarkCell auctionData={row.raw} pair={row.raw.pair} />
                 <TextCell>{isClosed ? "-" : row.startPrice}</TextCell>
                 <TextCell>{isClosed ? "-" : row.endPrice}</TextCell>
                 <StatusCell variant={auctionStatusCellVariant[row.status]}>
@@ -213,15 +217,15 @@ export function LiveAuctionsTable({}: {}) {
                   </span>
                 </TextCell>
                 <TextCell>{isClosed ? "-" : row.initialAmount}</TextCell>
-                <LinkCell href={CelatoneUrl.block(row.startBlock)}>
+                <TextCell href={CelatoneUrl.block(row.startBlock)}>
                   {row.startBlock.toString()}
-                </LinkCell>
-                <LinkCell href={CelatoneUrl.block(row.endBlock)}>
+                </TextCell>
+                <TextCell href={CelatoneUrl.block(row.endBlock)}>
                   {row.endBlock.toString()}
-                </LinkCell>
-                <LinkCell href={CelatoneUrl.contract(row.auctionAddress)}>
+                </TextCell>
+                <TextCell href={CelatoneUrl.contract(row.auctionAddress)}>
                   {displayAddress(row.auctionAddress)}
-                </LinkCell>
+                </TextCell>
               </Fragment>
             );
           })}
@@ -235,7 +239,7 @@ export function LiveAuctionsTable({}: {}) {
 
 const liveAuctionsTableHeaders: Array<{
   label: string;
-  sorterKey: string;
+  sorterKey?: string;
   cell?: React.FC<any>;
 }> = [
   {
@@ -245,6 +249,9 @@ const liveAuctionsTableHeaders: Array<{
   {
     label: "Price",
     sorterKey: "price",
+  },
+  {
+    label: "Live Benchmark",
   },
   {
     label: "Start price",
@@ -349,7 +356,8 @@ const auctionStatusCellVariant: Record<
   [LiveAuctionStatus.Closed]: "gray",
 };
 
-type AuctionTableData = {
+export type AuctionTableData = {
+  raw: FetchLiveAuctionsReturnType["auctions"][0];
   pair: string;
   price: string;
   startPrice: string;
