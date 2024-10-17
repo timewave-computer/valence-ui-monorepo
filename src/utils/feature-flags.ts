@@ -4,6 +4,7 @@ import { ErrorHandler } from "@/const/error";
 
 export enum FeatureFlags {
   AUCTIONS_LIVE_AGGREGATE = "NEXT_PUBLIC_FF_AUCTIONS_LIVE_AGGREGATE",
+  AUCTIONS_OSMOSIS_PRICE = "NEXT_PUBLIC_FF_AUCTIONS_OSMOSIS_PRICE",
   REBALANCER_NONUSDC_VALUE = "NEXT_PUBLIC_FF_REBALANCER_NONUSDC_VALUE",
   REBALANCER_MULTIPLE_ACCOUNTS = "NEXT_PUBLIC_FF_ENABLE_MULTIPLE_ACCTS", // no intention to promote out of dev
   REBALANCE_PRICE_SOURCE_TOGGLE = "NEXT_PUBLIC_FF_REBALANCE_PRICE_SOURCE_TOGGLE", // no intention to promote out of preview
@@ -30,7 +31,7 @@ export const isFeatureFlagEnabled = (flag: FeatureFlags) => {
 };
 
 // for client side
-export const useFeatureFlag = (flag: FeatureFlags) => {
+export const useFeatureFlag = (flag: FeatureFlags): boolean => {
   const ctx = useContext(FeatureFlagsContext);
   if (!ctx) {
     throw new Error(
@@ -42,5 +43,6 @@ export const useFeatureFlag = (flag: FeatureFlags) => {
     return flags[flag];
   } else {
     ErrorHandler.makeError(`Unexpected feature flag ${flag}`);
+    return false;
   }
 };

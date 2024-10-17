@@ -9,8 +9,6 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
 import { ABSOLUTE_URL, AUCTIONS_DESCRIPTION, X_HANDLE } from "@/const/socials";
 
-export const dynamic = "force-dynamic"; // prevent stale cached data from flashing in
-
 export const metadata: Metadata = {
   title: "Valence Auctions",
   description: AUCTIONS_DESCRIPTION,

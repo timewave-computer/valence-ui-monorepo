@@ -1,5 +1,4 @@
 import { Button, Footer } from "@/components";
-import { LinkText } from "@/components/LinkText";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import { cn } from "@/utils";

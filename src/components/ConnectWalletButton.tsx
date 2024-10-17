@@ -1,6 +1,6 @@
 "use client";
 import { Button, ToastMessage } from "@/components";
-import { useIsServer, useWallet } from "@/hooks";
+import { useAlert, useIsServer, useWallet } from "@/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -31,36 +31,33 @@ export const ConnectWalletButton: React.FC<{
     address,
     walletStatus,
   } = useWallet();
-  const { data: valenceAccount, isLoading: isValenceAccountLoading } =
-    useValenceAccount(address);
+  const { isLoading: isValenceAccountLoading } = useValenceAccount(address);
   const router = useRouter();
 
   const { fetchValenceAccount } = useFetchValenceAccount();
 
-  // for calling effect only when connect wallet is clicked
-  const [connectWalletClicked, setConnectWalletClicked] = useState(false);
-  const [isInstallKeplrAlertSeen, setIsInstallKeplrAlertSeen] = useState(false);
-
-  useEffect(() => {
-    if (walletStatus === WalletStatus.NotExist && !isInstallKeplrAlertSeen) {
-      setIsInstallKeplrAlertSeen(true);
-      toast.error(
-        <ToastMessage variant="error" title="Please install keplr.">
-          Support for more wallets will be added soon.
-        </ToastMessage>,
-      );
-      return;
-    } else if (
-      walletStatus === WalletStatus.Error ||
-      walletStatus === WalletStatus.Rejected
-    ) {
+  useAlert(
+    walletStatus === WalletStatus.Error ||
+      walletStatus === WalletStatus.Rejected,
+    () => {
       toast.error(
         <ToastMessage variant="error" title="Error connecting wallet.">
           Please try again.
         </ToastMessage>,
       );
-    }
-  }, [walletStatus, isInstallKeplrAlertSeen]);
+    },
+  );
+
+  useAlert(walletStatus === WalletStatus.NotExist, () => {
+    toast.error(
+      <ToastMessage variant="error" title="Please install keplr.">
+        Support for more wallets will be added soon.
+      </ToastMessage>,
+    );
+  });
+
+  // for calling effect only when connect wallet is clicked
+  const [connectWalletClicked, setConnectWalletClicked] = useState(false);
 
   const [isExecutedOnce, setIsExecutedOnce] = useState(false);
 

@@ -19,7 +19,7 @@ export const TextCell = ({
       {...(href ? { href } : {})}
       {...(href ? { target: "_blank" } : {})}
       className={cn(
-        "flex min-h-[46px] items-center justify-center px-1.5 py-2 font-mono  text-xs",
+        "flex  min-h-12 items-center justify-center px-1.5 py-2 font-mono  text-xs",
         "border-x border-valence-lightgray",
         "text-nowrap",
         href &&

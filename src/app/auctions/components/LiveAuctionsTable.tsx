@@ -23,6 +23,8 @@ import {
   displayUtcToLocal,
   getBlockDate,
   microToBase,
+  useFeatureFlag,
+  FeatureFlags,
 } from "@/utils";
 import { compareNumbers, compareStrings } from "@/utils/table-sorters";
 import { Fragment, useEffect, useMemo, useState } from "react";
@@ -83,8 +85,8 @@ export function LiveAuctionsTable({}: {}) {
             case LiveAuctionStatus.Active:
               const livePrice = auctionsData.prices.find(
                 (a) => a?.address === row.address,
-              );
-              price = livePrice?.price ?? null;
+              )?.price;
+              price = livePrice ?? null;
               break;
             case LiveAuctionStatus.Finished:
               const resolvedAmount = microToBase(
@@ -102,6 +104,7 @@ export function LiveAuctionsTable({}: {}) {
           return {
             raw: row,
             pair: pairString,
+            priceRaw: price,
             price: displayPrice,
             startPrice: displayNumberV2(parseFloat(row.auction.start_price)),
             endPrice: displayNumberV2(parseFloat(row.auction.end_price)),
@@ -139,6 +142,10 @@ export function LiveAuctionsTable({}: {}) {
   }, [startTime, endTime]);
 
   const timeDisplayString = `${displayUtcToLocal(localStartDate)} ${localStartDate.toLocaleDateString()} -  ${displayUtcToLocal(localEndDate)} ${localEndDate.toLocaleDateString()} ${displayLocalTimezone(localStartDate)}`;
+
+  const showOsmosisPrice = useFeatureFlag(FeatureFlags.AUCTIONS_OSMOSIS_PRICE);
+  const headers = liveAuctionsTableHeaders(showOsmosisPrice);
+
   return (
     <>
       <h1 className="text-xl font-bold">Live Auctions</h1>
@@ -159,7 +166,7 @@ export function LiveAuctionsTable({}: {}) {
           </p>
         </div>
         <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
-          {liveAuctionsTableHeaders.map((header) => (
+          {headers.map((header) => (
             <SortableTableHeader
               textClassName="font-semibold"
               buttonClassName="border-x border-y py-1 px-1.5 flex justify-center text-sm border border-valence-lightgray"
@@ -199,23 +206,17 @@ export function LiveAuctionsTable({}: {}) {
                     <span className="self-start text-xxs font-light">*</span>
                   )}
                 </TextCell>
-                <BenchmarkCell auctionData={row.raw} pair={row.raw.pair} />
+                <BenchmarkCell
+                  price={row.priceRaw}
+                  auctionData={row.raw}
+                  pair={row.raw.pair}
+                />
                 <TextCell>{isClosed ? "-" : row.startPrice}</TextCell>
                 <TextCell>{isClosed ? "-" : row.endPrice}</TextCell>
                 <StatusCell variant={auctionStatusCellVariant[row.status]}>
                   {row.status.toUpperCase()}
                 </StatusCell>
-                <TextCell>
-                  <span
-                    className={cn(
-                      isAuctionsDataFetching &&
-                        isActive &&
-                        " animate-pulse-fetching",
-                    )}
-                  >
-                    {isClosed ? "-" : row.amountRemaining}
-                  </span>
-                </TextCell>
+                <TextCell>{isClosed ? "-" : row.amountRemaining}</TextCell>
                 <TextCell>{isClosed ? "-" : row.initialAmount}</TextCell>
                 <TextCell href={CelatoneUrl.block(row.startBlock)}>
                   {row.startBlock.toString()}
@@ -237,56 +238,69 @@ export function LiveAuctionsTable({}: {}) {
   );
 }
 
-const liveAuctionsTableHeaders: Array<{
+const liveAuctionsTableHeaders = (
+  showOsmosisPrice: boolean,
+): Array<{
   label: string;
   sorterKey?: string;
   cell?: React.FC<any>;
-}> = [
-  {
-    label: "Pair",
-    sorterKey: "pair",
-  },
-  {
-    label: "Price",
-    sorterKey: "price",
-  },
-  {
-    label: "Live Benchmark",
-  },
-  {
-    label: "Start price",
-    sorterKey: "startPrice",
-  },
-  {
-    label: "End price",
-    sorterKey: "endPrice",
-  },
-  {
-    label: "Status",
-    sorterKey: "status",
-  },
-  {
-    label: "Amount remaining",
-    sorterKey: "amountRemaining",
-  },
-  {
-    label: "Initial amount",
-    sorterKey: "initialAmount",
-  },
+}> => {
+  return [
+    {
+      label: "Pair",
+      sorterKey: "pair",
+    },
+    {
+      label: "Price",
+      sorterKey: "price",
+    },
+    ...(showOsmosisPrice
+      ? [
+          {
+            label: "Live Benchmark",
+          },
+        ]
+      : [
+          {
+            label: "Live Astroport Price",
+          },
+        ]),
 
-  {
-    label: "Start block",
-    sorterKey: "startBlock",
-  },
-  {
-    label: "End block",
-    sorterKey: "endBlock",
-  },
-  {
-    label: "Address",
-    sorterKey: "auctionAddress",
-  },
-];
+    {
+      label: "Start price",
+      sorterKey: "startPrice",
+    },
+    {
+      label: "End price",
+      sorterKey: "endPrice",
+    },
+    {
+      label: "Status",
+      sorterKey: "status",
+    },
+    {
+      label: "Amount remaining",
+      sorterKey: "amountRemaining",
+    },
+    {
+      label: "Initial amount",
+      sorterKey: "initialAmount",
+    },
+
+    {
+      label: "Start block",
+      sorterKey: "startBlock",
+    },
+    {
+      label: "End block",
+      sorterKey: "endBlock",
+    },
+    {
+      label: "Address",
+      sorterKey: "auctionAddress",
+    },
+  ];
+};
 
 const LIVE_AUCTION_SORTER_KEYS = {
   PAIR: "pair",
@@ -358,6 +372,7 @@ const auctionStatusCellVariant: Record<
 
 export type AuctionTableData = {
   raw: FetchLiveAuctionsReturnType["auctions"][0];
+  priceRaw: number | null;
   pair: string;
   price: string;
   startPrice: string;

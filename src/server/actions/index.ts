@@ -13,4 +13,5 @@ export * from "./fetch-rebalancer-whitelist";
 export * from "./fetch-auction-statuses";
 export * from "./fetch-auction-limits";
 export * from "./fetch-live-auctions";
-export * from "./fetch-astroport-price";
+export * from "./fetch-astroport-rate";
+export * from "./fetch-osmosis-rate";

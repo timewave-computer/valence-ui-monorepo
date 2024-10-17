@@ -31,13 +31,12 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
     account: selectedAddress,
   });
 
-  const targets = config?.targets ?? [];
-
   const { getOriginAsset } = useAssetMetadata();
   const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   const configData: Array<{ title: string; content: string | number }> =
     useMemo(() => {
+      const targets = config?.targets ?? [];
       const baseDenomAsset = getOriginAsset(config?.baseDenom ?? "");
       const targetWithMinBalance = targets.find((t) => !!t.min_balance);
 
@@ -92,7 +91,7 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
             ]
           : []),
       ];
-    }, [targets, config, getOriginAsset]);
+    }, [config?.targets, getOriginAsset]);
 
   return (
     <div className="flex grow flex-col  overflow-x-auto border-valence-black bg-valence-white ">

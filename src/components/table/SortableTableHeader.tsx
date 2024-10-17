@@ -67,6 +67,7 @@ export const SortableTableHeader = <T extends unknown>({
         buttonClassName,
       )}
       onClick={() => {
+        if (!sorterKey) return;
         if (currentSorter.key === sorterKey) {
           setSortAscending((a) => !a);
         } else {
@@ -80,7 +81,14 @@ export const SortableTableHeader = <T extends unknown>({
         side="top"
         tooltipContent={hoverTooltip}
       >
-        <button className={cn("text-nowrap text-sm font-bold", textClassName)}>
+        <button
+          disabled={!sorterKey}
+          className={cn(
+            "text-nowrap text-sm font-bold",
+            !sorterKey && "cursor-default",
+            textClassName,
+          )}
+        >
           {label}
         </button>
       </WithIconAndTooltip>

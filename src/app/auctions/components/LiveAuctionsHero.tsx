@@ -28,7 +28,7 @@ export function LiveAuctionsHero() {
           </Link>
           . Auctions begin at 12:00 UTC daily, and close after 24 hours.
         </p>
-        <div className="hidden flex-row flex-wrap gap-4 pt-2 sm:flex">
+        <div className="hidden flex-row flex-wrap gap-4 pt-4 sm:flex">
           {heroLinks.map((link) => (
             <Link
               key={`hero-link-${link.label}`}
@@ -77,7 +77,7 @@ const heroLinks: { href: string; label: string }[] = [
   },
   {
     label: "How to bid",
-    href: "",
+    href: "https://github.com/timewave-computer/valence-services/tree/main/contracts/auction/auction#doing-a-bid",
   },
   {
     label: "How to sell",

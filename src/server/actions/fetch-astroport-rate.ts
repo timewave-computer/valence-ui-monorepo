@@ -4,7 +4,7 @@ import { z } from "zod";
 
 const ASTROPORT_API_URL = "https://app.astroport.fi/api/trpc";
 
-export const fetchAstroportRoute = async (
+export const fetchAstroportRate = async (
   amount: string,
   pair: {
     fromDenom: string;
@@ -22,7 +22,7 @@ export const fetchAstroportRoute = async (
             start: pair.fromDenom,
             end: pair.toDenom,
             amount: amount,
-            limit: 1, // returns 3 routes
+            limit: 1, // returns 1 route
           },
         }),
       }),
@@ -38,7 +38,10 @@ export const fetchAstroportRoute = async (
     return null;
   }
   // take the first once, all prices are same
-  return parsedData.result.data.json[0].price_out;
+  return (
+    parseFloat(parsedData.result.data.json[0].amount_in) /
+    parseFloat(parsedData.result.data.json[0].amount_out)
+  );
 };
 
 const AstroportRouteSchema = z.object({
