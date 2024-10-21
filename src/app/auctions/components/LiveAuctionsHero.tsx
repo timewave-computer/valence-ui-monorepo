@@ -19,7 +19,7 @@ export function LiveAuctionsHero() {
       >
         <h1 className="text-2xl font-bold">Auctions (beta)</h1>
         <p className="w-full max-w-lg text-pretty pt-1">
-          Dutch auctions to enable trades for accounts using the{" "}
+          Dutch auctions which enable trades for accounts using the{" "}
           <Link
             className="font-semibold hover:border-b-[1.6px] hover:border-valence-black"
             href="/rebalancer"
@@ -81,6 +81,6 @@ const heroLinks: { href: string; label: string }[] = [
   },
   {
     label: "How to sell",
-    href: "",
+    href: "https://github.com/timewave-computer/valence-services/tree/main/contracts/auction/auction#selling-funds",
   },
 ];

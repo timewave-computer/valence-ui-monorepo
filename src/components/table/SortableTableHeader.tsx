@@ -3,12 +3,12 @@ import React, { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
 import { WithIconAndTooltip } from "@/components";
 
-export type Sorter<T> = {
-  key: string;
+export type Sorter<T, K> = {
+  key: K;
   sort: (a: T, b: T, ascending: boolean) => number;
 };
 
-export type SortableTableHeaderProps<T> = {
+export type SortableTableHeaderProps<T, K> = {
   /**
    * The label of the header.
    */
@@ -20,7 +20,7 @@ export type SortableTableHeaderProps<T> = {
   /**
    * The currently selected sorter.
    */
-  currentSorter: Sorter<T>;
+  currentSorter: Sorter<T, K>;
   /**
    * Whether or not sorter is ascending.
    */
@@ -47,7 +47,7 @@ export type SortableTableHeaderProps<T> = {
   hoverTooltip?: React.ReactNode;
 };
 
-export const SortableTableHeader = <T extends unknown>({
+export const SortableTableHeader = <T extends unknown, K>({
   label,
   sorterKey,
   currentSorter,
@@ -57,7 +57,7 @@ export const SortableTableHeader = <T extends unknown>({
   buttonClassName,
   textClassName,
   hoverTooltip,
-}: SortableTableHeaderProps<T>) => {
+}: SortableTableHeaderProps<T, K>) => {
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
 
   return (

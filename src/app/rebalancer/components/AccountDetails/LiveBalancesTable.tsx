@@ -191,7 +191,7 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
 
 const LiveBalancesTableLayout: React.FC<{
   children: ReactNode;
-  sorter: Sorter<LiveBalancesTableData>;
+  sorter: Sorter<LiveBalancesTableData, LiveBalancesSorterKey>;
   setSorter: Dispatch<SetStateAction<string>>;
   sortAscending: boolean;
   setSortAscending: Dispatch<SetStateAction<boolean>>;
@@ -293,8 +293,12 @@ enum LIVE_BALANCES_SORTER_KEYS {
   DISTRIBUTION = "distribution",
   TARGET = "target",
 }
+type LiveBalancesSorterKey = `${LIVE_BALANCES_SORTER_KEYS}`;
 
-export const LIVE_BALANCES_SORTERS: Sorter<LiveBalancesTableData>[] = [
+export const LIVE_BALANCES_SORTERS: Sorter<
+  LiveBalancesTableData,
+  LiveBalancesSorterKey
+>[] = [
   {
     key: LIVE_BALANCES_SORTER_KEYS.TICKER,
     sort: (a, b, ascending) => compareStrings(a.symbol, b.symbol, ascending),

@@ -30,11 +30,12 @@ import { compareNumbers, compareStrings } from "@/utils/table-sorters";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { BenchmarkCell } from "@/app/auctions/components";
 
-export function LiveAuctionsTable({}: {}) {
+export function LiveAuctionsTable() {
   const { data: auctionsData, isFetching: isAuctionsDataFetching } =
     useLiveAuctions();
+
   const [sorterKey, setSorter] = useState<string>(
-    LIVE_AUCTION_SORTER_KEYS.PAIR,
+    LIVE_AUCTION_TABLE_SORTER_KEYS.PAIR,
   );
   const [sortAscending, setSortAscending] = useState(false);
   const sorter =
@@ -108,6 +109,14 @@ export function LiveAuctionsTable({}: {}) {
             price: displayPrice,
             startPrice: displayNumberV2(parseFloat(row.auction.start_price)),
             endPrice: displayNumberV2(parseFloat(row.auction.end_price)),
+            decreasePerBlock: displayNumberV2(
+              getPriceDecreasePerBlock({
+                startPrice: parseFloat(row.auction.start_price),
+                endPrice: parseFloat(row.auction.end_price),
+                startBlock: row.auction.start_block,
+                endBlock: row.auction.end_block,
+              }),
+            ),
             status: row.auction.status,
             amountRemaining: displayNumberV2(amountRemaining, {
               maximumFractionDigits: 6,
@@ -165,7 +174,7 @@ export function LiveAuctionsTable({}: {}) {
             </span>
           </p>
         </div>
-        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
+        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
           {headers.map((header) => (
             <SortableTableHeader
               textClassName="font-semibold"
@@ -213,6 +222,7 @@ export function LiveAuctionsTable({}: {}) {
                 />
                 <TextCell>{isClosed ? "-" : row.startPrice}</TextCell>
                 <TextCell>{isClosed ? "-" : row.endPrice}</TextCell>
+                <TextCell>{isClosed ? "-" : row.decreasePerBlock}</TextCell>
                 <StatusCell variant={auctionStatusCellVariant[row.status]}>
                   {row.status.toUpperCase()}
                 </StatusCell>
@@ -238,6 +248,36 @@ export function LiveAuctionsTable({}: {}) {
   );
 }
 
+const getPriceDecreasePerBlock = ({
+  startBlock,
+  endBlock,
+  endPrice,
+  startPrice,
+}: {
+  startPrice: number;
+  endPrice: number;
+  startBlock: number;
+  endBlock: number;
+}) => {
+  return (startPrice - endPrice) / (endBlock - startBlock);
+};
+
+enum LIVE_AUCTION_TABLE_SORTER_KEYS {
+  PAIR = "pair",
+  DECREASE = "decrease",
+  PRICE = "price",
+  START_PRICE = "startPrice",
+  END_PRICE = "endPrice",
+  STATUS = "status",
+  AMOUNT_REMAINING = "amountRemaining",
+  INITIAL_AMOUNT = "initialAmount",
+  START_BLOCK = "startBlock",
+  END_BLOCK = "endBlock",
+  AUCTION_ADDRESS = "auctionAddress",
+}
+
+type LiveAuctionTableSorterKey = `${LIVE_AUCTION_TABLE_SORTER_KEYS}`;
+
 const liveAuctionsTableHeaders = (
   showOsmosisPrice: boolean,
 ): Array<{
@@ -248,11 +288,11 @@ const liveAuctionsTableHeaders = (
   return [
     {
       label: "Pair",
-      sorterKey: "pair",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.PAIR,
     },
     {
       label: "Price",
-      sorterKey: "price",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.PRICE,
     },
     ...(showOsmosisPrice
       ? [
@@ -268,96 +308,95 @@ const liveAuctionsTableHeaders = (
 
     {
       label: "Start price",
-      sorterKey: "startPrice",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.START_PRICE,
     },
     {
       label: "End price",
-      sorterKey: "endPrice",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.END_PRICE,
+    },
+    {
+      label: "Decrease per block",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.DECREASE,
     },
     {
       label: "Status",
-      sorterKey: "status",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.STATUS,
     },
     {
       label: "Amount remaining",
-      sorterKey: "amountRemaining",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.AMOUNT_REMAINING,
     },
     {
       label: "Initial amount",
-      sorterKey: "initialAmount",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.INITIAL_AMOUNT,
     },
 
     {
       label: "Start block",
-      sorterKey: "startBlock",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.START_BLOCK,
     },
     {
       label: "End block",
-      sorterKey: "endBlock",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.END_BLOCK,
     },
     {
       label: "Address",
-      sorterKey: "auctionAddress",
+      sorterKey: LIVE_AUCTION_TABLE_SORTER_KEYS.AUCTION_ADDRESS,
     },
   ];
 };
 
-const LIVE_AUCTION_SORTER_KEYS = {
-  PAIR: "pair",
-  PRICE: "price",
-  START_PRICE: "startPrice",
-  END_PRICE: "endPrice",
-  STATUS: "status",
-  AMOUNT_REMAINING: "amountRemaining",
-  INITIAL_AMOUNT: "initialAmount",
-  START_BLOCK: "startBlock",
-  END_BLOCK: "endBlock",
-  AUCTION_ADDRESS: "auctionAddress",
-};
-
-export const LIVE_AUCTION_SORTERS: Sorter<AuctionTableData>[] = [
+export const LIVE_AUCTION_SORTERS: Sorter<
+  AuctionTableData,
+  LiveAuctionTableSorterKey
+>[] = [
   {
-    key: LIVE_AUCTION_SORTER_KEYS.PAIR,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.PAIR,
     sort: (a, b, ascending) => compareStrings(a.pair, b.pair, ascending),
   },
   {
-    key: LIVE_AUCTION_SORTER_KEYS.PRICE,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.PRICE,
     sort: (a, b, ascending) => compareNumbers(a.price, b.price, ascending),
   },
   {
-    key: LIVE_AUCTION_SORTER_KEYS.START_PRICE,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.START_PRICE,
     sort: (a, b, ascending) =>
       compareNumbers(a.startPrice, b.startPrice, ascending),
   },
   {
-    key: LIVE_AUCTION_SORTER_KEYS.END_PRICE,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.END_PRICE,
     sort: (a, b, ascending) =>
       compareNumbers(a.endPrice, b.endPrice, ascending),
   },
   {
-    key: LIVE_AUCTION_SORTER_KEYS.INITIAL_AMOUNT,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.INITIAL_AMOUNT,
     sort: (a, b, ascending) =>
       compareNumbers(a.initialAmount, b.initialAmount, ascending),
   },
   {
-    key: LIVE_AUCTION_SORTER_KEYS.AMOUNT_REMAINING,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.AMOUNT_REMAINING,
     sort: (a, b, ascending) =>
       compareNumbers(a.amountRemaining, b.amountRemaining, ascending),
   },
   {
-    key: LIVE_AUCTION_SORTER_KEYS.START_BLOCK,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.START_BLOCK,
     sort: (a, b, ascending) =>
       compareNumbers(a.startBlock, b.startBlock, ascending),
   },
   {
-    key: LIVE_AUCTION_SORTER_KEYS.END_BLOCK,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.END_BLOCK,
     sort: (a, b, ascending) =>
       compareNumbers(a.endBlock, b.endBlock, ascending),
   },
   {
-    key: LIVE_AUCTION_SORTER_KEYS.AUCTION_ADDRESS,
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.AUCTION_ADDRESS,
     sort: (a, b, ascending) =>
       compareNumbers(a.auctionAddress, b.auctionAddress, ascending),
+  },
+  {
+    key: LIVE_AUCTION_TABLE_SORTER_KEYS.DECREASE,
+    sort: (a, b, ascending) =>
+      compareNumbers(a.decreasePerBlock, b.decreasePerBlock, ascending),
   },
 ];
 
@@ -377,12 +416,12 @@ export type AuctionTableData = {
   price: string;
   startPrice: string;
   endPrice: string;
+  decreasePerBlock: string;
   status: AuctionStatus;
   amountRemaining: string;
   initialAmount: string;
   startBlock: number;
   endBlock: number;
-  // bids: number;
   auctionAddress: string;
   buyAsset: {
     symbol: string;
