@@ -16,7 +16,7 @@ import { withTimeout } from "@/app/rebalancer/hooks";
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
 import { OriginAsset } from "@/types/ibc";
-import { microToBase } from "@/utils";
+import { microToBase, sleep } from "@/utils";
 import { fetchOraclePrices } from "./actions/fetch-oracle-prices";
 
 const getOriginAssetQueryArgs = (denom: string) => ({
@@ -54,7 +54,7 @@ export const prefetchLivePrices = async (queryClient: QueryClient) => {
 };
 
 // fetch assets and prices
-export const prefetchMetadata = async (queryClient: QueryClient) => {
+export const prefetchAssetMetdata = async (queryClient: QueryClient) => {
   return Promise.all(
     chainConfig.supportedAssets.map((asset) => {
       return queryClient.prefetchQuery(getOriginAssetQueryArgs(asset.denom));
@@ -79,7 +79,9 @@ export const prefetchAuctionLimits = async (queryClient: QueryClient) => {
 
 export const prefetchLiveAuctions = async (queryClient: QueryClient) => {
   return queryClient.prefetchQuery({
-    queryFn: async () => fetchLiveAuctions(),
+    queryFn: async () => {
+      return fetchLiveAuctions();
+    },
     queryKey: [QUERY_KEYS.LIVE_AUCTIONS],
     retry: (errorCount) => errorCount < 1,
   });

@@ -23,7 +23,7 @@ import { OriginAsset } from "@/types/ibc";
 import { ErrorHandler } from "@/const/error";
 import {
   prefetchAccountConfiguration,
-  prefetchMetadata,
+  prefetchAssetMetdata,
   prefetchLivePrices,
 } from "@/server/prefetch";
 
@@ -58,11 +58,11 @@ export default async function CreateRebalancerPage({
   }
 
   const queryClient = new QueryClient();
-  await prefetchMetadata(queryClient);
+  await prefetchAssetMetdata(queryClient);
   prefetchLivePrices(queryClient);
 
   const prefetchRequests = [
-    prefetchMetadata(queryClient),
+    prefetchAssetMetdata(queryClient),
     prefetchLivePrices(queryClient),
     prefetchAccountConfiguration(queryClient, address),
     queryClient.prefetchQuery({

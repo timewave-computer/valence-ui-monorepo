@@ -8,11 +8,8 @@ import {
 import { SanitizedAuctionStatus, chainConfig } from "@/const";
 
 export async function fetchLiveAuctions() {
-  // get auction addresses
-  // fetch data for each one
   const stargateClient = await getStargateClient();
   const cwClient = await getCosmwasmClient();
-
   const auctionsManagerClient = new AuctionsManagerQueryClient(
     cwClient,
     chainConfig.addresses.auctionsManager,

@@ -5,7 +5,7 @@ import {
   prefetchAuctionStatuses,
   prefetchHistoricalPrices,
   prefetchAccountConfiguration,
-  prefetchMetadata,
+  prefetchAssetMetdata,
   prefetchHistoricalTargets,
   prefetchHistoricalBalances,
   prefetchLivePrices,
@@ -26,7 +26,7 @@ export default async function RebalancerMainServerComponent({
 
   if (account && account.length > 0) {
     const requests = [
-      prefetchMetadata(queryClient),
+      prefetchAssetMetdata(queryClient),
       prefetchLivePrices(queryClient),
       prefetchAuctionLimits(queryClient),
       prefetchAuctionStatuses(queryClient),

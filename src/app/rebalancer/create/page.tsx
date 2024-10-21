@@ -13,7 +13,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { prefetchMetadata, prefetchLivePrices } from "@/server/prefetch";
+import { prefetchAssetMetdata, prefetchLivePrices } from "@/server/prefetch";
 
 export const metadata: Metadata = {
   title: "Start Rebalancing",
@@ -37,7 +37,7 @@ type CreateRebalancerProps = {};
 export default async function CreateRebalancerPage({}: CreateRebalancerProps) {
   const queryClient = new QueryClient();
   const prefetchRequests = [
-    prefetchMetadata(queryClient),
+    prefetchAssetMetdata(queryClient),
     prefetchLivePrices(queryClient),
     queryClient.prefetchQuery({
       queryKey: [QUERY_KEYS.REBALANCER_WHITELIST],
