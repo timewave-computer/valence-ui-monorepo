@@ -9,15 +9,14 @@ import {
   getPrices,
   fetchAuctionStatuses,
   fetchAuctionLimits,
-  fetchLiveAuctions,
+  fetchOraclePrices,
 } from "@/server/actions";
 import { chainConfig } from "@/const/config";
 import { withTimeout } from "@/app/rebalancer/hooks";
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
 import { OriginAsset } from "@/types/ibc";
-import { microToBase, sleep } from "@/utils";
-import { fetchOraclePrices } from "./actions/fetch-oracle-prices";
+import { microToBase } from "@/utils";
 
 const getOriginAssetQueryArgs = (denom: string) => ({
   queryKey: [QUERY_KEYS.ORIGIN_ASSET, denom],
@@ -73,16 +72,6 @@ export const prefetchAuctionLimits = async (queryClient: QueryClient) => {
   return queryClient.prefetchQuery({
     queryFn: async () => fetchAuctionLimits(),
     queryKey: [QUERY_KEYS.AUCTION_LIMITS],
-    retry: (errorCount) => errorCount < 1,
-  });
-};
-
-export const prefetchLiveAuctions = async (queryClient: QueryClient) => {
-  return queryClient.prefetchQuery({
-    queryFn: async () => {
-      return fetchLiveAuctions();
-    },
-    queryKey: [QUERY_KEYS.LIVE_AUCTIONS],
     retry: (errorCount) => errorCount < 1,
   });
 };

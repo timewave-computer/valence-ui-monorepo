@@ -15,3 +15,4 @@ export * from "./fetch-auction-limits";
 export * from "./fetch-live-auctions";
 export * from "./fetch-astroport-rate";
 export * from "./fetch-osmosis-rate";
+export * from "./fetch-oracle-prices";

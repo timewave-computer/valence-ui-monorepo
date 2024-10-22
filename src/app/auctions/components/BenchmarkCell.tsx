@@ -90,7 +90,13 @@ export const BenchmarkCell = ({
   } else
     return (
       <TextCell isLoading={astroportQuery.isLoading} className="gap-2 text-xs">
-        <span className={clsx(isAstroportPriceHigher && "text-valence-red")}>
+        <span
+          className={clsx(
+            isAstroportPriceHigher &&
+              auctionData?.auction?.status === "active" &&
+              "text-valence-red",
+          )}
+        >
           {displayNumber}
         </span>
       </TextCell>

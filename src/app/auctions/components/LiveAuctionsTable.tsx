@@ -12,11 +12,13 @@ import {
   CelatoneUrl,
   chainConfig,
   LiveAuctionStatus,
+  QUERY_KEYS,
 } from "@/const";
-import { useLiveAuctions } from "@/hooks/use-live-auctions";
-import { FetchLiveAuctionsReturnType } from "@/server/actions";
 import {
-  cn,
+  fetchLiveAuctions,
+  FetchLiveAuctionsReturnType,
+} from "@/server/actions";
+import {
   displayAddress,
   displayNumberV2,
   displayLocalTimezone,
@@ -25,15 +27,29 @@ import {
   microToBase,
   useFeatureFlag,
   FeatureFlags,
+  cn,
 } from "@/utils";
 import { compareNumbers, compareStrings } from "@/utils/table-sorters";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState, use } from "react";
 import { BenchmarkCell } from "@/app/auctions/components";
+import { useQuery } from "@tanstack/react-query";
 
-export function LiveAuctionsTable() {
-  const { data: auctionsData, isFetching: isAuctionsDataFetching } =
-    useLiveAuctions();
-
+export function LiveAuctionsTable({
+  initialAuctionsData,
+}: {
+  initialAuctionsData: FetchLiveAuctionsReturnType;
+}) {
+  const { data: auctionsData, isFetching: isAuctionsDataFetching } = useQuery({
+    initialData: initialAuctionsData,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchInterval: 5 * 1000, // 5 seconds
+    queryFn: async () => {
+      return fetchLiveAuctions();
+    },
+    queryKey: [QUERY_KEYS.LIVE_AUCTIONS],
+    retry: (errorCount) => errorCount < 1,
+  });
   const [sorterKey, setSorter] = useState<string>(
     LIVE_AUCTION_TABLE_SORTER_KEYS.PAIR,
   );
@@ -231,9 +247,7 @@ export function LiveAuctionsTable() {
                 <TextCell href={CelatoneUrl.block(row.startBlock)}>
                   {row.startBlock.toString()}
                 </TextCell>
-                <TextCell href={CelatoneUrl.block(row.endBlock)}>
-                  {row.endBlock.toString()}
-                </TextCell>
+                <TextCell>{row.endBlock.toString()}</TextCell>
                 <TextCell href={CelatoneUrl.contract(row.auctionAddress)}>
                   {displayAddress(row.auctionAddress)}
                 </TextCell>
