@@ -44,7 +44,7 @@ export const displayLocalTimezone = (date: Date) => {
 
 export const displayUtcToLocal = (date: Date) => {
   try {
-    const time = format(date, "hh:mm a");
+    const time = format(date, "HH:mm");
     return time;
   } catch (e) {
     ErrorHandler.warn(ERROR_MESSAGES.DISPLAY_UTC_TIME_FAIL, e);

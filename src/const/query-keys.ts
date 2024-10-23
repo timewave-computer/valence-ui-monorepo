@@ -5,7 +5,7 @@ export const QUERY_KEYS = {
   AUCTION_BALANCES: "auction-balances",
   AUCTION_LIMITS: "auction-limits",
   AUCTION_STATUSES: "auction-statuses", // DEPRECATED
-  ASTROPORT_PRICE: "astroport-price",
+  ASTROPORT_PRICES: "astroport-prices",
   LIVE_AUCTIONS: "live-auctions",
   HISTORIC_VALUES: "historic-values",
   WALLET_BALANCES: "wallet-balances",

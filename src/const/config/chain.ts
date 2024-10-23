@@ -45,6 +45,7 @@ type SupportedChainConfig = {
     decimalPoints: number;
   };
   celatoneUrl: string;
+  mintscanUrl: string;
   estBlockTime: number; // seconds
 };
 
@@ -88,7 +89,8 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       symbol: "NTRN",
       decimalPoints: 6,
     },
-    celatoneUrl: "https://neutron.celat.one/neutron-1/",
+    celatoneUrl: "https://neutron.celat.one/neutron-1",
+    mintscanUrl: "https://www.mintscan.io/neutron",
     estBlockTime: 2.42,
   },
   "pion-1": {
@@ -124,7 +126,8 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       amount: 0.001,
       decimalPoints: 6,
     },
-    celatoneUrl: "https://neutron.celat.one/pion-1/",
+    celatoneUrl: "https://neutron.celat.one/pion-1",
+    mintscanUrl: "https://www.mintscan.io/neutron",
     estBlockTime: 2.42,
   },
 };

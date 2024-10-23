@@ -26,7 +26,7 @@ export function LiveAuctionsHero() {
           >
             Rebalancer
           </Link>
-          . Auctions begin at 12:00 UTC daily, and close after 24 hours.
+          . Auction cycles begin at 00:00 UTC daily.
         </p>
         <div className="hidden flex-row flex-wrap gap-4 pt-4 sm:flex">
           {heroLinks.map((link) => (

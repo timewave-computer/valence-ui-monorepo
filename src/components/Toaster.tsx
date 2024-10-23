@@ -3,7 +3,7 @@
 import React, { ReactNode } from "react";
 import { Toaster as Sonner } from "sonner";
 import { LinkText } from "./LinkText";
-import { CelatoneUrl } from "@/const/celatone";
+import { CelatoneUrl } from "@/const/celatone-url";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 

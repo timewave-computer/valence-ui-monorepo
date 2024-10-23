@@ -1,16 +1,36 @@
 "use server";
 import { chainConfig } from "@/const";
+import { sleep } from "@/utils";
 import { z } from "zod";
 
 const ASTROPORT_API_URL = "https://app.astroport.fi/api/trpc";
 
-export const fetchAstroportRate = async (
-  amount: string,
+type FetchAstroportPriceParams = {
+  amount: string;
   pair: {
     fromDenom: string;
     toDenom: string;
-  },
-): Promise<number | null> => {
+  };
+};
+
+export const fetchAstroportRates = async (
+  params: Array<FetchAstroportPriceParams>,
+  sleepMs?: number,
+) => {
+  return Promise.all(
+    params.map(async (p, i) => {
+      // avoid rate limiting errors
+      if (i !== 0) await sleep(sleepMs ?? 200);
+
+      return fetchAstroportRate(p);
+    }),
+  );
+};
+
+export const fetchAstroportRate = async ({
+  amount,
+  pair,
+}: FetchAstroportPriceParams): Promise<number | null> => {
   const res = await fetch(
     ASTROPORT_API_URL +
       "/routes.getRoutes" +
@@ -26,6 +46,9 @@ export const fetchAstroportRate = async (
           },
         }),
       }),
+    {
+      cache: "no-store",
+    },
   );
 
   if (!res.ok) {

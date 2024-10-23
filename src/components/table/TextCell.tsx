@@ -23,7 +23,7 @@ export const TextCell = ({
         "border-x border-valence-lightgray",
         "text-nowrap",
         href &&
-          "underline decoration-valence-lightgray decoration-[1.6px] underline-offset-4 hover:decoration-valence-gray",
+          "underline decoration-valence-lightgray decoration-[1px] underline-offset-4 hover:decoration-valence-gray",
         className,
       )}
     >
