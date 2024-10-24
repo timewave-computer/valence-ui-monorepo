@@ -1,0 +1,22 @@
+I. Summary
+Neutron and Cosmos Hub propose to enter into a token swap Covenant with each other.
+
+Neutron will swap 100,000.00 NTRN for Cosmos Hub's 8,264.153855 ATOM.
+
+This swap will happen entirely on-chain without any intermediaries.
+
+II. Swap Terms
+A. Neutron Details
+Neutron will send 100,000.00 NTRN to the Covenant for swapping. The assets that Neutron receives in return will be directed to neutron1ajjddqsr9spepwsrt4u2nxpy4hmheyek5uxqc2gsy7sgt905s86sa3xzy6 on Neutron.
+
+B. Cosmos Hub Details
+Cosmos Hub will send 8,264.153855 ATOM to the Covenant for swapping. The assets that Cosmos Hub receives in return will be directed to cosmos1zq5nue004v9z9x7fvtkfhexavlr5ndg2fz5yet9pekjqedvwrqwqren3m7 on Cosmos Hub.
+
+C. Deposit Deadline
+Both parties have until 07/12/2024, 16:31 to send their assets to the Covenant. The swap will occur once both parties have sent their assets to the Covenant. If only one party has sent its assets to the Covenant by the time the deadline has been reached, no swap will occur, and the Covenant will return the assets to the sending party's return address. Neutron's return address is neutron1ajjddqsr9spepwsrt4u2nxpy4hmheyek5uxqc2gsy7sgt905s86sa3xzy6, and Cosmos Hub's return address is cosmos1zq5nue004v9z9x7fvtkfhexavlr5ndg2fz5yet9pekjqedvwrqwqren3m7.
+
+D. Withdrawal
+After one party sends its assets to the Covenant, that party may withdraw its assets any time prior to the other party sending its assets to the Covenant. The address authorized to withdraw Neutron's assets is neutron1fk0v8pmzc96depwljsl9pevuzz5fnj9s4xy8xaaj8zyc5c3pc8vsm00exh, and the address authorized to withdraw Cosmos Hub's assets is neutron1g5pwy6uvlzqsqacux9en725l62g9zc0r3ufqtqz8kdcrcfl7649s0qhk06.
+
+III. Next Steps
+This proposal was automatically generated at valence.zone. Reach out if you have any questions or feature requests: @ValenceZone.

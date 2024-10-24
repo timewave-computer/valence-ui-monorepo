@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "valence-services-ui",
+  "name": "valence-ui",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
