@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
+      ],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": [
+        "NODE_ENV",
+        "API_CACHE_URL",
+        "COSMOS_RPC_URL",
+        "NEUTRON_RPC_URL",
+        "EDGE_CONFIG",
+        "EDGE_CONFIG_DATA_STORE_KEY",
+        "NEXT_PUBLIC_FF_COVENANTS_VIEW_POL",
+        "NEXT_PUBLIC_FF_REBALANCER_NONUSDC_VALUE",
+        "NEXT_PUBLIC_FF_ENABLE_MULTIPLE_ACCTS",
+        "NEXT_PUBLIC_FF_AUCTIONS_LIVE_AGGREGATE",
+        "INDEXER_API_KEY",
+        "NEXT_PUBLIC_CHAIN_ID",
+        "COINGECKO_API_KEY",
+        "SUBCRIBE_GOOGLE_FORM_ID"
+      ]
+    },
+    "web#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "dev": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ],
+      "persistent": true,
+      "cache": false
+    }
+  }
+}

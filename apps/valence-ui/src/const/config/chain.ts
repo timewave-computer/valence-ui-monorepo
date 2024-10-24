@@ -1,9 +1,8 @@
-import { NEUTRON_CHAIN } from "@/const/chain-data/neutron";
 import { assets } from "chain-registry";
-import { NEUTRON_TESTNET_CHAIN } from "@/const/chain-data/neutrontestnet";
 import { AssetList, Chain } from "@chain-registry/types";
 import { supportedAssets, USDC_DENOM } from "@/const/chain-data";
 import { getFeaturedAccounts } from "@/const/config/featured";
+import { NEUTRON_CHAIN, NEUTRON_TESTNET_CHAIN } from "../chain-data";
 
 export type CodeIdsType = {
   ServicesManager: number;

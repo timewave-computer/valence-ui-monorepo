@@ -30,8 +30,6 @@ const signerOptions: SignerOptions = {
       aminoTypes: aminoTypes,
     };
   },
-  // cosmos-kit expects aminotypes from stargate 32.3. only the 'register' function is different, should have no impact
-  // @ts-expect-error
   signingCosmwasm: () => {
     return {
       gasPrice: GasPrice.fromString("0.001untrn"),

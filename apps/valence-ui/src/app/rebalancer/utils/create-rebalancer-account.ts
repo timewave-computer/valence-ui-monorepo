@@ -228,10 +228,17 @@ const generatePredictableAddress = async ({
       `${ERROR_MESSAGES.CREATE_REBALANCER_CODE_ID_ERROR} ${codeId}`,
     );
   }
+
+  // appease typescript overload
+  if (!chainConfig.chain.bech32_prefix) {
+    throw ErrorHandler.makeError(
+      `${ERROR_MESSAGES.CREATE_REBALANCER_CHAIN_PREFIX_ERROR}`,
+    );
+  }
   return instantiate2Address(
     fromHex(codeDetails.checksum),
     creatorAddress,
     toUtf8(salt),
-    chainConfig.chain.bech32_prefix,
+    chainConfig.chain.bech32_prefix 
   );
 };

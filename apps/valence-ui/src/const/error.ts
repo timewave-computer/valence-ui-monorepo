@@ -28,6 +28,7 @@ export const ERROR_MESSAGES = {
   // create rebalancer
   CREATE_REBALANCER_CODE_ID_ERROR:
     "Failed to create rebalancer, could not fetch code details for",
+    CREATE_REBALANCER_CHAIN_PREFIX_ERROR:"Failed to create rebalancer, no chain prefix registered",
 };
 
 // here for parsing specific errors in the client. server actions -> client loses context of error instance

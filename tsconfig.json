@@ -1,42 +1,9 @@
 {
+  "extends": "./apps/valence-ui/tsconfig.json",
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["apps/valence-ui/src/*"] // NOTE: this is a hack to get the one repo working. need to change how tsconfig works
     }
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "telescope.js"
-  ],
-  "exclude": ["node_modules"],
-  "ts-node": {
-    // for scripts/codegen
-    "transpileOnly": true,
-    "compilerOptions": {
-      "module": "ESNext",
-      "esModuleInterop": true
-    },
-    "esm": true // <--- this is the most important part
   }
 }
