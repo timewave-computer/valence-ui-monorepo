@@ -1,6 +1,5 @@
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { format } from "date-fns";
-import { microToBase } from "./denom-math";
 
 export const displayPid = (pid: { p: number; i: number; d: number }) => {
   const { p, i, d } = pid;
@@ -19,13 +18,6 @@ export const displayPid = (pid: { p: number; i: number; d: number }) => {
   } else return `Custom (${p * 100}%, ${i * 100}%, ${d * 100}%)`;
 };
 
-export const displayMinBalance = (
-  minBalance: number,
-  symbol: string,
-  decimals: number,
-) => {
-  return `${microToBase(minBalance, decimals)} ${symbol}`;
-};
 
 export const displayLocalTimezone = (date: Date) => {
   try {
