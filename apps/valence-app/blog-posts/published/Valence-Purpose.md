@@ -13,4 +13,4 @@ For this reason, digital institutions should be specifically designed to account
 
 Today, bridges are designed to facilitate the permissionless transport of messages or security among protocols. Valence is a new kind of symbolic bridge, a tool that enables the free flow of economic and political capital toward shared ends. Long-term, permissionless collaboration begins with the will to trust. Credit is unique in its power to build trust over time—and so Valence takes its first step with protocol-to-protocol lending.
 
-Join us in creating the network economy: [@valence-uiZone](https://x.com/ValenceZone)
+Join us in creating the network economy: [@ValenceZone](https://x.com/ValenceZone)

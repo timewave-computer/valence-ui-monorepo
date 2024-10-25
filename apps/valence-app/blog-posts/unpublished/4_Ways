@@ -70,10 +70,10 @@ For example, say a new actively validated service (AVS) may be choosing between 
 
 Striking a liquidity deal as a decentralized protocol can be difficult. If you are concerned that your protocol’s community is not sufficiently aligned to find agreeable terms with an external party, one relatively easy first step is to cultivate internal alignment by working together on a strategy for managing your protocol’s treasury. Valence’s [Rebalancer](https://www.valence.zone/blog/Rebalancer-Protocol-Asset-Management) gives protocols an extremely simple entry point for cross-chain asset management.
 
-The Rebalancer is live on mainnet today in private beta. Get in touch if you are interested in gaining early access: [@valence-uiZone](https://x.com/ValenceZone)
+The Rebalancer is live on mainnet today in private beta. Get in touch if you are interested in gaining early access: [@ValenceZone](https://x.com/ValenceZone)
 
 ## Advanced Mode: Covenants
 
 If you are ready to strike a POL deal with an external party, you can close protocol-to-protocol deals without intermediary multisigs by using Valence’s [Covenant](https://www.valence.zone/blog/Covenants_Protocol-to-Protocol_Deals) system. 
 
-Covenants are live on mainnet today in private beta. Get in touch if you are interested in gaining early access: [@valence-uiZone](https://x.com/ValenceZone)
+Covenants are live on mainnet today in private beta. Get in touch if you are interested in gaining early access: [@ValenceZone](https://x.com/ValenceZone)

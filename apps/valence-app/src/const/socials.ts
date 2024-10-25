@@ -3,7 +3,7 @@ export const ABSOLUTE_URL = process.env.NEXT_PUBLIC_VERCEL_URL
   : "https://valence.zone";
 
 export const X_URL = "https://x.com/ValenceZone";
-export const X_HANDLE = "@valence-uiZone";
+export const X_HANDLE = "@ValenceZone";
 export const VALENCE_DOMAIN = "valence.zone";
 export const GITHUB_URL = "https://github.com/timewave-computer";
 export const VALENCE_DESCRIPTION =
