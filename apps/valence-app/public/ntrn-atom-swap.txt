@@ -19,4 +19,4 @@ D. Withdrawal
 After one party sends its assets to the Covenant, that party may withdraw its assets any time prior to the other party sending its assets to the Covenant. The address authorized to withdraw Neutron's assets is neutron1fk0v8pmzc96depwljsl9pevuzz5fnj9s4xy8xaaj8zyc5c3pc8vsm00exh, and the address authorized to withdraw Cosmos Hub's assets is neutron1g5pwy6uvlzqsqacux9en725l62g9zc0r3ufqtqz8kdcrcfl7649s0qhk06.
 
 III. Next Steps
-This proposal was automatically generated at valence.zone. Reach out if you have any questions or feature requests: @ValenceZone.
+This proposal was automatically generated at valence.zone. Reach out if you have any questions or feature requests: @valence-uiZone.

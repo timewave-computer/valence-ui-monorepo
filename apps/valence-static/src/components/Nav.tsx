@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
-import { Button, cn } from "@valence-ui/components";
+import { Button, cn } from "@valence-ui/ui-components";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
 
 const shouldHightlightItem = (href: string, path: string) => {

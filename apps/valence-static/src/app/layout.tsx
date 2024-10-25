@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "@valence-ui/components/styles/index.css";
+import "@valence-ui/ui-components/styles/index.css";
 import { Nav } from "~/components";
-import { cn } from "@valence-ui/components";
+import { cn } from "@valence-ui/ui-components";
 import { ReactQueryProvider } from "~/context";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "~/const/socials";
 

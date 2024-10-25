@@ -41,4 +41,4 @@ A trustless solution may not be available for a protocol the very first time the
 
 # Make it Happen
 
-Valence helps protocols upgrade from each phase to the next. Regardless of which phase your protocol is currently in, get in touch with Valence if you are interested in increasing your protocol’s sophistication with regard to POL deployments. DMs are open: [@ValenceZone](https://x.com/ValenceZone)
+Valence helps protocols upgrade from each phase to the next. Regardless of which phase your protocol is currently in, get in touch with Valence if you are interested in increasing your protocol’s sophistication with regard to POL deployments. DMs are open: [@valence-uiZone](https://x.com/ValenceZone)

@@ -117,7 +117,7 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
     // should not happen but here to make typescript happy
     if (!walletAddress)
       throw new Error(
-        "No address specified. Please reconnect wallet or contact @ValenceZone for help.",
+        "No address specified. Please reconnect wallet or contact @valence-uiZone for help.",
       );
     const cwClient = await getCosmWasmClient();
 

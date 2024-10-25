@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@valence-ui/config": "*",
-    "@valence-ui/components": "*",
+    "@valence-ui/ui-components": "*",
     "@chain-registry/client": "^1.33.0",
     "@cosmjs/cosmwasm-stargate": "^0.32.4",
     "@cosmjs/encoding": "^0.32.4",

@@ -1,5 +1,5 @@
 "use client";
-import { Button, cn } from "@valence-ui/components";
+import { Button, cn } from "@valence-ui/ui-components";
 
 import { TextInput } from "~/components/TextInput";
 import { useState } from "react";

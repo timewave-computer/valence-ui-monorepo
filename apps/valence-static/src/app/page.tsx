@@ -1,4 +1,4 @@
-import { Button, cn } from "@valence-ui/components";
+import { Button, cn } from "@valence-ui/ui-components";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import Link from "next/link";
