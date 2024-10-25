@@ -1,10 +1,9 @@
 "use client";
-import { cn } from "@/utils";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
-import { Button } from "./Button";
-import { Sheet, SheetContent, SheetTrigger } from "../components/Sheet";
+import { Button, cn } from "@valence-ui/ui-components";
+import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -39,14 +38,8 @@ const NavLink = ({
 
 export const Nav = () => {
   const path = usePathname();
-
   const links = (
     <>
-      <NavLink href="/covenants" label="Covenants" path={path} />
-      <NavLink href="/rebalancer" label="Rebalancer" path={path} />
-
-      <NavLink href="/auctions" label="Auctions" path={path} />
-
       <NavLink href="/blog" label="Blog" path={path} />
     </>
   );

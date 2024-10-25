@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "@valence-ui/ui-components/styles/index.css";
 import { Nav } from "@/components/Nav";
 import { cn } from "@/utils";
 import {

@@ -1,4 +1,4 @@
-import "./loader.css";
+import "./LoadingIndicator.css";
 
 export const LoadingIndicator: React.FC<{
   variant?: "s" | "m";

@@ -1,15 +1,15 @@
-import { Button, Footer } from "@/components";
+import { Button, cn } from "@valence-ui/ui-components";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
-import { cn } from "@/utils";
 import Link from "next/link";
+import { Footer } from "~/components";
 
 const Hero = ({ className }: { className?: string }) => {
   return (
     <>
       <h2
         className={cn(
-          "text-balance px-6  font-serif text-[2.5rem] leading-[0.9]  md:text-[3rem] md:text-[4.7rem]",
+          "text-balance px-6   font-serif text-[2.5rem] leading-[0.9]  md:text-[3rem] md:text-[4.7rem]",
           className,
         )}
       >

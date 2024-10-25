@@ -1,5 +1,5 @@
 "use server";
-import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
+import { ERROR_MESSAGES, ErrorHandler } from "~/const/error";
 
 const { SUBCRIBE_GOOGLE_FORM_ID } = process.env;
 if (!SUBCRIBE_GOOGLE_FORM_ID) {

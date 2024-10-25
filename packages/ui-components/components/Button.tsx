@@ -1,8 +1,8 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/utils";
+import { cn } from "~/utils";
 import { Slot } from "@radix-ui/react-slot";
 import React from "react";
-import { LoadingIndicator } from "@/components";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 const buttonVariants = cva(
   "text-center py-1.5 px-2  min-h-9 min-w-20  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border",
