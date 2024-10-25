@@ -156,6 +156,7 @@ const CovenantPage = () => {
                   isDisabled={true}
                   options={TYPE_OPTIONS}
                   selected={covenantTypeSelection}
+                  // @ts-ignore
                   onSelected={setCovenantType}
                 />
               )}
@@ -165,6 +166,7 @@ const CovenantPage = () => {
                   <Dropdown
                     options={POL_TYPE_PARTIES_OPTIONS}
                     selected={numParties}
+                    // @ts-ignore
                     onSelected={setNumParties}
                   />
                 </div>

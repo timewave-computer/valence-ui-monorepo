@@ -1,9 +1,5 @@
 {
-  "extends": "./apps/valence-ui/tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["apps/valence-ui/src/*"] // NOTE: this is a hack to get the one repo working. need to change how tsconfig works
-    }
-  }
+  "extends": "./packages/config/ts/base.json",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
