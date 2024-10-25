@@ -5,7 +5,7 @@ const tailwindConfig = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-    presets: [require('@valence-ui/config/tailwind/config')],
-  }
-  
-  module.exports = tailwindConfig
+  presets: [require("@valence-ui/config/tailwind/config")],
+};
+
+module.exports = tailwindConfig;

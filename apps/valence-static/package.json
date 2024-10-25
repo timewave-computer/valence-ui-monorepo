@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky",
     "gen:cosmos-ts": "rm -rf ./src/codegen/ts-codegen && ts-node ./scripts/ts-codegen.ts"
   },
   "dependencies": {
