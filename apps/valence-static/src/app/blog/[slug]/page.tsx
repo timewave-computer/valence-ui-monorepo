@@ -1,14 +1,14 @@
-import { ErrorHandler } from "@/const/error";
-import { getPost } from "@/server/blog/get-posts";
-import { Post } from "@/types/blog";
-import { RouterButton } from "@/components";
+import { ErrorHandler } from "~/const/error";
+import { getPost } from "~/server/blog/get-posts";
+import { Post } from "~/types/blog";
+import { RouterButton } from "~/components";
 import { FaChevronLeft } from "react-icons/fa";
 import { UTCDate } from "@date-fns/utc";
-import { ABSOLUTE_URL, X_HANDLE } from "@/const/socials";
+import { ABSOLUTE_URL, X_HANDLE } from "~/const/socials";
 import { Metadata } from "next";
 import Image from "next/image";
-import { cn } from "@/utils";
-import { PostHeading } from "@/app/blog/common";
+import { cn } from "~/utils";
+import { PostHeading } from "~/app/blog/common";
 import "./article.css";
 
 const BackButton = ({ className }: { className?: string }) => {
@@ -58,7 +58,7 @@ export async function generateMetadata({
 
 const BlogPost = async ({ params }: BlogPostProps) => {
   let postData: Post | null = null;
-  let error: boolean|null = null;
+  let error: boolean | null = null;
 
   try {
     postData = await getPost(params.slug);

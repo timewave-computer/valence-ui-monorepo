@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { Nav } from "@/components/Nav";
-import { cn } from "@/utils";
-import { ReactQueryProvider } from "@/context";
-import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
+import "@valence-ui/components/styles/index.css";
+import { Nav } from "~/components";
+import { cn } from "@valence-ui/components";
+import { ReactQueryProvider } from "~/context";
+import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "~/const/socials";
 
 import React from "react";
 

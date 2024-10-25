@@ -1,7 +1,6 @@
 "use client";
-import { cn } from "@/utils";
+import { cn } from "~/utils";
 import { useRef } from "react";
-import { BsPencilSquare } from "react-icons/bs";
 
 export type TextInputProps = {
   /**

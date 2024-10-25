@@ -1,13 +1,13 @@
-import { ErrorHandler } from "@/const/error";
-import { getSortedPosts } from "@/server/blog/get-posts";
-import { PostList } from "@/types/blog";
+import { ErrorHandler } from "~/const/error";
+import { getSortedPosts } from "~/server/blog/get-posts";
+import { PostList } from "~/types/blog";
 import { UTCDate } from "@date-fns/utc";
 import Link from "next/link";
-import { RouterButton } from "@/components";
+import { RouterButton } from "~/components";
 import { Metadata } from "next";
-import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
+import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "~/const/socials";
 import Image from "next/image";
-import { PostHeading } from "@/app/blog/common";
+import { PostHeading } from "~/app/blog/common";
 import { Fragment } from "react";
 
 const previewLength = 260;
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 
 const BlogHome = async () => {
   let posts: PostList = [];
-  let error:boolean | null = null;
+  let error: boolean | null = null;
 
   try {
     posts = getSortedPosts();

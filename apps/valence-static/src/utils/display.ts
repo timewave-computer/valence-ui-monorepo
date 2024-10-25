@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
+import { ERROR_MESSAGES, ErrorHandler } from "~/const/error";
 import { format } from "date-fns";
 
 export const displayPid = (pid: { p: number; i: number; d: number }) => {
@@ -17,7 +17,6 @@ export const displayPid = (pid: { p: number; i: number; d: number }) => {
     }
   } else return `Custom (${p * 100}%, ${i * 100}%, ${d * 100}%)`;
 };
-
 
 export const displayLocalTimezone = (date: Date) => {
   try {

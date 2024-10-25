@@ -11,10 +11,10 @@ import {
   PostFrontMatter,
   PostFrontMatterSchema,
   PostList,
-} from "@/types/blog";
+} from "~/types/blog";
 import { UTCDate } from "@date-fns/utc";
 import { compareDesc } from "date-fns";
-import { ErrorHandler } from "@/const/error";
+import { ErrorHandler } from "~/const/error";
 import { h } from "hastscript";
 
 import { visit } from "unist-util-visit";
