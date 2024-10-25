@@ -7,7 +7,6 @@ export const ValenceProductBrand: React.FC<{
   return (
     <div className="flex flex-row  items-center gap-4 border-valence-black">
       {img}
-      test
       <div className="">{children}</div>
     </div>
   );
