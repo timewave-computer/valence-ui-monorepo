@@ -33,7 +33,6 @@ const config: Config = {
         "graph-yellow": "#C2C600",
         "graph-purple": "#8476DE",
         "graph-teal": "#17CFCF",
-
         "valence-mediumred": "#FF2A00B2",
       },
       backgroundImage: {
@@ -49,7 +48,6 @@ const config: Config = {
       fontSize: {
         xxs: ["0.625rem", "0.875rem"], // 10px text, 14px line height
       },
-
       animation: {
         "pulse-fetching":
           "pulse-fetching 5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
@@ -64,4 +62,5 @@ const config: Config = {
   },
   plugins: [],
 };
+
 export default config;
