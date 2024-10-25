@@ -3,8 +3,9 @@ const eslintConfig = {
   extends: [
     "next/core-web-vitals",
     "plugin:@tanstack/eslint-plugin-query/recommended",
+
     "turbo",
   ],
 };
 
-export default eslintConfig;
+module.exports = eslintConfig;
