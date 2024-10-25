@@ -58,7 +58,7 @@ export async function generateMetadata({
 
 const BlogPost = async ({ params }: BlogPostProps) => {
   let postData: Post | null = null;
-  let error:any = null;
+  let error: any = null;
 
   try {
     postData = await getPost(params.slug);

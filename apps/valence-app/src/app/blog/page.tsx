@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 
 const BlogHome = async () => {
   let posts: PostList = [];
-  let error:any = null;
+  let error: any = null;
 
   try {
     posts = getSortedPosts();

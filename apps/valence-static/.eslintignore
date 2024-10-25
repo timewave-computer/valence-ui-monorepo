@@ -1,7 +1,4 @@
 # .eslintignore
 
-# Ignore all files in the src/protobuf/codegen directory
-src/protobuf/codegen/*
-
 # Do not lint blog posts.
 blog-posts/**/*.md

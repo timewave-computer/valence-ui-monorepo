@@ -7,10 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky",
     "gen:cosmos-ts": "rm -rf ./src/codegen/ts-codegen && ts-node ./scripts/ts-codegen.ts"
   },
   "dependencies": {
+    "@valence-ui/config": "*",
     "@chain-registry/client": "^1.33.0",
     "@cosmjs/cosmwasm-stargate": "^0.32.4",
     "@cosmjs/encoding": "^0.32.4",
@@ -66,7 +66,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@valence-ui/config":"*",
+    "@valence-ui/config": "*",
     "@chain-registry/types": "^0.50.1",
     "@cosmjs/amino": "^0.32.4",
     "@cosmology/telescope": "^1.8.4",
