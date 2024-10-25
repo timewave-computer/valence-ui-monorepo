@@ -1,0 +1,13 @@
+{
+    "name": "@valence-ui/config",
+    "version": "0.1.0",
+    "dependencies": {
+
+    },
+    "devDependencies": {
+      "tsx": "^4.19.0",
+      "@typescript-eslint/eslint-plugin": "6.14.0",
+      "@typescript-eslint/parser": "6.14.0",
+            "typescript": "5.3.3"
+    }
+  }
