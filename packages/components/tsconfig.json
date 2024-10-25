@@ -4,6 +4,7 @@
   "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "baseUrl": ".",
+    "declarationMap": false,
     "paths": {
       "~/*": ["./*"]
     }
