@@ -1,6 +1,5 @@
 export * from "./Button";
 export * from "./Checkbox";
-export * from "./Header";
 export * from "./Nav";
 export * from "./NumberInput";
 export * from "./table";
@@ -9,7 +8,6 @@ export * from "./Tooltip";
 export * from "./DropdowTextField";
 export * from "./LoadingIndicator";
 export * from "./MobileOverlay";
-export * from "./Footer";
 export * from "./LinkText";
 export * from "./coming-soon-tooltip";
 export * from "./Label";
