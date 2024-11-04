@@ -8,7 +8,7 @@ const HomePage = () => {
     <>
       <main className="h-screen grow overflow-auto bg-valence-white px-4 pt-8 text-valence-black transition-[padding]">
         <div className="mx-auto flex max-w-5xl flex-col">
-          <h2 className={"text-center   font-serif text-5xl  pb-8"}>
+          <h2 className={"text-center font-serif text-4xl  pb-8"}>
             Valence Services
           </h2>
 
@@ -37,7 +37,6 @@ const HomePage = () => {
               <h2 className="col-start-2 row-start-2   text-lg font-semibold ">
                 Rebalancer
               </h2>
-
               <Image
                 src="/img/rebalancer.svg"
                 alt="Rebalancer illustration"
