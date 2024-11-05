@@ -7,7 +7,7 @@ import { RouterButton } from "~/components";
 import { Metadata } from "next";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "~/const/socials";
 import Image from "next/image";
-import { PostHeading } from "~/app/blog/common";
+import { BackButton, PostHeading } from "~/app/blog/ui-components";
 import { Fragment } from "react";
 
 const previewLength = 260;
@@ -63,7 +63,7 @@ const BlogHome = async () => {
 
   return (
     // top padding is to avoid shifting layout for back button in desktop
-    <div className="min-h-1/2 flex flex-col items-start md:pt-7">
+    <div className="min-h-1/2 flex flex-col items-start">
       {posts.map((post) => (
         <Fragment key={`blog-post-${post.slug}`}>
           <PostHeading slug={post.slug}>{post.title}</PostHeading>

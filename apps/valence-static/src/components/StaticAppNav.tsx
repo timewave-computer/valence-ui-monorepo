@@ -4,6 +4,9 @@ import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button, cn } from "@valence-ui/ui-components";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
+import { CgExternal } from "react-icons/cg";
+import Link from "next/link";
+import { appUrl } from "~/utils";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -36,7 +39,15 @@ const NavLink = ({
   );
 };
 
-export const Nav = () => {
+const LaunchButton = () => (
+  <Link href={appUrl}>
+    <Button tabIndex={-1}>
+      Launch App
+      <CgExternal className="h-6 w-6 ml-1" />
+    </Button>
+  </Link>
+);
+export const StaticAppNav = () => {
   const path = usePathname();
   const links = (
     <>
@@ -47,11 +58,27 @@ export const Nav = () => {
   return (
     <nav
       className={cn(
-        "flex min-h-[3.25rem] flex-row items-center justify-between border-b border-valence-black bg-valence-white px-4 text-valence-black",
-        path === "/" && "flex md:hidden",
+        "flex  flex-row items-center justify-between py-4  bg-valence-white  text-valence-black",
       )}
     >
-      <div className="flex items-center gap-2 md:gap-8">
+      {/* desktop */}
+      <div className="hidden md:flex flex-row max-w-5xl py-4 mx-auto w-full justify-between ">
+        <a className="-ml-1" href="/">
+          <Image
+            src="/img/valence_vertical.svg"
+            alt="Logo"
+            width={120}
+            height={92}
+          />
+        </a>
+
+        <div className="flex items-center gap-2 md:gap-8">
+          <LaunchButton />
+        </div>
+      </div>
+
+      {/* mobile */}
+      <div className="flex flex-row justify-between w-full px-4 md:hidden border-b border-valence-black pb-4">
         <a className="" href="/">
           <Image
             src="/img/valence_horizontal.svg"
@@ -60,10 +87,6 @@ export const Nav = () => {
             height={38}
           />
         </a>
-        <div className="hidden flex-row gap-8 md:flex">{links}</div>
-      </div>
-
-      <div className="flex md:hidden">
         <Sheet>
           <SheetTrigger asChild className="outline-none">
             <Button
@@ -80,6 +103,7 @@ export const Nav = () => {
               {/* special case for mobile */}
               <NavLink href="/" label="Home" path={path} />
               {links}
+              <LaunchButton />
             </div>
           </SheetContent>
         </Sheet>

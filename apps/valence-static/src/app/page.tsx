@@ -3,13 +3,14 @@ import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "~/components";
+import { appUrl } from "~/utils";
 
 const Hero = ({ className }: { className?: string }) => {
   return (
     <>
       <h2
         className={cn(
-          "text-balance px-6  font-serif text-[2.5rem] leading-[0.9]  md:text-[3rem] md:text-[4.7rem]",
+          "text-balance px-4 md:px-6  font-serif text-[2.5rem] leading-[0.9]  md:text-[3rem] md:text-[4.7rem]",
           className,
         )}
       >
@@ -52,28 +53,19 @@ const InterchainGuild = ({ className }: { className?: string }) => {
 
 const HomePage = () => {
   return (
-    <main className="h-screen grow overflow-auto bg-valence-white px-4 pt-8 text-valence-black transition-[padding]">
-      <div className=" mx-auto flex max-w-5xl flex-col">
-        <div className="hidden flex-col items-center self-start px-4 pb-8 md:flex">
-          <Image
-            src="/img/valence_vertical.svg"
-            alt="Logo"
-            width={120}
-            height={92}
-          />
-        </div>
-
+    <main className="h-screen grow  bg-valence-white md:px-4 pb-4  text-valence-black transition-[padding]">
+      <div className="mx-auto flex max-w-5xl flex-col">
         {/* on mobile this should show at the top, on desktop it is in the center of the layout */}
         <div
-          className="mb-4 flex grow basis-0 flex-col justify-between gap-4 border-b 
-        border-valence-black md:mb-8  md:hidden
+          className="mb-4 flex grow basis-0 flex-col justify-between gap-4 
+         md:mb-8 pt-4  md:hidden
         "
         >
           <Hero className="" />
         </div>
 
         <div className="flex flex-col gap-x-10  md:grid md:grid-cols-2">
-          <h2 className="col-start-1 row-start-1 border-black  px-4 text-lg font-semibold md:border-t md:pt-4">
+          <h2 className="col-start-1 row-start-1  border-t border-valence-black  px-4 text-lg font-semibold  pt-4">
             Covenants
           </h2>
           <p className="col-start-1 row-start-2 p-4 pt-2">
@@ -84,7 +76,7 @@ const HomePage = () => {
             economic integration between token communities.
           </p>
           <div className="col-start-1 row-start-3 mx-4 flex flex-row flex-wrap gap-4 ">
-            <Link href={`/covenants`}>
+            <Link href={`${appUrl}/covenants`}>
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
                 variant="primary"
@@ -98,7 +90,7 @@ const HomePage = () => {
                 className="flex w-fit flex-row justify-center gap-1"
                 variant="secondary"
               >
-                Learn more
+                Read more
                 <HiMiniArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -113,7 +105,7 @@ const HomePage = () => {
           />
           <div className=" col-start-1 row-start-5 mt-12 border-b border-black" />
 
-          <h2 className="col-start-2 row-start-1 border-black px-4 pt-4 text-lg font-semibold md:border-t">
+          <h2 className="col-start-2 row-start-1 md:border-t border-valence-black  px-4 pt-4 text-lg font-semibold ">
             Rebalancer
           </h2>
           <p className="col-start-2 row-start-2 p-4 pt-2">
@@ -124,7 +116,7 @@ const HomePage = () => {
             blockchains, protocols, and decentralized autonomous organizations.
           </p>
           <div className="col-start-2 row-start-3 mx-4 flex flex-row flex-wrap gap-4 ">
-            <Link href="/rebalancer">
+            <Link href={`${appUrl}/rebalancer`}>
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
                 variant="primary"
@@ -139,7 +131,7 @@ const HomePage = () => {
                 className="flex w-fit flex-row justify-center gap-1"
                 variant="secondary"
               >
-                Learn more
+                Read more
                 <HiMiniArrowRight className="h-4 w-4" />
               </Button>
             </Link>

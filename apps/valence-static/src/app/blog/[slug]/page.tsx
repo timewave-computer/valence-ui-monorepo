@@ -2,32 +2,16 @@ import { ErrorHandler } from "~/const/error";
 import { getPost } from "~/server/blog/get-posts";
 import { Post } from "~/types/blog";
 import { RouterButton } from "~/components";
-import { FaChevronLeft } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { UTCDate } from "@date-fns/utc";
 import { ABSOLUTE_URL, X_HANDLE } from "~/const/socials";
 import { Metadata } from "next";
 import Image from "next/image";
 import { cn } from "~/utils";
-import { PostHeading } from "~/app/blog/common";
+import { PostHeading, BackButton } from "~/app/blog/ui-components";
 import "./article.css";
+import Link from "next/link";
 
-const BackButton = ({ className }: { className?: string }) => {
-  return (
-    <RouterButton
-      options={{ href: "/blog" }}
-      className={cn(
-        "flex items-center gap-2 self-start text-valence-gray hover:underline",
-        className,
-      )}
-    >
-      <FaChevronLeft className="h-4 w-4 transition-all  " />
-
-      <span className="py-1 text-sm font-medium tracking-tight ">
-        Back to blog
-      </span>
-    </RouterButton>
-  );
-};
 type BlogPostProps = {
   params: {
     slug: string;
@@ -91,10 +75,15 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     );
 
   return (
-    <div className="min-h-1/2 flex grow flex-col pb-8 md:gap-2">
+    <div className="min-h-1/2 flex grow flex-col pb-4 pt-4 md:gap-2">
       <div>
-        <BackButton />
-        <div className=" w-full  border-b-[1px] border-valence-black ">
+        <BackButton
+          link={{
+            href: "/blog",
+            label: "Back to Blog",
+          }}
+        />
+        <div className=" w-full border-b-[1px] border-valence-black   ">
           <PostHeading> {postData.frontMatter.title}</PostHeading>
         </div>
         <div className=" grid-cols-5 gap-x-8 pt-2 md:grid">
@@ -112,7 +101,13 @@ const BlogPost = async ({ params }: BlogPostProps) => {
       </div>
 
       <article dangerouslySetInnerHTML={{ __html: postData.content }} />
-      <BackButton className="pt-8" />
+      <BackButton
+        className="pt-4"
+        link={{
+          href: "/blog",
+          label: "Back to Blog",
+        }}
+      />
     </div>
   );
 };
