@@ -42,41 +42,39 @@ export default function RootLayout({
 }) {
   const flags = getFeatureFlags();
   return (
-    <>
-      <ReactQueryProvider>
-        <JotaiProvider>
-          <FeatureFlagsProvider flags={flags}>
-            <CosmosProvider>
-              <html lang="en">
-                <body
-                  className={cn(
-                    inter.className,
-                    "flex max-h-screen min-h-screen grow flex-col text-valence-black",
-                  )}
-                >
-                  <ReactQueryDevToolsWithProd />
-                  <Nav />
-                  {children}
-                  <Toaster
-                    style={{
-                      borderRadius: 0,
-                    }}
-                    toastOptions={{
-                      duration: 10000,
-                      classNames: {
-                        toast: "rounded-none",
-                        closeButton:
-                          "hover:bg-valence-white hover:text-valence-black bg-valence-black text-valence-white ",
-                      },
-                    }}
-                    closeButton={true}
-                  />
-                </body>
-              </html>
-            </CosmosProvider>
-          </FeatureFlagsProvider>
-        </JotaiProvider>
-      </ReactQueryProvider>
-    </>
+    <html>
+      <body
+        className={cn(
+          inter.className,
+          "flex max-h-screen min-h-screen grow flex-col text-valence-black",
+        )}
+      >
+        <ReactQueryProvider>
+          <JotaiProvider>
+            <FeatureFlagsProvider flags={flags}>
+              <CosmosProvider>
+                <ReactQueryDevToolsWithProd />
+                <Nav />
+                {children}
+                <Toaster
+                  style={{
+                    borderRadius: 0,
+                  }}
+                  toastOptions={{
+                    duration: 10000,
+                    classNames: {
+                      toast: "rounded-none",
+                      closeButton:
+                        "hover:bg-valence-white hover:text-valence-black bg-valence-black text-valence-white ",
+                    },
+                  }}
+                  closeButton={true}
+                />
+              </CosmosProvider>
+            </FeatureFlagsProvider>
+          </JotaiProvider>
+        </ReactQueryProvider>
+      </body>
+    </html>
   );
 }

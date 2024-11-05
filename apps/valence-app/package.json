@@ -10,8 +10,6 @@
     "gen:cosmos-ts": "rm -rf ./src/codegen/ts-codegen && ts-node ./scripts/ts-codegen.ts"
   },
   "dependencies": {
-    "@valence-ui/config": "*",
-    "@valence-ui/ui-components": "*",
     "@chain-registry/client": "^1.33.0",
     "@cosmjs/cosmwasm-stargate": "^0.32.4",
     "@cosmjs/encoding": "^0.32.4",
@@ -31,6 +29,8 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tanstack/react-query": "^5.56.2",
     "@types/hast": "^3.0.4",
+    "@valence-ui/config": "*",
+    "@valence-ui/ui-components": "*",
     "@vercel/edge-config": "^1.2.0",
     "chain-registry": "^1.63.89",
     "class-variance-authority": "^0.7.0",
@@ -61,13 +61,13 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
     "sonner": "^1.5.0",
+    "supports-color": "^9.4.0",
     "tailwind-merge": "^2.3.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@valence-ui/config": "*",
     "@chain-registry/types": "^0.50.1",
     "@cosmjs/amino": "^0.32.4",
     "@cosmology/telescope": "^1.8.4",

@@ -58,7 +58,6 @@ export const Nav = () => {
       {isAuctionsEnabled && (
         <NavLink href="/auctions" label="Auctions" path={path} />
       )}
-      <NavLink href="/blog" label="Blog" path={path} />
     </>
   );
 
@@ -66,7 +65,6 @@ export const Nav = () => {
     <nav
       className={cn(
         "flex min-h-[3.25rem] flex-row items-center justify-between border-b border-valence-black bg-valence-white px-4 text-valence-black",
-        path === "/" && "flex md:hidden",
       )}
     >
       <div className="flex items-center gap-2 md:gap-8">
