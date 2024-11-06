@@ -72,7 +72,7 @@ const BlogHome = async () => {
             className="flex grid-cols-5 flex-col gap-2 gap-x-8 pb-8 pt-2 md:grid md:gap-0 md:pb-16  "
             href={`/blog/${post.slug}`}
           >
-            <span className="col-span-1 col-start-1 row-start-1 md:pb-2">
+            <span className="col-span-1 col-start-1 row-start-1 md:pb-2 px-4">
               {new UTCDate(post.date).toLocaleDateString()}
             </span>
             <Image
@@ -82,7 +82,7 @@ const BlogHome = async () => {
               width={400}
               height={300}
             />
-            <p className="col-span-4  col-start-3  row-start-2 text-pretty text-lg ">
+            <p className="px-4 col-span-4  col-start-3  row-start-2 text-pretty text-lg ">
               {trimContent(post.preview)}
             </p>
           </Link>

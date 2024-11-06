@@ -16,7 +16,7 @@ export const PostHeading: React.FC<{
 
   return (
     <Link
-      className=" flex w-full flex-col  border-b-[1px] border-valence-black "
+      className=" flex w-full flex-col  border-b-[1px] border-valence-black px-4 "
       href={`/blog/${slug}`}
     >
       {heading}

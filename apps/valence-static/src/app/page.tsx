@@ -10,7 +10,7 @@ const Hero = ({ className }: { className?: string }) => {
     <>
       <h2
         className={cn(
-          "text-balance px-4 md:px-6  font-serif text-[2.5rem] leading-[0.9]  md:text-[3rem] md:text-[4.7rem]",
+          "text-balance px-4 md:px-6  font-serif text-[2.5rem] leading-[0.9]  md:text-[4.7rem]",
           className,
         )}
       >

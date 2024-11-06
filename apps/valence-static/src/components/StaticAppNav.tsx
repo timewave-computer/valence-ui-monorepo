@@ -62,8 +62,8 @@ export const StaticAppNav = () => {
       )}
     >
       {/* desktop */}
-      <div className="hidden md:flex flex-row max-w-5xl py-4 mx-auto w-full justify-between ">
-        <a className="-ml-1" href="/">
+      <div className="hidden md:flex flex-row max-w-5xl py-4 mx-auto w-full justify-between px-4 ">
+        <a href="/">
           <Image
             src="/img/valence_vertical.svg"
             alt="Logo"
