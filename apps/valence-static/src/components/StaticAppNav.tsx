@@ -11,7 +11,7 @@ import {
 } from "@valence-ui/ui-components";
 import { CgExternal } from "react-icons/cg";
 import Link from "next/link";
-import { ABSOLUTE_URL } from "~/const";
+import { VALENCE_APP_URL } from "~/const";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -45,7 +45,7 @@ const NavLink = ({
 };
 
 const LaunchButton = () => (
-  <Link target="_blank" href={ABSOLUTE_URL}>
+  <Link target="_blank" href={VALENCE_APP_URL}>
     <Button tabIndex={-1}>
       Launch App
       <CgExternal className="h-6 w-6 ml-1" />

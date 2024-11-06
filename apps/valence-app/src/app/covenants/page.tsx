@@ -175,12 +175,12 @@ const CovenantPage = () => {
           </div>
 
           <div className="relative flex grow flex-col items-stretch">
-            {/* <div
+            <div
               onMouseMove={debouncedMouseEnter}
               onMouseEnter={debouncedMouseEnter}
               onMouseLeave={debouncedMouseLeave}
               className="absolute z-20 flex h-full w-full flex-col bg-valence-black/25 "
-            /> */}
+            />
 
             <div className="flex flex-col gap-5 border-l-8 border-l-valence-red p-4 pb-8">
               <div className="flex flex-row items-center gap-2">
