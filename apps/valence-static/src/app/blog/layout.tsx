@@ -13,7 +13,7 @@ export default function BlogLayout({
 }) {
   return (
     <main className="flex grow flex-col bg-white ">
-      <div className=" mx-auto flex max-w-5xl grow flex-col p-4 md:pb-8">
+      <div className=" mx-auto flex max-w-5xl grow flex-col md:pb-8 px-4 md:px-0">
         {children}
         <Footer className="border-t border-valence-black pb-4 pt-4" />
       </div>

@@ -4,9 +4,10 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
-import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@valence-ui/ui-components";
 import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
+import { ABSOLUTE_URL } from "@/const";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -39,7 +40,7 @@ const NavLink = ({
   );
 };
 
-export const Nav = () => {
+export const ValenceAppNav = () => {
   const path = usePathname();
   const { chain } = useChainContext();
   const { address, disconnect, isWalletConnected, walletInfo } = useWallet();
@@ -68,7 +69,7 @@ export const Nav = () => {
       )}
     >
       <div className="flex items-center gap-2 md:gap-8">
-        <a className="" href="/">
+        <a className="" target="_blank" href={ABSOLUTE_URL}>
           <Image
             src="/img/valence_horizontal.svg"
             alt="Logo"

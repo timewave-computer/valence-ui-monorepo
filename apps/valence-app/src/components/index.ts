@@ -1,6 +1,6 @@
 export * from "./Button";
 export * from "./Checkbox";
-export * from "./Nav";
+export * from "./ValenceAppNav";
 export * from "./NumberInput";
 export * from "./table";
 export * from "./TextInput";

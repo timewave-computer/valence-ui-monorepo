@@ -1,6 +1,6 @@
 "use client";
 import { LinkText, TextInput, Label, ConnectWalletButton } from "@/components";
-import { X_HANDLE, X_URL } from "@/const/socials";
+import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { useWallet } from "@/hooks";
 import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";

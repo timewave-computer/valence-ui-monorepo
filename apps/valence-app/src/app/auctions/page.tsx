@@ -1,12 +1,12 @@
 import { FeatureFlags, isFeatureFlagEnabled } from "@/utils";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
-import { ABSOLUTE_URL, AUCTIONS_DESCRIPTION, X_HANDLE } from "@/const/socials";
+import { X_HANDLE } from "@valence-ui/socials";
 import { LiveAuctionsHero, LiveAuctionsTable } from "@/app/auctions/components";
 import { Suspense } from "react";
 import { LoadingSkeleton } from "@/components";
 import { fetchLiveAuctions, fetchAssetMetadata } from "@/server/actions";
-import { chainConfig } from "@/const";
+import { chainConfig, ABSOLUTE_URL, AUCTIONS_DESCRIPTION } from "@/const";
 
 export const revalidate = 60;
 

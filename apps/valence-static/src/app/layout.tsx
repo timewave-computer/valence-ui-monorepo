@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@valence-ui/ui-components/styles/index.css";
-import { Nav } from "~/components";
+import { StaticAppNav } from "~/components";
 import { cn } from "@valence-ui/ui-components";
 import { ReactQueryProvider } from "~/context";
-import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "~/const/socials";
+import { ABSOLUTE_URL, VALENCE_DESCRIPTION } from "~/const";
+import { X_HANDLE } from "@valence-ui/socials";
 
 import React from "react";
 
@@ -40,10 +41,10 @@ export default function RootLayout({
           <body
             className={cn(
               inter.className,
-              "flex max-h-screen min-h-screen grow flex-col text-valence-black",
+              "flex  flex-col text-valence-black bg-valence-white overflow-y-scroll",
             )}
           >
-            <Nav />
+            <StaticAppNav />
             {children}
           </body>
         </html>

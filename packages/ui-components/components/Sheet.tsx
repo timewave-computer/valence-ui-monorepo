@@ -1,10 +1,8 @@
-"use client";
-
 import * as React from "react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { RxCross2 } from "react-icons/rx";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/utils";
+import { cn } from "../utils/cn";
 
 const Sheet = SheetPrimitive.Root;
 

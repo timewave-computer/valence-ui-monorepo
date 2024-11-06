@@ -1,5 +1,6 @@
 import { CHAIN_ID_OPTIONS } from "@/app/covenants/const";
-import { VALENCE_DOMAIN, X_HANDLE, X_URL } from "@/const/socials";
+import { X_HANDLE, X_URL, VALENCE_DOMAIN } from "@valence-ui/socials";
+
 import {
   AFieldRenderer,
   BFieldRenderer,

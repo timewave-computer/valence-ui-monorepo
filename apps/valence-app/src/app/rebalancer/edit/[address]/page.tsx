@@ -1,11 +1,8 @@
 import { SidePanelV2 } from "@/app/rebalancer/components";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import {
-  ABSOLUTE_URL,
-  EDIT_REBALANCER_DESCRIPTION,
-  X_HANDLE,
-} from "@/const/socials";
+import { ABSOLUTE_URL, EDIT_REBALANCER_DESCRIPTION } from "@/const";
+import { X_HANDLE } from "@valence-ui/socials";
 import { microToBase } from "@/utils";
 import { EditRebalancer } from "./EditRebalancer";
 import {

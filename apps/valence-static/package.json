@@ -3,14 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev  --port 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start  --port 3001",
     "lint": "next lint"
   },
   "dependencies": {
     "@valence-ui/config": "*",
     "@valence-ui/ui-components": "*",
+    "@valence-ui/socials": "*",
     "@date-fns/utc": "^1.2.0",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-hover-card": "^1.1.1",
