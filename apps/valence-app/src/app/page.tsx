@@ -2,8 +2,12 @@ import { Button } from "@/components";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const HomePage = () => {
+  // this will eventually be a high level dashboard board but for now we just default to covenants
+  return redirect("/covenants");
+
   return (
     <>
       <main className="h-screen grow overflow-auto bg-valence-white px-4 pt-8 text-valence-black transition-[padding]">

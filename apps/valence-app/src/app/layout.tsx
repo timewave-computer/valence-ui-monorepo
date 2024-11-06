@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@valence-ui/ui-components/styles/index.css";
-import { Nav } from "@/components/Nav";
 import { cn } from "@/utils";
 import {
   ReactQueryProvider,
@@ -11,7 +10,7 @@ import {
 import { Provider as JotaiProvider } from "jotai";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
 import { getFeatureFlags } from "@/utils";
-import { Toaster } from "@/components";
+import { Toaster, ValenceAppNav } from "@/components";
 import React from "react";
 import ReactQueryDevToolsWithProd from "@/components/react-query-devtools";
 
@@ -54,7 +53,7 @@ export default function RootLayout({
             <FeatureFlagsProvider flags={flags}>
               <CosmosProvider>
                 <ReactQueryDevToolsWithProd />
-                <Nav />
+                <ValenceAppNav />
                 {children}
                 <Toaster
                   style={{
