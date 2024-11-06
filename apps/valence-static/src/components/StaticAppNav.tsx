@@ -40,7 +40,7 @@ const NavLink = ({
 };
 
 const LaunchButton = () => (
-  <Link href={appUrl}>
+  <Link target="_blank" href={appUrl}>
     <Button tabIndex={-1}>
       Launch App
       <CgExternal className="h-6 w-6 ml-1" />
@@ -62,8 +62,8 @@ export const StaticAppNav = () => {
       )}
     >
       {/* desktop */}
-      <div className="hidden md:flex flex-row max-w-5xl py-4 mx-auto w-full justify-between px-4 ">
-        <a href="/">
+      <div className="hidden md:flex flex-row max-w-5xl py-4 mx-auto w-full justify-between  ">
+        <a className="-ml-1" href="/">
           <Image
             src="/img/valence_vertical.svg"
             alt="Logo"

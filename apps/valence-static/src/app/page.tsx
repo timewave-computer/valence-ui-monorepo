@@ -10,7 +10,7 @@ const Hero = ({ className }: { className?: string }) => {
     <>
       <h2
         className={cn(
-          "text-balance px-4 md:px-6  font-serif text-[2.5rem] leading-[0.9]  md:text-[4.7rem]",
+          "text-balance px-4 md:px-0  font-serif text-[2.5rem] leading-[0.9]  md:text-[4.7rem]",
           className,
         )}
       >
@@ -32,21 +32,22 @@ const InterchainGuild = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "flex flex-col  border-t border-valence-black p-4 px-4 pb-16",
+        "flex flex-col    border-t border-valence-black py-4 pb-16",
         className,
       )}
     >
-      <h2 className="text-lg font-semibold">Interchain Guild</h2>
+      <h2 className="text-lg font-semibold px-4 md:px-0">Interchain Guild</h2>
 
-      <p className="mb-4 mt-2 ">
+      <p className="mb-4 mt-2 px-4 md:px-0 ">
         Free and open source software is the foundation of crypto-native
         institutions. Valence develops the Interchain Guild to support essential
         public goods infrastructure.
       </p>
-
-      <Button variant="secondary" className="w-fit" disabled>
-        Coming soon
-      </Button>
+      <div className="px-4 md:px-0">
+        <Button variant="secondary" disabled>
+          Coming soon
+        </Button>
+      </div>
     </div>
   );
 };
@@ -64,18 +65,18 @@ const HomePage = () => {
           <Hero className="" />
         </div>
 
-        <div className="flex flex-col gap-x-10  md:grid md:grid-cols-2">
-          <h2 className="col-start-1 row-start-1  border-t border-valence-black  px-4 text-lg font-semibold  pt-4">
+        <div className="flex flex-col gap-x-10    md:grid md:grid-cols-2">
+          <h2 className="col-start-1 row-start-1 px-4 md:px-0 border-t border-valence-black  text-lg font-semibold  pt-4">
             Covenants
           </h2>
-          <p className="col-start-1 row-start-2 p-4 pt-2">
+          <p className="col-start-1 row-start-2 py-4 pt-2 px-4 md:px-0">
             Covenants enable trust-minimized agreements between crypto-native
             organizations. Use Covenants to lend protocol-owned assets to other
             protocols for a fee or create protocol-to-protocol liquidity sharing
             agreements. Covenants improve execution quality and strengthen
             economic integration between token communities.
           </p>
-          <div className="col-start-1 row-start-3 mx-4 flex flex-row flex-wrap gap-4 ">
+          <div className="col-start-1 row-start-3  flex flex-row flex-wrap gap-4 px-4 md:px-0 ">
             <Link href={`${appUrl}/covenants`}>
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
@@ -105,17 +106,17 @@ const HomePage = () => {
           />
           <div className=" col-start-1 row-start-5 mt-12 border-b border-black" />
 
-          <h2 className="col-start-2 row-start-1 md:border-t border-valence-black  px-4 pt-4 text-lg font-semibold ">
+          <h2 className="col-start-2 row-start-1 md:border-t px-4 md:px-0 border-valence-black   pt-4 text-lg font-semibold ">
             Rebalancer
           </h2>
-          <p className="col-start-2 row-start-2 p-4 pt-2">
+          <p className="col-start-2 row-start-2 py-4 pt-2 px-4 md:px-0">
             The Rebalancer enables automated balance sheet and treasury
             management. Use the Rebalancer to efficiently convert tokens for
             scheduled payments or manage your digital organization’s asset
             portfolio. The Rebalancer is custom-built to address the needs of
             blockchains, protocols, and decentralized autonomous organizations.
           </p>
-          <div className="col-start-2 row-start-3 mx-4 flex flex-row flex-wrap gap-4 ">
+          <div className="col-start-2 row-start-3  flex flex-row flex-wrap gap-4 px-4 md:px-0 ">
             <Link href={`${appUrl}/rebalancer`}>
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
