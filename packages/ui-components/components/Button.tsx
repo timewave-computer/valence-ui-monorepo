@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "~/utils";
+import { cn } from "../utils/cn";
 import { Slot } from "@radix-ui/react-slot";
 import React from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
