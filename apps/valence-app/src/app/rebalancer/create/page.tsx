@@ -1,11 +1,8 @@
 import { SidePanelV2 } from "@/app/rebalancer/components";
 import CreateRebalancer from "./CreateRebalancer";
 import type { Metadata } from "next";
-import {
-  ABSOLUTE_URL,
-  CREATE_REBALANCER_DESCRIPTION,
-  X_HANDLE,
-} from "@/const/socials";
+import { CREATE_REBALANCER_DESCRIPTION, ABSOLUTE_URL } from "@/const";
+import { X_HANDLE } from "@valence-ui/socials";
 import { fetchRebalancerWhitelist } from "@/server/actions";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {

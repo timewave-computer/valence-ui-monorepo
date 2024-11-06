@@ -2,15 +2,13 @@ import { ErrorHandler } from "~/const/error";
 import { getPost } from "~/server/blog/get-posts";
 import { Post } from "~/types/blog";
 import { RouterButton } from "~/components";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { UTCDate } from "@date-fns/utc";
-import { ABSOLUTE_URL, X_HANDLE } from "~/const/socials";
+import { ABSOLUTE_URL } from "~/const";
+import { X_HANDLE } from "@valence-ui/socials";
 import { Metadata } from "next";
 import Image from "next/image";
-import { cn } from "~/utils";
 import { PostHeading, BackButton } from "~/app/blog/ui-components";
 import "./article.css";
-import Link from "next/link";
 
 type BlogPostProps = {
   params: {

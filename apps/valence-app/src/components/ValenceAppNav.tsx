@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { Button } from "./Button";
-import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@valence-ui/ui-components";
 import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
 import { ABSOLUTE_URL } from "@/const";

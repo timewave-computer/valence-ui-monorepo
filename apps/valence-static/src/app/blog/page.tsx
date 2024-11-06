@@ -5,9 +5,10 @@ import { UTCDate } from "@date-fns/utc";
 import Link from "next/link";
 import { RouterButton } from "~/components";
 import { Metadata } from "next";
-import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "~/const/socials";
+import { X_HANDLE } from "@valence-ui/socials";
+import { VALENCE_DESCRIPTION, ABSOLUTE_URL } from "~/const";
 import Image from "next/image";
-import { BackButton, PostHeading } from "~/app/blog/ui-components";
+import { PostHeading } from "~/app/blog/ui-components";
 import { Fragment } from "react";
 
 const previewLength = 260;

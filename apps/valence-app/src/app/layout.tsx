@@ -8,7 +8,8 @@ import {
   CosmosProvider,
 } from "@/context";
 import { Provider as JotaiProvider } from "jotai";
-import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "@/const/socials";
+import { X_HANDLE } from "@valence-ui/socials";
+import { ABSOLUTE_URL, VALENCE_DESCRIPTION } from "@/const";
 import { getFeatureFlags } from "@/utils";
 import { Toaster, ValenceAppNav } from "@/components";
 import React from "react";

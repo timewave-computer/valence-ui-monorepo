@@ -10,7 +10,7 @@ import {
 import { FeatureFlags, cn, useFeatureFlag } from "@/utils";
 import { useState } from "react";
 import Image from "next/image";
-import { X_HANDLE, X_URL } from "@/const/socials";
+import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { ComingSoonTooltipContent } from "@/components";
 import { UTCDate } from "@date-fns/utc";
 import { addDays } from "date-fns";

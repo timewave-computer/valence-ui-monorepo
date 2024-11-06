@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import {
-  ABSOLUTE_URL,
-  REBALANCER_DESCRIPTION,
-  X_HANDLE,
-} from "@/const/socials";
+import { ABSOLUTE_URL, REBALANCER_DESCRIPTION } from "@/const";
+import { X_HANDLE } from "@valence-ui/socials";
+
 import { Suspense } from "react";
 import { AccountDetailsPanel, SidePanelV2 } from "./components";
 import { HistoricalGraph } from "./components/HistoricalGraph";

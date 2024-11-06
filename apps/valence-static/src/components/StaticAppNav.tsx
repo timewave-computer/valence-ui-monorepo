@@ -2,11 +2,16 @@
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
-import { Button, cn } from "@valence-ui/ui-components";
-import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
+import {
+  Button,
+  cn,
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@valence-ui/ui-components";
 import { CgExternal } from "react-icons/cg";
 import Link from "next/link";
-import { appUrl } from "~/utils";
+import { ABSOLUTE_URL } from "~/const";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -40,7 +45,7 @@ const NavLink = ({
 };
 
 const LaunchButton = () => (
-  <Link target="_blank" href={appUrl}>
+  <Link target="_blank" href={ABSOLUTE_URL}>
     <Button tabIndex={-1}>
       Launch App
       <CgExternal className="h-6 w-6 ml-1" />

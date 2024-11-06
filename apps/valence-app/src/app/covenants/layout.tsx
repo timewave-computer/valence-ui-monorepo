@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ABSOLUTE_URL, COVENANT_DESCRIPTION, X_HANDLE } from "@/const/socials";
+import { ABSOLUTE_URL, COVENANT_DESCRIPTION } from "@/const";
+import { X_HANDLE } from "@valence-ui/socials";
 
 export const metadata: Metadata = {
   title: "Covenants",

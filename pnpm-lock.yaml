@@ -83,6 +83,9 @@ importers:
       '@valence-ui/config':
         specifier: '*'
         version: link:../../packages/config
+      '@valence-ui/socials':
+        specifier: '*'
+        version: link:../../packages/socials
       '@valence-ui/ui-components':
         specifier: '*'
         version: link:../../packages/ui-components
@@ -300,6 +303,9 @@ importers:
       '@valence-ui/config':
         specifier: '*'
         version: link:../../packages/config
+      '@valence-ui/socials':
+        specifier: '*'
+        version: link:../../packages/socials
       '@valence-ui/ui-components':
         specifier: '*'
         version: link:../../packages/ui-components
@@ -492,8 +498,24 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
+  packages/socials:
+    dependencies:
+      '@valence-ui/config':
+        specifier: '*'
+        version: link:../config
+    devDependencies:
+      tsx:
+        specifier: ^4.19.0
+        version: 4.19.1
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+
   packages/ui-components:
     dependencies:
+      '@radix-ui/react-dialog':
+        specifier: ^1.0.5
+        version: 1.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1)(react@18.3.1)
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.1.0(@types/react@18.3.12)(react@18.3.1)
@@ -512,6 +534,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-icons:
+        specifier: ^4.12.0
+        version: 4.12.0(react@18.3.1)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^1.9.0

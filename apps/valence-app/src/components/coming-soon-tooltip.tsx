@@ -3,7 +3,7 @@
  */
 "use client";
 import { LinkText } from "@/components";
-import { X_HANDLE, X_URL } from "@/const/socials";
+import { X_HANDLE, X_URL } from "@valence-ui/socials";
 
 export const ComingSoonTooltipContent = () => (
   <div className=" max-w-56">

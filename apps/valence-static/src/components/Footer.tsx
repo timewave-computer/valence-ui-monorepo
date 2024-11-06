@@ -1,12 +1,12 @@
 "use client";
 import { Button, cn } from "@valence-ui/ui-components";
-
 import { TextInput } from "~/components/TextInput";
 import { useState } from "react";
 import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { GITHUB_URL, VALENCE_DESCRIPTION, X_URL } from "~/const/socials";
+import { X_URL, GITHUB_URL } from "@valence-ui/socials";
+import { VALENCE_DESCRIPTION } from "~/const";
 import { submitSubscribe } from "~/server/actions/submit-subscribe";
 
 export const Footer = (

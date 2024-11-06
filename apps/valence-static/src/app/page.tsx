@@ -3,7 +3,7 @@ import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "~/components";
-import { appUrl } from "~/utils";
+import { VALENCE_APP_URL } from "~/const";
 
 const Hero = ({ className }: { className?: string }) => {
   return (
@@ -77,7 +77,7 @@ const HomePage = () => {
             economic integration between token communities.
           </p>
           <div className="col-start-1 row-start-3  flex flex-row flex-wrap gap-4 px-4 md:px-0 ">
-            <Link href={`${appUrl}/covenants`}>
+            <Link href={`${VALENCE_APP_URL}/covenants`}>
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
                 variant="primary"
@@ -117,7 +117,7 @@ const HomePage = () => {
             blockchains, protocols, and decentralized autonomous organizations.
           </p>
           <div className="col-start-2 row-start-3  flex flex-row flex-wrap gap-4 px-4 md:px-0 ">
-            <Link href={`${appUrl}/rebalancer`}>
+            <Link href={`${VALENCE_APP_URL}/rebalancer`}>
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
                 variant="primary"

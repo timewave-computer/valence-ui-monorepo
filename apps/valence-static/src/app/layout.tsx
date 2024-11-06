@@ -4,7 +4,8 @@ import "@valence-ui/ui-components/styles/index.css";
 import { StaticAppNav } from "~/components";
 import { cn } from "@valence-ui/ui-components";
 import { ReactQueryProvider } from "~/context";
-import { ABSOLUTE_URL, VALENCE_DESCRIPTION, X_HANDLE } from "~/const/socials";
+import { ABSOLUTE_URL, VALENCE_DESCRIPTION } from "~/const";
+import { X_HANDLE } from "@valence-ui/socials";
 
 import React from "react";
 

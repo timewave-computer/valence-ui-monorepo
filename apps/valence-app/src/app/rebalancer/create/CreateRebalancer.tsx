@@ -22,12 +22,12 @@ import {
   AdvancedSettings,
   PreviewMessage,
 } from "@/app/rebalancer/create/components";
-import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
+import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Dialog, DialogContent } from "@/components";
 import {
   HoverCard,
@@ -41,7 +41,7 @@ import {
 } from "@/app/rebalancer/hooks";
 import { HiMiniArrowLeft } from "react-icons/hi2";
 import { BetaDisclaimer } from "./copy";
-import { X_HANDLE, X_URL } from "@/const/socials";
+import { X_HANDLE, X_URL } from "@valence-ui/socials";
 
 type CreateRebalancerProps = {};
 
