@@ -4,8 +4,8 @@
   "compilerOptions": {
     "target": "es2022",
     "composite": false,
-    "declaration": false,
-    "sourceMap": false,
+    "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,

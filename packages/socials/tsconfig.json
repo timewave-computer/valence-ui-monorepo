@@ -6,6 +6,9 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"]
-    }
+    },
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true
   }
 }
