@@ -54,7 +54,7 @@ const InterchainGuild = ({ className }: { className?: string }) => {
 
 const HomePage = () => {
   return (
-    <main>testing</main>
+    <main className="grow bg-valence-white">testing</main>
     // <main className="h-screen grow  bg-valence-white md:px-4 pb-4  text-valence-black transition-[padding]">
     //   <div className="mx-auto flex max-w-5xl flex-col">
     //     {/* on mobile this should show at the top, on desktop it is in the center of the layout */}
