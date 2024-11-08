@@ -31,9 +31,9 @@ export const Footer = (
   });
 
   return (
-    <div
+    <footer
       className={cn(
-        "mx-auto border-t border-valence-black max-w-5xl px-4 pt-4 mt-4 pb-8 flex flex-col gap-x-10 gap-y-5 text-sm md:grid md:grid-cols-2",
+        "mx-auto border-t w-full border-valence-black max-w-5xl px-4 pt-4 mt-4 pb-8 flex flex-col gap-x-10 gap-y-5 text-sm md:grid md:grid-cols-2",
         className,
       )}
     >
@@ -109,6 +109,6 @@ export const Footer = (
       <div className=" col-span-1 col-start-2 row-start-3 self-start  md:self-end">
         <p>© 2024 Timewave </p>
       </div>
-    </div>
+    </footer>
   );
 };

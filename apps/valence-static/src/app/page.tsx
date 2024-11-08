@@ -54,7 +54,7 @@ const InterchainGuild = ({ className }: { className?: string }) => {
 
 const HomePage = () => {
   return (
-    <main className=" grow  bg-valence-white md:px-4 pb-4  text-valence-black transition-[padding]">
+    <main className=" grow  bg-valence-white  pb-4  text-valence-black transition-[padding]">
       <div className="mx-auto flex max-w-5xl flex-col">
         {/* on mobile this should show at the top, on desktop it is in the center of the layout */}
         <div
@@ -66,7 +66,7 @@ const HomePage = () => {
         </div>
 
         <div className="flex flex-col gap-x-10  border-valence-black  border-t md:border-0   md:grid md:grid-cols-2">
-          <h2 className="col-start-1 row-start-1 px-4 md:px-0   text-lg font-semibold  pt-4">
+          <h2 className="col-start-1 row-start-1 px-4 md:px-0  text-lg font-semibold  pt-4">
             Covenants
           </h2>
           <p className="col-start-1 row-start-2 py-4 pt-2 px-4 md:px-0">
