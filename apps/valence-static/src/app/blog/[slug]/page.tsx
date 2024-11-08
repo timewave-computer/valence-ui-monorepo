@@ -1,5 +1,5 @@
 import { ErrorHandler } from "~/const/error";
-import { getPost } from "~/server/blog/get-posts";
+import { getPost } from "~/server/get-posts";
 import { Post } from "~/types/blog";
 import { RouterButton } from "~/components";
 import { UTCDate } from "@date-fns/utc";
@@ -73,21 +73,21 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     );
 
   return (
-    <div className="min-h-1/2 flex grow flex-col pb-4 pt-4 md:gap-2">
-      <div>
+    <div className="min-h-1/2 flex grow flex-col pb-4 pt-2 md:gap-2 border-t border-valence-black ">
+      <div className="pt-2">
         <BackButton
           link={{
             href: "/blog",
             label: "Back to Blog",
           }}
         />
-        <div className=" w-full border-b-[1px] border-valence-black   ">
+        <div className=" py-2   ">
           <PostHeading> {postData.frontMatter.title}</PostHeading>
-        </div>
-        <div className=" grid-cols-5 gap-x-8 pt-2 md:grid">
           <span className="col-span-1 col-start-1">
             {new UTCDate(postData.frontMatter.date).toLocaleDateString()}
           </span>
+        </div>
+        <div className=" grid-cols-5 gap-x-8 md:grid">
           <Image
             className="col-span-3 col-start-3 row-start-2 w-full"
             src={postData.frontMatter.heroImagePath}

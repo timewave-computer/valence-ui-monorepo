@@ -1,5 +1,5 @@
 import { ErrorHandler } from "~/const/error";
-import { getSortedPosts } from "~/server/blog/get-posts";
+import { getSortedPosts } from "~/server/get-posts";
 import { PostList } from "~/types/blog";
 import { UTCDate } from "@date-fns/utc";
 import Link from "next/link";
@@ -64,18 +64,21 @@ const BlogHome = async () => {
 
   return (
     // top padding is to avoid shifting layout for back button in desktop
-    <div className="min-h-1/2 flex flex-col items-start">
+    <div className="flex flex-col items-start ">
       {posts.map((post) => (
         <Fragment key={`blog-post-${post.slug}`}>
-          <PostHeading slug={post.slug}>{post.title}</PostHeading>
+          <div className="py-2 border-t border-valence-black w-full pt-4">
+            <PostHeading slug={post.slug}>{post.title}</PostHeading>
 
-          <Link
-            className="flex grid-cols-5 flex-col gap-2 gap-x-8 pb-8 pt-2 md:grid md:gap-0 md:pb-16  "
-            href={`/blog/${post.slug}`}
-          >
-            <span className="col-span-1 col-start-1 row-start-1 md:pb-2">
+            <span className="col-span-1 col-start-1 row-start-1">
               {new UTCDate(post.date).toLocaleDateString()}
             </span>
+          </div>
+
+          <Link
+            className="flex grid-cols-5 flex-col gap-2 gap-x-8 pb-8  md:grid md:pb-16  "
+            href={`/blog/${post.slug}`}
+          >
             <Image
               className="col-span-2 row-start-2 hidden w-full self-center md:flex md:self-start"
               src={post.heroImagePath}
