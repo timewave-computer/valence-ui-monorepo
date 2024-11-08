@@ -33,7 +33,7 @@ export const Footer = (
   return (
     <div
       className={cn(
-        "flex flex-col gap-x-10 gap-y-5 text-sm md:grid md:grid-cols-2",
+        "mx-auto border-t border-valence-black max-w-5xl px-4 pt-4 mt-4 pb-8 flex flex-col gap-x-10 gap-y-5 text-sm md:grid md:grid-cols-2",
         className,
       )}
     >

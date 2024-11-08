@@ -73,8 +73,8 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     );
 
   return (
-    <div className="min-h-1/2 flex grow flex-col pb-4 pt-2 md:gap-2 border-t border-valence-black ">
-      <div className="pt-2">
+    <div className="min-h-1/2 flex grow flex-col py-4 md:gap-2  ">
+      <div className="">
         <BackButton
           link={{
             href: "/blog",

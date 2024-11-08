@@ -32,7 +32,7 @@ const InterchainGuild = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "flex flex-col    border-t border-valence-black py-4 pb-16",
+        "flex flex-col  border-valence-black py-4 md:border-t md:pb-16",
         className,
       )}
     >
@@ -54,7 +54,7 @@ const InterchainGuild = ({ className }: { className?: string }) => {
 
 const HomePage = () => {
   return (
-    <main className="h-screen grow  bg-valence-white md:px-4 pb-4  text-valence-black transition-[padding]">
+    <main className=" grow  bg-valence-white md:px-4 pb-4  text-valence-black transition-[padding]">
       <div className="mx-auto flex max-w-5xl flex-col">
         {/* on mobile this should show at the top, on desktop it is in the center of the layout */}
         <div
@@ -65,8 +65,8 @@ const HomePage = () => {
           <Hero className="" />
         </div>
 
-        <div className="flex flex-col gap-x-10    md:grid md:grid-cols-2">
-          <h2 className="col-start-1 row-start-1 px-4 md:px-0 border-t border-valence-black  text-lg font-semibold  pt-4">
+        <div className="flex flex-col gap-x-10  border-valence-black  border-t md:border-0   md:grid md:grid-cols-2">
+          <h2 className="col-start-1 row-start-1 px-4 md:px-0   text-lg font-semibold  pt-4">
             Covenants
           </h2>
           <p className="col-start-1 row-start-2 py-4 pt-2 px-4 md:px-0">
@@ -106,7 +106,7 @@ const HomePage = () => {
           />
           <div className=" col-start-1 row-start-5 mt-12 border-b border-black" />
 
-          <h2 className="col-start-2 row-start-1 md:border-t px-4 md:px-0 border-valence-black   pt-4 text-lg font-semibold ">
+          <h2 className="col-start-2 row-start-1 px-4 md:px-0 border-valence-black   pt-4 text-lg font-semibold ">
             Rebalancer
           </h2>
           <p className="col-start-2 row-start-2 py-4 pt-2 px-4 md:px-0">
@@ -147,7 +147,7 @@ const HomePage = () => {
           <div className=" col-start-2 row-start-5 mt-12 border-b border-black" />
         </div>
 
-        <div className="flex flex-col gap-x-10 border-valence-black  sm:border-b md:flex-row  ">
+        <div className="flex flex-col gap-x-10   md:flex-row  ">
           {/* only for desktop. rendered in column below for mobile */}
           <div className="hidden grow basis-0 flex-col justify-between md:flex md:gap-20">
             <Hero className=" py-8 " />
@@ -166,8 +166,7 @@ const HomePage = () => {
           </div>
         </div>
         {/* rendered in different part of the layout for mobile */}
-        <InterchainGuild className="mb-4 border-b border-t-0 md:hidden" />
-        <Footer className="p-4 pb-12" />
+        <InterchainGuild className=" md:hidden" />
       </div>
     </main>
   );

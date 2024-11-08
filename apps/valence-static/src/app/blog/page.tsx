@@ -67,7 +67,7 @@ const BlogHome = async () => {
     <div className="flex flex-col items-start ">
       {posts.map((post) => (
         <Fragment key={`blog-post-${post.slug}`}>
-          <div className="py-2 border-t border-valence-black w-full pt-4">
+          <div className="pb-2   w-full pt-4">
             <PostHeading slug={post.slug}>{post.title}</PostHeading>
 
             <span className="col-span-1 col-start-1 row-start-1">

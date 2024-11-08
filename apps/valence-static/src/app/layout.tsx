@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@valence-ui/ui-components/styles/index.css";
-import { StaticAppNav } from "~/components";
+import { Footer, StaticAppNav } from "~/components";
 import { cn } from "@valence-ui/ui-components";
 import { ReactQueryProvider } from "~/context";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION } from "~/const";
@@ -46,6 +46,7 @@ export default function RootLayout({
           >
             <StaticAppNav />
             {children}
+            <Footer />
           </body>
         </html>
       </ReactQueryProvider>

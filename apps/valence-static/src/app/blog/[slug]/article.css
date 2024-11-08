@@ -14,10 +14,10 @@ article > .h1-container > h1 {
   @apply col-span-2 col-start-1  text-balance  text-xl  font-sans font-medium;
 }
 article > .h2-container {
-  @apply col-span-3 col-start-3 h-fit w-fit;
+  @apply col-span-3 col-start-3 h-fit w-fit pt-2 md:pt-0;
 }
 article > .h2-container > h2 {
-  @apply text-pretty  font-sans text-lg font-medium  border-b border-valence-black;
+  @apply text-balance  font-sans text-lg font-medium  underline underline-offset-4 decoration-1;
 }
 
 article > em {

@@ -63,19 +63,19 @@ export const StaticAppNav = () => {
   return (
     <nav
       className={cn(
-        "flex  flex-row items-center justify-between py-4  bg-valence-white  text-valence-black",
+        "flex  flex-row items-center justify-between  bg-valence-white  ",
       )}
     >
       {/* desktop */}
-      <div className="hidden md:flex flex-row max-w-5xl py-4 mx-auto w-full justify-between  ">
-        <a className="-ml-1" href="/">
+      <div className="hidden md:flex flex-row max-w-5xl py-8 mx-auto w-full justify-between text-valence-black border-b border-valence-black  ">
+        <Link href="/" className="-ml-1">
           <Image
             src="/img/valence_vertical.svg"
             alt="Logo"
             width={120}
             height={92}
           />
-        </a>
+        </Link>
 
         <div className="flex items-center gap-2 md:gap-8">
           <LaunchButton />
@@ -83,15 +83,16 @@ export const StaticAppNav = () => {
       </div>
 
       {/* mobile */}
-      <div className="flex flex-row justify-between w-full px-4 md:hidden border-b border-valence-black pb-4">
-        <a className="" href="/">
+      <div className="flex flex-row justify-between w-full px-4 md:hidden border-b border-valence-black py-4">
+        <Link href="/">
           <Image
             src="/img/valence_horizontal.svg"
             alt="Logo"
             width={110}
             height={38}
           />
-        </a>
+        </Link>
+
         <Sheet>
           <SheetTrigger asChild className="outline-none">
             <Button
