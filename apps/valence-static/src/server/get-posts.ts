@@ -18,10 +18,13 @@ import { ErrorHandler } from "~/const/error";
 import { h } from "hastscript";
 import { visit } from "unist-util-visit";
 
-function addClassToImageParagraph() {
+/***
+ * adds image class to <p> and inserts div.h1 border
+ */
+function addClassNames() {
   //@ts-ignore
   return (tree) => {
-    visit(tree, "element", (node) => {
+    visit(tree, "element", (node, index, parent) => {
       if (
         node.tagName === "p" &&
         //@ts-ignore
@@ -31,15 +34,7 @@ function addClassToImageParagraph() {
         node.properties.className = (node.properties.className || []).concat(
           "image-paragraph",
         );
-      }
-    });
-  };
-}
-
-function addH1Borders() {
-  return (tree) => {
-    visit(tree, ["element"], (node, index, parent) => {
-      if (node.properties?.className?.includes("h1-container")) {
+      } else if (node.properties?.className?.includes("h1-container")) {
         // Check if the previous sibling is already an h1-border div
         // avoids infinite loop
         if (
@@ -133,9 +128,9 @@ export const getPost = async (slug: string): Promise<Post> => {
     .use(remarkParse) // Parse the markdown content
     .use(remarkRehype, { allowDangerousHtml: true }) // Convert to rehype (HTML AST), allowing raw HTML
     .use(rehypeRaw) // Parse the raw HTML inside the markdown
-    .use(addClassToImageParagraph) // Custom plugin to add class to <p> containing <img>
     .use(wrapHeadingsInDiv) // Custom plugin to wrap <h1> and <h2> in a <div>
-    .use(addH1Borders) // Custom plugin to add a border above <h1>. must be called after wrapHeadingsInDiv
+    // must run after wrapHeadingsInDiv
+    .use(addClassNames) // Custom plugin to add class to <p> containing <img>
     .use(rehypeStringify) // Stringify the rehype tree back to HTML
     .process(content);
 

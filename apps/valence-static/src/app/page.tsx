@@ -138,6 +138,7 @@ const HomePage = () => {
             </Link>
           </div>
           <Image
+            priority
             src="/img/rebalancer.svg"
             alt="Rebalancer illustration"
             className="col-start-2 row-start-4 mt-12 flex grow border-b-black px-4  md:self-end"
@@ -156,6 +157,7 @@ const HomePage = () => {
 
           <div className="hidden grow basis-0 flex-col items-center md:flex">
             <Image
+              priority
               className="m-8"
               src="/img/hero.svg"
               alt="Valence illustration"
