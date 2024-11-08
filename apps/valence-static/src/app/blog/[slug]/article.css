@@ -2,17 +2,22 @@
 article {
   @apply flex max-w-5xl flex-col gap-2 md:grid md:grid-cols-5  md:gap-x-8 md:gap-y-4;
 }
-article > .h1-container {
-  @apply col-span-5 grid-cols-5 gap-x-8 border-b-[1px] border-valence-black font-serif text-2xl  font-medium md:grid;
+
+article > .h1-border {
+  @apply col-span-5 md:h-fit md:border-b border-valence-black pt-8;
 }
+article > .h1-container {
+  @apply col-span-2  font-serif text-2xl border-valence-black border-b md:border-0 font-medium md:grid md:h-0 overflow-visible;
+}
+
 article > .h1-container > h1 {
-  @apply col-span-2 col-start-1 text-balance text-pretty pb-1 pt-4 font-serif text-2xl  font-medium md:pt-2;
+  @apply col-span-2 col-start-1  text-balance  text-xl  font-sans font-medium;
 }
 article > .h2-container {
-  @apply col-span-5 grid-cols-5 gap-x-8 md:grid;
+  @apply col-span-3 col-start-3 h-fit w-fit pt-2 md:pt-0;
 }
 article > .h2-container > h2 {
-  @apply col-span-3 col-start-3 w-fit text-pretty border-b border-valence-black pt-2 font-serif text-xl font-medium md:pt-0  md:text-2xl;
+  @apply text-balance  font-sans text-lg font-medium  underline underline-offset-4 decoration-1;
 }
 
 article > em {

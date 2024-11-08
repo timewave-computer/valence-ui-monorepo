@@ -16,13 +16,15 @@ import { UTCDate } from "@date-fns/utc";
 import { compareDesc } from "date-fns";
 import { ErrorHandler } from "~/const/error";
 import { h } from "hastscript";
-
 import { visit } from "unist-util-visit";
 
-function addClassToImageParagraph() {
+/***
+ * adds image class to <p> and inserts div.h1 border
+ */
+function addClassNames() {
   //@ts-ignore
   return (tree) => {
-    visit(tree, "element", (node) => {
+    visit(tree, "element", (node, index, parent) => {
       if (
         node.tagName === "p" &&
         //@ts-ignore
@@ -32,6 +34,25 @@ function addClassToImageParagraph() {
         node.properties.className = (node.properties.className || []).concat(
           "image-paragraph",
         );
+      } else if (node.properties?.className?.includes("h1-container")) {
+        // Check if the previous sibling is already an h1-border div
+        // avoids infinite loop
+        if (
+          parent &&
+          typeof index === "number" &&
+          parent.children[index - 1]?.properties?.className?.includes(
+            "h1-border",
+          )
+        ) {
+          return;
+        }
+        // Create a new div element to insert above the heading wrapper
+        const aboveDiv = h("div.h1-border", []);
+
+        // Replace the original node with the wrapper div in the parent's children array
+        if (parent && typeof index === "number") {
+          parent.children.splice(index, 0, aboveDiv);
+        }
       }
     });
   };
@@ -42,6 +63,8 @@ function wrapHeadingsInDiv() {
   return (tree) => {
     visit(tree, ["element"], (node, index, parent) => {
       if (node.tagName === "h1") {
+        // Create a new div element to insert above the heading wrapper
+        const aboveDiv = h("div.h1-border", []);
         // Create a div element with a custom classname
         const wrapperDiv = h("div.h1-container", [node]);
 
@@ -105,8 +128,9 @@ export const getPost = async (slug: string): Promise<Post> => {
     .use(remarkParse) // Parse the markdown content
     .use(remarkRehype, { allowDangerousHtml: true }) // Convert to rehype (HTML AST), allowing raw HTML
     .use(rehypeRaw) // Parse the raw HTML inside the markdown
-    .use(addClassToImageParagraph) // Custom plugin to add class to <p> containing <img>
     .use(wrapHeadingsInDiv) // Custom plugin to wrap <h1> and <h2> in a <div>
+    // must run after wrapHeadingsInDiv
+    .use(addClassNames) // Custom plugin to add class to <p> containing <img>
     .use(rehypeStringify) // Stringify the rehype tree back to HTML
     .process(content);
 

@@ -33,6 +33,10 @@ export type TextInputProps = {
    * A label to attach to the left side of the input.
    */
   label?: string;
+  /***
+   * An optional id to attach to the input
+   */
+  id?: string;
 };
 
 export const TextInput = ({
@@ -43,6 +47,7 @@ export const TextInput = ({
   containerClassName,
   style,
   label,
+  id,
 }: TextInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
 
@@ -62,6 +67,7 @@ export const TextInput = ({
       )}
 
       <input
+        id={id}
         ref={ref}
         type="text"
         className={cn(
