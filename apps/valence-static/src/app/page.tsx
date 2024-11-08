@@ -77,7 +77,7 @@ const HomePage = () => {
             economic integration between token communities.
           </p>
           <div className="col-start-1 row-start-3  flex flex-row flex-wrap gap-4 px-4 md:px-0 ">
-            <Link href={`${VALENCE_APP_URL}/covenants`}>
+            <a target="_blank" href={`${VALENCE_APP_URL}/covenants`}>
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
                 variant="primary"
@@ -85,7 +85,7 @@ const HomePage = () => {
                 Create a Covenant
                 <HiMiniArrowRight className="h-4 w-4" />
               </Button>
-            </Link>
+            </a>
             <Link href="/blog/Covenants_Protocol-to-Protocol_Deals">
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
@@ -117,7 +117,7 @@ const HomePage = () => {
             blockchains, protocols, and decentralized autonomous organizations.
           </p>
           <div className="col-start-2 row-start-3  flex flex-row flex-wrap gap-4 px-4 md:px-0 ">
-            <Link href={`${VALENCE_APP_URL}/rebalancer`}>
+            <a target="_blank" href={`${VALENCE_APP_URL}/rebalancer`}>
               <Button
                 className="flex w-fit flex-row justify-center gap-1"
                 variant="primary"
@@ -125,7 +125,7 @@ const HomePage = () => {
                 Rebalance Assets
                 <HiMiniArrowRight className="h-4 w-4" />
               </Button>
-            </Link>
+            </a>
 
             <Link href="/blog/Rebalancer-Protocol-Asset-Management">
               <Button
@@ -151,7 +151,6 @@ const HomePage = () => {
           {/* only for desktop. rendered in column below for mobile */}
           <div className="hidden grow basis-0 flex-col justify-between md:flex md:gap-20">
             <Hero className=" py-8 " />
-
             <InterchainGuild />
           </div>
 
