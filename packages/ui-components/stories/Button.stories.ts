@@ -1,9 +1,10 @@
-import { fn } from "@storybook/test";
-import { Button } from "@/lib/Button";
+import { Button } from "../components/Button";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
-export default {
-  title: "Example/Button",
+import type { Meta } from "@storybook/react";
+
+const meta: Meta<typeof Button> = {
+  title: "button",
   component: Button,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
@@ -15,14 +16,15 @@ export default {
   argTypes: {
     backgroundColor: { control: "color" },
   },
-  // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-  args: { onClick: fn() },
-};
+} as Meta<typeof Button>;
+
+export default meta;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary = {
   args: {
     primary: true,
+    children: "text",
     label: "Button",
   },
 };
@@ -43,13 +45,6 @@ export const Large = {
 export const Small = {
   args: {
     size: "small",
-    label: "Button",
-  },
-};
-
-export const T = {
-  args: {
-    primary: false,
     label: "Button",
   },
 };
