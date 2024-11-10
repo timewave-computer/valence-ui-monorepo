@@ -1,5 +1,5 @@
 import { ErrorHandler } from "~/const/error";
-import { getSortedPosts } from "~/server/get-posts";
+import { getSortedPosts } from "~/server/posts";
 import { PostList } from "~/types/blog";
 import { UTCDate } from "@date-fns/utc";
 import Link from "next/link";

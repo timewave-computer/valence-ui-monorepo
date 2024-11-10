@@ -1,5 +1,4 @@
 import { ErrorHandler } from "~/const/error";
-import { getPost } from "~/server/get-posts";
 import { Post } from "~/types/blog";
 import { RouterButton } from "~/components";
 import { UTCDate } from "@date-fns/utc";
@@ -9,8 +8,19 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { PostHeading, BackButton } from "~/app/blog/ui-components";
 import "./article.css";
+import path from "path";
+import fs from "fs";
+import { getPost, POSTS_PATH } from "~/server/posts";
 
-// export const dynamic = 'force-dynamic';
+// statically render routes so blog posts not rendered dynamically
+export async function generateStaticParams() {
+  const blogPostsDirectory = path.join(process.cwd(), POSTS_PATH);
+  const filenames = fs.readdirSync(blogPostsDirectory);
+
+  return filenames.map((filename) => ({
+    slug: filename.replace(/\.md$/, ""), // remove .md from url
+  }));
+}
 
 type BlogPostProps = {
   params: {
