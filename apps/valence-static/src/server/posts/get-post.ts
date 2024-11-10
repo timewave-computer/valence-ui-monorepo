@@ -1,28 +1,20 @@
 import fs from "fs";
-import matter from "gray-matter";
 import path from "path";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeStringify from "rehype-stringify";
-import {
-  Post,
-  PostFrontMatter,
-  PostFrontMatterSchema,
-  PostList,
-} from "~/types/blog";
-import { UTCDate } from "@date-fns/utc";
-import { compareDesc } from "date-fns";
-import { ErrorHandler } from "~/const/error";
+import { Post } from "~/types/blog";
 import { h } from "hastscript";
 import { visit } from "unist-util-visit";
+import { postsDirectory, validatePost } from "~/server/posts";
 
 /***
- * adds image class to <p> and inserts div.h1 border
+ * add classname to <p> tags containing <img> tags
  */
-function addClassNames() {
-  //@ts-ignore
+function labelImagePTags() {
+  // @ts-ignore
   return (tree) => {
     visit(tree, "element", (node, index, parent) => {
       if (
@@ -34,7 +26,20 @@ function addClassNames() {
         node.properties.className = (node.properties.className || []).concat(
           "image-paragraph",
         );
-      } else if (node.properties?.className?.includes("h1-container")) {
+      }
+    });
+  };
+}
+
+/***
+ * inserts div.h1 border for styline
+ * MUST be called after wrapHeadingsInDiv
+ */
+function insertH1BorderDivs() {
+  //@ts-ignore
+  return (tree) => {
+    visit(tree, "element", (node, index, parent) => {
+      if (node.properties?.className?.includes("h1-container")) {
         // Check if the previous sibling is already an h1-border div
         // avoids infinite loop
         if (
@@ -58,24 +63,18 @@ function addClassNames() {
   };
 }
 
+/***
+ * wraps h1 and h2 in style-able containers
+ *
+ * technnically not needed to have headers wrapped in a div anymore, but its here if needed
+ */
 function wrapHeadingsInDiv() {
-  //@ts-ignore
   return (tree) => {
     visit(tree, ["element"], (node, index, parent) => {
-      if (node.tagName === "h1") {
-        // Create a new div element to insert above the heading wrapper
-        const aboveDiv = h("div.h1-border", []);
-        // Create a div element with a custom classname
-        const wrapperDiv = h("div.h1-container", [node]);
-
-        // Replace the original node with the wrapper div in the parent's children array
-        if (parent && typeof index === "number") {
-          parent.children.splice(index, 1, wrapperDiv);
-        }
-      } else if (node.tagName === "h2") {
-        // Create a div element with a custom classname
-        const wrapperDiv = h("div.h2-container", [node]);
-
+      if (node.tagName === "h1" || node.tagName === "h2") {
+        const selector =
+          node.tagName === "h1" ? "div.h1-container" : "div.h2-container";
+        const wrapperDiv = h(selector, [node]); // wrap node in div with className  = h1-container or h2-container
         // Replace the original node with the wrapper div in the parent's children array
         if (parent && typeof index === "number") {
           parent.children.splice(index, 1, wrapperDiv);
@@ -85,41 +84,10 @@ function wrapHeadingsInDiv() {
   };
 }
 
-const POSTS_PATH = "blog-posts/published";
-const postsDirectory = path.join(process.cwd(), POSTS_PATH);
-
-const validatePost = (fileContents: string) => {
-  const { data, content } = matter(fileContents);
-  const frontMatter = PostFrontMatterSchema.parse(data);
-  return { frontMatter, content };
-};
-
-export const getSortedPosts = (): PostList => {
-  const postsDirectory = path.join(process.cwd(), POSTS_PATH);
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allPosts: PostList = [];
-  fileNames.forEach((fileName) => {
-    const fullPath = path.join(postsDirectory, fileName);
-    const slug = fileName.replace(/\.md$/, "");
-    const fileContents = fs.readFileSync(fullPath, "utf8");
-    let frontMatter: PostFrontMatter;
-    try {
-      ({ frontMatter } = validatePost(fileContents));
-
-      allPosts.push({
-        slug,
-        preview: frontMatter.description,
-        ...frontMatter,
-      });
-    } catch (e) {
-      ErrorHandler.makeError("Error parsing post", e);
-    }
-  });
-  return allPosts.sort((a, b) => {
-    return compareDesc(new UTCDate(a.date), new UTCDate(b.date));
-  });
-};
-
+/***
+ * generates post from slug
+ * functions are declarative and not performant because this runs during build time
+ */
 export const getPost = async (slug: string): Promise<Post> => {
   const postPath = path.join(postsDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(postPath, "utf8");
@@ -128,9 +96,10 @@ export const getPost = async (slug: string): Promise<Post> => {
     .use(remarkParse) // Parse the markdown content
     .use(remarkRehype, { allowDangerousHtml: true }) // Convert to rehype (HTML AST), allowing raw HTML
     .use(rehypeRaw) // Parse the raw HTML inside the markdown
+    .use(labelImagePTags) // Custom plugin to add class to <p> containing <img>
     .use(wrapHeadingsInDiv) // Custom plugin to wrap <h1> and <h2> in a <div>
-    // must run after wrapHeadingsInDiv
-    .use(addClassNames) // Custom plugin to add class to <p> containing <img>
+
+    .use(insertH1BorderDivs) // MUST run after wrapHeadingsInDiv
     .use(rehypeStringify) // Stringify the rehype tree back to HTML
     .process(content);
 

@@ -5,6 +5,8 @@ description: A fully developed vision for the interchain involves more than just
 heroImagePath: /img/blog/valence-intro-blog-post-img.webp
 ---
 
+# Excerpt
+
 "Valence is a cross-chain protocol that enables crypto-native organizations, such as chains, dApps, DAOs, and protocols, to enter into programmatic relationships with other crypto-native organizations.
 
 Timewave is the team leading the development of the Valence Protocol. Timewave’s mission is to develop software that improves long-term, permissionless collaboration across the interchain..."
