@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@valence-ui/valence-static':
-        specifier: workspace:^
-        version: link:apps/valence-static
     devDependencies:
       husky:
         specifier: ^9.0.11
