@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "storybook dev --port 6006 --no-open"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
