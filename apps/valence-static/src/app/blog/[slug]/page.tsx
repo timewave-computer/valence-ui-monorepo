@@ -10,6 +10,8 @@ import Image from "next/image";
 import { PostHeading, BackButton } from "~/app/blog/ui-components";
 import "./article.css";
 
+// export const dynamic = 'force-dynamic';
+
 type BlogPostProps = {
   params: {
     slug: string;
@@ -73,7 +75,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     );
 
   return (
-    <div className="min-h-1/2 flex grow flex-col py-4 md:gap-2  ">
+    <div className="min-h-1/2 flex grow flex-col pt-4 md:gap-2  ">
       <div className="">
         <BackButton
           link={{

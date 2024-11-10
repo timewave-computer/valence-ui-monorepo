@@ -20,6 +20,7 @@ import { visit } from "unist-util-visit";
 
 /***
  * adds image class to <p> and inserts div.h1 border
+ * MUST be called after wrapHeadingsInDiv
  */
 function addClassNames() {
   //@ts-ignore
@@ -59,12 +60,20 @@ function addClassNames() {
 }
 
 function wrapHeadingsInDiv() {
-  //@ts-ignore
   return (tree) => {
+    const nodesToModify: Array<{
+      node: any;
+      index?: number;
+      parent: any;
+    }> = [];
     visit(tree, ["element"], (node, index, parent) => {
+      if (node.tagName === "h1" || node.tagName === "h2") {
+        nodesToModify.push({ node, index, parent });
+      }
+    });
+    // more performant to modify the tree after visiting all nodes
+    nodesToModify.forEach(({ node, index, parent }, i) => {
       if (node.tagName === "h1") {
-        // Create a new div element to insert above the heading wrapper
-        const aboveDiv = h("div.h1-border", []);
         // Create a div element with a custom classname
         const wrapperDiv = h("div.h1-container", [node]);
 

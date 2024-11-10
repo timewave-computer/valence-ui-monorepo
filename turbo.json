@@ -26,6 +26,17 @@
         "SUBCRIBE_GOOGLE_FORM_ID"
       ]
     },
+    "start": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ],
+      "persistent": true,
+      "cache": false
+    },
     "web#build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]

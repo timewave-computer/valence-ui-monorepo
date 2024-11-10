@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@valence-ui/config": "*",
-    "@valence-ui/ui-components": "*",
-    "@valence-ui/socials": "*",
     "@date-fns/utc": "^1.2.0",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-hover-card": "^1.1.1",
@@ -21,6 +18,9 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tanstack/react-query": "^5.56.2",
     "@types/hast": "^3.0.4",
+    "@valence-ui/config": "*",
+    "@valence-ui/socials": "*",
+    "@valence-ui/ui-components": "*",
     "@vercel/edge-config": "^1.2.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -49,6 +49,7 @@
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
+    "sharp": "^0.33.5",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
     "unified": "^11.0.5",
