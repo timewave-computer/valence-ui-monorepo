@@ -3,8 +3,12 @@ import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
-import { Button } from "./Button";
-import { Sheet, SheetContent, SheetTrigger } from "@valence-ui/ui-components";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  Button,
+} from "@valence-ui/ui-components";
 import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
 import { STATIC_URL } from "@/const";

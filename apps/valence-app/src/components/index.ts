@@ -1,4 +1,3 @@
-export * from "./Button";
 export * from "./Checkbox";
 export * from "./ValenceAppNav";
 export * from "./NumberInput";
@@ -25,3 +24,4 @@ export * from "./ConnectWalletButton";
 export * from "./WithIconAndTooltip";
 export * from "./CollapsibleSection";
 export * from "./CalloutBox";
+export * from "./programs";
