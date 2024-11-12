@@ -6,7 +6,7 @@ import {
   type ProgramAccount,
 } from "@/types";
 import Dagre from "@dagrejs/dagre";
-import { type Edge } from "@xyflow/react";
+import { type MarkerType, type Edge } from "@xyflow/react";
 
 const getLayoutedElements = (nodes, edges, options) => {
   const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
@@ -17,7 +17,7 @@ const getLayoutedElements = (nodes, edges, options) => {
     g.setNode(node.id, {
       ...node,
       width: node.measured?.width ?? 160,
-      height: node.measured?.height ?? 36,
+      height: node.measured?.height ?? 50,
     });
   });
 
@@ -26,7 +26,6 @@ const getLayoutedElements = (nodes, edges, options) => {
   return {
     options: {
       ...options,
-      nodesep: 1000,
     },
     nodes: nodes.map((node) => {
       const position = g.node(node.id);
@@ -146,6 +145,11 @@ const makeEdges = (links: ProgramLink[]) => {
         id: `edge-link:${link.id}-source:${inputAccountId}-target:${link.service_id}`,
         source: `account:${inputAccountId}`,
         target: `service:${link.service_id}`,
+        markerEnd: {
+          type: "arrow" as MarkerType,
+          width: 20,
+          height: 20,
+        },
       });
     });
     link.output_accounts_id.forEach((outputAccountId) => {
@@ -153,6 +157,11 @@ const makeEdges = (links: ProgramLink[]) => {
         id: `edge-link:${link.id}-source:${link.service_id}-target:${outputAccountId}`,
         source: `service:${link.service_id}`,
         target: `account:${outputAccountId}`,
+        markerEnd: {
+          type: "arrow" as MarkerType,
+          width: 20,
+          height: 20,
+        },
       });
     });
   });
