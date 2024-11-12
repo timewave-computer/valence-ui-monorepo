@@ -1,6 +1,4 @@
-//@ts-ignore
-import { join, dirname } from "path";
-import postcss from "postcss";
+import { join, dirname, resolve } from "path";
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -22,12 +20,32 @@ const config = {
     getAbsolutePath("@storybook/addon-onboarding"),
     getAbsolutePath("@storybook/addon-essentials"),
     getAbsolutePath("@chromatic-com/storybook"),
-    getAbsolutePath("@storybook/addon-interactions"),
     getAbsolutePath("@storybook/addon-postcss"),
+    getAbsolutePath("@storybook/addon-interactions"),
+    getAbsolutePath("@storybook/addon-styling-webpack"),
   ],
   framework: {
     name: getAbsolutePath("@storybook/react-webpack5"),
     options: {},
+  },
+  webpackFinal: async (config) => {
+    config.module.rules.push({
+      test: /\.css$/,
+      use: [
+        "style-loader",
+        "css-loader",
+        {
+          loader: "postcss-loader",
+          options: {
+            postcssOptions: {
+              plugins: [require("tailwindcss"), require("autoprefixer")],
+            },
+          },
+        },
+      ],
+      include: resolve(__dirname, "../"),
+    });
+    return config;
   },
 };
 export default config;

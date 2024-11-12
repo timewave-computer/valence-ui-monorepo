@@ -556,6 +556,9 @@ importers:
       '@storybook/addon-postcss':
         specifier: ^2.0.0
         version: 2.0.0(webpack@5.95.0)
+      '@storybook/addon-styling-webpack':
+        specifier: ^1.0.1
+        version: 1.0.1(storybook@8.3.6)(webpack@5.95.0)
       '@storybook/addon-webpack5-compiler-swc':
         specifier: ^1.0.5
         version: 1.0.5(webpack@5.95.0)
@@ -583,9 +586,15 @@ importers:
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.20(postcss@8.4.47)
+      css-loader:
+        specifier: ^7.1.2
+        version: 7.1.2(webpack@5.95.0)
       postcss:
         specifier: ^8.4.38
         version: 8.4.47
+      postcss-loader:
+        specifier: ^8.1.1
+        version: 8.1.1(postcss@8.4.47)(typescript@5.6.3)(webpack@5.95.0)
       prettier-plugin-tailwindcss:
         specifier: ^0.5.14
         version: 0.5.14(prettier@3.2.5)
@@ -595,6 +604,9 @@ importers:
       storybook:
         specifier: ^8.3.6
         version: 8.3.6
+      style-loader:
+        specifier: ^4.0.0
+        version: 4.0.0(webpack@5.95.0)
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.5.4
@@ -4524,6 +4536,17 @@ packages:
       - webpack
     dev: true
 
+  /@storybook/addon-styling-webpack@1.0.1(storybook@8.3.6)(webpack@5.95.0):
+    resolution: {integrity: sha512-5n+SXPfMTc4m7sWaJWPWjoHYWc6/B111M2Ia55toQ3GV4ON4vVlTgH9FX+EgCkDticElj99HLTMDJkHRj2yvkg==}
+    peerDependencies:
+      webpack: ^5.0.0
+    dependencies:
+      '@storybook/node-logger': 8.4.2(storybook@8.3.6)
+      webpack: 5.95.0(@swc/core@1.7.39)(esbuild@0.23.1)
+    transitivePeerDependencies:
+      - storybook
+    dev: true
+
   /@storybook/addon-toolbars@8.3.6(storybook@8.3.6):
     resolution: {integrity: sha512-FJH+lRoZXENfpMR/G09ZqB0TmL/k6bv07GN1ysoVs420tKRgjfz6uXaZz5COrhcdISr5mTNmG+mw9x7xXTfX3Q==}
     peerDependencies:
@@ -4729,6 +4752,14 @@ packages:
       core-js: 3.39.0
       npmlog: 5.0.1
       pretty-hrtime: 1.0.3
+    dev: true
+
+  /@storybook/node-logger@8.4.2(storybook@8.3.6):
+    resolution: {integrity: sha512-7IOAbyByGdrAr3cidEULFMnuCF4i4NyxW0emI3MKl9NKAVeWVWpeHL1tL1JvCIO57bMNH2Jko80m87TmEH82vg==}
+    peerDependencies:
+      storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
+    dependencies:
+      storybook: 8.3.6
     dev: true
 
   /@storybook/preset-react-webpack@8.3.6(@storybook/test@8.3.6)(@swc/core@1.7.39)(esbuild@0.23.1)(react-dom@18.3.1)(react@18.3.1)(storybook@8.3.6)(typescript@5.6.3):
@@ -7444,6 +7475,22 @@ packages:
       yaml: 1.10.2
     dev: true
 
+  /cosmiconfig@9.0.0(typescript@5.6.3):
+    resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      typescript: '>=4.9.5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      env-paths: 2.2.1
+      import-fresh: 3.3.0
+      js-yaml: 4.1.0
+      parse-json: 5.2.0
+      typescript: 5.6.3
+    dev: true
+
   /cosmjs-types@0.9.0:
     resolution: {integrity: sha512-MN/yUe6mkJwHnCFfsNPeCfXVhyxHYW6c/xDUzrSbBycYzw++XvWDMJArXp2pLdgD6FQ8DW79vkPjeNKVrXaHeQ==}
     dev: false
@@ -7526,6 +7573,29 @@ packages:
     peerDependencies:
       '@rspack/core': 0.x || 1.x
       webpack: ^5.0.0
+    peerDependenciesMeta:
+      '@rspack/core':
+        optional: true
+      webpack:
+        optional: true
+    dependencies:
+      icss-utils: 5.1.0(postcss@8.4.47)
+      postcss: 8.4.47
+      postcss-modules-extract-imports: 3.1.0(postcss@8.4.47)
+      postcss-modules-local-by-default: 4.0.5(postcss@8.4.47)
+      postcss-modules-scope: 3.2.0(postcss@8.4.47)
+      postcss-modules-values: 4.0.0(postcss@8.4.47)
+      postcss-value-parser: 4.2.0
+      semver: 7.6.3
+      webpack: 5.95.0(@swc/core@1.7.39)(esbuild@0.23.1)
+    dev: true
+
+  /css-loader@7.1.2(webpack@5.95.0):
+    resolution: {integrity: sha512-6WvYYn7l/XEGN8Xu2vWFt9nVzrCn39vKyTEFf/ExEyoksJjjSZV/0/35XPlMbpnr6VGhZIUg5yJrL8tGfes/FA==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      '@rspack/core': 0.x || 1.x
+      webpack: ^5.27.0
     peerDependenciesMeta:
       '@rspack/core':
         optional: true
@@ -8036,6 +8106,11 @@ packages:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
     dev: false
+
+  /env-paths@2.2.1:
+    resolution: {integrity: sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==}
+    engines: {node: '>=6'}
+    dev: true
 
   /environment@1.1.0:
     resolution: {integrity: sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q==}
@@ -11729,6 +11804,28 @@ packages:
       webpack: 5.95.0(@swc/core@1.7.39)(esbuild@0.23.1)
     dev: true
 
+  /postcss-loader@8.1.1(postcss@8.4.47)(typescript@5.6.3)(webpack@5.95.0):
+    resolution: {integrity: sha512-0IeqyAsG6tYiDRCYKQJLAmgQr47DX6N7sFSWvQxt6AcupX8DIdmykuk/o/tx0Lze3ErGHJEp5OSRxrelC6+NdQ==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      '@rspack/core': 0.x || 1.x
+      postcss: ^7.0.0 || ^8.0.1
+      webpack: ^5.0.0
+    peerDependenciesMeta:
+      '@rspack/core':
+        optional: true
+      webpack:
+        optional: true
+    dependencies:
+      cosmiconfig: 9.0.0(typescript@5.6.3)
+      jiti: 1.21.6
+      postcss: 8.4.47
+      semver: 7.6.3
+      webpack: 5.95.0(@swc/core@1.7.39)(esbuild@0.23.1)
+    transitivePeerDependencies:
+      - typescript
+    dev: true
+
   /postcss-modules-extract-imports@2.0.0:
     resolution: {integrity: sha512-LaYLDNS4SG8Q5WAWqIJgdHPJrDDr/Lv775rMBFUbgjTz6j34lUznACHcdRWroPvXANP2Vj7yNK57vp9eFqzLWQ==}
     engines: {node: '>= 6'}
@@ -13193,6 +13290,15 @@ packages:
     engines: {node: '>= 12.13.0'}
     peerDependencies:
       webpack: ^5.0.0
+    dependencies:
+      webpack: 5.95.0(@swc/core@1.7.39)(esbuild@0.23.1)
+    dev: true
+
+  /style-loader@4.0.0(webpack@5.95.0):
+    resolution: {integrity: sha512-1V4WqhhZZgjVAVJyt7TdDPZoPBPNHbekX4fWnCJL1yQukhCeZhJySUL+gL9y6sNdN95uEOS83Y55SqHcP7MzLA==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      webpack: ^5.27.0
     dependencies:
       webpack: 5.95.0(@swc/core@1.7.39)(esbuild@0.23.1)
     dev: true

@@ -10,9 +10,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-valence-black text-valence-white  border-valence-black hover:bg-valence-white hover:text-valence-black focus:bg-valence-white focus:text-valence-black focus:border-valence-black",
+          "bg-valence-black text-valence-white  border-valence-black hover:bg-valence-white hover:text-valence-black focus:bg-valence-white focus:text-valence-black focus:border-valence-black]",
         secondary:
-          "bg-valence-white text-valence-black  hover:bg-valence-black transition-all hover:text-valence-white  ",
+          "bg-valence-white text-valence-black  hover:bg-valence-black transition-all hover:text-valence-white",
         loading: "bg-valence-mediumgray ",
       },
       disabled: {
