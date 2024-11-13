@@ -6,7 +6,7 @@ import {
 } from "@/types";
 import { type Edge } from "@xyflow/react";
 
-export const makeNodesAndEdges = (program: Program) => {
+export const managerConfigToDiagram = (program: Program) => {
   const nodes = [
     ...makeAccountNodes(program.accounts),
     ...makeServiceNodes(program.services),
@@ -14,7 +14,7 @@ export const makeNodesAndEdges = (program: Program) => {
   const edges = makeEdges(program.links);
   return { nodes, edges };
 };
-export type NodesAndEdgesRespose = ReturnType<typeof makeNodesAndEdges>;
+export type ManagerConfigToDiagram = ReturnType<typeof managerConfigToDiagram>;
 
 const makeAccountNodes = (accounts: ProgramAccount[]) => {
   return accounts.map((account, i) => ({

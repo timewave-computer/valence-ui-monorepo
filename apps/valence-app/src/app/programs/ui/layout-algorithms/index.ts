@@ -16,9 +16,10 @@ export type LayoutAlgorithm = (
   options: LayoutAlgorithmOptions,
 ) => Promise<{ nodes: Node[]; edges: Edge[] }>;
 
-export default {
+export const layoutAlgorithms: Record<string, LayoutAlgorithm> = {
   dagre,
   // can add other layouting algorithms here
   // 'd3-hierarchy': d3Hierarchy,
   // elk,
+  // see docs https://reactflow.dev/learn/layouting/layouting
 };

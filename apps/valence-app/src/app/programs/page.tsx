@@ -1,3 +1,3 @@
 export default function ProgramsRegistryPage() {
-  return <div>programs page</div>;
+  return <div>view specific program via /programs/registryId</div>;
 }

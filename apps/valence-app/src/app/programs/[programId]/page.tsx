@@ -1,10 +1,5 @@
-"use client";
-import {
-  getProgram,
-  makeNodesAndEdges,
-  AccountNode,
-  ProgramDiagram,
-} from "@/app/programs";
+import { getProgram, managerConfigToDiagram } from "@/app/programs/server";
+import { AccountNode, ProgramDiagram } from "@/app/programs/ui";
 
 /***
  * Define outside of rendering tree so it does not cause uneccessary rerenders
@@ -15,9 +10,7 @@ const nodeTypes = {
 
 export default function ProgramPage({ params: { programId } }) {
   const program = getProgram(programId);
-  const { nodes, edges } = makeNodesAndEdges(program);
-
-  console.log("nodes n edges in server", nodes.length, edges.length);
+  const { nodes, edges } = managerConfigToDiagram(program);
 
   return (
     <div className="w-screen h-screen p-4 flex flex-col items-center ">

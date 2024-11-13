@@ -1,4 +1,3 @@
-"use client";
 import {
   ReactFlow,
   Controls,
@@ -18,7 +17,7 @@ import {
   useAutoLayout,
   type DiagramLayoutAlgorithm,
   type Direction,
-} from "@/app/programs";
+} from "@/app/programs/ui";
 
 type ProgramDiagramWithLayoutProps = {
   edges: Edge[];

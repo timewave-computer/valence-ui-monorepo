@@ -8,10 +8,11 @@ import {
 } from "@xyflow/react";
 
 import {
+  type LayoutAlgorithmOptions,
   getSourceHandlePosition,
+  layoutAlgorithms,
   getTargetHandlePosition,
-} from "./layout-position";
-import layoutAlgorithms, { type LayoutAlgorithmOptions } from "./algorithms";
+} from "@/app/programs/ui";
 
 export type DiagramLayoutAlgorithm = keyof typeof layoutAlgorithms;
 export type LayoutOptions = {
@@ -82,17 +83,10 @@ type Elements = {
 };
 
 function compareElements(xs: Elements, ys: Elements) {
-  console.log("comparing elements", "prev", xs, "next", ys);
-
-  const cNodes = compareNodes(xs.nodes, ys.nodes);
-  const cEdges = compareEdges(xs.edges, ys.edges);
-  console.log("cNodes", cNodes, "cEdges", cEdges, "both", cNodes && cEdges);
   return compareNodes(xs.nodes, ys.nodes) && compareEdges(xs.edges, ys.edges);
 }
 
 function compareNodes(xs: Array<Node>, ys: Array<Node>) {
-  console.log("comparing nodes");
-
   // the number of nodes changed, so we already know that the nodes are not equal
   if (xs.length !== ys.length) return false;
 
@@ -122,8 +116,6 @@ function compareNodes(xs: Array<Node>, ys: Array<Node>) {
 }
 
 function compareEdges(xs: Array<Edge>, ys: Array<Edge>) {
-  console.log("comparing edges");
-
   // the number of edges changed, so we already know that the edges are not equal
   if (xs.length !== ys.length) return false;
 
