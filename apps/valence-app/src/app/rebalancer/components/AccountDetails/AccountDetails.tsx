@@ -19,7 +19,9 @@ import { useWallet } from "@/hooks";
 import { Label, WithIconAndTooltip } from "@/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import { displayMinBalance, displayPid } from "@/utils";
-import { Button, LoadingSkeleton } from "@/components";
+import { Button } from "@valence-ui/ui-components";
+
+import { LoadingSkeleton } from "@/components";
 import Link from "next/link";
 import { BsCheck, BsInfo } from "react-icons/bs";
 import { useSearchParams } from "next/navigation";

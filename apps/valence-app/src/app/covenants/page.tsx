@@ -1,6 +1,5 @@
 "use client";
 import {
-  Button,
   ConnectWalletButton,
   Dropdown,
   LinkText,
@@ -100,6 +99,7 @@ const CovenantPage = () => {
             <ValenceProductBrand
               img={
                 <Image
+                  priority={true}
                   className="mb-6 mt-8"
                   src="/img/covenant.svg"
                   alt="Covenant illustration"

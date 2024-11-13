@@ -61,6 +61,7 @@ export const SidePanelV2: React.FC<{
         <ValenceProductBrand
           img={
             <Image
+              priority={true}
               className="max-h-20 w-auto"
               src="/img/rebalancer.svg"
               alt="Rebalancer illustration"

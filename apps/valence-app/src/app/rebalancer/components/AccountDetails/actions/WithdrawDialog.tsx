@@ -1,12 +1,12 @@
 "use client";
 import {
-  Button,
   ToastMessage,
   DialogClose,
   Dialog,
   DialogTrigger,
   DialogContent,
 } from "@/components";
+import { Button } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";

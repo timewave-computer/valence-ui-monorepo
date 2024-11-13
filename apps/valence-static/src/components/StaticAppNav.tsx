@@ -70,6 +70,7 @@ export const StaticAppNav = () => {
       <div className="hidden md:flex flex-row max-w-5xl py-8 mx-auto w-full justify-between text-valence-black border-b border-valence-black  ">
         <Link href="/" className="-ml-1">
           <Image
+            priority={true}
             src="/img/valence_vertical.svg"
             alt="Logo"
             width={120}
@@ -86,6 +87,7 @@ export const StaticAppNav = () => {
       <div className="flex flex-row justify-between w-full px-4 md:hidden border-b border-valence-black py-4">
         <Link href="/">
           <Image
+            priority={true}
             src="/img/valence_horizontal.svg"
             alt="Logo"
             width={110}

@@ -3,8 +3,12 @@ import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
-import { Button } from "./Button";
-import { Sheet, SheetContent, SheetTrigger } from "@valence-ui/ui-components";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  Button,
+} from "@valence-ui/ui-components";
 import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
 import { STATIC_URL } from "@/const";
@@ -71,6 +75,7 @@ export const ValenceAppNav = () => {
       <div className="flex items-center gap-2 md:gap-8">
         <a className="" target="_blank" href={STATIC_URL}>
           <Image
+            priority={true}
             src="/img/valence_horizontal.svg"
             alt="Logo"
             width={110}

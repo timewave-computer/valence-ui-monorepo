@@ -15,7 +15,8 @@ import {
   RebalanceSpeed,
   SetTargets,
 } from "@/app/rebalancer/create/components";
-import { Button, ToastMessage } from "@/components";
+import { Button } from "@valence-ui/ui-components";
+import { ToastMessage } from "@/components";
 import { EditAssetsForAccount } from "@/app/rebalancer/edit/components/";
 import { OriginAsset } from "@/types/ibc";
 import { useMemo } from "react";

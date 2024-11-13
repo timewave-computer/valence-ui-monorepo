@@ -1,4 +1,5 @@
-import { Button, LinkText } from "@/components";
+import { LinkText } from "@/components";
+import { Button } from "@valence-ui/ui-components";
 import React from "react";
 import { HiMiniArrowRight } from "react-icons/hi2";
 
