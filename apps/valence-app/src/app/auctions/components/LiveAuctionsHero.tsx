@@ -1,4 +1,5 @@
-import { Button, ValenceProductBrand } from "@/components";
+import { ValenceProductBrand } from "@/components";
+import { Button } from "@valence-ui/ui-components";
 import Image from "next/image";
 import Link from "next/link";
 import { HiMiniArrowRight } from "react-icons/hi2";
@@ -9,6 +10,7 @@ export function LiveAuctionsHero() {
       <ValenceProductBrand
         img={
           <Image
+            priority={true}
             className="max-h-24 w-auto"
             src="/img/auctions.svg"
             alt="Auctions illustration"

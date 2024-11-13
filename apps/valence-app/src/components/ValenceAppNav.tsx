@@ -75,6 +75,7 @@ export const ValenceAppNav = () => {
       <div className="flex items-center gap-2 md:gap-8">
         <a className="" target="_blank" href={STATIC_URL}>
           <Image
+            priority={true}
             src="/img/valence_horizontal.svg"
             alt="Logo"
             width={110}

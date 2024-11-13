@@ -1,3 +1,3 @@
-export default function ProgramsRegsitryPage() {
+export default function ProgramsRegistryPage() {
   return <div>programs page</div>;
 }

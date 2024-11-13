@@ -24,4 +24,3 @@ export * from "./ConnectWalletButton";
 export * from "./WithIconAndTooltip";
 export * from "./CollapsibleSection";
 export * from "./CalloutBox";
-export * from "./programs";
