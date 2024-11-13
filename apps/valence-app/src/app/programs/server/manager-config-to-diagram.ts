@@ -1,5 +1,5 @@
 import {
-  type ProgramService,
+  type ProgramLibrary,
   type ProgramAccount,
   type ProgramLink,
   type Program,
@@ -9,7 +9,7 @@ import { type Edge } from "@xyflow/react";
 export const managerConfigToDiagram = (program: Program) => {
   const nodes = [
     ...makeAccountNodes(program.accounts),
-    ...makeServiceNodes(program.services),
+    ...makeLibraryNodes(program.services),
   ];
   const edges = makeEdges(program.links);
   return { nodes, edges };
@@ -29,12 +29,13 @@ const makeAccountNodes = (accounts: ProgramAccount[]) => {
   }));
 };
 
-const makeServiceNodes = (services: ProgramService[]) => {
+const makeLibraryNodes = (services: ProgramLibrary[]) => {
   return services.map((service, i) => ({
-    id: `service:${service.id}`,
+    id: `library:${service.id}`,
+    type: "library",
     position: { x: 0, y: 0 },
     data: {
-      label: `service ${service.id}`,
+      label: `library ${service.id}`,
       config: service.config,
       domain: service.domain,
     },
@@ -48,13 +49,13 @@ const makeEdges = (links: ProgramLink[]) => {
       edges.push({
         id: `edge-link:${link.id}-source:${inputAccountId}-target:${link.service_id}`,
         source: `account:${inputAccountId}`,
-        target: `service:${link.service_id}`,
+        target: `library:${link.service_id}`,
       });
     });
     link.output_accounts_id.forEach((outputAccountId) => {
       edges.push({
         id: `edge-link:${link.id}-source:${link.service_id}-target:${outputAccountId}`,
-        source: `service:${link.service_id}`,
+        source: `library:${link.service_id}`,
         target: `account:${outputAccountId}`,
       });
     });

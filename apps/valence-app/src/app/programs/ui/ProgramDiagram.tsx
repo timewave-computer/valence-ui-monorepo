@@ -28,13 +28,13 @@ type ProgramDiagramWithLayoutProps = {
 const defaultDiagramLayoutOptions = {
   algorithm: "dagre" as DiagramLayoutAlgorithm,
   direction: "TB" as Direction,
-  spacing: [40, 60] as [number, number],
+  spacing: [60, 60] as [number, number],
 };
 const defaultEdgeOptions = {
   markerEnd: {
     type: "arrowclosed" as MarkerType,
-    width: 16,
-    height: 16,
+    width: 44,
+    height: 36,
   },
 };
 
@@ -65,6 +65,7 @@ function ProgramDiagramWithLayout({
         onEdgesChange={onEdgesChange}
         defaultEdgeOptions={defaultEdgeOptions}
         nodesDraggable={false}
+        zoomOnDoubleClick={false}
       >
         <Background />
         <Controls />

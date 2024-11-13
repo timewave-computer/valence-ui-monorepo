@@ -3,7 +3,7 @@ export type ProgramAccount = {
   domain: string;
   accountType: string;
 };
-export type ProgramService = {
+export type ProgramLibrary = {
   id: string;
   domain: string;
   config: any;
@@ -26,7 +26,7 @@ export type ProgramAuthorization = {
 
 export type Program = {
   accounts: ProgramAccount[];
-  services: ProgramService[];
+  services: ProgramLibrary[];
   links: ProgramLink[];
   authorizations: ProgramAuthorization[];
 };
