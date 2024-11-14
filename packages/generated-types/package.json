@@ -1,0 +1,19 @@
+{
+  "name": "@valence-ui/generated-types",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typegen": "tsx ./generate-types-from-schema.ts"
+  },
+  "dependencies": {
+    "@valence-ui/config": "*"
+  },
+  "devDependencies": {
+    "@cosmjs/amino": "^0.32.4",
+    "@cosmjs/cosmwasm-stargate": "^0.32.4",
+    "@cosmwasm/ts-codegen": "^1.11.1",
+    "tsx": "^4.19.0",
+    "typescript": "5.3.3"
+  }
+}

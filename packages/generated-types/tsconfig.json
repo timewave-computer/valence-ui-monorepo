@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@valence-ui/config/ts/base.json",
+  "include": ["**/*.ts", "**/*.tsx", "generate-types-from-schema.ts"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"]
+    },
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true
+  }
+}
