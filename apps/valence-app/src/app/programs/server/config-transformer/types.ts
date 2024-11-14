@@ -5,4 +5,4 @@ export interface TransformerOutput {
   edges: Edge[];
 }
 
-export type TransformerFunction = (config: unknown) => TransformerOutput;
+export type TransformerFunction<T> = (config: T) => TransformerOutput;

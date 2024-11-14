@@ -1,1 +1,1 @@
-export * from "./ProgramConfigManager.zod";
+export * from "./programConfigManagerSchema";
