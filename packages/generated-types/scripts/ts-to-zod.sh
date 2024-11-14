@@ -1,0 +1,1 @@
+pnpm ts-to-zod types/ProgramConfigManager.types.ts ./zod/ProgramConfigManager.zod.ts

@@ -4,19 +4,19 @@ codegen
   //@ts-ignore
   .default({
     contracts: [
-      { name: "Account", dir: "schema-files/account/schema" },
-      { name: "Rebalancer", dir: "schema-files/rebalancer/schema" },
+      { name: "Account", dir: "contract-schema/account/schema" },
+      { name: "Rebalancer", dir: "contract-schema/rebalancer/schema" },
       {
         name: "AuctionsManager",
-        dir: "schema-files/auctions-manager/schema",
+        dir: "contract-schema/auctions-manager/schema",
       },
       {
         name: "Auction",
-        dir: "schema-files/auction/schema",
+        dir: "contract-schema/auction/schema",
       },
       {
         name: "ProgramConfigManager",
-        dir: "schema-files/program-config-manager/schema",
+        dir: "contract-schema/program-config-manager/schema",
       },
     ],
     outPath: "types",
