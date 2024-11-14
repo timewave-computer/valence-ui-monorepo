@@ -10,7 +10,7 @@ import { Button } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
-import { AccountClient } from "@/codegen/ts-codegen/Account.client";
+import { AccountClient } from "@valence-ui/generated-types/types/Account.client";
 import { toast } from "sonner";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";

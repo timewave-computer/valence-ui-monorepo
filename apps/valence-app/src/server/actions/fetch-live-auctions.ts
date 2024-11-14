@@ -1,10 +1,10 @@
 "use server";
 import { getCosmwasmClient, getStargateClient } from "@/server/utils";
-import { AuctionsManagerQueryClient } from "@/codegen/ts-codegen/AuctionsManager.client";
+import { AuctionsManagerQueryClient } from "@valence-ui/generated-types/types/AuctionsManager.client";
 import {
   ActiveAuction,
   GetPriceResponse,
-} from "@/codegen/ts-codegen/Auction.types";
+} from "@valence-ui/generated-types/types/Auction.types";
 import { SanitizedAuctionStatus, chainConfig } from "@/const";
 
 export async function fetchLiveAuctions() {

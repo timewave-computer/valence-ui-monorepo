@@ -1,5 +1,5 @@
 import { withTimeout } from "@/app/rebalancer/hooks";
-import { WhitelistsResponse } from "@/codegen/ts-codegen/Rebalancer.types";
+import { WhitelistsResponse } from "@valence-ui/generated-types/types/Rebalancer.types";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { fetchRebalancerWhitelist } from "@/server/actions";
 import { useQuery } from "@tanstack/react-query";

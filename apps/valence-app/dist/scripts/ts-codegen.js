@@ -1,6 +1,7 @@
-import codegen from "@cosmwasm/ts-codegen";
-
-codegen
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var ts_codegen_1 = require("@cosmwasm/ts-codegen");
+ts_codegen_1.default
   // @ts-ignore
   .default({
     contracts: [
@@ -13,6 +14,10 @@ codegen
       {
         name: "Auction",
         dir: "contract-schema/auction/schema",
+      },
+      {
+        name: "ProgramConfigManager",
+        dir: "contract-schema/program-config-manager/schema",
       },
     ],
     outPath: "src/codegen/ts-codegen",
@@ -50,6 +55,6 @@ codegen
       },
     },
   })
-  .then(() => {
+  .then(function () {
     console.log("✨ all done!");
   });
