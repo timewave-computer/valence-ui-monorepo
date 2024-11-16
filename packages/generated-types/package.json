@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "gen:types": "tsx ./scripts/generate-types-from-schema.ts",
+    "gen:types": "tsx ./scripts/tscodegen.ts",
     "gen:zod": "./scripts/ts-to-zod.sh"
   },
   "dependencies": {
