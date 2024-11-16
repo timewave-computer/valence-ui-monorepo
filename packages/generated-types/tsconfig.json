@@ -3,6 +3,11 @@
   "extends": "@valence-ui/config/ts/base.json",
   "include": ["**/*.ts", "**/*.tsx", "generate-zod-from-types.ts"],
   "compilerOptions": {
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"]
