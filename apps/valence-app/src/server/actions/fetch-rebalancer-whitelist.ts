@@ -1,5 +1,5 @@
 "use server";
-import { WhitelistsResponse } from "@valence-ui/generated-types/cosmwasm/types/Rebalancer.types";
+import { WhitelistsResponse } from "@valence-ui/generated-types/dist/cosmwasm/types/Rebalancer.types";
 import { chainConfig } from "@/const/config";
 import { getCosmwasmClient } from "@/server/utils";
 
