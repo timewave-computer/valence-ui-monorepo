@@ -1,8 +1,8 @@
 "use server";
 import { getCosmwasmClient } from "@/server/utils";
 import { chainConfig } from "@/const/config";
-import { MinAmount } from "@/codegen/ts-codegen/AuctionsManager.types";
-import { AuctionsManagerQueryClient } from "@/codegen/ts-codegen/AuctionsManager.client";
+import { MinAmount } from "@valence-ui/generated-types/dist/cosmwasm/types/AuctionsManager.types";
+import { AuctionsManagerQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/AuctionsManager.client";
 
 /***
  * for surfacing whether upcoming trade is above the minimum

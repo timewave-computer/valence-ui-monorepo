@@ -125,7 +125,7 @@ export interface RebalancerInterface extends RebalancerReadOnlyInterface {
     rebalancerAdminMsg: RebalancerAdminMsg,
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   systemRebalance: (
     {
@@ -135,7 +135,7 @@ export interface RebalancerInterface extends RebalancerReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   register: (
     {
@@ -147,7 +147,7 @@ export interface RebalancerInterface extends RebalancerReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   deregister: (
     {
@@ -157,7 +157,7 @@ export interface RebalancerInterface extends RebalancerReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   update: (
     {
@@ -169,7 +169,7 @@ export interface RebalancerInterface extends RebalancerReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   pause: (
     {
@@ -183,7 +183,7 @@ export interface RebalancerInterface extends RebalancerReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   resume: (
     {
@@ -195,7 +195,7 @@ export interface RebalancerInterface extends RebalancerReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
 }
 export class RebalancerClient
@@ -208,7 +208,7 @@ export class RebalancerClient
   constructor(
     client: SigningCosmWasmClient,
     sender: string,
-    contractAddress: string,
+    contractAddress: string
   ) {
     super(client, contractAddress);
     this.client = client;
@@ -226,7 +226,7 @@ export class RebalancerClient
     rebalancerAdminMsg: RebalancerAdminMsg,
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -236,7 +236,7 @@ export class RebalancerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   systemRebalance = async (
@@ -247,7 +247,7 @@ export class RebalancerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -259,7 +259,7 @@ export class RebalancerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   register = async (
@@ -272,7 +272,7 @@ export class RebalancerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -285,7 +285,7 @@ export class RebalancerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   deregister = async (
@@ -296,7 +296,7 @@ export class RebalancerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -308,7 +308,7 @@ export class RebalancerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   update = async (
@@ -321,7 +321,7 @@ export class RebalancerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -334,7 +334,7 @@ export class RebalancerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   pause = async (
@@ -349,7 +349,7 @@ export class RebalancerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -363,7 +363,7 @@ export class RebalancerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   resume = async (
@@ -376,7 +376,7 @@ export class RebalancerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -389,7 +389,7 @@ export class RebalancerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
 }

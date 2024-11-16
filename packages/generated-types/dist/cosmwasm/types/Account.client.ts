@@ -56,7 +56,7 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   deregisterFromService: (
     {
@@ -66,7 +66,7 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   updateService: (
     {
@@ -78,7 +78,7 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   pauseService: (
     {
@@ -90,7 +90,7 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   resumeService: (
     {
@@ -100,7 +100,7 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   sendFundsByService: (
     {
@@ -112,7 +112,7 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   executeByService: (
     {
@@ -124,7 +124,7 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   executeByAdmin: (
     {
@@ -134,7 +134,7 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   startAdminChange: (
     {
@@ -146,17 +146,17 @@ export interface AccountInterface extends AccountReadOnlyInterface {
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   cancelAdminChange: (
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   approveAdminChange: (
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
 }
 export class AccountClient
@@ -169,7 +169,7 @@ export class AccountClient
   constructor(
     client: SigningCosmWasmClient,
     sender: string,
-    contractAddress: string,
+    contractAddress: string
   ) {
     super(client, contractAddress);
     this.client = client;
@@ -197,7 +197,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -210,7 +210,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   deregisterFromService = async (
@@ -221,7 +221,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -233,7 +233,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   updateService = async (
@@ -246,7 +246,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -259,7 +259,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   pauseService = async (
@@ -272,7 +272,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -285,7 +285,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   resumeService = async (
@@ -296,7 +296,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -308,7 +308,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   sendFundsByService = async (
@@ -321,7 +321,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -334,7 +334,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   executeByService = async (
@@ -347,7 +347,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -360,7 +360,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   executeByAdmin = async (
@@ -371,7 +371,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -383,7 +383,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   startAdminChange = async (
@@ -396,7 +396,7 @@ export class AccountClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -409,13 +409,13 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   cancelAdminChange = async (
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -425,13 +425,13 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   approveAdminChange = async (
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -441,7 +441,7 @@ export class AccountClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
 }

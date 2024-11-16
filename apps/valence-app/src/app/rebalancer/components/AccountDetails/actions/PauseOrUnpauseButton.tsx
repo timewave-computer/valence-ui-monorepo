@@ -7,7 +7,7 @@ import { ToastMessage } from "@/components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
-import { AccountClient } from "@/codegen/ts-codegen/Account.client";
+import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
 import { toast } from "sonner";
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 

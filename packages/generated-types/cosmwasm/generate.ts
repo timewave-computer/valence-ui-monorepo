@@ -1,21 +1,25 @@
 import codegen from "@cosmwasm/ts-codegen";
 
+const baseDir = "cosmwasm"; // needs to be updated if files move.
+const inputDir = `${baseDir}/contract-schema`;
+const outputDir = `dist/${baseDir}/types`;
+
 codegen
-  // @ts-ignore
+  //@ts-ignore
   .default({
     contracts: [
-      { name: "Account", dir: "contract-schema/account/schema" },
-      { name: "Rebalancer", dir: "contract-schema/rebalancer/schema" },
+      { name: "Account", dir: `${inputDir}/account/schema` },
+      { name: "Rebalancer", dir: `${inputDir}/rebalancer/schema` },
       {
         name: "AuctionsManager",
-        dir: "contract-schema/auctions-manager/schema",
+        dir: `${inputDir}/auctions-manager/schema`,
       },
       {
         name: "Auction",
-        dir: "contract-schema/auction/schema",
+        dir: `${inputDir}/auction/schema`,
       },
     ],
-    outPath: "src/codegen/ts-codegen",
+    outPath: outputDir,
     // options are completely optional ;)
     options: {
       bundle: {

@@ -1,4 +1,4 @@
-import { RebalancerUpdateData } from "@/codegen/ts-codegen/Rebalancer.types";
+import { RebalancerUpdateData } from "@valence-ui/generated-types/dist/cosmwasm/types/Rebalancer.types";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { jsonToBase64, jsonToUtf8, numberToUint128 } from "@/utils";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";

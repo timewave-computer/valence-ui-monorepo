@@ -116,7 +116,7 @@ export interface AuctionsManagerInterface
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   withdrawFunds: (
     {
@@ -126,7 +126,7 @@ export interface AuctionsManagerInterface
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   finishAuction: (
     {
@@ -138,24 +138,24 @@ export interface AuctionsManagerInterface
     },
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   approveAdminChange: (
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   admin: (
     adminMsgs: AdminMsgs,
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
   server: (
     serverMsgs: ServerMsgs,
     fee?: number | StdFee | "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ) => Promise<ExecuteResult>;
 }
 export class AuctionsManagerClient
@@ -168,7 +168,7 @@ export class AuctionsManagerClient
   constructor(
     client: SigningCosmWasmClient,
     sender: string,
-    contractAddress: string,
+    contractAddress: string
   ) {
     super(client, contractAddress);
     this.client = client;
@@ -189,7 +189,7 @@ export class AuctionsManagerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -201,7 +201,7 @@ export class AuctionsManagerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   withdrawFunds = async (
@@ -212,7 +212,7 @@ export class AuctionsManagerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -224,7 +224,7 @@ export class AuctionsManagerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   finishAuction = async (
@@ -237,7 +237,7 @@ export class AuctionsManagerClient
     },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -250,13 +250,13 @@ export class AuctionsManagerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   approveAdminChange = async (
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -266,14 +266,14 @@ export class AuctionsManagerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   admin = async (
     adminMsgs: AdminMsgs,
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -283,14 +283,14 @@ export class AuctionsManagerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
   server = async (
     serverMsgs: ServerMsgs,
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
-    _funds?: Coin[],
+    _funds?: Coin[]
   ): Promise<ExecuteResult> => {
     return await this.client.execute(
       this.sender,
@@ -300,7 +300,7 @@ export class AuctionsManagerClient
       },
       fee,
       memo,
-      _funds,
+      _funds
     );
   };
 }

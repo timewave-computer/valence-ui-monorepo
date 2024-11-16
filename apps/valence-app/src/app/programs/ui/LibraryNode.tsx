@@ -5,14 +5,14 @@ import {
   type NodeProps,
 } from "@xyflow/react";
 
-type AccountNode = Node<{ number: number }, "account">;
+type LibraryNode = Node<{ number: number }, "library">;
 
-export function AccountNode({ data, id }: NodeProps<AccountNode>) {
+export function LibraryNode({ data, id }: NodeProps<LibraryNode>) {
   return (
-    <div className="border border-valence-black rounded-2xl p-2 bg-valence-lightgray">
+    <div className="border border-valence-black p-4 bg-valence-white ">
       <Handle type="target" position={"top" as Position} />
 
-      <h1>Account</h1>
+      <h1>Library</h1>
       <p className="text-xs pb-2">id: {id}</p>
       <pre className="break-words text-xs whitespace-pre-wrap">
         {JSON.stringify({ data }, null, 1)}
