@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TransformerFunction } from "./types";
-import { programConfigSchema } from "@valence-ui/generated-types/zod";
+import { programConfigSchema } from "@valence-ui/generated-types";
 export interface ManagerConfigV1 {}
 
 type ProgramConfigV1 = z.infer<typeof programConfigSchema>;

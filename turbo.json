@@ -54,6 +54,9 @@
     },
     "lint": {
       "outputs": []
+    },
+    "@valence-ui/generated-types#build": {
+      "outputs": ["dist/**"]
     }
   }
 }

@@ -1,8 +1,8 @@
 import codegen from "@cosmwasm/ts-codegen";
 
-const baseDir = "cosmwasm"; // needs to be updated if files move
+const baseDir = "cosmwasm"; // needs to be updated if files move.
 const inputDir = `${baseDir}/contract-schema`;
-const outputDir = `${baseDir}/types`;
+const outputDir = `dist/${baseDir}/types`;
 
 codegen
   //@ts-ignore
@@ -17,10 +17,6 @@ codegen
       {
         name: "Auction",
         dir: `${inputDir}/auction/schema`,
-      },
-      {
-        name: "ProgramConfigManager",
-        dir: `${inputDir}/program-config-manager/schema`,
       },
     ],
     outPath: outputDir,

@@ -1,6 +1,6 @@
 import { TransformerFunction } from "./types";
 import { transformerV1 } from "./transformer-v1";
-import { programConfigSchema } from "@valence-ui/generated-types/zod";
+import { programConfigSchema } from "@valence-ui/generated-types";
 import { z, ZodObject } from "zod";
 
 /***

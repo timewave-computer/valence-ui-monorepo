@@ -2,7 +2,7 @@
 import { getCosmwasmClient } from "@/server/utils";
 import { IndexerAuction } from "@/types/rebalancer";
 import { chainConfig } from "@/const/config";
-import { AuctionsManagerQueryClient } from "@valence-ui/generated-types/types/AuctionsManager.client";
+import { AuctionsManagerQueryClient } from "@valence-ui/generated-types/cosmwasm/types/AuctionsManager.client";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { z } from "zod";
 
