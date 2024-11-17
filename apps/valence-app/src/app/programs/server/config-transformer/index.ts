@@ -24,8 +24,14 @@ const transformerConfig: TransformerConfig = {
   },
 };
 
-export const transformer = (config: unknown) => {
+const transformer = (config: unknown) => {
   // for now, only 1 version, so we just use v1
   const { transform, schema } = transformerConfig.v1;
   return transform(schema.parse(config));
 };
+
+export class ConfigTransformer {
+  static transform = transformer;
+}
+
+export * from "./types";

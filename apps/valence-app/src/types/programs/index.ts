@@ -23,10 +23,3 @@ export type ProgramAuthorization = {
   prio?: string;
   state: string;
 };
-
-export type Program = {
-  accounts: ProgramAccount[];
-  services: ProgramLibrary[];
-  links: ProgramLink[];
-  authorizations: ProgramAuthorization[];
-};

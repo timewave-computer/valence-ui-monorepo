@@ -9,19 +9,21 @@ import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { Asset } from "@/app/rebalancer/components";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   Dropdown,
-  IconButton,
   LoadingSkeleton,
   IconTooltipContent,
   WithIconAndTooltip,
 } from "@/components";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  IconButton,
+} from "@valence-ui/ui-components";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
-import { useWhitelistedDenoms } from "@/hooks";
+import { useIsServer, useWhitelistedDenoms } from "@/hooks";
 
 export const SetTargets: React.FC<{
   address: string;
@@ -111,6 +113,8 @@ export const SetTargets: React.FC<{
     },
     [isCleanStartingAmountEnabled, setValue, getValues],
   );
+
+  const isServer = useIsServer();
 
   return (
     <section className="flex w-full flex-col gap-6">
@@ -274,6 +278,7 @@ export const SetTargets: React.FC<{
                       variant="header"
                     >
                       <IconButton
+                        isServer={isServer}
                         onClick={() => {
                           removeTarget(index);
 
@@ -289,7 +294,11 @@ export const SetTargets: React.FC<{
               })}
 
               <InputTableCell className="" variant="header">
-                <IconButton onClick={addEmptyAsset} Icon={BsPlus} />
+                <IconButton
+                  isServer={isServer}
+                  onClick={addEmptyAsset}
+                  Icon={BsPlus}
+                />
               </InputTableCell>
             </div>
             <div className="flex flex-col gap-2">

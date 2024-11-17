@@ -1,4 +1,4 @@
-export const program1 = {
+export const mockProgram1 = {
   workflow: {
     id: 3,
     owner: "neutron1hj5fveer5cjtn4wd6wstzugjfdxzl0xpznmsky",
@@ -6,7 +6,7 @@ export const program1 = {
       "0": {
         input_accounts_id: [0],
         output_accounts_id: [1],
-        service_id: 0,
+        library_id: 0,
       },
     },
     accounts: {
@@ -35,7 +35,7 @@ export const program1 = {
         addr: "neutron1sdehhexqcm9tppydg4w5ysdqkzkac0ekcg3473sl635vecd0qq7qkxn67r",
       },
     },
-    services: {
+    libraries: {
       "0": {
         name: "test_splitter",
         domain: {
@@ -101,6 +101,11 @@ export const program1 = {
           },
         },
         priority: null,
+        subroutine: {
+          atomic: {
+            functions: [],
+          },
+        },
       },
     ],
     authorization_data: {
