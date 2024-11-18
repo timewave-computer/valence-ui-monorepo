@@ -20,5 +20,4 @@ export * from "./LoadingSkeleton";
 export * from "./ValenceProductBrand";
 export * from "./ConnectWalletButton";
 export * from "./WithIconAndTooltip";
-export * from "./CollapsibleSection";
 export * from "./CalloutBox";

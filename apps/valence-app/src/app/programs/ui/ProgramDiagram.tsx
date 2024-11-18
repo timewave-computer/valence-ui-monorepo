@@ -16,9 +16,10 @@ import {
   useAutoLayout,
   type DiagramLayoutAlgorithm,
   type Direction,
+  DiagramSidePanelContent,
+  DiagramTitle,
 } from "@/app/programs/ui";
 import { TransformerOutput } from "@/app/programs/server";
-import { DiagramSidePanelContent } from "./DiagramSidePanelContent";
 
 type ProgramDiagramProps = TransformerOutput & {
   nodeTypes: NodeTypes;
@@ -43,6 +44,7 @@ function ProgramDiagram({
   authorizationData,
   authorizations,
   nodeTypes,
+  programId,
 }: ProgramDiagramProps) {
   const { fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -70,8 +72,12 @@ function ProgramDiagram({
       >
         <Background />
         <Controls />
+        <Panel position="top-left">
+          <DiagramTitle programId={programId} />
+        </Panel>
         <Panel position="top-right">
           <DiagramSidePanelContent
+            programId={programId}
             authorizationData={authorizationData}
             authorizations={authorizations}
           />

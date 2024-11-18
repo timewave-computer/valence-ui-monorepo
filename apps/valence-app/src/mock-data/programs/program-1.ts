@@ -107,6 +107,46 @@ export const mockProgram1 = {
           },
         },
       },
+      {
+        label: "swap",
+        mode: "permissionless",
+        not_before: {
+          never: {},
+        },
+        duration: "forever",
+        max_concurrent_executions: null,
+        actions_config: {
+          atomic: {
+            actions: [
+              {
+                domain: "main",
+                message_details: {
+                  message_type: "cosmwasm_execute_msg",
+                  message: {
+                    name: "process_action",
+                    params_restrictions: [
+                      {
+                        must_be_included: ["process_action", "split"],
+                      },
+                    ],
+                  },
+                },
+                contract_address: {
+                  "|service_account_addr|":
+                    "neutron1n66wet7z04p85wgh594g20yp0zm9wu3r2eqp08ga9ecqlkqwujqsmjv5yz",
+                },
+              },
+            ],
+            retry_logic: null,
+          },
+        },
+        priority: null,
+        subroutine: {
+          atomic: {
+            functions: [],
+          },
+        },
+      },
     ],
     authorization_data: {
       authorization_addr:

@@ -10,6 +10,7 @@ export interface TransformerOutput {
   edges: Edge[];
   authorizations: NormalizedAuthorization[];
   authorizationData: NormalizedAuthorizationData;
+  programId: string;
 }
 
 export type TransformerFunction<T> = (config: T) => TransformerOutput;

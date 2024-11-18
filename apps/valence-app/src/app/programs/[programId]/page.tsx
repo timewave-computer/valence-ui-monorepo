@@ -16,13 +16,13 @@ const nodeTypes = {
   library: LibraryNode,
 };
 
-export default function ProgramPage({ params: { programId } }) {
-  const program = getProgram(programId);
-  const { nodes, edges, authorizationData, authorizations } =
+export default function ProgramPage({ params: { programId: _programId } }) {
+  const program = getProgram(_programId);
+  const { nodes, edges, authorizationData, authorizations, programId } =
     ConfigTransformer.transform(program);
 
   return (
-    <div className="w-screen h-screen px-4 flex flex-col items-center ">
+    <div className="w-screen h-screen flex flex-col items-center ">
       {/* this div is the container for the diagram, needs to have defined height and width */}
       <div className="w-full h-full">
         <ProgramDiagramWithProvider
@@ -31,6 +31,7 @@ export default function ProgramPage({ params: { programId } }) {
           nodeTypes={nodeTypes}
           authorizationData={authorizationData}
           authorizations={authorizations}
+          programId={programId}
         />
       </div>
     </div>

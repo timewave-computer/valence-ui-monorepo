@@ -14,7 +14,6 @@ export function AccountNode({ data, id }: NodeProps<AccountNode>) {
       <Handle type="target" position={"top" as Position} />
 
       <h1>Account</h1>
-      <p className="text-xs pb-2">id: {id}</p>
       <PrettyJson data={data} />
 
       <Handle type="source" position={"bottom" as Position} />

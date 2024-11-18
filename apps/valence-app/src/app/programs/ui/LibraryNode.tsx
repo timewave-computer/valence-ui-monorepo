@@ -14,7 +14,6 @@ export function LibraryNode({ data, id }: NodeProps<LibraryNode>) {
       <Handle type="target" position={"top" as Position} />
 
       <h1>Library</h1>
-      <p className="text-xs pb-2">id: {id}</p>
       <PrettyJson data={data} />
 
       <Handle type="source" position={"bottom" as Position} />

@@ -16,11 +16,11 @@ export type SortableTableHeaderProps<T, K> = {
   /**
    * The sorter key.
    */
-  sorterKey: string;
+  sorterKey?: string;
   /**
    * The currently selected sorter.
    */
-  currentSorter: Sorter<T, K>;
+  currentSorter?: Sorter<T, K>;
   /**
    * Whether or not sorter is ascending.
    */
@@ -28,11 +28,11 @@ export type SortableTableHeaderProps<T, K> = {
   /**
    * Set the current sorter.
    */
-  setSorter: Dispatch<SetStateAction<string>>;
+  setSorter?: Dispatch<SetStateAction<string>>;
   /**
    * Set whether or not sorter is ascending.
    */
-  setSortAscending: Dispatch<SetStateAction<boolean>>;
+  setSortAscending?: Dispatch<SetStateAction<boolean>>;
   /**
    * An optional class name for the button.
    */
@@ -67,7 +67,8 @@ export const SortableTableHeader = <T extends unknown, K>({
         buttonClassName,
       )}
       onClick={() => {
-        if (!sorterKey) return;
+        if (!sorterKey || !currentSorter || !setSortAscending || !setSorter)
+          return;
         if (currentSorter.key === sorterKey) {
           setSortAscending((a) => !a);
         } else {
@@ -92,7 +93,7 @@ export const SortableTableHeader = <T extends unknown, K>({
           {label}
         </button>
       </WithIconAndTooltip>
-      {currentSorter.key === sorterKey && <SortIcon />}
+      {!!sorterKey && currentSorter?.key === sorterKey && <SortIcon />}
     </div>
   );
 };

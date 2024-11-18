@@ -1,11 +1,19 @@
-import { IconButton, PrettyJson } from "@valence-ui/ui-components";
+import {
+  PrettyJson,
+  CollapsibleSectionContent,
+  CollapsibleSectionHeader,
+  CollapsibleSectionRoot,
+} from "@valence-ui/ui-components";
 import { TransformerOutput } from "@/app/programs/server";
 import { CgMathMinus, CgMaximizeAlt } from "react-icons/cg";
 import React from "react";
+import { FaChevronLeft, FaChevronDown } from "react-icons/fa";
+import { set } from "lodash";
+import {} from "@/components";
 
 type SidePanelProps = Pick<
   TransformerOutput,
-  "authorizationData" | "authorizations"
+  "authorizationData" | "authorizations" | "programId"
 > & {
   // add other things, if needed
 };
@@ -13,31 +21,34 @@ type SidePanelProps = Pick<
 export const DiagramSidePanelContent = ({
   authorizationData,
   authorizations,
+  programId,
 }: SidePanelProps) => {
-  const [isMinimized, setIsMinimized] = React.useState(false);
   return (
-    <div className="bg-valence-white w-96 border valence-border-black p-4 flex flex-col gap-2">
-      <div className="flex  justify-between">
-        <h1 className="font-semibold">Authorizations</h1>
-        <IconButton
-          variant="sm"
-          onClick={() => setIsMinimized(!isMinimized)}
-          Icon={isMinimized ? CgMaximizeAlt : CgMathMinus}
-        />
-      </div>
+    <div className="bg-valence-white w-96 border border-valence-black flex flex-col">
+      <CollapsibleSectionRoot
+        className="p-4 border-b border-valence-black"
+        defaultIsOpen={true}
+      >
+        <CollapsibleSectionHeader className="flex flex-row w-full justify-between">
+          <h1 className="font-semibold">Program Info</h1>
+        </CollapsibleSectionHeader>
+        <CollapsibleSectionContent>
+          <PrettyJson data={authorizationData} />
+        </CollapsibleSectionContent>
+      </CollapsibleSectionRoot>
 
-      {!isMinimized && (
-        <>
-          <div>
-            <h2 className="font-medium text-sm">Data</h2>
-            <PrettyJson data={authorizationData} />
+      <CollapsibleSectionRoot className="p-4" defaultIsOpen={true}>
+        <CollapsibleSectionHeader className="flex flex-row w-full justify-between">
+          <h1 className="font-semibold">Authorizations</h1>
+        </CollapsibleSectionHeader>
+        <CollapsibleSectionContent>
+          <div className="flex flex-col gap-2">
+            {authorizations.map((auth) => (
+              <PrettyJson key={`authorization-${auth.label}`} data={auth} />
+            ))}
           </div>
-          <div>
-            <h2 className="font-medium text-sm">Subroutines</h2>
-            <PrettyJson data={authorizations} />
-          </div>
-        </>
-      )}
+        </CollapsibleSectionContent>
+      </CollapsibleSectionRoot>
     </div>
   );
 };
