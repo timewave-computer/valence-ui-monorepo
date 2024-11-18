@@ -5,11 +5,7 @@ import {
   CollapsibleSectionRoot,
 } from "@valence-ui/ui-components";
 import { TransformerOutput } from "@/app/programs/server";
-import { CgMathMinus, CgMaximizeAlt } from "react-icons/cg";
 import React from "react";
-import { FaChevronLeft, FaChevronDown } from "react-icons/fa";
-import { set } from "lodash";
-import {} from "@/components";
 
 type SidePanelProps = Pick<
   TransformerOutput,
@@ -37,8 +33,11 @@ export const DiagramSidePanelContent = ({
         </CollapsibleSectionContent>
       </CollapsibleSectionRoot>
 
-      <CollapsibleSectionRoot className="p-4" defaultIsOpen={true}>
-        <CollapsibleSectionHeader className="flex flex-row w-full justify-between">
+      <CollapsibleSectionRoot
+        className="p-4 border-b border-valence-black"
+        defaultIsOpen={true}
+      >
+        <CollapsibleSectionHeader className="flex flex-row w-full justify-between ">
           <h1 className="font-semibold">Authorizations</h1>
         </CollapsibleSectionHeader>
         <CollapsibleSectionContent>
@@ -47,6 +46,29 @@ export const DiagramSidePanelContent = ({
               <PrettyJson key={`authorization-${auth.label}`} data={auth} />
             ))}
           </div>
+        </CollapsibleSectionContent>
+      </CollapsibleSectionRoot>
+
+      <CollapsibleSectionRoot className="p-4" defaultIsOpen={true}>
+        <CollapsibleSectionHeader className="flex flex-row w-full justify-between">
+          <h1 className="font-semibold">Processor</h1>
+        </CollapsibleSectionHeader>
+        <CollapsibleSectionContent>
+          <PrettyJson
+            data={{
+              address: authorizationData?.processor_addrs[0],
+              isQueueEmpty: false,
+              queue: [
+                {
+                  id: 0,
+                  msgs: [],
+                  retry: null,
+                  subroutine: "{...}",
+                },
+              ],
+              pendingPolytoneCallbacks: [],
+            }}
+          />
         </CollapsibleSectionContent>
       </CollapsibleSectionRoot>
     </div>

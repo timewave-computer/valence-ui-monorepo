@@ -1,5 +1,4 @@
 import codegen from "@cosmwasm/ts-codegen";
-
 const baseDir = "cosmwasm"; // needs to be updated if files move.
 const inputDir = `${baseDir}/contract-schema`;
 const outputDir = `dist/${baseDir}/types`;
@@ -17,6 +16,10 @@ codegen
       {
         name: "Auction",
         dir: `${inputDir}/auction/schema`,
+      },
+      {
+        name: "Processor",
+        dir: `${inputDir}/processor/schema`,
       },
     ],
     outPath: outputDir,
