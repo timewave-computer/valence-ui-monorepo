@@ -20,7 +20,12 @@ export const DiagramSidePanelContent = ({
   programId,
 }: SidePanelProps) => {
   return (
-    <div className="bg-valence-white w-96 border border-valence-black flex flex-col">
+    <div
+      style={{
+        maxHeight: "calc(100vh - 4rem)",
+      }}
+      className="bg-valence-white w-96 h-full border border-valence-black flex flex-col overflow-y-scroll"
+    >
       <CollapsibleSectionRoot
         className="p-4 border-b border-valence-black"
         defaultIsOpen={true}
@@ -56,7 +61,7 @@ export const DiagramSidePanelContent = ({
         <CollapsibleSectionContent>
           <PrettyJson
             data={{
-              address: authorizationData?.processor_addrs[0],
+              address: authorizationData?.processor_addrs,
               isQueueEmpty: false,
               queue: [
                 {
