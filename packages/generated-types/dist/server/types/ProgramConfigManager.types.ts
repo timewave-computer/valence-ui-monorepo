@@ -7,6 +7,9 @@
 
 /**
  * We need some way of knowing which domain we are talking with chain connection, execution, bridges for authorization.
+ *
+ * This interface was referenced by `undefined`'s JSON-Schema definition
+ * via the `patternProperty` "^[a-zA-Z0-9-_]+$".
  */
 export type Domain = {
   CosmosCosmwasm: string;
@@ -25,6 +28,16 @@ export type AccountType =
         admin?: string | null;
       };
     };
+/**
+ * A human readable address.
+ *
+ * In Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.
+ *
+ * This type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.
+ *
+ * This type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.
+ */
+export type Addr = string;
 export type AuthorizationDuration =
   | "forever"
   | {
@@ -158,16 +171,6 @@ export type RetryTimes =
   | {
       amount: number;
     };
-/**
- * A human readable address.
- *
- * In Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.
- *
- * This type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.
- *
- * This type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.
- */
-export type Addr = string;
 export type AuthorizationInfoUpdate =
   | {
       Add: AuthorizationInfo;
@@ -248,7 +251,9 @@ export interface AuthorizationData {
   /**
    * List of processor addresses by domain Key: domain name | Value: processor address
    */
-  processor_addrs: {};
+  processor_addrs: {
+    [k: string]: Addr;
+  };
   /**
    * List of processor bridge addresses by domain All addresses are on nuetron, mapping to what domain this bridge account is for Key: domain name | Value: processor bridge address on that domain
    */

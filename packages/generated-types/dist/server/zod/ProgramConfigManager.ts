@@ -18,6 +18,8 @@ export const accountTypeSchema = z.union([
   }),
 ]);
 
+export const addrSchema = z.string();
+
 export const authorizationDurationSchema = z.union([
   z.literal("forever"),
   z.object({
@@ -76,12 +78,10 @@ export const retryTimesSchema = z.union([
   }),
 ]);
 
-export const addrSchema = z.string();
-
 export const authorizationDataSchema = z.object({
   authorization_addr: z.string(),
   authorization_bridge_addrs: z.object({}),
-  processor_addrs: z.object({}),
+  processor_addrs: z.record(addrSchema),
   processor_bridge_addrs: z.object({}),
 });
 

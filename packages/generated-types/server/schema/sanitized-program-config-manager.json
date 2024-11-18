@@ -153,8 +153,14 @@
         "processor_addrs": {
           "description": "List of processor addresses by domain Key: domain name | Value: processor address",
           "type": "object",
-          "ref": "#/definitions/Addr",
-          "additionalProperties": false
+          "patternProperties": {
+            "^[a-zA-Z0-9-_]+$": {
+              "$ref": "#/definitions/Domain"
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/Addr"
+          }
         },
         "processor_bridge_addrs": {
           "description": "List of processor bridge addresses by domain All addresses are on nuetron, mapping to what domain this bridge account is for Key: domain name | Value: processor bridge address on that domain",
