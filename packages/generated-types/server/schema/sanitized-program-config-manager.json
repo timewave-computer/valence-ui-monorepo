@@ -153,6 +153,7 @@
         "processor_addrs": {
           "description": "List of processor addresses by domain Key: domain name | Value: processor address",
           "type": "object",
+          "ref": "#/definitions/Addr",
           "additionalProperties": false
         },
         "processor_bridge_addrs": {

@@ -56,7 +56,10 @@ export const DiagramSidePanelContent = ({
         <CollapsibleSectionContent>
           <PrettyJson
             data={{
-              address: authorizationData?.processor_addrs[0],
+              address: {
+                "CosmosCosmwasm:neutron":
+                  "neutron1y0pj5qghutdppun0u65a934dmwfrq2seru4ehdglyqylvyt50yasgej4nd",
+              },
               isQueueEmpty: false,
               queue: [
                 {
