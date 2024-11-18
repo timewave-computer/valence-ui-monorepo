@@ -1,6 +1,10 @@
 import { Position } from "@xyflow/react";
 import { Direction } from "@/app/programs/ui";
 
+/***
+ * this is not really needed, because the toggle to change this is not exposed
+ * values are just hardcoded by the defaults
+ */
 export function getSourceHandlePosition(direction: Direction) {
   switch (direction) {
     case "TB":

@@ -1,23 +1,38 @@
-import { getProgram, managerConfigToDiagram } from "@/app/programs/server";
-import { AccountNode, ProgramDiagram, LibraryNode } from "@/app/programs/ui";
+import { getProgram } from "@/app/programs/server";
+import {
+  AccountNode,
+  LibraryNode,
+  ProgramDiagramWithProvider,
+} from "@/app/programs/ui";
+import { ConfigTransformer } from "@/app/programs/server";
 
 /***
- * Define outside of rendering tree so it does not cause uneccessary rerenders
+ * Defined outside of rendering tree so it does not cause uneccessary rerenders
+ *
+ *  defined in server file and passed as prop because there is some issue with component imports if done from the client file
  */
 const nodeTypes = {
   account: AccountNode,
   library: LibraryNode,
 };
 
-export default function ProgramPage({ params: { programId } }) {
-  const program = getProgram(programId);
-  const { nodes, edges } = managerConfigToDiagram(program);
+export default function ProgramPage({ params: { programId: _programId } }) {
+  const program = getProgram(_programId);
+  const { nodes, edges, authorizationData, authorizations, programId } =
+    ConfigTransformer.transform(program);
 
   return (
-    <div className="w-screen h-screen px-4 flex flex-col items-center ">
+    <div className="w-screen h-screen flex flex-col items-center ">
       {/* this div is the container for the diagram, needs to have defined height and width */}
       <div className="w-full h-full">
-        <ProgramDiagram nodeTypes={nodeTypes} edges={edges} nodes={nodes} />
+        <ProgramDiagramWithProvider
+          edges={edges}
+          nodes={nodes}
+          nodeTypes={nodeTypes}
+          authorizationData={authorizationData}
+          authorizations={authorizations}
+          programId={programId}
+        />
       </div>
     </div>
   );

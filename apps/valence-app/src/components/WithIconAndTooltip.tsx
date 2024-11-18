@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
+import { LoadingIndicator } from "@/components";
 import {
-  LoadingIndicator,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components";
+} from "@valence-ui/ui-components";
 import { BsQuestion } from "react-icons/bs";
 import { useIsServer } from "@/hooks";
 import { cn } from "@/utils";

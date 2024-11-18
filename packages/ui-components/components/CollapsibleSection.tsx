@@ -1,6 +1,6 @@
 "use client";
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
-import { cn } from "@/utils";
+import { cn } from "../utils";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 
 const CollapsibleSectionContext = createContext({
@@ -11,7 +11,8 @@ const CollapsibleSectionContext = createContext({
 export const CollapsibleSectionRoot: React.FC<{
   children: React.ReactNode;
   defaultIsOpen?: boolean;
-}> = ({ defaultIsOpen = false, children }) => {
+  className?: string;
+}> = ({ defaultIsOpen = false, children, className }) => {
   const [isOpen, setIsOpen] = useState(defaultIsOpen);
   const context = useMemo(
     () => ({
@@ -23,7 +24,9 @@ export const CollapsibleSectionRoot: React.FC<{
 
   return (
     <CollapsibleSectionContext.Provider value={context}>
-      <section className="flex w-full flex-col gap-2">{children}</section>
+      <section className={cn("flex w-full flex-col gap-2", className)}>
+        {children}
+      </section>
     </CollapsibleSectionContext.Provider>
   );
 };
@@ -39,12 +42,12 @@ export const CollapsibleSectionHeader = ({
   const Icon = isOpen ? FaChevronDown : FaChevronLeft;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className={cn("flex flex-col gap-2", children)}>
       <button
         onClick={() => {
           setIsOpen(!isOpen);
         }}
-        className={cn("flex flex-row items-center gap-2 pt-2", className)}
+        className={cn("flex flex-row items-center gap-2", className)}
       >
         {children}
         <Icon className={cn("h-4 w-4")} />

@@ -1,3 +1,4 @@
+import { PrettyJson } from "@valence-ui/ui-components";
 import {
   Handle,
   type Position,
@@ -13,10 +14,7 @@ export function LibraryNode({ data, id }: NodeProps<LibraryNode>) {
       <Handle type="target" position={"top" as Position} />
 
       <h1>Library</h1>
-      <p className="text-xs pb-2">id: {id}</p>
-      <pre className="break-words text-xs whitespace-pre-wrap">
-        {JSON.stringify({ data }, null, 1)}
-      </pre>
+      <PrettyJson data={data} />
 
       <Handle type="source" position={"bottom" as Position} />
     </div>

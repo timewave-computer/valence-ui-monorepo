@@ -5,3 +5,7 @@ export * from "./useAutoLayout";
 export * from "./layout-algorithms";
 export * from "./layout-position";
 export * from "./LibraryNode";
+export * from "./ProgramsHero";
+export * from "./ProgramRegistryTable";
+export * from "./DiagramSidePanelContent";
+export * from "./DiagramTitle";

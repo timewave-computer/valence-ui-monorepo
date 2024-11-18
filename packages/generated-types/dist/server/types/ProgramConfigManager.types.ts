@@ -196,7 +196,9 @@ export interface ProgramConfig {
   /**
    * The list account data by id
    */
-  accounts: AccountInfo[];
+  accounts: {
+    [k: string]: AccountInfo;
+  };
   /**
    * This is the info regarding authorization and processor contracts. Must be empty (Default) when a new program is instantiated. It gets populated when the program is instantiated.
    */
@@ -209,11 +211,15 @@ export interface ProgramConfig {
   /**
    * The list service data by id
    */
-  libraries: LibraryInfo[];
+  libraries: {
+    [k: string]: LibraryInfo;
+  };
   /**
    * A list of links between an accounts and libraries
    */
-  links: Link[];
+  links: {
+    [k: string]: Link;
+  };
   owner: string;
 }
 /**
@@ -296,6 +302,9 @@ export interface LibraryInfo {
   addr?: string | null;
   domain: Domain;
   name: string;
+  config?: {
+    [k: string]: unknown;
+  };
 }
 export interface Link {
   /**

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm gen:cosmwasm && pnpm gen:server",
+    "prep": "pnpm gen:cosmwasm && pnpm gen:server",
     "gen:cosmwasm": "tsx ./cosmwasm/generate.ts",
     "gen:server": "./server/generate.sh"
   },

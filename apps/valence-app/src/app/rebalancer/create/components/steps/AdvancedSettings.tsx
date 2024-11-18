@@ -4,15 +4,17 @@ import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
   Dropdown,
   DropdownOption,
-  CollapsibleSectionContent,
-  CollapsibleSectionHeader,
-  CollapsibleSectionRoot,
   LinkText,
   IconTooltipContent,
   RadioGroup,
   RadioGroupItem,
   WithIconAndTooltip,
 } from "@/components";
+import {
+  CollapsibleSectionContent,
+  CollapsibleSectionHeader,
+  CollapsibleSectionRoot,
+} from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
 import { useWhitelistedDenoms } from "@/hooks";

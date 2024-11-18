@@ -2,14 +2,13 @@ import {
   ReactFlow,
   Controls,
   Background,
-  type Node,
-  type Edge,
   type NodeTypes,
   useReactFlow,
   useNodesState,
   useEdgesState,
   ReactFlowProvider,
   type MarkerType,
+  Panel,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useEffect } from "react";
@@ -17,11 +16,12 @@ import {
   useAutoLayout,
   type DiagramLayoutAlgorithm,
   type Direction,
+  DiagramSidePanelContent,
+  DiagramTitle,
 } from "@/app/programs/ui";
+import { TransformerOutput } from "@/app/programs/server";
 
-type ProgramDiagramWithLayoutProps = {
-  edges: Edge[];
-  nodes: Node[];
+type ProgramDiagramProps = TransformerOutput & {
   nodeTypes: NodeTypes;
 };
 
@@ -38,11 +38,14 @@ const defaultEdgeOptions = {
   },
 };
 
-function ProgramDiagramWithLayout({
+function ProgramDiagram({
   nodes: initialNodes,
   edges: initialEdges,
+  authorizationData,
+  authorizations,
   nodeTypes,
-}: ProgramDiagramWithLayoutProps) {
+  programId,
+}: ProgramDiagramProps) {
   const { fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -69,15 +72,25 @@ function ProgramDiagramWithLayout({
       >
         <Background />
         <Controls />
+        <Panel position="top-left">
+          <DiagramTitle programId={programId} />
+        </Panel>
+        <Panel position="top-right">
+          <DiagramSidePanelContent
+            programId={programId}
+            authorizationData={authorizationData}
+            authorizations={authorizations}
+          />
+        </Panel>
       </ReactFlow>
     </div>
   );
 }
 
-export function ProgramDiagram(props: ProgramDiagramWithLayoutProps) {
+export function ProgramDiagramWithProvider(props: ProgramDiagramProps) {
   return (
     <ReactFlowProvider>
-      <ProgramDiagramWithLayout {...props} />
+      <ProgramDiagram {...props} />
     </ReactFlowProvider>
   );
 }

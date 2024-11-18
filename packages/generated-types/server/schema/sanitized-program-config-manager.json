@@ -764,6 +764,10 @@
         },
         "name": {
           "type": "string"
+        },
+        "config": {
+          "type": "object",
+          "additionalProperties": true
         }
       },
       "additionalProperties": false
@@ -1139,11 +1143,10 @@
       "properties": {
         "accounts": {
           "description": "The list account data by id",
-          "type": "array",
-          "items": {
+          "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/AccountInfo"
-          },
-          "additionalProperties": false
+          }
         },
         "authorization_data": {
           "description": "This is the info regarding authorization and processor contracts. Must be empty (Default) when a new program is instantiated. It gets populated when the program is instantiated.",
@@ -1169,15 +1172,15 @@
         },
         "libraries": {
           "description": "The list service data by id",
-          "type": "array",
-          "items": {
+          "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/LibraryInfo"
           }
         },
         "links": {
           "description": "A list of links between an accounts and libraries",
-          "type": "array",
-          "items": {
+          "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/Link"
           }
         },

@@ -78,13 +78,6 @@ export const retryTimesSchema = z.union([
 
 export const addrSchema = z.string();
 
-export const accountInfoSchema = z.object({
-  addr: z.string().optional().nullable(),
-  domain: domainSchema,
-  name: z.string(),
-  ty: accountTypeSchema,
-});
-
 export const authorizationDataSchema = z.object({
   authorization_addr: z.string(),
   authorization_bridge_addrs: z.object({}),
@@ -92,16 +85,11 @@ export const authorizationDataSchema = z.object({
   processor_bridge_addrs: z.object({}),
 });
 
-export const libraryInfoSchema = z.object({
+export const accountInfoSchema = z.object({
   addr: z.string().optional().nullable(),
   domain: domainSchema,
   name: z.string(),
-});
-
-export const linkSchema = z.object({
-  input_accounts_id: z.array(z.number()),
-  library_id: z.number(),
-  output_accounts_id: z.array(z.number()),
+  ty: accountTypeSchema,
 });
 
 export const retryLogicSchema = z.object({
@@ -124,6 +112,19 @@ export const paramRestrictionSchema = z.union([
 export const functionCallbackSchema = z.object({
   callback_message: binarySchema,
   contract_address: addrSchema,
+});
+
+export const libraryInfoSchema = z.object({
+  addr: z.string().optional().nullable(),
+  domain: domainSchema,
+  name: z.string(),
+  config: z.record(z.unknown()).optional(),
+});
+
+export const linkSchema = z.object({
+  input_accounts_id: z.array(z.number()),
+  library_id: z.number(),
+  output_accounts_id: z.array(z.number()),
 });
 
 export const permissionTypeInfoSchema = z.union([
@@ -209,12 +210,12 @@ export const authorizationInfoSchema = z.object({
 });
 
 export const programConfigSchema = z.object({
-  accounts: z.array(accountInfoSchema),
+  accounts: z.record(accountInfoSchema),
   authorization_data: authorizationDataSchema.optional(),
   authorizations: z.array(authorizationInfoSchema),
   id: z.number().optional(),
-  libraries: z.array(libraryInfoSchema),
-  links: z.array(linkSchema),
+  libraries: z.record(libraryInfoSchema),
+  links: z.record(linkSchema),
   owner: z.string(),
 });
 
