@@ -22,7 +22,7 @@ export const DiagramSidePanelContent = ({
   return (
     <div
       style={{
-        maxHeight: "calc(100vh - 4rem)",
+        maxHeight: "calc(100vh - 5rem)",
       }}
       className="bg-valence-white w-96 h-full border border-valence-black flex flex-col overflow-y-scroll"
     >
