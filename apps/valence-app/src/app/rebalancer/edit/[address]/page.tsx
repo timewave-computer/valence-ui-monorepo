@@ -12,7 +12,7 @@ import {
 } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
-  fetchAccountBalances,
+  fetchRebalancerAccountBalances,
   fetchRebalancerWhitelist,
 } from "@/server/actions";
 import { BalanceReturnValue } from "../../hooks";
@@ -78,7 +78,7 @@ export default async function CreateRebalancerPage({
           }, 5000);
 
           try {
-            const rawBalances = await fetchAccountBalances({
+            const rawBalances = await fetchRebalancerAccountBalances({
               address: address,
             });
             clearTimeout(timeout);

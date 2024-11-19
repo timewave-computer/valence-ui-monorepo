@@ -5,6 +5,8 @@ import {
   ProgramDiagramWithProvider,
 } from "@/app/programs/ui";
 import { ConfigTransformer } from "@/app/programs/server";
+import { RpcConfig } from "@/server/utils";
+import { chains } from "chain-registry";
 
 /***
  * Defined outside of rendering tree so it does not cause uneccessary rerenders
@@ -16,8 +18,28 @@ const nodeTypes = {
   library: LibraryNode,
 };
 
-export default function ProgramPage({ params: { programId: _programId } }) {
-  const program = getProgram(_programId);
+export default async function ProgramPage({
+  params: { programId: _programId },
+}) {
+  const program = await getProgram(_programId);
+  const balanceQueries = [];
+  // Object.entries(program.accounts).forEach(([id, account]) => {
+
+  //   if (!account.domain.CosmosCosmwasm) {
+  //     throw new Error(`Non cosmos domains are not currently supported`);
+  //   }
+  //     const chainName = account.domain.CosmosCosmwasm;
+  //     const chainId = chains.find(chain=>chain.chain_name===chainName)?.chain_id;
+  //     if (!chainId) throw new Error(`Chain ${chainName} not found in registry`);
+  //     const rpcUrl = RpcConfig[chainId].rpcUrl;
+
+  //   return {
+  //      chainId:account.domain,
+  //       accountAddress:account.addr,
+  //       rpcUrl: RpcConfig[chainId].rpcUrl
+  //   }
+  // })
+
   const { nodes, edges, authorizationData, authorizations, programId } =
     ConfigTransformer.transform(program);
 

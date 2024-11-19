@@ -1,6 +1,6 @@
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
-  fetchAccountBalances,
+  fetchRebalancerAccountBalances,
   fetchAuctionBalances,
   fetchAuctionStatuses,
 } from "@/server/actions";
@@ -67,7 +67,7 @@ export const useLivePortfolio = ({
             }, 5000);
 
             try {
-              const rawBalances = await fetchAccountBalances({
+              const rawBalances = await fetchRebalancerAccountBalances({
                 address: accountAddress,
               });
               clearTimeout(timeout);

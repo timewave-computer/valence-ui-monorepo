@@ -3,7 +3,7 @@ import { chainConfig } from "@/const/config";
 import { getStargateClient } from "@/server/utils";
 import { Coin } from "@cosmjs/proto-signing";
 
-export async function fetchAccountBalances({
+export async function fetchRebalancerAccountBalances({
   address,
 }: {
   address: string;
