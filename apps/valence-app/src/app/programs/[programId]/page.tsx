@@ -44,12 +44,6 @@ export default async function ProgramPage({
     accountBalances: balances,
   });
 
-  /***
-   * what to do tomorrow:
-   * - factor out the error component and wrap exec in a try catch
-   */
-  // TODO: this should all be try/catch and return a readable error
-
   return (
     <div className="w-screen h-screen flex flex-col items-center ">
       {/* this div is the container for the diagram, needs to have defined height and width */}
