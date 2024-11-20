@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { ErrorSplash } from "@valence-ui/ui-components";
 
 export default function Error({
   error,
@@ -18,35 +19,23 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex grow flex-col items-center bg-valence-white  ">
-      <div className="flex-1 "></div>{" "}
-      {/* This div will take up 1/4 of the space */}
-      <div className="flex flex-[3] flex-col items-center p-6 text-center">
-        {" "}
-        {/* This div will take up 3/4 of the space */}
-        <Image
-          src="/img/hero.svg"
-          alt="Valence illustration"
-          width={140}
-          height={140}
-          className="mb-10 self-center"
-        />
-        <h2 className="font-mono text-2xl text-valence-black ">
-          Something went wrong.
-        </h2>
-        <button
-          className="pt-2 font-mono text-valence-blue hover:underline"
-          onClick={
-            // Attempt to recover by trying to re-render the segment
-            () => {
-              router.refresh();
-              reset();
-            }
-          }
-        >
-          Try a refresh?
-        </button>
-      </div>
-    </div>
+    <ErrorSplash
+      error={error}
+      onRefresh={() => {
+        router.refresh();
+        reset();
+      }}
+    >
+      <Image
+        src="/img/hero.svg"
+        alt="Valence illustration"
+        width={140}
+        height={140}
+        className="mb-10 self-center"
+      />
+      <h2 className="font-mono text-2xl text-valence-black ">
+        Something went wrong.
+      </h2>
+    </ErrorSplash>
   );
 }

@@ -5,3 +5,4 @@ export * from "./PrettyJson";
 export * from "./IconButton";
 export * from "./Tooltip";
 export * from "./CollapsibleSection";
+export * from "./ErrorSplash";

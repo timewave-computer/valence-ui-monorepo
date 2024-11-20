@@ -73,11 +73,13 @@ export default async function ProgramPage({
 const fetchBalances = async (accounts: TransformerOutput["accounts"]) => {
   const requests = Object.entries(accounts).map(async ([id, account]) => {
     if (!account.domain.CosmosCosmwasm) {
-      throw new Error(`Non-cosmos domains not currently supported`);
+      throw new Error(
+        `Non-cosmos domain ${JSON.stringify(account.domain)} not currently supported`,
+      );
     }
     if (!account.addr) {
       // should not happen, just to make typescript happy
-      throw new Error(`Account does not have an address`);
+      throw new Error(`Account ${id} does not have an address`);
     }
     return {
       address: account.addr,
