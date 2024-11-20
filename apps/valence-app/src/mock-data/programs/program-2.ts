@@ -24,7 +24,7 @@ export const mockProgram2 = {
       domain: {
         CosmosCosmwasm: "neutron",
       },
-      addr: "neutron1dtueann60wu9w9eaca73h43kq0qvvl9kjxzxge84x73h2dd5pfmq0rkc4x",
+      addr: "neutron173hvzyja4447jlqkkvjdejjwlwk9eaam27q2psm3evy70f7z34pq5247np",
     },
     "1": {
       name: "base_account_2",
@@ -36,7 +36,7 @@ export const mockProgram2 = {
       domain: {
         CosmosCosmwasm: "neutron",
       },
-      addr: "neutron1upl754g65yaj4yc98ca5vcxxw28ej3rdh73lsa9lcv7hvy9p32jsyesqzu",
+      addr: "neutron173hvzyja4447jlqkkvjdejjwlwk9eaam27q2psm3evy70f7z34pq5247np",
     },
   },
   libraries: {

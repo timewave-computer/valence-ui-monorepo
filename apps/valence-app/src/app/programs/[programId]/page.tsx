@@ -1,16 +1,17 @@
-import { getProgram } from "@/app/programs/server";
+import {
+  getAccountBalances,
+  getProgram,
+  TransformerOutput,
+} from "@/app/programs/server";
 import {
   AccountNode,
   LibraryNode,
   ProgramDiagramWithProvider,
 } from "@/app/programs/ui";
-import { ConfigTransformer } from "@/app/programs/server";
-import { RpcConfig } from "@/server/utils";
-import { chains } from "chain-registry";
+import { ConfigTransformer, NodeComposer } from "@/app/programs/server";
 
 /***
  * Defined outside of rendering tree so it does not cause uneccessary rerenders
- *
  *  defined in server file and passed as prop because there is some issue with component imports if done from the client file
  */
 const nodeTypes = {
@@ -21,27 +22,33 @@ const nodeTypes = {
 export default async function ProgramPage({
   params: { programId: _programId },
 }) {
-  const program = await getProgram(_programId);
-  const balanceQueries = [];
-  // Object.entries(program.accounts).forEach(([id, account]) => {
+  // TODO: registry address should be passed here
+  const _program = await getProgram(_programId);
+  const {
+    authorizationData,
+    authorizations,
+    programId,
+    accounts,
+    links,
+    libraries,
+  } = ConfigTransformer.transform(_program);
 
-  //   if (!account.domain.CosmosCosmwasm) {
-  //     throw new Error(`Non cosmos domains are not currently supported`);
-  //   }
-  //     const chainName = account.domain.CosmosCosmwasm;
-  //     const chainId = chains.find(chain=>chain.chain_name===chainName)?.chain_id;
-  //     if (!chainId) throw new Error(`Chain ${chainName} not found in registry`);
-  //     const rpcUrl = RpcConfig[chainId].rpcUrl;
+  const balances = await fetchBalances(accounts);
 
-  //   return {
-  //      chainId:account.domain,
-  //       accountAddress:account.addr,
-  //       rpcUrl: RpcConfig[chainId].rpcUrl
-  //   }
-  // })
+  const { edges, nodes } = NodeComposer.generate({
+    program: {
+      accounts,
+      libraries,
+      links,
+    },
+    accountBalances: balances,
+  });
 
-  const { nodes, edges, authorizationData, authorizations, programId } =
-    ConfigTransformer.transform(program);
+  /***
+   * what to do tomorrow:
+   * - factor out the error component and wrap exec in a try catch
+   */
+  // TODO: this should all be try/catch and return a readable error
 
   return (
     <div className="w-screen h-screen flex flex-col items-center ">
@@ -54,8 +61,31 @@ export default async function ProgramPage({
           authorizationData={authorizationData}
           authorizations={authorizations}
           programId={programId}
+          accounts={accounts}
+          links={links}
+          libraries={libraries}
         />
       </div>
     </div>
   );
 }
+
+const fetchBalances = async (accounts: TransformerOutput["accounts"]) => {
+  const requests = Object.entries(accounts).map(async ([id, account]) => {
+    if (!account.domain.CosmosCosmwasm) {
+      throw new Error(`Non-cosmos domains not currently supported`);
+    }
+    if (!account.addr) {
+      // should not happen, just to make typescript happy
+      throw new Error(`Account does not have an address`);
+    }
+    return {
+      address: account.addr,
+      balances: await getAccountBalances({
+        chainName: account.domain.CosmosCosmwasm,
+        accountAddress: account.addr,
+      }),
+    };
+  });
+  return Promise.all(requests);
+};

@@ -1,27 +1,24 @@
-import { getStargateClient } from "@/server/utils";
+import { getStargateClient, NEUTRON_RPC } from "@/server/utils";
 import { Coin } from "@cosmjs/stargate";
 
-export type GetAccountBalancesInput = Array<{
-  chainId: string;
-  accountAddress: string;
-  rpcUrl: string;
-}>;
-export const getAccountBalances = async (
-  args: GetAccountBalancesInput,
-): Promise<
-  Array<{
-    address: string;
-    balances: Promise<readonly Coin[]>;
-  }>
-> => {
-  // TODO: move the rpc into here for now
-  const bals = args.map(async (arg) => {
-    const stargateClient = await getStargateClient(arg.rpcUrl);
-    return {
-      address: arg.accountAddress,
-      balances: stargateClient.getAllBalances(arg.accountAddress),
-    };
-  });
+// TODO: this will eventually become a customizable field. this is just temporary
+const DefaultRpcConfig: Record<string, string | undefined> = {
+  neutron: NEUTRON_RPC,
+  "neutron testnet": "https://rpc-falcron.pion-1.ntrn.tech",
+};
 
-  return Promise.all(bals);
+export const getAccountBalances = async ({
+  chainName,
+  accountAddress,
+}: {
+  chainName: string;
+  accountAddress: string;
+}): Promise<readonly Coin[]> => {
+  const rpcUrl = DefaultRpcConfig[chainName];
+  if (!rpcUrl) {
+    throw new Error(`No RPC configured for ${chainName}`);
+  }
+
+  const client = await getStargateClient(rpcUrl);
+  return client.getAllBalances(accountAddress);
 };

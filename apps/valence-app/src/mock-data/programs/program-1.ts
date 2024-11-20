@@ -19,7 +19,7 @@ export const mockProgram1 = {
       domain: {
         CosmosCosmwasm: "neutron",
       },
-      addr: "neutron1ecelyw9upcv20hzlx54t6hx78hls949a5th07n7d7k545ujnl6lqr0hjxn",
+      addr: "neutron173hvzyja4447jlqkkvjdejjwlwk9eaam27q2psm3evy70f7z34pq5247np",
     },
     "1": {
       name: "test_2",

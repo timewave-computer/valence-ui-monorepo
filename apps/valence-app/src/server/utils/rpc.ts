@@ -2,7 +2,7 @@ import { getChainId, SupportedChainId } from "@/const/config";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { StargateClient } from "@cosmjs/stargate";
-let NEUTRON_RPC = process.env.NEUTRON_RPC_URL;
+export let NEUTRON_RPC = process.env.NEUTRON_RPC_URL;
 if (!NEUTRON_RPC) throw new Error("Please provide NEUTRON_RPC_URL");
 
 export const RpcConfig: Record<SupportedChainId, string> = {
