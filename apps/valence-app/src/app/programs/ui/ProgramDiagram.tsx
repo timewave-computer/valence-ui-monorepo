@@ -29,6 +29,7 @@ import {
   DialogTrigger,
 } from "@valence-ui/ui-components";
 import { RiSettings5Fill } from "react-icons/ri";
+import { ConnectionConfigPanel } from "./ConnectionConfigPanel";
 
 type ProgramDiagramProps = TransformerOutput &
   NodeComposerReturnType & {
@@ -86,7 +87,24 @@ function ProgramDiagram({
             <DialogTrigger>
               <IconButton Icon={RiSettings5Fill} />
             </DialogTrigger>
-            <DialogContent>hello</DialogContent>
+            <DialogContent>
+              <ConnectionConfigPanel
+                defaultValues={{
+                  registryAddress: "0x123",
+                  mainChainId: "neutron-1",
+                  mainChainRpc: "https://neutron-1.valence.network",
+                  rpcs: [
+                    {
+                      chainId: "neutron-1",
+                      chainRpc: "https://neutron-1.valence.network",
+                    },
+                  ],
+                }}
+                onSubmit={() => {
+                  console.log("submit");
+                }}
+              />
+            </DialogContent>
           </Dialog>
         </Panel>
         <Panel position="top-left">

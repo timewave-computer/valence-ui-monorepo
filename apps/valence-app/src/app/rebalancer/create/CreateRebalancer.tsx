@@ -5,7 +5,12 @@ import {
   LoadingSkeleton,
   ToastMessage,
 } from "@/components";
-import { Button, DialogClose } from "@valence-ui/ui-components";
+import {
+  Button,
+  DialogClose,
+  Dialog,
+  DialogContent,
+} from "@valence-ui/ui-components";
 import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { useRouter } from "next/navigation";
@@ -27,7 +32,6 @@ import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
 import { useCallback, useState } from "react";
-import { Dialog, DialogContent } from "@/components";
 import {
   HoverCard,
   HoverCardContent,
@@ -218,7 +222,6 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
       router.push(`/rebalancer?account=${valenceAddress}&scale=w`);
     },
     onError: (e) => {
-      const error = ErrorHandler.constructText("create rebalancer error", e);
       console.log(ErrorHandler.constructText("create rebalancer error", e));
       toast.error(
         <ToastMessage title="Failed to set up Rebalancer" variant="error">
