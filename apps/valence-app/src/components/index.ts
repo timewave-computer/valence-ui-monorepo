@@ -13,7 +13,6 @@ export * from "./RouterButton";
 export * from "./Dropdown";
 export * from "./RadioGroup";
 export * from "./Toaster";
-export * from "./Dialog";
 export * from "./hover-to-copy";
 export * from "./colored-dot";
 export * from "./LoadingSkeleton";
