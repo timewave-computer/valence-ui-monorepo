@@ -1,6 +1,5 @@
 import {
   ReactFlow,
-  Controls,
   Background,
   type NodeTypes,
   useReactFlow,
@@ -23,6 +22,13 @@ import {
   type TransformerOutput,
   type NodeComposerReturnType,
 } from "@/app/programs/server";
+import {
+  IconButton,
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@valence-ui/ui-components";
+import { RiSettings5Fill } from "react-icons/ri";
 
 type ProgramDiagramProps = TransformerOutput &
   NodeComposerReturnType & {
@@ -75,7 +81,14 @@ function ProgramDiagram({
         zoomOnDoubleClick={false}
       >
         <Background />
-        <Controls />
+        <Panel position="bottom-left">
+          <Dialog>
+            <DialogTrigger>
+              <IconButton Icon={RiSettings5Fill} />
+            </DialogTrigger>
+            <DialogContent>hello</DialogContent>
+          </Dialog>
+        </Panel>
         <Panel position="top-left">
           <DiagramTitle programId={programId} />
         </Panel>

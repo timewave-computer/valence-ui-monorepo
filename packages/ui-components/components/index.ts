@@ -6,3 +6,4 @@ export * from "./IconButton";
 export * from "./Tooltip";
 export * from "./CollapsibleSection";
 export * from "./ErrorSplash";
+export * from "./Dialog";
