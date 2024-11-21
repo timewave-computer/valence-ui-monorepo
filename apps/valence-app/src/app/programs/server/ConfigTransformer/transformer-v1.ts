@@ -2,9 +2,6 @@ import { z } from "zod";
 import { TransformerFunction } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
 
-/***
- * TODO: abstract away the construction of nodes. There should be a Node Interface that is consumed by Account Node, Library Node, etc
- */
 type ProgramConfigV1 = z.infer<typeof programConfigSchema>;
 export const transformerV1: TransformerFunction<ProgramConfigV1> = (config) => {
   if (!config.id) {
