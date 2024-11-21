@@ -1,31 +1,5 @@
 import { ProgramRegistryTable, ProgramsHero } from "@/app/programs/ui";
-
-const registryContents = [
-  {
-    id: "0",
-    label: "Mock Program 1",
-    authorizationsAddress:
-      "neutron1ecelyw9upcv20hzlx54t6hx78hls949a5th07n7d7k545ujnl6lqr0hjxn",
-    adminAddress:
-      "neutron1sdehhexqcm9tppydg4w5ysdqkzkac0ekcg3473sl635vecd0qq7qkxn67r",
-  },
-  {
-    id: "1",
-    label: "Mock Program 2",
-    authorizationsAddress:
-      "neutron1ecelyw9upcv20hzlx54t6hx78hls949a5th07n7d7k545ujnl6lqr0hjxn",
-    adminAddress:
-      "neutron1sdehhexqcm9tppydg4w5ysdqkzkac0ekcg3473sl635vecd0qq7qkxn67r",
-  },
-  {
-    id: "2",
-    label: "Mock Program 3",
-    authorizationsAddress:
-      "neutron1ecelyw9upcv20hzlx54t6hx78hls949a5th07n7d7k545ujnl6lqr0hjxn",
-    adminAddress:
-      "neutron1sdehhexqcm9tppydg4w5ysdqkzkac0ekcg3473sl635vecd0qq7qkxn67r",
-  },
-];
+import { mockRegistry } from "@/mock-data";
 
 export default function ProgramsHomePage() {
   return (
@@ -37,3 +11,10 @@ export default function ProgramsHomePage() {
     </main>
   );
 }
+
+const registryContents = Object.entries(mockRegistry).map(([id, program]) => ({
+  id,
+  label: "Program " + id,
+  authorizationsAddress: program.authorization_data.authorization_addr,
+  adminAddress: program.owner,
+}));

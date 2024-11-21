@@ -8,7 +8,7 @@ import { HistoricalGraph } from "./components/HistoricalGraph";
 import RebalancerMainServerComponent from "./RebalancerMainServer";
 
 export const metadata: Metadata = {
-  title: "Valence Rebalancer",
+  title: "Rebalancer",
   description: REBALANCER_DESCRIPTION,
   openGraph: {
     siteName: "Valence",

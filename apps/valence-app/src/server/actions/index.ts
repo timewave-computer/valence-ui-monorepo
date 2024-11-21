@@ -1,5 +1,5 @@
 export * from "./fetch-rebalancer-account-config";
-export * from "./fetch-account-balances";
+export * from "./fetch-rebalancer-account-balances";
 export * from "./fetch-historical-prices";
 export * from "./fetch-historical-balances";
 export * from "./fetch-historical-targets";

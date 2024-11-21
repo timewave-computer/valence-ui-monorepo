@@ -1,6 +1,8 @@
-import { mockProgram1 } from "@/mock-data";
+import { mockRegistry } from "@/mock-data/programs/program-registry";
 
-export const getProgram = (programId: string) => {
-  const registryResponse = mockProgram1.workflow;
-  return registryResponse;
+// TODO: take registry ID
+export const getProgram = async (programId: string) => {
+  if (!(programId in mockRegistry))
+    throw new Error(`Program ${programId} found in registry`);
+  return Promise.resolve(mockRegistry[programId]);
 };

@@ -19,11 +19,15 @@ import {
   DiagramSidePanelContent,
   DiagramTitle,
 } from "@/app/programs/ui";
-import { TransformerOutput } from "@/app/programs/server";
+import {
+  type TransformerOutput,
+  type NodeComposerReturnType,
+} from "@/app/programs/server";
 
-type ProgramDiagramProps = TransformerOutput & {
-  nodeTypes: NodeTypes;
-};
+type ProgramDiagramProps = TransformerOutput &
+  NodeComposerReturnType & {
+    nodeTypes: NodeTypes;
+  };
 
 const defaultDiagramLayoutOptions = {
   algorithm: "dagre" as DiagramLayoutAlgorithm,

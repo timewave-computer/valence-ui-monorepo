@@ -11,7 +11,7 @@ import { chainConfig, ABSOLUTE_URL, AUCTIONS_DESCRIPTION } from "@/const";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Valence Auctions",
+  title: "Auctions",
   description: AUCTIONS_DESCRIPTION,
   openGraph: {
     siteName: "Valence",
