@@ -10,26 +10,21 @@ import {
   Panel,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   useAutoLayout,
   type DiagramLayoutAlgorithm,
   type Direction,
   DiagramSidePanelContent,
   DiagramTitle,
+  ConnectionConfigPanel,
 } from "@/app/programs/ui";
 import {
   type TransformerOutput,
   type NodeComposerReturnType,
 } from "@/app/programs/server";
-import {
-  IconButton,
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@valence-ui/ui-components";
+import { IconButton, Dialog, DialogContent } from "@valence-ui/ui-components";
 import { RiSettings5Fill } from "react-icons/ri";
-import { ConnectionConfigPanel } from "./ConnectionConfigPanel";
 
 type ProgramDiagramProps = TransformerOutput &
   NodeComposerReturnType & {
@@ -67,6 +62,8 @@ function ProgramDiagram({
   }, [nodes, fitView]);
   useAutoLayout(defaultDiagramLayoutOptions);
 
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   return (
     <div style={{ height: "100%" }}>
       <ReactFlow
@@ -83,11 +80,22 @@ function ProgramDiagram({
       >
         <Background />
         <Panel position="bottom-left">
-          <Dialog>
-            <DialogTrigger>
-              <IconButton Icon={RiSettings5Fill} />
-            </DialogTrigger>
-            <DialogContent>
+          <Dialog open={isSettingsOpen}>
+            <IconButton
+              onClick={() => {
+                setIsSettingsOpen(true);
+              }}
+              Icon={RiSettings5Fill}
+            />
+
+            <DialogContent
+              onEscapeKeyDown={() => {
+                setIsSettingsOpen(false);
+              }}
+              onPointerDownOutside={() => {
+                setIsSettingsOpen(false);
+              }}
+            >
               <ConnectionConfigPanel
                 defaultValues={{
                   registryAddress: "0x123",
@@ -95,13 +103,14 @@ function ProgramDiagram({
                   mainChainRpc: "https://neutron-1.valence.network",
                   rpcs: [
                     {
-                      chainId: "neutron-1",
+                      chainId: "stargaze-1",
                       chainRpc: "https://neutron-1.valence.network",
                     },
                   ],
                 }}
                 onSubmit={() => {
-                  console.log("submit");
+                  console.log("submitting from program diagram");
+                  setIsSettingsOpen(false);
                 }}
               />
             </DialogContent>

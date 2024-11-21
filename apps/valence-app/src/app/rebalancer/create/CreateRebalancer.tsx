@@ -1,15 +1,11 @@
 "use client";
-import {
-  LinkText,
-  LoadingIndicator,
-  LoadingSkeleton,
-  ToastMessage,
-} from "@/components";
+import { LinkText, LoadingSkeleton, ToastMessage } from "@/components";
 import {
   Button,
   DialogClose,
   Dialog,
   DialogContent,
+  LoadingIndicator,
 } from "@valence-ui/ui-components";
 import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";

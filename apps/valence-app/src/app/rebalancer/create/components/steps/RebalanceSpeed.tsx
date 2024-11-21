@@ -5,12 +5,11 @@ import {
 } from "@/app/rebalancer/create/copy";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
+import { Dropdown, LinkText } from "@/components";
 import {
-  Dropdown,
-  LinkText,
   IconTooltipContent,
   WithIconAndTooltip,
-} from "@/components";
+} from "@valence-ui/ui-components";
 import { useState } from "react";
 import { cn } from "@/utils";
 import { WarnTextV2 } from "@/app/rebalancer/create/components";

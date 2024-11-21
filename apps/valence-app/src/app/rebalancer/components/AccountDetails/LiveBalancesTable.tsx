@@ -1,10 +1,6 @@
 "use client";
-import {
-  SortableTableHeader,
-  Sorter,
-  LoadingSkeleton,
-  IconTooltipContent,
-} from "@/components";
+import { SortableTableHeader, Sorter, LoadingSkeleton } from "@/components";
+import { TooltipContent } from "@valence-ui/ui-components";
 import {
   Dispatch,
   Fragment,
@@ -240,7 +236,7 @@ const LiveBalancesTableLayout: React.FC<{
           buttonClassName="pt-0 justify-end px-0  border-y-0"
           textClassName=" text-xs font-base text-wrap "
           hoverTooltip={
-            <IconTooltipContent {...LivePortfolioTooltipCopy.withdrawable} />
+            <TooltipContent {...LivePortfolioTooltipCopy.withdrawable} />
           }
         />
         <SortableTableHeader

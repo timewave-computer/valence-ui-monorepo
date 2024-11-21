@@ -9,13 +9,11 @@ import { useWallet, useWalletBalances } from "@/hooks";
 import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
 import {
-  CalloutBox,
-  Checkbox,
-  LoadingSkeleton,
   IconTooltipContent,
   WithIconAndTooltip,
-} from "@/components";
+} from "@valence-ui/ui-components";
 import {
   useAssetMetadata,
   useBaseTokenValue,

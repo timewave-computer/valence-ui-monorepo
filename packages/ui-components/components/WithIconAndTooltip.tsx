@@ -99,7 +99,7 @@ export const WithIconAndTooltip: React.FC<WithIconAndTooltipProps> = ({
   );
 };
 
-export const TooltipContent: React.FC<{
+export const IconTooltipContent: React.FC<{
   title?: string;
   text?: string;
   children?: ReactNode;

@@ -4,7 +4,7 @@ import {
   useRebalanceStatusQuery,
 } from "@/app/rebalancer/hooks";
 import React from "react";
-import { IconTooltipContent } from "@/components";
+import { IconTooltipContent } from "@valence-ui/ui-components";
 import { displayNumber } from "@/utils";
 
 export const RebalanceInProgressTooltip: React.FC<{ address: string }> = ({

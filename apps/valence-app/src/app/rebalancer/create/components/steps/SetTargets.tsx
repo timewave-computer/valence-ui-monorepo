@@ -8,17 +8,14 @@ import { cn, displayNumber } from "@/utils";
 import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { Asset } from "@/app/rebalancer/components";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import {
-  Dropdown,
-  LoadingSkeleton,
-  IconTooltipContent,
-  WithIconAndTooltip,
-} from "@/components";
+import { Dropdown, LoadingSkeleton } from "@/components";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   IconButton,
+  IconTooltipContent,
+  WithIconAndTooltip,
 } from "@valence-ui/ui-components";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";

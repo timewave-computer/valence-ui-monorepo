@@ -5,15 +5,15 @@ import {
   Dropdown,
   DropdownOption,
   LinkText,
-  IconTooltipContent,
   RadioGroup,
   RadioGroupItem,
-  WithIconAndTooltip,
 } from "@/components";
 import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  IconTooltipContent,
+  WithIconAndTooltip,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";

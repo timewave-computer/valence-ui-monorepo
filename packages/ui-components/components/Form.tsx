@@ -1,4 +1,4 @@
-import { TooltipContent, WithIconAndTooltip } from ".";
+import { IconTooltipContent, WithIconAndTooltip } from ".";
 import { cn } from "../utils";
 import * as FormPrimitive from "@radix-ui/react-form";
 
@@ -33,7 +33,7 @@ export function FormInputField({
         <WithIconAndTooltip
           {...(tooltipContent && {
             tooltipContent: (
-              <TooltipContent title={label} text={tooltipContent} />
+              <IconTooltipContent title={label} text={tooltipContent} />
             ),
           })}
         >

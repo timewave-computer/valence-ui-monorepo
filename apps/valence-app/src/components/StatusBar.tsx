@@ -2,7 +2,7 @@ import { cn } from "@/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import React, { ReactNode } from "react";
 import { IconType } from "react-icons/lib";
-import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { LoadingIndicator } from "@valence-ui/ui-components";
 
 const statusBarVariants = cva(
   "  py-3 px-5 transition-all font-serif  text-2xl ",
