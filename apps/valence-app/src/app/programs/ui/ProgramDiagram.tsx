@@ -23,7 +23,13 @@ import {
   type TransformerOutput,
   type NodeComposerReturnType,
 } from "@/app/programs/server";
-import { IconButton, Dialog, DialogContent } from "@valence-ui/ui-components";
+import {
+  IconButton,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@valence-ui/ui-components";
 import { RiSettings5Fill } from "react-icons/ri";
 
 type ProgramDiagramProps = TransformerOutput &
@@ -96,6 +102,11 @@ function ProgramDiagram({
                 setIsSettingsOpen(false);
               }}
             >
+              <DialogTitle className="text-lg font-bold">
+                Connection Configuration
+              </DialogTitle>
+              {/* empty description, here to prevent warning */}
+              <DialogDescription />
               <ConnectionConfigPanel
                 defaultValues={{
                   registryAddress: "0x123",

@@ -1,4 +1,9 @@
-import { FormRoot, FormInputField } from "@valence-ui/ui-components";
+import {
+  FormRoot,
+  FormField,
+  FormLabel,
+  FormControl,
+} from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
@@ -42,33 +47,37 @@ export function ConnectionConfigPanel({
   // on submit, the data should refetch with given inputs (registry, mainchain id, rpcs)
 
   return (
-    <div>
-      <h1 className="text-lg font-bold">Connection Configuration</h1>
-      <FormRoot
-        onSubmit={() => {
-          handleSubmit((data) => {
-            console.log("SUBBMITTING", data);
-            onSubmit();
-          });
-        }}
-        className="flex flex-col gap-4 pt-4"
-      >
-        <FormInputField
-          label="Registry Address"
-          {...register("registryAddress")}
-        />
-        <FormInputField label="Main Chain ID" {...register("mainChainId")} />
-        <FormInputField label="Main Chain RPC" {...register("mainChainRpc")} />
-        {defaultValues.rpcs.map((rpc, i) => {
-          return (
-            <FormInputField
-              key={`rpc-input-${i}`}
-              label={`${rpc.chainId} RPC:`}
-              {...register(`rpcs.${i}.chainRpc`)}
-            />
-          );
-        })}
-      </FormRoot>
-    </div>
+    <FormRoot
+      onSubmit={() => {
+        handleSubmit((data) => {
+          console.log("SUBBMITTING", data);
+          onSubmit();
+        });
+      }}
+      className="flex flex-col gap-4 pt-4"
+    >
+      <FormField name="registryAddress" className="flex flex-col gap-1">
+        <FormLabel label="Registry Address" />
+        <FormControl {...register("registryAddress")} />
+      </FormField>
+
+      <FormField name="mainChainId" className="flex flex-col gap-1">
+        <FormLabel label="Main Chain ID" />
+        <FormControl {...register("mainChainId")} />
+      </FormField>
+
+      {defaultValues.rpcs.map((rpc, i) => {
+        return (
+          <FormField
+            key={`rpc-input-${rpc.chainId}`}
+            name={`rpcs.${i}.chainRpc`}
+            className="flex flex-col gap-1"
+          >
+            <FormLabel label={`${rpc.chainId} RPC:`} />
+            <FormControl {...register(`rpcs.${i}.chainRpc`)} />
+          </FormField>
+        );
+      })}
+    </FormRoot>
   );
 }
