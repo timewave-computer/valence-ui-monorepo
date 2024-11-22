@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   LoadingIndicator,
+  FormRoot,
 } from "@valence-ui/ui-components";
 import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
@@ -299,75 +300,81 @@ export default function CreateRebalancer({}: CreateRebalancerProps) {
         address={walletAddress}
         isEdit={false}
       />
-      <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
-        <DepositAssets form={form} address={walletAddress} />
-        <SetTargets
-          address={walletAddress}
-          form={form}
-          isCleanStartingAmountEnabled={true}
-        />
-        <RebalanceSpeed address={walletAddress} form={form} />
-        <AdvancedSettings address={walletAddress} form={form} />
-        <PreviewMessage address={walletAddress} form={form} />
-        {isCreatePending ? (
-          <div className="flex min-h-11 min-w-60 items-center justify-center bg-valence-black">
-            <LoadingIndicator />
-          </div>
-        ) : (
-          <HoverCard openDelay={0}>
-            <HoverCardTrigger>
-              <Button
-                disabled={!isSubmitEnabled}
-                className="min-h-11 min-w-60"
-                onClick={() => (isSubmitEnabled ? handleCreate() : {})}
-              >
-                Start rebalancing
-              </Button>
-            </HoverCardTrigger>
-            {!isSubmitEnabled && (
-              <HoverCardContent className="flex flex-col gap-1 border border-valence-black bg-valence-lightgray p-4 text-sm text-valence-black">
-                <h2 className="font-semibold">
-                  Configuration does not meet the below requirements:
-                </h2>
-                <ul>
-                  {!isServiceFeeIncluded && (
-                    <li className="">
-                      - Service fee of {chainConfig.serviceFee.amount}{" "}
-                      {chainConfig.serviceFee.symbol} must be included with the
-                      deposit.
-                    </li>
-                  )}
+      <FormRoot
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
+          <DepositAssets form={form} address={walletAddress} />
+          <SetTargets
+            address={walletAddress}
+            form={form}
+            isCleanStartingAmountEnabled={true}
+          />
+          <RebalanceSpeed address={walletAddress} form={form} />
+          <AdvancedSettings address={walletAddress} form={form} />
+          <PreviewMessage address={walletAddress} form={form} />
+          {isCreatePending ? (
+            <div className="flex min-h-11 min-w-60 items-center justify-center bg-valence-black">
+              <LoadingIndicator />
+            </div>
+          ) : (
+            <HoverCard openDelay={0}>
+              <HoverCardTrigger>
+                <Button
+                  disabled={!isSubmitEnabled}
+                  className="min-h-11 min-w-60"
+                  onClick={() => (isSubmitEnabled ? handleCreate() : {})}
+                >
+                  Start rebalancing
+                </Button>
+              </HoverCardTrigger>
+              {!isSubmitEnabled && (
+                <HoverCardContent className="flex flex-col gap-1 border border-valence-black bg-valence-lightgray p-4 text-sm text-valence-black">
+                  <h2 className="font-semibold">
+                    Configuration does not meet the below requirements:
+                  </h2>
+                  <ul>
+                    {!isServiceFeeIncluded && (
+                      <li className="">
+                        - Service fee of {chainConfig.serviceFee.amount}{" "}
+                        {chainConfig.serviceFee.symbol} must be included with
+                        the deposit.
+                      </li>
+                    )}
 
-                  {!isMinimumValueMet && (
-                    <li>
-                      - A minimum value of{" "}
-                      {displayValue({
-                        value: requiredMinimumValue,
-                        symbol: minimumValueSymbol,
-                        options: {
-                          omitDollarSignForUsdc: true,
-                        },
-                      })}{" "}
-                      must be deposited to the account.
-                    </li>
-                  )}
+                    {!isMinimumValueMet && (
+                      <li>
+                        - A minimum value of{" "}
+                        {displayValue({
+                          value: requiredMinimumValue,
+                          symbol: minimumValueSymbol,
+                          options: {
+                            omitDollarSignForUsdc: true,
+                          },
+                        })}{" "}
+                        must be deposited to the account.
+                      </li>
+                    )}
 
-                  {!isDepositsValid && (
-                    <li>- At least 1 asset should be selected to deposit.</li>
-                  )}
+                    {!isDepositsValid && (
+                      <li>- At least 1 asset should be selected to deposit.</li>
+                    )}
 
-                  {!isTargetsValid && (
-                    <li>
-                      - At least 2 targets should be selected, adding up to
-                      100%.
-                    </li>
-                  )}
-                </ul>
-              </HoverCardContent>
-            )}
-          </HoverCard>
-        )}
-      </div>
+                    {!isTargetsValid && (
+                      <li>
+                        - At least 2 targets should be selected, adding up to
+                        100%.
+                      </li>
+                    )}
+                  </ul>
+                </HoverCardContent>
+              )}
+            </HoverCard>
+          )}
+        </div>
+      </FormRoot>
     </div>
   );
 }

@@ -11,7 +11,11 @@ import { produce } from "immer";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
 import {
+  FormControl,
+  FormField,
+  FormLabel,
   IconTooltipContent,
+  InputLabel,
   WithIconAndTooltip,
 } from "@valence-ui/ui-components";
 import {
@@ -202,13 +206,24 @@ export const DepositAssets: React.FC<{
           role="grid"
           className="grid grid-cols-[1fr_1fr_1fr_2fr_1fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputTableCell variant="header">Asset</InputTableCell>
-          <InputTableCell variant="header">Amount available</InputTableCell>
-          <InputTableCell variant="header">Total value</InputTableCell>
-          <InputTableCell className="justify-start" variant="header">
-            Initial Deposit
+          <InputTableCell variant="header">
+            <InputLabel label="Asset" />
           </InputTableCell>
-          <InputTableCell variant="header">Deposit Value</InputTableCell>
+          <InputTableCell variant="header">
+            <InputLabel label="Amount available" />
+          </InputTableCell>
+          <InputTableCell variant="header">
+            <InputLabel label="Total value" />
+          </InputTableCell>
+
+          <InputTableCell variant="header">
+            <InputLabel label="Initial Deposit" />
+          </InputTableCell>
+
+          <InputTableCell variant="header">
+            <InputLabel label="Deposit Value" />
+          </InputTableCell>
+
           {balances
             ?.filter((b) => {
               const asset = getOriginAsset(b.denom);
@@ -270,38 +285,31 @@ export const DepositAssets: React.FC<{
 
                   <InputTableCell>{toalValueDisplayString}</InputTableCell>
 
-                  <InputTableCell
-                    className={cn(
-                      "relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray",
-                      "focus-within:border-valence-blue",
-                      isOverMax &&
-                        "border-valence-red focus-within:border-valence-red",
-                    )}
-                  >
-                    <input
-                      // @ts-ignore
-                      onWheel={(e) => e.target?.blur()} // prevent scroll
-                      placeholder="0.00"
-                      className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
-                      type="number"
-                      autoFocus={index === 0}
-                      value={watch(`initialAssets.${index}.startingAmount`)}
-                      onChange={(e) => {
-                        const amount = parseFloat(e.target.value);
-                        setValue(`initialAssets.${index}`, {
-                          startingAmount: amount,
-                          symbol: asset?.symbol ?? "",
-                          denom: balance.denom,
-                        });
+                  <InputTableCell>
+                    <FormField name={`initialAssets.${index}.startingAmount`}>
+                      <FormControl
+                        isError={isOverMax}
+                        placeholder="0.00"
+                        type="number"
+                        autoFocus={index === 0}
+                        value={watch(`initialAssets.${index}.startingAmount`)}
+                        onChange={(e) => {
+                          e.preventDefault();
+                          const amount = parseFloat(e.target.value);
+                          setValue(`initialAssets.${index}`, {
+                            startingAmount: amount,
+                            symbol: asset?.symbol ?? "",
+                            denom: balance.denom,
+                          });
 
-                        if (amount > 0) {
-                          addTarget(balance.denom);
-                        }
-                      }}
-                    />
-                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                      {asset?.symbol}
-                    </span>
+                          if (amount > 0) {
+                            addTarget(balance.denom);
+                          }
+                        }}
+                        suffix={asset?.symbol}
+                        containerClassName="w-full"
+                      />
+                    </FormField>
                   </InputTableCell>
 
                   <InputTableCell variant="number">

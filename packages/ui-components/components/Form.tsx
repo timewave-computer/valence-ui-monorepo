@@ -1,48 +1,38 @@
-import { IconTooltipContent, WithIconAndTooltip } from ".";
 import { cn } from "../utils";
 import * as FormPrimitive from "@radix-ui/react-form";
 import { forwardRef } from "react";
 
 export const FormRoot = FormPrimitive.Root;
 export const FormField = FormPrimitive.Field;
+export const FormLabel = FormPrimitive.Label;
 
 interface FormLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  label: string;
+  label: string; // text arg so it can be used for the tooltip too
   tooltipContent?: string;
-}
-
-export function FormLabel({ label, tooltipContent }: FormLabelProps) {
-  return (
-    <div className="text-xs font-medium">
-      <WithIconAndTooltip
-        {...(tooltipContent && {
-          tooltipContent: (
-            <IconTooltipContent title={label} text={tooltipContent} />
-          ),
-        })}
-      >
-        <FormPrimitive.Label>{label}</FormPrimitive.Label>
-      </WithIconAndTooltip>
-    </div>
-  );
 }
 
 interface FormInputFieldProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   suffix?: string;
   containerClassName?: string;
+  isError?: boolean;
 }
 
 export const FormControl = forwardRef<HTMLInputElement, FormInputFieldProps>(
-  ({ suffix, className, containerClassName, ...props }, ref) => {
+  (
+    { suffix, className, containerClassName, disabled, isError, ...props },
+    ref,
+  ) => {
     return (
-      <FormPrimitive.Control asChild>
-        <div
-          className={cn(
-            "text-xs relative flex  items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue",
-            containerClassName,
-          )}
-        >
+      <div
+        className={cn(
+          "relative flex  items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue",
+          isError && "border-valence-red focus-within:border-valence-red",
+          disabled && "bg-valence-gray cursor-not-allowed",
+          containerClassName,
+        )}
+      >
+        <FormPrimitive.Control asChild>
           <input
             {...props}
             ref={ref}
@@ -53,14 +43,14 @@ export const FormControl = forwardRef<HTMLInputElement, FormInputFieldProps>(
               className,
             )}
           />
+        </FormPrimitive.Control>
 
-          {suffix && (
-            <span className="pointer-events-none w-fit  font-mono px-2 pl-1">
-              {suffix}
-            </span>
-          )}
-        </div>
-      </FormPrimitive.Control>
+        {suffix && (
+          <span className="pointer-events-none w-fit  font-mono px-2 pl-1">
+            {suffix}
+          </span>
+        )}
+      </div>
     );
   },
 );

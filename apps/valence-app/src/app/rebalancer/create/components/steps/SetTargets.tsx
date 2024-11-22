@@ -14,8 +14,9 @@ import {
   TooltipContent,
   TooltipTrigger,
   IconButton,
-  IconTooltipContent,
-  WithIconAndTooltip,
+  FormField,
+  FormControl,
+  InputLabel,
 } from "@valence-ui/ui-components";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
@@ -129,26 +130,23 @@ export const SetTargets: React.FC<{
         ) : (
           <div className="flex flex-col gap-2">
             <div className="grid h-fit grid-cols-[1fr_1fr_2fr_2fr_auto] gap-x-8 gap-y-2">
-              <InputTableCell className="justify-start" variant="header">
-                Asset
+              <InputTableCell variant="header">
+                <InputLabel label="Asset" />
               </InputTableCell>
-              <InputTableCell className="justify-start" variant="header">
-                Current Distribution
+              <InputTableCell variant="header">
+                <InputLabel label="Current Distribution" />
               </InputTableCell>
-              <InputTableCell className="justify-start" variant="header">
-                Target Distribution
+              <InputTableCell variant="header">
+                <InputLabel label="Target Distribution" />
               </InputTableCell>
-              <InputTableCell className="justify-start" variant="header">
-                <WithIconAndTooltip
-                  tooltipContent={
-                    <IconTooltipContent
-                      {...RebalancerFormTooltipCopy.minBalance}
-                    />
-                  }
-                >
-                  {RebalancerFormTooltipCopy.minBalance.title}
-                </WithIconAndTooltip>
+
+              <InputTableCell variant="header">
+                <InputLabel
+                  tooltipContent={RebalancerFormTooltipCopy.minBalance.text}
+                  label={RebalancerFormTooltipCopy.minBalance.title}
+                />
               </InputTableCell>
+
               <InputTableCell
                 className="h-full flex-col items-center justify-center"
                 variant="header"
@@ -173,6 +171,8 @@ export const SetTargets: React.FC<{
                         amount: Number(initialAsset?.startingAmount),
                         denom: field.denom ?? "0",
                       }) / totalValue;
+
+                const target = watch(`targets.${index}.bps`);
 
                 return (
                   <Fragment key={`target-select-row-${index}`}>
@@ -202,64 +202,53 @@ export const SetTargets: React.FC<{
                       })}
                       %
                     </InputTableCell>
-                    <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
-                      <input
-                        // @ts-ignore
-                        onWheel={(e) => e.target?.blur()} // prevent scroll
-                        className="h-full w-full max-w-[50%] bg-transparent  p-1 font-mono focus:outline-none"
-                        type="number"
-                        placeholder="10.00"
-                        value={watch(`targets.${index}.bps`)}
-                        onChange={(e) => {
-                          setValue(`targets.${index}`, {
-                            ...targets[index],
-                            bps: parseFloat(e.target.value),
-                            denom: field.denom,
-                          });
-                        }}
-                      />
-                      <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                        %
-                      </span>
+                    <InputTableCell>
+                      <FormField name={`targets.${index}.bps`}>
+                        <FormControl
+                          suffix="%"
+                          type="number"
+                          placeholder="10.00"
+                          isError={
+                            target !== 0 &&
+                            !isNaN(target) &&
+                            !isValidPercentage(target)
+                          }
+                          value={target}
+                          onChange={(e) => {
+                            setValue(`targets.${index}`, {
+                              ...targets[index],
+                              bps: parseFloat(e.target.value),
+                              denom: field.denom,
+                            });
+                          }}
+                        />
+                      </FormField>
                     </InputTableCell>
 
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
-                        <InputTableCell
-                          className={cn(
+                        <InputTableCell>
+                          {/* className={cn(
                             disableMinimumValue
                               ? "cursor-not-allowed border-valence-mediumgray bg-valence-mediumgray font-mono"
                               : "border-valence-lightgray bg-valence-lightgray",
                             "relative flex items-center border-[1.5px]  focus-within:border-valence-blue",
                           )}
-                        >
-                          <input
-                            // @ts-ignore
-                            onWheel={(e) => e.target?.blur()} // prevent scroll
-                            disabled={disableMinimumValue}
-                            className={cn(
-                              "justify-start",
-                              disableMinimumValue &&
-                                "cursor-not-allowed bg-valence-gray",
-                              "h-full w-full max-w-[50%]  bg-transparent p-1 focus:outline-none",
-                            )}
-                            type="number"
-                            value={watch(`targets.${index}.minimumAmount`)}
-                            onChange={(e) => {
-                              setValue(`targets.${index}`, {
-                                ...targets[index],
-                                minimumAmount: parseFloat(e.target.value),
-                              });
-                            }}
-                          />
-                          <span
-                            className={cn(
-                              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono text-valence-gray",
-                              hasMimumValueProperty && "text-valence-black",
-                            )}
-                          >
-                            {assetMetadata?.symbol}
-                          </span>
+                        > */}
+                          <FormField name={`targets.${index}.minimumAmount`}>
+                            <FormControl
+                              disabled={disableMinimumValue}
+                              type="number"
+                              value={watch(`targets.${index}.minimumAmount`)}
+                              onChange={(e) => {
+                                setValue(`targets.${index}`, {
+                                  ...targets[index],
+                                  minimumAmount: parseFloat(e.target.value),
+                                });
+                              }}
+                              suffix={assetMetadata?.symbol}
+                            />
+                          </FormField>
                         </InputTableCell>
                       </TooltipTrigger>
                       {disableMinimumValue && (
@@ -327,9 +316,7 @@ export const SetTargets: React.FC<{
                 )}
 
               {targets?.length > 0 &&
-                targets.some(
-                  (t) => Number(t.bps) === 0 || Number(t.bps) === 100,
-                ) && (
+                targets.some((t) => !isValidPercentage(Number(t.bps))) && (
                   <WarnTextV2
                     text="Percentages must be between .01% and 99.99%."
                     variant="warn"
@@ -342,3 +329,5 @@ export const SetTargets: React.FC<{
     </section>
   );
 };
+
+const isValidPercentage = (value: number) => value > 0 && value < 100;

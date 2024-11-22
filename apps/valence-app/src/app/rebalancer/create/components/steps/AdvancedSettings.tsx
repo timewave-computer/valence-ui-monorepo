@@ -12,7 +12,10 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  FormControl,
+  FormField,
   IconTooltipContent,
+  InputLabel,
   WithIconAndTooltip,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
@@ -63,18 +66,10 @@ export const AdvancedSettings: React.FC<{
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
-                <WithIconAndTooltip
-                  tooltipContent={
-                    <IconTooltipContent
-                      {...RebalancerFormTooltipCopy.baseDenom}
-                    />
-                  }
-                >
-                  <div className="col-span-2 h-fit pb-1 text-xs font-medium ">
-                    {RebalancerFormTooltipCopy.baseDenom.title}
-                  </div>
-                </WithIconAndTooltip>
-
+                <InputLabel
+                  label={RebalancerFormTooltipCopy.baseDenom.title}
+                  tooltipContent={RebalancerFormTooltipCopy.baseDenom.text}
+                />
                 <Dropdown
                   className="max-w-[30%]"
                   selected={watch(`baseTokenDenom`)}
@@ -87,11 +82,11 @@ export const AdvancedSettings: React.FC<{
               </div>
               <div className="flex flex-col gap-2">
                 <div className="h-fit pb-1 text-xs font-normal">
-                  <WithIconAndTooltip
-                    tooltipContent={
-                      <IconTooltipContent
-                        {...RebalancerFormTooltipCopy.strategy}
-                      >
+                  <InputLabel
+                    label={RebalancerFormTooltipCopy.strategy.title}
+                    tooltipContent={RebalancerFormTooltipCopy.strategy.text}
+                    tooltipChildren={
+                      <>
                         See{" "}
                         <LinkText
                           className=" border-valence-blue text-valence-blue hover:border-b"
@@ -102,11 +97,9 @@ export const AdvancedSettings: React.FC<{
                           here
                         </LinkText>{" "}
                         for an explanation with examples.
-                      </IconTooltipContent>
+                      </>
                     }
-                  >
-                    {RebalancerFormTooltipCopy.strategy.title}
-                  </WithIconAndTooltip>
+                  />
                 </div>
 
                 <Dropdown
@@ -119,44 +112,26 @@ export const AdvancedSettings: React.FC<{
                 />
               </div>
               <div className="flex flex-col gap-2 ">
-                <div className="h-fit pb-1 text-xs font-medium">
-                  <WithIconAndTooltip
-                    tooltipContent={
-                      <IconTooltipContent
-                        {...RebalancerFormTooltipCopy.maxLimit}
-                      />
-                    }
-                  >
-                    {RebalancerFormTooltipCopy.maxLimit.title}
-                  </WithIconAndTooltip>
-                </div>
-
-                <div className="relative flex max-w-[30%] items-center border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue ">
-                  <input
-                    placeholder="0.00"
-                    // @ts-ignore
-                    onWheel={(e) => e.target?.blur()} // prevent scroll
-                    className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
+                <InputLabel
+                  label={RebalancerFormTooltipCopy.maxLimit.title}
+                  tooltipContent={RebalancerFormTooltipCopy.maxLimit.text}
+                />
+                <FormField name="maxLimit">
+                  <FormControl
+                    containerClassName="max-w-[30%]"
                     type="number"
+                    suffix="%"
+                    placeholder="0.00"
                     {...register(`maxLimit`)}
                   />
-                  <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                    %
-                  </span>
-                </div>
+                </FormField>
               </div>
               <div className="flex flex-col gap-2 ">
-                <WithIconAndTooltip
-                  tooltipContent={
-                    <IconTooltipContent
-                      {...RebalancerFormTooltipCopy.trustee}
-                    />
-                  }
-                >
-                  <div className="h-fit pb-1 text-xs font-medium">
-                    {RebalancerFormTooltipCopy.trustee.title}
-                  </div>
-                </WithIconAndTooltip>
+                <InputLabel
+                  tooltipContent={RebalancerFormTooltipCopy.trustee.text}
+                  label={RebalancerFormTooltipCopy.trustee.title}
+                />
+
                 <RadioGroup
                   onValueChange={() => {
                     setAllowOtherAddressInput(!allowOtherAddressInput);

@@ -3,6 +3,7 @@ import {
   FormField,
   FormLabel,
   FormControl,
+  InputLabel,
 } from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
@@ -15,6 +16,12 @@ type ConnectionConfigFormValues = {
     chainRpc: string;
     chainId: string;
   }>;
+};
+
+const formLabels = {
+  registryAddress: "Registry Address",
+  mainChainId: "Main Chain ID",
+  mainChainRpc: "Main Chain RPC",
 };
 export function ConnectionConfigPanel({
   onSubmit,
@@ -57,12 +64,14 @@ export function ConnectionConfigPanel({
       className="flex flex-col gap-4 pt-4"
     >
       <FormField name="registryAddress" className="flex flex-col gap-1">
-        <FormLabel label="Registry Address" />
+        <InputLabel label={formLabels.registryAddress} />
+
         <FormControl {...register("registryAddress")} />
       </FormField>
 
       <FormField name="mainChainId" className="flex flex-col gap-1">
-        <FormLabel label="Main Chain ID" />
+        <InputLabel label={formLabels.mainChainId} />
+
         <FormControl {...register("mainChainId")} />
       </FormField>
 
@@ -73,7 +82,8 @@ export function ConnectionConfigPanel({
             name={`rpcs.${i}.chainRpc`}
             className="flex flex-col gap-1"
           >
-            <FormLabel label={`${rpc.chainId} RPC:`} />
+            <InputLabel label={`${rpc.chainId} RPC:`} />
+
             <FormControl {...register(`rpcs.${i}.chainRpc`)} />
           </FormField>
         );
