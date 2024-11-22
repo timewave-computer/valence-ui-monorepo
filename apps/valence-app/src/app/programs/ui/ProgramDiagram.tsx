@@ -1,6 +1,5 @@
 import {
   ReactFlow,
-  Controls,
   Background,
   type NodeTypes,
   useReactFlow,
@@ -11,18 +10,28 @@ import {
   Panel,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   useAutoLayout,
   type DiagramLayoutAlgorithm,
   type Direction,
   DiagramSidePanelContent,
   DiagramTitle,
+  ConnectionConfigPanel,
+  ConnectionConfigFormValues,
 } from "@/app/programs/ui";
 import {
   type TransformerOutput,
   type NodeComposerReturnType,
 } from "@/app/programs/server";
+import {
+  IconButton,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@valence-ui/ui-components";
+import { RiSettings5Fill } from "react-icons/ri";
 
 type ProgramDiagramProps = TransformerOutput &
   NodeComposerReturnType & {
@@ -60,6 +69,11 @@ function ProgramDiagram({
   }, [nodes, fitView]);
   useAutoLayout(defaultDiagramLayoutOptions);
 
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // TODO: config panel submit should refetch data with new registryid and chain IDs
+  // need to put data in useQuery
+
   return (
     <div style={{ height: "100%" }}>
       <ReactFlow
@@ -75,7 +89,47 @@ function ProgramDiagram({
         zoomOnDoubleClick={false}
       >
         <Background />
-        <Controls />
+        <Panel position="bottom-left">
+          <Dialog open={isSettingsOpen}>
+            <IconButton
+              onClick={() => {
+                setIsSettingsOpen(true);
+              }}
+              Icon={RiSettings5Fill}
+            />
+
+            <DialogContent
+              onEscapeKeyDown={() => {
+                setIsSettingsOpen(false);
+              }}
+              onPointerDownOutside={() => {
+                setIsSettingsOpen(false);
+              }}
+            >
+              <DialogTitle className="text-lg font-bold">
+                Connection Configuration
+              </DialogTitle>
+              {/* empty description, here to prevent warning */}
+              <DialogDescription />
+              <ConnectionConfigPanel
+                defaultValues={{
+                  registryAddress: "0x123",
+                  mainChainId: "neutron-1",
+                  mainChainRpc: "https://neutron-1.valence.network",
+                  rpcs: [
+                    {
+                      chainId: "stargaze-1",
+                      chainRpc: "https://neutron-1.valence.network",
+                    },
+                  ],
+                }}
+                onSubmit={(data: ConnectionConfigFormValues) => {
+                  setIsSettingsOpen(false);
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+        </Panel>
         <Panel position="top-left">
           <DiagramTitle programId={programId} />
         </Panel>

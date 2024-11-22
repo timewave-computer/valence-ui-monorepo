@@ -5,13 +5,12 @@ import {
   useReactFlow,
   useNodesInitialized,
   useStore,
+  Position,
 } from "@xyflow/react";
-
 import {
   type LayoutAlgorithmOptions,
-  getSourceHandlePosition,
   layoutAlgorithms,
-  getTargetHandlePosition,
+  Direction,
 } from "@/app/programs/ui";
 
 export type DiagramLayoutAlgorithm = keyof typeof layoutAlgorithms;
@@ -129,4 +128,38 @@ function compareEdges(xs: Array<Edge>, ys: Array<Edge>) {
   }
 
   return true;
+}
+
+/***
+ * this is not really needed, because the toggle to change this is not exposed
+ * values are just hardcoded by the defaults
+ */
+export function getSourceHandlePosition(direction: Direction) {
+  switch (direction) {
+    case "TB":
+      return Position.Bottom;
+    case "BT":
+      return Position.Top;
+    case "LR":
+      return Position.Right;
+    case "RL":
+      return Position.Left;
+  }
+}
+
+export function getTargetHandlePosition(direction: Direction) {
+  switch (direction) {
+    case "TB":
+      return Position.Top;
+    case "BT":
+      return Position.Bottom;
+    case "LR":
+      return Position.Left;
+    case "RL":
+      return Position.Right;
+  }
+}
+
+export function getId() {
+  return `${Date.now()}`;
 }

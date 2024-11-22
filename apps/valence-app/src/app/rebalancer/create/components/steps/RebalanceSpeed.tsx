@@ -5,13 +5,13 @@ import {
 } from "@/app/rebalancer/create/copy";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
+import { Dropdown, LinkText } from "@/components";
 import {
-  Dropdown,
-  LinkText,
-  IconTooltipContent,
-  WithIconAndTooltip,
-} from "@/components";
-import { useState } from "react";
+  FormTextInput,
+  FormField,
+  FormInputLabel,
+} from "@valence-ui/ui-components";
+import { Fragment, useState } from "react";
 import { cn } from "@/utils";
 import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import {
@@ -70,17 +70,10 @@ export const RebalanceSpeed: React.FC<{
       </div>
       <div className="grid grid-cols-[1fr_1fr_1fr]">
         <div className="col-span-1 flex flex-col gap-2">
-          <WithIconAndTooltip
-            tooltipContent={
-              <IconTooltipContent
-                {...RebalancerFormTooltipCopy.rebalanceSpeed}
-              />
-            }
-          >
-            <div className="h-fit pb-1 text-xs font-medium">
-              {RebalancerFormTooltipCopy.rebalanceSpeed.title}
-            </div>
-          </WithIconAndTooltip>
+          <FormInputLabel
+            tooltipContent={RebalancerFormTooltipCopy.rebalanceSpeed.text}
+            label={RebalancerFormTooltipCopy.rebalanceSpeed.title}
+          />
           <Dropdown
             containerClassName="min-w-80"
             selected={showPid ? CustomPid : watch(`pid.p`)}
@@ -116,53 +109,24 @@ export const RebalanceSpeed: React.FC<{
             You can configure each parameter below.
           </p>
           <div className="grid grid-cols-[auto_auto_auto] gap-x-8 gap-y-2 pt-4">
-            <div
-              role="columnheader"
-              className="font-base font-base   flex items-end  text-xs"
-            >
-              Proportional
-            </div>
+            <FormInputLabel label="Proportional" />
+            <FormInputLabel label="Integral Parameter" />
 
-            <div
-              role="columnheader"
-              className="font-base font-base  flex items-end  text-xs"
-            >
-              Integral Parameter
-            </div>
-            <div
-              role="columnheader"
-              className="font-base font-base  flex items-end  text-xs"
-            >
-              Derivative
-            </div>
+            <FormInputLabel label="Derivative" />
 
             {Object.keys(pid).map((key) => {
               const value = parseFloat(pid[key as PidKey]);
 
               return (
-                <div
-                  key={`pid-input-${key}`}
-                  role="gridcell"
-                  className={cn(
-                    "min-h-11",
-                    "font-mono",
-                    "border-valence-lightgray bg-valence-lightgray",
-                    "relative flex items-center border-[1.5px]  focus-within:border-valence-blue",
-                    value < 0 || (value > 1 && "!border-valence-red"),
-                  )}
-                >
-                  <input
-                    // @ts-ignore
-                    onWheel={(e) => e.target?.blur()} // prevent scroll
-                    key={key}
-                    className={cn(
-                      "h-full w-full bg-transparent p-1 focus:outline-none",
-                    )}
+                <FormField key={`pid-input-${key}`} name={`pid-input-${key}`}>
+                  <FormTextInput
+                    role="gridcell"
+                    isError={value < 0 || value > 1}
                     type="number"
                     placeholder="0"
                     {...register(`pid.${key as PidKey}`)}
                   />
-                </div>
+                </FormField>
               );
             })}
           </div>
@@ -180,15 +144,10 @@ export const RebalanceSpeed: React.FC<{
       )}
 
       <div className="flex flex-col gap-2">
-        <WithIconAndTooltip
-          tooltipContent={
-            <IconTooltipContent {...RebalancerFormTooltipCopy.projection} />
-          }
-        >
-          <div className="h-fit pb-1 text-xs font-medium">
-            {RebalancerFormTooltipCopy.projection.title}
-          </div>
-        </WithIconAndTooltip>
+        <FormInputLabel
+          tooltipContent={RebalancerFormTooltipCopy.projection.text}
+          label={RebalancerFormTooltipCopy.projection.title}
+        />
         {isProjectionError && (
           <WarnTextV2
             variant="warn"
@@ -248,7 +207,7 @@ export const RebalanceSpeed: React.FC<{
                   const asset = getOriginAsset(target.denom ?? "");
                   const symbol = asset?.symbol ?? "";
                   return (
-                    <>
+                    <Fragment key={`lines-for-${symbol}`}>
                       <Line
                         key={GraphKey.projectedValue(symbol)}
                         dataKey={GraphKey.projectedValue(symbol)}
@@ -269,7 +228,7 @@ export const RebalanceSpeed: React.FC<{
                         isAnimationActive={false}
                         strokeDasharray={GraphStyles.lineStyle.dotted}
                       />
-                    </>
+                    </Fragment>
                   );
                 })}
             </LineChart>

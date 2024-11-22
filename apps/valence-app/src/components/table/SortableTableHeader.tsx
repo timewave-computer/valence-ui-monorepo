@@ -1,7 +1,7 @@
 import { cn } from "@/utils";
 import React, { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
-import { WithIconAndTooltip } from "@/components";
+import { WithIconAndTooltip } from "@valence-ui/ui-components";
 
 export type Sorter<T, K> = {
   key: K;

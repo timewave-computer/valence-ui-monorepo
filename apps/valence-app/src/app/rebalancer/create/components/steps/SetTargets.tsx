@@ -4,23 +4,23 @@ import {
 } from "@/app/rebalancer/create/copy";
 import { Fragment, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { cn, displayNumber } from "@/utils";
+import { displayNumber } from "@/utils";
 import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { Asset } from "@/app/rebalancer/components";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import {
-  Dropdown,
-  LoadingSkeleton,
-  IconTooltipContent,
-  WithIconAndTooltip,
-} from "@/components";
+import { Dropdown } from "@/components";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   IconButton,
+  FormField,
+  FormTextInput,
+  FormInputLabel,
+  LoadingSkeleton,
+  FormTableCell,
 } from "@valence-ui/ui-components";
-import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
 import { useIsServer, useWhitelistedDenoms } from "@/hooks";
@@ -132,30 +132,18 @@ export const SetTargets: React.FC<{
         ) : (
           <div className="flex flex-col gap-2">
             <div className="grid h-fit grid-cols-[1fr_1fr_2fr_2fr_auto] gap-x-8 gap-y-2">
-              <InputTableCell className="justify-start" variant="header">
-                Asset
-              </InputTableCell>
-              <InputTableCell className="justify-start" variant="header">
-                Current Distribution
-              </InputTableCell>
-              <InputTableCell className="justify-start" variant="header">
-                Target Distribution
-              </InputTableCell>
-              <InputTableCell className="justify-start" variant="header">
-                <WithIconAndTooltip
-                  tooltipContent={
-                    <IconTooltipContent
-                      {...RebalancerFormTooltipCopy.minBalance}
-                    />
-                  }
-                >
-                  {RebalancerFormTooltipCopy.minBalance.title}
-                </WithIconAndTooltip>
-              </InputTableCell>
-              <InputTableCell
-                className="h-full flex-col items-center justify-center"
-                variant="header"
-              ></InputTableCell>
+              <FormInputLabel label="Asset" />
+
+              <FormInputLabel label="Current Distribution" />
+
+              <FormInputLabel label="Target Distribution" />
+
+              <FormInputLabel
+                tooltipContent={RebalancerFormTooltipCopy.minBalance.text}
+                label={RebalancerFormTooltipCopy.minBalance.title}
+              />
+
+              <FormInputLabel label="" />
 
               {targets?.map((field, index: number) => {
                 const initialAsset = getValues("initialAssets")
@@ -177,9 +165,11 @@ export const SetTargets: React.FC<{
                         denom: field.denom ?? "0",
                       }) / totalValue;
 
+                const target = watch(`targets.${index}.bps`);
+
                 return (
                   <Fragment key={`target-select-row-${index}`}>
-                    <InputTableCell className="relative flex items-center justify-start   ">
+                    <FormTableCell className="relative flex items-center justify-start">
                       <Dropdown
                         selectedDisplay={
                           <Asset symbol={assetMetadata?.symbol} />
@@ -198,72 +188,54 @@ export const SetTargets: React.FC<{
                         }}
                         selected={watch(`targets.${index}.denom`)}
                       />
-                    </InputTableCell>
-                    <InputTableCell variant="number">
+                    </FormTableCell>
+                    <FormTableCell>
                       {displayNumber(distribution * 100, {
                         precision: 2,
                       })}
                       %
-                    </InputTableCell>
-                    <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
-                      <input
-                        // @ts-ignore
-                        onWheel={(e) => e.target?.blur()} // prevent scroll
-                        className="h-full w-full max-w-[50%] bg-transparent  p-1 font-mono focus:outline-none"
-                        type="number"
-                        placeholder="10.00"
-                        value={watch(`targets.${index}.bps`)}
-                        onChange={(e) => {
-                          setValue(`targets.${index}`, {
-                            ...targets[index],
-                            bps: parseFloat(e.target.value),
-                            denom: field.denom,
-                          });
-                        }}
-                      />
-                      <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                        %
-                      </span>
-                    </InputTableCell>
+                    </FormTableCell>
+                    <FormTableCell>
+                      <FormField name={`targets.${index}.bps`}>
+                        <FormTextInput
+                          suffix="%"
+                          type="number"
+                          placeholder="10.00"
+                          isError={
+                            target !== 0 &&
+                            !isNaN(target) &&
+                            !isValidPercentage(target)
+                          }
+                          value={target}
+                          onChange={(e) => {
+                            setValue(`targets.${index}`, {
+                              ...targets[index],
+                              bps: parseFloat(e.target.value),
+                              denom: field.denom,
+                            });
+                          }}
+                        />
+                      </FormField>
+                    </FormTableCell>
 
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
-                        <InputTableCell
-                          className={cn(
-                            disableMinimumValue
-                              ? "cursor-not-allowed border-valence-mediumgray bg-valence-mediumgray font-mono"
-                              : "border-valence-lightgray bg-valence-lightgray",
-                            "relative flex items-center border-[1.5px]  focus-within:border-valence-blue",
-                          )}
-                        >
-                          <input
-                            // @ts-ignore
-                            onWheel={(e) => e.target?.blur()} // prevent scroll
-                            disabled={disableMinimumValue}
-                            className={cn(
-                              "justify-start",
-                              disableMinimumValue &&
-                                "cursor-not-allowed bg-valence-gray",
-                              "h-full w-full max-w-[50%]  bg-transparent p-1 focus:outline-none",
-                            )}
-                            type="number"
-                            value={watch(`targets.${index}.minimumAmount`)}
-                            onChange={(e) => {
-                              setValue(`targets.${index}`, {
-                                ...targets[index],
-                                minimumAmount: parseFloat(e.target.value),
-                              });
-                            }}
-                          />
-                          <span
-                            className={cn(
-                              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono text-valence-gray",
-                              hasMimumValueProperty && "text-valence-black",
-                            )}
-                          >
-                            {assetMetadata?.symbol}
-                          </span>
-                        </InputTableCell>
+                        <FormTableCell>
+                          <FormField name={`targets.${index}.minimumAmount`}>
+                            <FormTextInput
+                              disabled={disableMinimumValue}
+                              type="number"
+                              value={watch(`targets.${index}.minimumAmount`)}
+                              onChange={(e) => {
+                                setValue(`targets.${index}`, {
+                                  ...targets[index],
+                                  minimumAmount: parseFloat(e.target.value),
+                                });
+                              }}
+                              suffix={assetMetadata?.symbol}
+                            />
+                          </FormField>
+                        </FormTableCell>
                       </TooltipTrigger>
                       {disableMinimumValue && (
                         <TooltipContent className="max-w-64 text-balance text-center">
@@ -273,10 +245,7 @@ export const SetTargets: React.FC<{
                         </TooltipContent>
                       )}
                     </Tooltip>
-                    <InputTableCell
-                      className="h-full flex-col items-center justify-center"
-                      variant="header"
-                    >
+                    <FormTableCell className="h-full flex-col items-center justify-center">
                       <IconButton
                         isServer={isServer}
                         onClick={() => {
@@ -288,18 +257,18 @@ export const SetTargets: React.FC<{
                         }}
                         Icon={BsX}
                       />
-                    </InputTableCell>
+                    </FormTableCell>
                   </Fragment>
                 );
               })}
 
-              <InputTableCell className="" variant="header">
+              <FormTableCell>
                 <IconButton
                   isServer={isServer}
                   onClick={addEmptyAsset}
                   Icon={BsPlus}
                 />
-              </InputTableCell>
+              </FormTableCell>
             </div>
             <div className="flex flex-col gap-2">
               {initialAssets?.every(
@@ -330,9 +299,7 @@ export const SetTargets: React.FC<{
                 )}
 
               {targets?.length > 0 &&
-                targets.some(
-                  (t) => Number(t.bps) === 0 || Number(t.bps) === 100,
-                ) && (
+                targets.some((t) => !isValidPercentage(Number(t.bps))) && (
                   <WarnTextV2
                     text="Percentages must be between .01% and 99.99%."
                     variant="warn"
@@ -345,3 +312,5 @@ export const SetTargets: React.FC<{
     </section>
   );
 };
+
+const isValidPercentage = (value: number) => value > 0 && value < 100;

@@ -4,8 +4,7 @@ import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { displayNumber, displayValue } from "@/utils";
 import { produce } from "immer";
-import { InputTableCell } from "@/app/rebalancer/create/components";
-import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
+import { CalloutBox, Checkbox } from "@/components";
 import {
   useBaseTokenValue,
   useLivePortfolio,
@@ -16,6 +15,11 @@ import {
   NoFundsActionItems,
   SupportedAssets,
 } from "@/app/rebalancer/components";
+import {
+  FormInputLabel,
+  FormTableCell,
+  LoadingSkeleton,
+} from "@valence-ui/ui-components";
 
 export const EditAssetsForAccount: React.FC<{
   address: string;
@@ -114,11 +118,9 @@ export const EditAssetsForAccount: React.FC<{
           role="grid"
           className="grid grid-cols-[2fr_1fr_1fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputTableCell variant="header">
-            Funds in rebalancer account
-          </InputTableCell>
-          <InputTableCell variant="header">Value (USD)</InputTableCell>
-          <InputTableCell variant="header">Added to Rebalancer</InputTableCell>
+          <FormInputLabel label="Funds in rebalancer account" />
+          <FormInputLabel label="Value (USD)" />
+          <FormInputLabel label="Added to Rebalancer" />
 
           {livePortfolio?.balances
             ?.filter((lineItem) => {
@@ -140,13 +142,13 @@ export const EditAssetsForAccount: React.FC<{
               const target = targets.find((t) => t.denom === lineItem.denom);
               return (
                 <Fragment key={`wallet-balance-row-${lineItem.denom}`}>
-                  <InputTableCell className="flex gap-2">
+                  <FormTableCell className="flex gap-2">
                     <span>{displayNumber(amount, { precision: 2 })}</span>
                     <span>{lineItem.symbol}</span>
-                  </InputTableCell>
+                  </FormTableCell>
 
-                  <InputTableCell>{valueDisplayString}</InputTableCell>
-                  <InputTableCell>
+                  <FormTableCell>{valueDisplayString}</FormTableCell>
+                  <FormTableCell>
                     <Checkbox
                       checked={!!target}
                       onChange={(value) => {
@@ -155,7 +157,7 @@ export const EditAssetsForAccount: React.FC<{
                         } else removeTarget(lineItem.denom);
                       }}
                     />
-                  </InputTableCell>
+                  </FormTableCell>
                 </Fragment>
               );
             })}

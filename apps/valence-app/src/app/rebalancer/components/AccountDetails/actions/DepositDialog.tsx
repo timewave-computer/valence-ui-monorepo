@@ -1,20 +1,25 @@
 "use client";
+import { ToastMessage } from "@/components";
 import {
-  ToastMessage,
+  Button,
   DialogClose,
   Dialog,
   DialogTrigger,
   DialogContent,
-} from "@/components";
-import { Button } from "@valence-ui/ui-components";
+  FormInputLabel,
+  FormField,
+  FormTextInput,
+  FormRoot,
+  FormTableCell,
+} from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { toast } from "sonner";
-import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";
 import { BalanceReturnValue, useAssetMetadata } from "@/app/rebalancer/hooks";
-import { baseToMicro, cn, microToBase } from "@/utils";
+import { baseToMicro, displayNumberV2, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
 import { Coin, DeliverTxResponse } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
@@ -188,45 +193,45 @@ const DepositForm: React.FC<{
           </div>
         ) : (
           <>
-            <div className="flex flex-col gap-1">
+            <FormRoot
+              onSubmit={(e) => e.preventDefault()}
+              className="flex flex-col gap-1"
+            >
               <div
                 role="grid"
                 className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
               >
-                <InputTableCell variant="header">
-                  Available funds
-                </InputTableCell>
-                <InputTableCell variant="header">Deposit Amount</InputTableCell>
+                <FormInputLabel label="Available funds" />
+                <FormInputLabel label="Deposit Amount" />
+
                 {convertedNonZeroBalances.map((lineItem, index) => {
                   return (
                     <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
-                      <InputTableCell className="flex gap-2">
-                        <span>{lineItem.amount}</span>
-                        <span>{lineItem.symbol ?? ""}</span>
-                      </InputTableCell>
-                      <InputTableCell
-                        className={cn(
-                          "relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue",
-                          errors.amounts?.[index] && "!border-valence-red",
-                        )}
-                      >
-                        <input
-                          placeholder="0.00"
-                          className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none "
-                          type="number"
-                          autoFocus={index === 0}
-                          {...register(`amounts.${index}.amount`, {
-                            valueAsNumber: true,
-                            max: {
-                              value: lineItem.amount,
-                              message: maxLimitMsg,
-                            },
-                          })}
-                        />
-                        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                          {lineItem.symbol}
-                        </span>
-                      </InputTableCell>
+                      <FormTableCell className="flex gap-2">
+                        {displayNumberV2(lineItem.amount, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 10,
+                        })}{" "}
+                        {lineItem.symbol ?? ""}
+                      </FormTableCell>
+                      <FormTableCell>
+                        <FormField name={`amounts.${index}.amount`}>
+                          <FormTextInput
+                            isError={!!errors.amounts?.[index]}
+                            suffix={lineItem.symbol}
+                            autoFocus={index === 0}
+                            {...register(`amounts.${index}.amount`, {
+                              valueAsNumber: true,
+                              max: {
+                                value: lineItem.amount,
+                                message: maxLimitMsg,
+                              },
+                            })}
+                            type="number"
+                            placeholder="0.00"
+                          />
+                        </FormField>
+                      </FormTableCell>
                     </Fragment>
                   );
                 })}
@@ -236,7 +241,7 @@ const DepositForm: React.FC<{
               ) : (
                 <div className="min-h-4 w-full"></div>
               )}
-            </div>
+            </FormRoot>
 
             <div className="no-wrap flex flex-row items-center justify-end gap-4">
               <DialogClose asChild>

@@ -1,13 +1,7 @@
 import React, { ReactNode } from "react";
-import { LoadingIndicator } from "@/components";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@valence-ui/ui-components";
+import { LoadingIndicator, Tooltip, TooltipContent, TooltipTrigger } from ".";
 import { BsQuestion } from "react-icons/bs";
-import { useIsServer } from "@/hooks";
-import { cn } from "@/utils";
+import { cn } from "../utils";
 import { cva, VariantProps } from "class-variance-authority";
 
 const iconVariants = cva(
@@ -36,6 +30,7 @@ export interface WithIconAndTooltipProps
   Icon?: React.ElementType;
   isDisabled?: boolean;
   isLoading?: boolean;
+  isServer?: boolean;
 }
 /**
  * Wraps children in component that displays an icon with a tooltip on hover.
@@ -50,9 +45,8 @@ export const WithIconAndTooltip: React.FC<WithIconAndTooltipProps> = ({
   variant = "info",
   isDisabled = false,
   isLoading = false,
+  isServer,
 }) => {
-  const isServer = useIsServer();
-
   if (!tooltipContent) {
     return <>{children}</>;
   }

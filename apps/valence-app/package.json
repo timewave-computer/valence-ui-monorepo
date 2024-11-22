@@ -21,7 +21,6 @@
     "@dagrejs/dagre": "^1.1.4",
     "@date-fns/utc": "^1.2.0",
     "@keplr-wallet/types": "^0.12.127",
-    "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-hover-card": "^1.1.1",
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-radio-group": "^1.2.0",
@@ -57,7 +56,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@valence-ui/generated-types": "*",
     "@chain-registry/types": "^0.50.1",
     "@cosmjs/amino": "^0.32.4",
     "@cosmology/telescope": "^1.8.4",
@@ -69,6 +67,7 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@valence-ui/generated-types": "*",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.0.4",

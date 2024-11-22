@@ -1,13 +1,12 @@
 "use client";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import { LoadingSkeleton } from "@/components";
 import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  LoadingSkeleton,
 } from "@valence-ui/ui-components";
-
 import {
   decodeInstatiateMessage,
   decodeRegisterMessage,
