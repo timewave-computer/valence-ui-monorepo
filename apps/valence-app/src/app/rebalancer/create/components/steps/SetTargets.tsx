@@ -221,13 +221,6 @@ export const SetTargets: React.FC<{
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
                         <FormTableCell>
-                          {/* className={cn(
-                            disableMinimumValue
-                              ? "cursor-not-allowed border-valence-mediumgray bg-valence-mediumgray font-mono"
-                              : "border-valence-lightgray bg-valence-lightgray",
-                            "relative flex items-center border-[1.5px]  focus-within:border-valence-blue",
-                          )}
-                        > */}
                           <FormField name={`targets.${index}.minimumAmount`}>
                             <FormTextInput
                               disabled={disableMinimumValue}
