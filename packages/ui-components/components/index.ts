@@ -9,4 +9,5 @@ export * from "./ErrorSplash";
 export * from "./Dialog";
 export * from "./Form";
 export * from "./WithIconAndTooltip";
-export * from "./InputLabel";
+export * from "./FormTableCell";
+export * from "./LoadingSkeleton";

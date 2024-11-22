@@ -8,7 +8,7 @@ import { displayNumber } from "@/utils";
 import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { Asset } from "@/app/rebalancer/components";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import { Dropdown, LoadingSkeleton } from "@/components";
+import { Dropdown } from "@/components";
 import {
   Tooltip,
   TooltipContent,
@@ -16,9 +16,11 @@ import {
   IconButton,
   FormField,
   FormTextInput,
-  InputLabel,
+  FormInputLabel,
+  LoadingSkeleton,
+  FormTableCell,
 } from "@valence-ui/ui-components";
-import { FormTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
 import { useIsServer, useWhitelistedDenoms } from "@/hooks";
@@ -130,18 +132,18 @@ export const SetTargets: React.FC<{
         ) : (
           <div className="flex flex-col gap-2">
             <div className="grid h-fit grid-cols-[1fr_1fr_2fr_2fr_auto] gap-x-8 gap-y-2">
-              <InputLabel label="Asset" />
+              <FormInputLabel label="Asset" />
 
-              <InputLabel label="Current Distribution" />
+              <FormInputLabel label="Current Distribution" />
 
-              <InputLabel label="Target Distribution" />
+              <FormInputLabel label="Target Distribution" />
 
-              <InputLabel
+              <FormInputLabel
                 tooltipContent={RebalancerFormTooltipCopy.minBalance.text}
                 label={RebalancerFormTooltipCopy.minBalance.title}
               />
 
-              <InputLabel label="" />
+              <FormInputLabel label="" />
 
               {targets?.map((field, index: number) => {
                 const initialAsset = getValues("initialAssets")
@@ -250,10 +252,7 @@ export const SetTargets: React.FC<{
                         </TooltipContent>
                       )}
                     </Tooltip>
-                    <FormTableCell
-                      className="h-full flex-col items-center justify-center"
-                      variant="header"
-                    >
+                    <FormTableCell className="h-full flex-col items-center justify-center">
                       <IconButton
                         isServer={isServer}
                         onClick={() => {

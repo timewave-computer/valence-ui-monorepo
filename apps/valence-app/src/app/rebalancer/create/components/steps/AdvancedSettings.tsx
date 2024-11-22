@@ -14,7 +14,7 @@ import {
   CollapsibleSectionRoot,
   FormTextInput,
   FormField,
-  InputLabel,
+  FormInputLabel,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
@@ -64,7 +64,7 @@ export const AdvancedSettings: React.FC<{
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
-                <InputLabel
+                <FormInputLabel
                   label={RebalancerFormTooltipCopy.baseDenom.title}
                   tooltipContent={RebalancerFormTooltipCopy.baseDenom.text}
                 />
@@ -80,7 +80,7 @@ export const AdvancedSettings: React.FC<{
               </div>
               <div className="flex flex-col gap-2">
                 <div className="h-fit pb-1 text-xs font-normal">
-                  <InputLabel
+                  <FormInputLabel
                     label={RebalancerFormTooltipCopy.strategy.title}
                     tooltipContent={RebalancerFormTooltipCopy.strategy.text}
                     tooltipChildren={
@@ -110,7 +110,7 @@ export const AdvancedSettings: React.FC<{
                 />
               </div>
               <div className="flex flex-col gap-2 ">
-                <InputLabel
+                <FormInputLabel
                   label={RebalancerFormTooltipCopy.maxLimit.title}
                   tooltipContent={RebalancerFormTooltipCopy.maxLimit.text}
                 />
@@ -125,7 +125,7 @@ export const AdvancedSettings: React.FC<{
                 </FormField>
               </div>
               <div className="flex flex-col gap-2 ">
-                <InputLabel
+                <FormInputLabel
                   tooltipContent={RebalancerFormTooltipCopy.trustee.text}
                   label={RebalancerFormTooltipCopy.trustee.title}
                 />

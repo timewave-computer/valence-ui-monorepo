@@ -14,7 +14,6 @@ export * from "./RadioGroup";
 export * from "./Toaster";
 export * from "./hover-to-copy";
 export * from "./colored-dot";
-export * from "./LoadingSkeleton";
 export * from "./ValenceProductBrand";
 export * from "./ConnectWalletButton";
 export * from "./CalloutBox";

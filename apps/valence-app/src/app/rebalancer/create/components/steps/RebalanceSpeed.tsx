@@ -9,7 +9,7 @@ import { Dropdown, LinkText } from "@/components";
 import {
   FormTextInput,
   FormField,
-  InputLabel,
+  FormInputLabel,
 } from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
 import { cn } from "@/utils";
@@ -70,7 +70,7 @@ export const RebalanceSpeed: React.FC<{
       </div>
       <div className="grid grid-cols-[1fr_1fr_1fr]">
         <div className="col-span-1 flex flex-col gap-2">
-          <InputLabel
+          <FormInputLabel
             tooltipContent={RebalancerFormTooltipCopy.rebalanceSpeed.text}
             label={RebalancerFormTooltipCopy.rebalanceSpeed.title}
           />
@@ -109,10 +109,10 @@ export const RebalanceSpeed: React.FC<{
             You can configure each parameter below.
           </p>
           <div className="grid grid-cols-[auto_auto_auto] gap-x-8 gap-y-2 pt-4">
-            <InputLabel label="Proportional" />
-            <InputLabel label="Integral Parameter" />
+            <FormInputLabel label="Proportional" />
+            <FormInputLabel label="Integral Parameter" />
 
-            <InputLabel label="Derivative" />
+            <FormInputLabel label="Derivative" />
 
             {Object.keys(pid).map((key) => {
               const value = parseFloat(pid[key as PidKey]);
@@ -144,7 +144,7 @@ export const RebalanceSpeed: React.FC<{
       )}
 
       <div className="flex flex-col gap-2">
-        <InputLabel
+        <FormInputLabel
           tooltipContent={RebalancerFormTooltipCopy.projection.text}
           label={RebalancerFormTooltipCopy.projection.title}
         />

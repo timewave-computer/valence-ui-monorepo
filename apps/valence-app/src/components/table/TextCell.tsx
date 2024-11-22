@@ -1,5 +1,5 @@
 import { cn } from "@/utils";
-import { LoadingSkeleton } from "@/components";
+import { LoadingSkeleton } from "@valence-ui/ui-components";
 import Link from "next/link";
 
 const textCellClassName =

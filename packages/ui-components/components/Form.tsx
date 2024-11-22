@@ -1,6 +1,7 @@
 import { cn } from "../utils";
 import * as FormPrimitive from "@radix-ui/react-form";
 import { forwardRef } from "react";
+import { IconTooltipContent, WithIconAndTooltip } from ".";
 
 export const FormRoot = FormPrimitive.Root;
 export const FormField = FormPrimitive.Field;
@@ -48,3 +49,31 @@ export const FormTextInput = forwardRef<HTMLInputElement, FormTextInputProps>(
     );
   },
 );
+
+interface InputLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+  label: string; // text arg so it can be used for the tooltip too
+  tooltipContent?: string;
+  tooltipChildren?: React.ReactNode; // to give anything other than plaintext
+}
+
+export function FormInputLabel({
+  label,
+  tooltipContent,
+  tooltipChildren,
+}: InputLabelProps) {
+  return (
+    <div className="text-xs font-medium text-nowrap">
+      <WithIconAndTooltip
+        {...(tooltipContent && {
+          tooltipContent: (
+            <IconTooltipContent title={label} text={tooltipContent}>
+              {tooltipChildren}
+            </IconTooltipContent>
+          ),
+        })}
+      >
+        {label}
+      </WithIconAndTooltip>
+    </div>
+  );
+}

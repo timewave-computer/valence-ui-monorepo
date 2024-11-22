@@ -6,19 +6,20 @@ import {
   Dialog,
   DialogTrigger,
   DialogContent,
-  InputLabel,
+  FormInputLabel,
   FormField,
   FormTextInput,
   FormRoot,
+  FormTableCell,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { toast } from "sonner";
-import { FormTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";
 import { BalanceReturnValue, useAssetMetadata } from "@/app/rebalancer/hooks";
-import { baseToMicro, cn, microToBase } from "@/utils";
+import { baseToMicro, displayNumberV2, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
 import { Coin, DeliverTxResponse } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
@@ -200,15 +201,18 @@ const DepositForm: React.FC<{
                 role="grid"
                 className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
               >
-                <InputLabel label="Available funds" />
-                <InputLabel label="Deposit Amount" />
+                <FormInputLabel label="Available funds" />
+                <FormInputLabel label="Deposit Amount" />
 
                 {convertedNonZeroBalances.map((lineItem, index) => {
                   return (
                     <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
                       <FormTableCell className="flex gap-2">
-                        <span>{lineItem.amount}</span>
-                        <span>{lineItem.symbol ?? ""}</span>
+                        {displayNumberV2(lineItem.amount, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 10,
+                        })}{" "}
+                        {lineItem.symbol ?? ""}
                       </FormTableCell>
                       <FormTableCell>
                         <FormField name={`amounts.${index}.amount`}>

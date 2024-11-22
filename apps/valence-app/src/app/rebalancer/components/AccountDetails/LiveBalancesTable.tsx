@@ -1,6 +1,6 @@
 "use client";
-import { SortableTableHeader, Sorter, LoadingSkeleton } from "@/components";
-import { IconTooltipContent, TooltipContent } from "@valence-ui/ui-components";
+import { SortableTableHeader, Sorter } from "@/components";
+import { IconTooltipContent, LoadingSkeleton } from "@valence-ui/ui-components";
 import {
   Dispatch,
   Fragment,

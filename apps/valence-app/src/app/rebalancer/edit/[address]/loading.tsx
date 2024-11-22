@@ -1,4 +1,4 @@
-import { LoadingSkeleton } from "@/components";
+import { LoadingSkeleton } from "@valence-ui/ui-components";
 import { SidePanelV2 } from "../../components/";
 
 export default function LoadingEditRebalancer() {

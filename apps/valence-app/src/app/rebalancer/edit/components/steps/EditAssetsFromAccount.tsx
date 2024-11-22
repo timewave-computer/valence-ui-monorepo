@@ -4,8 +4,7 @@ import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { displayNumber, displayValue } from "@/utils";
 import { produce } from "immer";
-import { FormTableCell } from "@/app/rebalancer/create/components";
-import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
+import { CalloutBox, Checkbox } from "@/components";
 import {
   useBaseTokenValue,
   useLivePortfolio,
@@ -16,7 +15,11 @@ import {
   NoFundsActionItems,
   SupportedAssets,
 } from "@/app/rebalancer/components";
-import { InputLabel } from "@valence-ui/ui-components";
+import {
+  FormInputLabel,
+  FormTableCell,
+  LoadingSkeleton,
+} from "@valence-ui/ui-components";
 
 export const EditAssetsForAccount: React.FC<{
   address: string;
@@ -115,9 +118,9 @@ export const EditAssetsForAccount: React.FC<{
           role="grid"
           className="grid grid-cols-[2fr_1fr_1fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputLabel label="Funds in rebalancer account" />
-          <InputLabel label="Value (USD)" />
-          <InputLabel label="Added to Rebalancer" />
+          <FormInputLabel label="Funds in rebalancer account" />
+          <FormInputLabel label="Value (USD)" />
+          <FormInputLabel label="Added to Rebalancer" />
 
           {livePortfolio?.balances
             ?.filter((lineItem) => {

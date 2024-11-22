@@ -8,14 +8,16 @@ import { UseFormReturn } from "react-hook-form";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
-import { FormTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
-import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
+import { WarnTextV2 } from "@/app/rebalancer/create/components";
+import { CalloutBox, Checkbox } from "@/components";
 import {
   FormTextInput,
   FormField,
   IconTooltipContent,
-  InputLabel,
+  FormInputLabel,
   WithIconAndTooltip,
+  FormTableCell,
+  LoadingSkeleton,
 } from "@valence-ui/ui-components";
 import {
   useAssetMetadata,
@@ -205,15 +207,15 @@ export const DepositAssets: React.FC<{
           role="grid"
           className="grid grid-cols-[1fr_1fr_1fr_2fr_1fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputLabel label="Asset" />
+          <FormInputLabel label="Asset" />
 
-          <InputLabel label="Amount available" />
+          <FormInputLabel label="Amount available" />
 
-          <InputLabel label="Total value" />
+          <FormInputLabel label="Total value" />
 
-          <InputLabel label="Initial Deposit" />
+          <FormInputLabel label="Initial Deposit" />
 
-          <InputLabel label="Deposit Value" />
+          <FormInputLabel label="Deposit Value" />
 
           {balances
             ?.filter((b) => {

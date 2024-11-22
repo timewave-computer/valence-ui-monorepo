@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from "../utils";
 
 export const LoadingSkeleton = ({ className }: { className?: string }) => {
   // You can add any UI inside Loading, including a Skeleton.

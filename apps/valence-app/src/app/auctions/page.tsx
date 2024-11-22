@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { X_HANDLE } from "@valence-ui/socials";
 import { LiveAuctionsHero, LiveAuctionsTable } from "@/app/auctions/components";
 import { Suspense } from "react";
-import { LoadingSkeleton } from "@/components";
+import { LoadingSkeleton } from "@valence-ui/ui-components";
 import { fetchLiveAuctions, fetchAssetMetadata } from "@/server/actions";
 import { chainConfig, ABSOLUTE_URL, AUCTIONS_DESCRIPTION } from "@/const";
 

@@ -7,16 +7,16 @@ import {
   DialogTrigger,
   DialogContent,
   FormRoot,
-  InputLabel,
+  FormInputLabel,
   FormField,
   FormTextInput,
+  FormTableCell,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
 import { toast } from "sonner";
-import { FormTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";
 import {
   BalanceReturnValue,
@@ -25,7 +25,7 @@ import {
   useLivePortfolio,
   UseLivePortfolioReturnValue,
 } from "@/app/rebalancer/hooks";
-import { baseToMicro, displayNumber } from "@/utils";
+import { baseToMicro, displayNumber, displayNumberV2 } from "@/utils";
 import { useForm } from "react-hook-form";
 import { Coin } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
@@ -33,6 +33,7 @@ import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
 import { useAtom } from "jotai";
 import { accountAtom } from "@/app/rebalancer/globals";
+import { WarnTextV2 } from "@/app/rebalancer/create/components";
 
 type WithdrawInputForm = {
   amounts: Coin[];
@@ -201,20 +202,19 @@ const WithdrawForm: React.FC<{
             role="grid"
             className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
           >
-            <InputLabel label="Available funds" />
-            <InputLabel label="Withdraw Amount" />
+            <FormInputLabel label="Available funds" />
+            <FormInputLabel label="Withdraw Amount" />
 
             {nonZeroBalances.map((lineItem, index) => {
               const asset = getOriginAsset(lineItem.denom);
               return (
                 <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
                   <FormTableCell className="flex gap-2">
-                    <span>
-                      {displayNumber(lineItem.balance.account, {
-                        precision: 2,
-                      })}
-                    </span>
-                    <span>{asset?.symbol ?? ""}</span>
+                    {displayNumberV2(lineItem.balance.account, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 10,
+                    })}{" "}
+                    {asset?.symbol ?? ""}
                   </FormTableCell>
                   <FormTableCell>
                     <FormField
