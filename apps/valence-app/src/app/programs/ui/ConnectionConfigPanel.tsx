@@ -5,7 +5,7 @@ import {
   InputLabel,
 } from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 export type ConnectionConfigFormValues = {
   registryAddress: string;
@@ -29,15 +29,14 @@ export function ConnectionConfigPanel({
   onSubmit: (args: ConnectionConfigFormValues) => void;
   defaultValues: ConnectionConfigFormValues;
 }) {
-  const { register, handleSubmit, getValues } =
-    useForm<ConnectionConfigFormValues>({
-      defaultValues,
-    });
+  const { register, getValues } = useForm<ConnectionConfigFormValues>({
+    defaultValues,
+  });
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = useCallback(() => {
     const formValues = getValues();
     onSubmit(formValues);
-  };
+  }, [getValues, onSubmit]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -53,7 +52,7 @@ export function ConnectionConfigPanel({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleSubmit, onSubmit]);
+  }, [onSubmit, handleSubmitForm]);
 
   return (
     <FormRoot
