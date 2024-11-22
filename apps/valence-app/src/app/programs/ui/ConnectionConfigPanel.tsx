@@ -1,7 +1,6 @@
 import {
   FormRoot,
   FormField,
-  FormLabel,
   FormTextInput,
   InputLabel,
 } from "@valence-ui/ui-components";

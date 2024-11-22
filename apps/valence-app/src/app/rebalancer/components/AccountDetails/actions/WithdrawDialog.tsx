@@ -6,6 +6,10 @@ import {
   Dialog,
   DialogTrigger,
   DialogContent,
+  FormRoot,
+  InputLabel,
+  FormField,
+  FormTextInput,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -192,13 +196,14 @@ const WithdrawForm: React.FC<{
           </div>
         </>
       ) : (
-        <>
+        <FormRoot onSubmit={(e) => e.preventDefault()}>
           <div
             role="grid"
             className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
           >
-            <InputTableCell variant="header">Available funds</InputTableCell>
-            <InputTableCell variant="header">Withdraw Amount</InputTableCell>
+            <InputLabel label="Available funds" />
+            <InputLabel label="Withdraw Amount" />
+
             {nonZeroBalances.map((lineItem, index) => {
               const asset = getOriginAsset(lineItem.denom);
               return (
@@ -211,23 +216,25 @@ const WithdrawForm: React.FC<{
                     </span>
                     <span>{asset?.symbol ?? ""}</span>
                   </InputTableCell>
-                  <InputTableCell className="relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue">
-                    <input
-                      placeholder="0.00"
-                      className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none  "
-                      type="number"
-                      autoFocus={index === 0}
-                      {...register(`amounts.${index}.amount`, {
-                        valueAsNumber: true,
-                        max: {
-                          value: lineItem.balance.account,
-                          message: maxLimitMsg,
-                        },
-                      })}
-                    />
-                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                      {asset?.symbol}
-                    </span>
+                  <InputTableCell>
+                    <FormField
+                      name={`amounts.${index}.amount`}
+                      className="flex flex-col gap-1"
+                    >
+                      <FormTextInput
+                        type="number"
+                        suffix={asset?.symbol}
+                        placeholder="0.00"
+                        autoFocus={index === 0}
+                        {...register(`amounts.${index}.amount`, {
+                          valueAsNumber: true,
+                          max: {
+                            value: lineItem.balance.account,
+                            message: maxLimitMsg,
+                          },
+                        })}
+                      />
+                    </FormField>
                   </InputTableCell>
                 </Fragment>
               );
@@ -265,7 +272,7 @@ const WithdrawForm: React.FC<{
               Withdraw
             </Button>
           </div>
-        </>
+        </FormRoot>
       )}
     </>
   );

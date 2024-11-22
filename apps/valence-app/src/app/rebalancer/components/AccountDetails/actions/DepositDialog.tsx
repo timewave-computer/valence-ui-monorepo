@@ -6,6 +6,10 @@ import {
   Dialog,
   DialogTrigger,
   DialogContent,
+  InputLabel,
+  FormField,
+  FormTextInput,
+  FormRoot,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -188,15 +192,14 @@ const DepositForm: React.FC<{
           </div>
         ) : (
           <>
-            <div className="flex flex-col gap-1">
+            <FormRoot className="flex flex-col gap-1">
               <div
                 role="grid"
                 className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
               >
-                <InputTableCell variant="header">
-                  Available funds
-                </InputTableCell>
-                <InputTableCell variant="header">Deposit Amount</InputTableCell>
+                <InputLabel label="Available funds" />
+                <InputLabel label="Deposit Amount" />
+
                 {convertedNonZeroBalances.map((lineItem, index) => {
                   return (
                     <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
@@ -204,28 +207,23 @@ const DepositForm: React.FC<{
                         <span>{lineItem.amount}</span>
                         <span>{lineItem.symbol ?? ""}</span>
                       </InputTableCell>
-                      <InputTableCell
-                        className={cn(
-                          "relative flex items-center justify-start border-[1.5px] border-valence-lightgray bg-valence-lightgray  focus-within:border-valence-blue",
-                          errors.amounts?.[index] && "!border-valence-red",
-                        )}
-                      >
-                        <input
-                          placeholder="0.00"
-                          className="h-full w-full max-w-[60%]  bg-transparent p-2 font-mono focus:outline-none "
-                          type="number"
-                          autoFocus={index === 0}
-                          {...register(`amounts.${index}.amount`, {
-                            valueAsNumber: true,
-                            max: {
-                              value: lineItem.amount,
-                              message: maxLimitMsg,
-                            },
-                          })}
-                        />
-                        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform font-mono">
-                          {lineItem.symbol}
-                        </span>
+                      <InputTableCell>
+                        <FormField name={`amounts.${index}.amount`}>
+                          <FormTextInput
+                            isError={!!errors.amounts?.[index]}
+                            suffix={lineItem.symbol}
+                            autoFocus={index === 0}
+                            {...register(`amounts.${index}.amount`, {
+                              valueAsNumber: true,
+                              max: {
+                                value: lineItem.amount,
+                                message: maxLimitMsg,
+                              },
+                            })}
+                            type="number"
+                            placeholder="0.00"
+                          />
+                        </FormField>
                       </InputTableCell>
                     </Fragment>
                   );
@@ -236,7 +234,7 @@ const DepositForm: React.FC<{
               ) : (
                 <div className="min-h-4 w-full"></div>
               )}
-            </div>
+            </FormRoot>
 
             <div className="no-wrap flex flex-row items-center justify-end gap-4">
               <DialogClose asChild>

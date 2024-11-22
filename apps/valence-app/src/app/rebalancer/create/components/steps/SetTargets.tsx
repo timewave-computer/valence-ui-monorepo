@@ -130,27 +130,18 @@ export const SetTargets: React.FC<{
         ) : (
           <div className="flex flex-col gap-2">
             <div className="grid h-fit grid-cols-[1fr_1fr_2fr_2fr_auto] gap-x-8 gap-y-2">
-              <InputTableCell variant="header">
-                <InputLabel label="Asset" />
-              </InputTableCell>
-              <InputTableCell variant="header">
-                <InputLabel label="Current Distribution" />
-              </InputTableCell>
-              <InputTableCell variant="header">
-                <InputLabel label="Target Distribution" />
-              </InputTableCell>
+              <InputLabel label="Asset" />
 
-              <InputTableCell variant="header">
-                <InputLabel
-                  tooltipContent={RebalancerFormTooltipCopy.minBalance.text}
-                  label={RebalancerFormTooltipCopy.minBalance.title}
-                />
-              </InputTableCell>
+              <InputLabel label="Current Distribution" />
 
-              <InputTableCell
-                className="h-full flex-col items-center justify-center"
-                variant="header"
-              ></InputTableCell>
+              <InputLabel label="Target Distribution" />
+
+              <InputLabel
+                tooltipContent={RebalancerFormTooltipCopy.minBalance.text}
+                label={RebalancerFormTooltipCopy.minBalance.title}
+              />
+
+              <InputLabel label="" />
 
               {targets?.map((field, index: number) => {
                 const initialAsset = getValues("initialAssets")
@@ -176,7 +167,7 @@ export const SetTargets: React.FC<{
 
                 return (
                   <Fragment key={`target-select-row-${index}`}>
-                    <InputTableCell className="relative flex items-center justify-start   ">
+                    <InputTableCell className="relative flex items-center justify-start">
                       <Dropdown
                         selectedDisplay={
                           <Asset symbol={assetMetadata?.symbol} />

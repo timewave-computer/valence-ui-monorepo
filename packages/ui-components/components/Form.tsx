@@ -4,7 +4,6 @@ import { forwardRef } from "react";
 
 export const FormRoot = FormPrimitive.Root;
 export const FormField = FormPrimitive.Field;
-export const FormLabel = FormPrimitive.Label;
 
 interface FormTextInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {

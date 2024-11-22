@@ -13,7 +13,6 @@ import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
 import {
   FormTextInput,
   FormField,
-  FormLabel,
   IconTooltipContent,
   InputLabel,
   WithIconAndTooltip,
@@ -206,23 +205,15 @@ export const DepositAssets: React.FC<{
           role="grid"
           className="grid grid-cols-[1fr_1fr_1fr_2fr_1fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputTableCell variant="header">
-            <InputLabel label="Asset" />
-          </InputTableCell>
-          <InputTableCell variant="header">
-            <InputLabel label="Amount available" />
-          </InputTableCell>
-          <InputTableCell variant="header">
-            <InputLabel label="Total value" />
-          </InputTableCell>
+          <InputLabel label="Asset" />
 
-          <InputTableCell variant="header">
-            <InputLabel label="Initial Deposit" />
-          </InputTableCell>
+          <InputLabel label="Amount available" />
 
-          <InputTableCell variant="header">
-            <InputLabel label="Deposit Value" />
-          </InputTableCell>
+          <InputLabel label="Total value" />
+
+          <InputLabel label="Initial Deposit" />
+
+          <InputLabel label="Deposit Value" />
 
           {balances
             ?.filter((b) => {
