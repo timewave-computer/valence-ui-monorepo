@@ -192,7 +192,10 @@ const DepositForm: React.FC<{
           </div>
         ) : (
           <>
-            <FormRoot className="flex flex-col gap-1">
+            <FormRoot
+              onSubmit={(e) => e.preventDefault()}
+              className="flex flex-col gap-1"
+            >
               <div
                 role="grid"
                 className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
