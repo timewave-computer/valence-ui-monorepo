@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
   IconButton,
   FormField,
-  FormControl,
+  FormTextInput,
   InputLabel,
 } from "@valence-ui/ui-components";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
@@ -204,7 +204,7 @@ export const SetTargets: React.FC<{
                     </InputTableCell>
                     <InputTableCell>
                       <FormField name={`targets.${index}.bps`}>
-                        <FormControl
+                        <FormTextInput
                           suffix="%"
                           type="number"
                           placeholder="10.00"
@@ -236,7 +236,7 @@ export const SetTargets: React.FC<{
                           )}
                         > */}
                           <FormField name={`targets.${index}.minimumAmount`}>
-                            <FormControl
+                            <FormTextInput
                               disabled={disableMinimumValue}
                               type="number"
                               value={watch(`targets.${index}.minimumAmount`)}

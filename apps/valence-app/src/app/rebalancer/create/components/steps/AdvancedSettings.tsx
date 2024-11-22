@@ -12,11 +12,9 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
-  FormControl,
+  FormTextInput,
   FormField,
-  IconTooltipContent,
   InputLabel,
-  WithIconAndTooltip,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
@@ -117,7 +115,7 @@ export const AdvancedSettings: React.FC<{
                   tooltipContent={RebalancerFormTooltipCopy.maxLimit.text}
                 />
                 <FormField name="maxLimit">
-                  <FormControl
+                  <FormTextInput
                     containerClassName="max-w-[30%]"
                     type="number"
                     suffix="%"

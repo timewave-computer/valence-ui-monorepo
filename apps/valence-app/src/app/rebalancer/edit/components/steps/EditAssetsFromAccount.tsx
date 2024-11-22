@@ -16,6 +16,7 @@ import {
   NoFundsActionItems,
   SupportedAssets,
 } from "@/app/rebalancer/components";
+import { InputLabel } from "@valence-ui/ui-components";
 
 export const EditAssetsForAccount: React.FC<{
   address: string;
@@ -114,11 +115,9 @@ export const EditAssetsForAccount: React.FC<{
           role="grid"
           className="grid grid-cols-[2fr_1fr_1fr] justify-items-start gap-x-8 gap-y-2"
         >
-          <InputTableCell variant="header">
-            Funds in rebalancer account
-          </InputTableCell>
-          <InputTableCell variant="header">Value (USD)</InputTableCell>
-          <InputTableCell variant="header">Added to Rebalancer</InputTableCell>
+          <InputLabel label="Funds in rebalancer account" />
+          <InputLabel label="Value (USD)" />
+          <InputLabel label="Added to Rebalancer" />
 
           {livePortfolio?.balances
             ?.filter((lineItem) => {

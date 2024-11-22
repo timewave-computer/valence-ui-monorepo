@@ -11,7 +11,7 @@ import { produce } from "immer";
 import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
 import {
-  FormControl,
+  FormTextInput,
   FormField,
   FormLabel,
   IconTooltipContent,
@@ -287,7 +287,7 @@ export const DepositAssets: React.FC<{
 
                   <InputTableCell>
                     <FormField name={`initialAssets.${index}.startingAmount`}>
-                      <FormControl
+                      <FormTextInput
                         isError={isOverMax}
                         placeholder="0.00"
                         type="number"

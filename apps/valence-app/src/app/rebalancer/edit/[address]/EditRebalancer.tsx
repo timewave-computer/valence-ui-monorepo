@@ -15,7 +15,7 @@ import {
   RebalanceSpeed,
   SetTargets,
 } from "@/app/rebalancer/create/components";
-import { Button } from "@valence-ui/ui-components";
+import { Button, FormRoot } from "@valence-ui/ui-components";
 import { ToastMessage } from "@/components";
 import { EditAssetsForAccount } from "@/app/rebalancer/edit/components/";
 import { OriginAsset } from "@/types/ibc";
@@ -179,7 +179,12 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
         isEdit={true}
       ></RebalancerFormHeader>
 
-      <div className="flex grow flex-col flex-wrap items-start gap-8 p-4">
+      <FormRoot
+        className="flex grow flex-col flex-wrap items-start gap-8 p-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <EditAssetsForAccount form={form} address={address} />
         <SetTargets
           address={address}
@@ -195,7 +200,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
         >
           Save changes
         </Button>
-      </div>
+      </FormRoot>
     </div>
   );
 };

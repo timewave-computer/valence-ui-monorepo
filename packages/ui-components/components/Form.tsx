@@ -6,19 +6,14 @@ export const FormRoot = FormPrimitive.Root;
 export const FormField = FormPrimitive.Field;
 export const FormLabel = FormPrimitive.Label;
 
-interface FormLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  label: string; // text arg so it can be used for the tooltip too
-  tooltipContent?: string;
-}
-
-interface FormInputFieldProps
+interface FormTextInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   suffix?: string;
   containerClassName?: string;
   isError?: boolean;
 }
 
-export const FormControl = forwardRef<HTMLInputElement, FormInputFieldProps>(
+export const FormTextInput = forwardRef<HTMLInputElement, FormTextInputProps>(
   (
     { suffix, className, containerClassName, disabled, isError, ...props },
     ref,

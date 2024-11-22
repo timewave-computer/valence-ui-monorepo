@@ -6,7 +6,11 @@ import {
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import { Dropdown, LinkText } from "@/components";
-import { FormControl, FormField, InputLabel } from "@valence-ui/ui-components";
+import {
+  FormTextInput,
+  FormField,
+  InputLabel,
+} from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
 import { cn } from "@/utils";
 import { WarnTextV2 } from "@/app/rebalancer/create/components";
@@ -115,7 +119,7 @@ export const RebalanceSpeed: React.FC<{
 
               return (
                 <FormField key={`pid-input-${key}`} name={`pid-input-${key}`}>
-                  <FormControl
+                  <FormTextInput
                     role="gridcell"
                     isError={value < 0 || value > 1}
                     type="number"
