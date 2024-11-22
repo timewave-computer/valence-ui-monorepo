@@ -1,3 +1,3 @@
 export * from "./steps";
 export * from "./WarnText";
-export * from "./InputTableCell";
+export * from "./FormTableCell";

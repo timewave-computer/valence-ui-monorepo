@@ -3,12 +3,11 @@ import { cn } from "@/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { LoadingSkeleton } from "@/components";
 
-const inputTableCellVariants = cva("flex w-full items-center justify-start  ", {
+const formTableCellVariants = cva("flex w-full items-center justify-start  ", {
   variants: {
     variant: {
       unstyled: "",
       number: "font-mono font-light min-h-11",
-      header: "h-fit",
     },
   },
   defaultVariants: {
@@ -16,21 +15,21 @@ const inputTableCellVariants = cva("flex w-full items-center justify-start  ", {
   },
 });
 
-export interface InputTableCellProps
+export interface FormTableCellProps
   extends React.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof inputTableCellVariants> {
+    VariantProps<typeof formTableCellVariants> {
   isLoading?: boolean;
   children?: React.ReactNode;
 }
 
-export const InputTableCell = forwardRef<HTMLDivElement, InputTableCellProps>(
+export const FormTableCell = forwardRef<HTMLDivElement, FormTableCellProps>(
   ({ children, isLoading, variant, className, ...props }, ref) => {
     return (
       <div
         ref={ref}
         role="gridcell"
         {...props}
-        className={cn(inputTableCellVariants({ variant, className }))}
+        className={cn(formTableCellVariants({ variant, className }))}
       >
         {isLoading ? <LoadingSkeleton className="min-h-12" /> : children}
       </div>

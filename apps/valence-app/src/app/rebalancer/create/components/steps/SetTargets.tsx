@@ -4,7 +4,7 @@ import {
 } from "@/app/rebalancer/create/copy";
 import { Fragment, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { cn, displayNumber } from "@/utils";
+import { displayNumber } from "@/utils";
 import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/hooks";
 import { Asset } from "@/app/rebalancer/components";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
@@ -18,7 +18,7 @@ import {
   FormTextInput,
   InputLabel,
 } from "@valence-ui/ui-components";
-import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { FormTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
 import { useIsServer, useWhitelistedDenoms } from "@/hooks";
@@ -167,7 +167,7 @@ export const SetTargets: React.FC<{
 
                 return (
                   <Fragment key={`target-select-row-${index}`}>
-                    <InputTableCell className="relative flex items-center justify-start">
+                    <FormTableCell className="relative flex items-center justify-start">
                       <Dropdown
                         selectedDisplay={
                           <Asset symbol={assetMetadata?.symbol} />
@@ -186,14 +186,14 @@ export const SetTargets: React.FC<{
                         }}
                         selected={watch(`targets.${index}.denom`)}
                       />
-                    </InputTableCell>
-                    <InputTableCell variant="number">
+                    </FormTableCell>
+                    <FormTableCell>
                       {displayNumber(distribution * 100, {
                         precision: 2,
                       })}
                       %
-                    </InputTableCell>
-                    <InputTableCell>
+                    </FormTableCell>
+                    <FormTableCell>
                       <FormField name={`targets.${index}.bps`}>
                         <FormTextInput
                           suffix="%"
@@ -214,11 +214,11 @@ export const SetTargets: React.FC<{
                           }}
                         />
                       </FormField>
-                    </InputTableCell>
+                    </FormTableCell>
 
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
-                        <InputTableCell>
+                        <FormTableCell>
                           {/* className={cn(
                             disableMinimumValue
                               ? "cursor-not-allowed border-valence-mediumgray bg-valence-mediumgray font-mono"
@@ -240,7 +240,7 @@ export const SetTargets: React.FC<{
                               suffix={assetMetadata?.symbol}
                             />
                           </FormField>
-                        </InputTableCell>
+                        </FormTableCell>
                       </TooltipTrigger>
                       {disableMinimumValue && (
                         <TooltipContent className="max-w-64 text-balance text-center">
@@ -250,7 +250,7 @@ export const SetTargets: React.FC<{
                         </TooltipContent>
                       )}
                     </Tooltip>
-                    <InputTableCell
+                    <FormTableCell
                       className="h-full flex-col items-center justify-center"
                       variant="header"
                     >
@@ -265,18 +265,18 @@ export const SetTargets: React.FC<{
                         }}
                         Icon={BsX}
                       />
-                    </InputTableCell>
+                    </FormTableCell>
                   </Fragment>
                 );
               })}
 
-              <InputTableCell className="" variant="header">
+              <FormTableCell>
                 <IconButton
                   isServer={isServer}
                   onClick={addEmptyAsset}
                   Icon={BsPlus}
                 />
-              </InputTableCell>
+              </FormTableCell>
             </div>
             <div className="flex flex-col gap-2">
               {initialAssets?.every(

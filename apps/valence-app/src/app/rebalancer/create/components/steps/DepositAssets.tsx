@@ -8,7 +8,7 @@ import { UseFormReturn } from "react-hook-form";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
-import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { FormTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { CalloutBox, Checkbox, LoadingSkeleton } from "@/components";
 import {
   FormTextInput,
@@ -261,22 +261,22 @@ export const DepositAssets: React.FC<{
 
               return (
                 <Fragment key={`wallet-balance-row-${balance.denom}`}>
-                  <InputTableCell className="flex flex-row items-center gap-2">
+                  <FormTableCell className="flex flex-row items-center gap-2">
                     <Asset symbol={asset?.symbol} asChild />
-                  </InputTableCell>
+                  </FormTableCell>
 
-                  <InputTableCell
+                  <FormTableCell
                     className={cn(
                       "flex gap-2",
                       isOverMax && "text-valence-red",
                     )}
                   >
                     <span>{displayNumber(baseBalance, { precision: 2 })}</span>
-                  </InputTableCell>
+                  </FormTableCell>
 
-                  <InputTableCell>{toalValueDisplayString}</InputTableCell>
+                  <FormTableCell>{toalValueDisplayString}</FormTableCell>
 
-                  <InputTableCell>
+                  <FormTableCell>
                     <FormField name={`initialAssets.${index}.startingAmount`}>
                       <FormTextInput
                         isError={isOverMax}
@@ -301,15 +301,15 @@ export const DepositAssets: React.FC<{
                         containerClassName="w-full"
                       />
                     </FormField>
-                  </InputTableCell>
+                  </FormTableCell>
 
-                  <InputTableCell variant="number">
+                  <FormTableCell>
                     {isOverMax ? (
                       <>{toalValueDisplayString}</>
                     ) : (
                       <>{selectedValueDisplayString}</>
                     )}
-                  </InputTableCell>
+                  </FormTableCell>
                 </Fragment>
               );
             })}

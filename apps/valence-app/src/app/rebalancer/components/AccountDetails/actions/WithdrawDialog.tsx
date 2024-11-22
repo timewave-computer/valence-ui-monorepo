@@ -16,7 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
 import { toast } from "sonner";
-import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { FormTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";
 import {
   BalanceReturnValue,
@@ -208,15 +208,15 @@ const WithdrawForm: React.FC<{
               const asset = getOriginAsset(lineItem.denom);
               return (
                 <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
-                  <InputTableCell className="flex gap-2">
+                  <FormTableCell className="flex gap-2">
                     <span>
                       {displayNumber(lineItem.balance.account, {
                         precision: 2,
                       })}
                     </span>
                     <span>{asset?.symbol ?? ""}</span>
-                  </InputTableCell>
-                  <InputTableCell>
+                  </FormTableCell>
+                  <FormTableCell>
                     <FormField
                       name={`amounts.${index}.amount`}
                       className="flex flex-col gap-1"
@@ -235,7 +235,7 @@ const WithdrawForm: React.FC<{
                         })}
                       />
                     </FormField>
-                  </InputTableCell>
+                  </FormTableCell>
                 </Fragment>
               );
             })}

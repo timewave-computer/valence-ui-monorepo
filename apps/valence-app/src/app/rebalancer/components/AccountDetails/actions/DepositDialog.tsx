@@ -15,7 +15,7 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { toast } from "sonner";
-import { InputTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
+import { FormTableCell, WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";
 import { BalanceReturnValue, useAssetMetadata } from "@/app/rebalancer/hooks";
 import { baseToMicro, cn, microToBase } from "@/utils";
@@ -206,11 +206,11 @@ const DepositForm: React.FC<{
                 {convertedNonZeroBalances.map((lineItem, index) => {
                   return (
                     <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
-                      <InputTableCell className="flex gap-2">
+                      <FormTableCell className="flex gap-2">
                         <span>{lineItem.amount}</span>
                         <span>{lineItem.symbol ?? ""}</span>
-                      </InputTableCell>
-                      <InputTableCell>
+                      </FormTableCell>
+                      <FormTableCell>
                         <FormField name={`amounts.${index}.amount`}>
                           <FormTextInput
                             isError={!!errors.amounts?.[index]}
@@ -227,7 +227,7 @@ const DepositForm: React.FC<{
                             placeholder="0.00"
                           />
                         </FormField>
-                      </InputTableCell>
+                      </FormTableCell>
                     </Fragment>
                   );
                 })}
