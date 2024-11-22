@@ -77,6 +77,8 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
       },
       targetOverrideStrategy: config?.targetOverrideStrategy ?? "priority",
     } as CreateRebalancerForm;
+    // default values should not reload, only populated once on render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const form = useForm<CreateRebalancerForm>({
