@@ -31,9 +31,10 @@ export default async function ProgramPage({
     accounts,
     links,
     libraries,
+    rpcConfig,
   } = ConfigTransformer.transform(_program);
 
-  const balances = await fetchBalances(accounts);
+  const balances = await fetchBalances(accounts, rpcConfig);
 
   const { edges, nodes } = NodeComposer.generate({
     program: {
@@ -58,29 +59,40 @@ export default async function ProgramPage({
           accounts={accounts}
           links={links}
           libraries={libraries}
+          rpcConfig={rpcConfig}
         />
       </div>
     </div>
   );
 }
 
-const fetchBalances = async (accounts: TransformerOutput["accounts"]) => {
+export type RpcConfig = Record<string, string | undefined>;
+
+const fetchBalances = async (
+  accounts: TransformerOutput["accounts"],
+  rpcConfig: TransformerOutput["rpcConfig"],
+) => {
   const requests = Object.entries(accounts).map(async ([id, account]) => {
-    if (!account.domain.CosmosCosmwasm) {
-      throw new Error(
-        `Non-cosmos domain ${JSON.stringify(account.domain)} not currently supported`,
-      );
-    }
     if (!account.addr) {
       // should not happen, just to make typescript happy
       throw new Error(`Account ${id} does not have an address`);
     }
+
+    const rpcUrl = rpcConfig.find(
+      (rpc) => rpc.chainId === account.chainId,
+    )?.rpc;
+    if (!rpcUrl) {
+      throw new Error(`No RPC URL found for chain ID ${account.chainId}`);
+    }
+
+    const balances = await getAccountBalances({
+      accountAddress: account.addr,
+      rpcUrl,
+    });
+
     return {
       address: account.addr,
-      balances: await getAccountBalances({
-        chainName: account.domain.CosmosCosmwasm,
-        accountAddress: account.addr,
-      }),
+      balances,
     };
   });
   return Promise.all(requests);

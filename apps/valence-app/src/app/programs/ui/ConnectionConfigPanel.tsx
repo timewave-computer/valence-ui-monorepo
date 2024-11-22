@@ -11,7 +11,7 @@ export type ConnectionConfigFormValues = {
   registryAddress: string;
   mainChainId: string;
   mainChainRpc: string;
-  rpcs: Array<{
+  otherRpcs: Array<{
     chainRpc: string;
     chainId: string;
   }>;
@@ -80,7 +80,7 @@ export function ConnectionConfigPanel({
         <FormTextInput {...register("mainChainRpc")} />
       </FormField>
 
-      {defaultValues.rpcs.map((rpc, i) => {
+      {defaultValues.otherRpcs.map((rpc, i) => {
         return (
           <FormField
             key={`rpc-input-${rpc.chainId}`}
@@ -89,7 +89,7 @@ export function ConnectionConfigPanel({
           >
             <FormInputLabel label={`${rpc.chainId} RPC:`} />
 
-            <FormTextInput {...register(`rpcs.${i}.chainRpc`)} />
+            <FormTextInput {...register(`otherRpcs.${i}.chainRpc`)} />
           </FormField>
         );
       })}

@@ -11,12 +11,23 @@ import { z, ZodObject } from "zod";
  *  to add a new transformer, add a new versioned transformer in the folder, and add to the dict
  */
 
-// we only have 1 file version, so its the default for now
+// there is only one file version, so the normalized types are just the types from the schema. Adjust as needed
 export type NormalizedAuthorization = ProgramConfig["authorizations"][0];
 export type NormalizedAuthorizationData = ProgramConfig["authorization_data"];
-export type NormalizedAccounts = ProgramConfig["accounts"];
+type NormalizedAccount = ProgramConfig["accounts"][0];
+
+export type NormalizedAccounts = {
+  [k: string]: NormalizedAccount & {
+    chainId: string;
+  };
+};
 export type NormalizedLibraries = ProgramConfig["libraries"];
 export type NormalizedLinks = ProgramConfig["links"];
+export type NormalizedRpcConfig = Array<{
+  rpc: string;
+  main: boolean;
+  chainId: string;
+}>;
 
 export interface TransformerOutput {
   authorizations: NormalizedAuthorization[];
@@ -25,6 +36,7 @@ export interface TransformerOutput {
   accounts: NormalizedAccounts;
   links: NormalizedLinks;
   libraries: NormalizedLibraries;
+  rpcConfig: NormalizedRpcConfig;
 }
 
 export type TransformerFunction<T> = (config: T) => TransformerOutput;
@@ -56,3 +68,5 @@ export class ConfigTransformer {
     return transform(schema.parse(config));
   };
 }
+
+export * from "./RpcConfigConstructor";

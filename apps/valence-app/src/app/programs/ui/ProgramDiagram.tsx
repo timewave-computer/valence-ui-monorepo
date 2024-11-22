@@ -32,6 +32,7 @@ import {
   DialogDescription,
 } from "@valence-ui/ui-components";
 import { RiSettings5Fill } from "react-icons/ri";
+import { m } from "framer-motion";
 
 type ProgramDiagramProps = TransformerOutput &
   NodeComposerReturnType & {
@@ -58,6 +59,7 @@ function ProgramDiagram({
   authorizations,
   nodeTypes,
   programId,
+  rpcConfig,
 }: ProgramDiagramProps) {
   const { fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -70,6 +72,10 @@ function ProgramDiagram({
   useAutoLayout(defaultDiagramLayoutOptions);
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const mainChain = rpcConfig.find((rpc) => rpc.main);
+  if (!mainChain) {
+    throw new Error("No main chain ID found in rpc config");
+  }
 
   // TODO: config panel submit should refetch data with new registryid and chain IDs
   // need to put data in useQuery
@@ -114,14 +120,14 @@ function ProgramDiagram({
               <ConnectionConfigPanel
                 defaultValues={{
                   registryAddress: "0x123",
-                  mainChainId: "neutron-1",
-                  mainChainRpc: "https://neutron-1.valence.network",
-                  rpcs: [
-                    {
-                      chainId: "stargaze-1",
-                      chainRpc: "https://neutron-1.valence.network",
-                    },
-                  ],
+                  mainChainId: mainChain.chainId,
+                  mainChainRpc: mainChain.rpc,
+                  otherRpcs: rpcConfig
+                    .filter((rpc) => rpc.chainId !== mainChain.chainId)
+                    .map((rpc) => ({
+                      chainId: rpc.chainId,
+                      chainRpc: rpc.rpc,
+                    })),
                 }}
                 onSubmit={(data: ConnectionConfigFormValues) => {
                   setIsSettingsOpen(false);

@@ -1,4 +1,4 @@
-import { mockRegistry } from "@/mock-data/programs/program-registry";
+import { mockRegistry } from "@/mock-data";
 
 // TODO: take registry ID
 export const getProgram = async (programId: string) => {

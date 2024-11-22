@@ -10,12 +10,11 @@ export const RpcConfig: Record<SupportedChainId, string> = {
   "pion-1": "https://rpc-falcron.pion-1.ntrn.tech",
 };
 
-export const getStargateClient = async (rpc?: string) => {
+export const getStargateClient = async (_rpc?: string) => {
   try {
     const chainId = getChainId();
-    const defaultRpc = RpcConfig[chainId];
-    const stargate = await StargateClient.connect(rpc ?? defaultRpc);
-    return stargate;
+    const rpc = _rpc ?? RpcConfig[chainId];
+    return StargateClient.connect(rpc);
   } catch (e) {
     throw ErrorHandler.makeError(ERROR_MESSAGES.STARGATE_CONNECT_FAIL, e);
   }
