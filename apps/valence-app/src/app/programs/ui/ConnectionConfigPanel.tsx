@@ -7,7 +7,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
-type ConnectionConfigFormValues = {
+export type ConnectionConfigFormValues = {
   registryAddress: string;
   mainChainId: string;
   mainChainRpc: string;
@@ -26,19 +26,25 @@ export function ConnectionConfigPanel({
   onSubmit,
   defaultValues,
 }: {
-  onSubmit: () => void;
+  onSubmit: (args: ConnectionConfigFormValues) => void;
   defaultValues: ConnectionConfigFormValues;
 }) {
-  const { register, handleSubmit } = useForm<ConnectionConfigFormValues>({
-    defaultValues,
-  });
+  const { register, handleSubmit, getValues } =
+    useForm<ConnectionConfigFormValues>({
+      defaultValues,
+    });
+
+  const handleSubmitForm = () => {
+    const formValues = getValues();
+    onSubmit(formValues);
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!event) return;
       if (event.key === "Enter") {
         event.preventDefault();
-        handleSubmit(onSubmit)();
+        handleSubmitForm();
       }
     };
 
@@ -49,16 +55,11 @@ export function ConnectionConfigPanel({
     };
   }, [handleSubmit, onSubmit]);
 
-  // form to set the registry address, 'main chain', and RPCs for mainchain and other chains
-  // on submit, the data should refetch with given inputs (registry, mainchain id, rpcs)
-
   return (
     <FormRoot
-      onSubmit={() => {
-        handleSubmit((data) => {
-          console.log("SUBBMITTING", data);
-          onSubmit();
-        });
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmitForm();
       }}
       className="flex flex-col gap-4 pt-4"
     >
@@ -72,6 +73,12 @@ export function ConnectionConfigPanel({
         <InputLabel label={formLabels.mainChainId} />
 
         <FormTextInput {...register("mainChainId")} />
+      </FormField>
+
+      <FormField name="mainChainRpc" className="flex flex-col gap-1">
+        <InputLabel label={formLabels.mainChainRpc} />
+
+        <FormTextInput {...register("mainChainRpc")} />
       </FormField>
 
       {defaultValues.rpcs.map((rpc, i) => {

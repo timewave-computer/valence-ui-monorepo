@@ -18,6 +18,7 @@ import {
   DiagramSidePanelContent,
   DiagramTitle,
   ConnectionConfigPanel,
+  ConnectionConfigFormValues,
 } from "@/app/programs/ui";
 import {
   type TransformerOutput,
@@ -70,6 +71,9 @@ function ProgramDiagram({
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  // TODO: config panel submit should refetch data with new registryid and chain IDs
+  // need to put data in useQuery
+
   return (
     <div style={{ height: "100%" }}>
       <ReactFlow
@@ -119,8 +123,7 @@ function ProgramDiagram({
                     },
                   ],
                 }}
-                onSubmit={() => {
-                  console.log("submitting from program diagram");
+                onSubmit={(data: ConnectionConfigFormValues) => {
                   setIsSettingsOpen(false);
                 }}
               />
