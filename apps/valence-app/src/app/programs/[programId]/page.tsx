@@ -1,7 +1,8 @@
 import {
-  getAccountBalances,
-  getProgram,
+  fetchAccountBalances,
+  fetchProgram,
   TransformerOutput,
+  defaultQueryConfig,
 } from "@/app/programs/server";
 import {
   AccountNode,
@@ -22,8 +23,10 @@ const nodeTypes = {
 export default async function ProgramPage({
   params: { programId: _programId },
 }) {
-  // TODO: registry address should be passed here
-  const _program = await getProgram(_programId);
+  const _program = await fetchProgram({
+    programId: _programId,
+    registryAddress: defaultQueryConfig.registryAddress,
+  });
   const {
     authorizationData,
     authorizations,
@@ -31,10 +34,10 @@ export default async function ProgramPage({
     accounts,
     links,
     libraries,
-    rpcConfig,
+    queryConfig,
   } = ConfigTransformer.transform(_program);
 
-  const balances = await fetchBalances(accounts, rpcConfig);
+  const balances = await queryAccountBalances(accounts, queryConfig);
 
   const { edges, nodes } = NodeComposer.generate({
     program: {
@@ -59,7 +62,7 @@ export default async function ProgramPage({
           accounts={accounts}
           links={links}
           libraries={libraries}
-          rpcConfig={rpcConfig}
+          queryConfig={queryConfig}
         />
       </div>
     </div>
@@ -68,9 +71,9 @@ export default async function ProgramPage({
 
 export type RpcConfig = Record<string, string | undefined>;
 
-const fetchBalances = async (
+const queryAccountBalances = async (
   accounts: TransformerOutput["accounts"],
-  rpcConfig: TransformerOutput["rpcConfig"],
+  config: TransformerOutput["queryConfig"],
 ) => {
   const requests = Object.entries(accounts).map(async ([id, account]) => {
     if (!account.addr) {
@@ -78,14 +81,14 @@ const fetchBalances = async (
       throw new Error(`Account ${id} does not have an address`);
     }
 
-    const rpcUrl = rpcConfig.find(
+    const rpcUrl = config.rpcs.find(
       (rpc) => rpc.chainId === account.chainId,
     )?.rpc;
     if (!rpcUrl) {
       throw new Error(`No RPC URL found for chain ID ${account.chainId}`);
     }
 
-    const balances = await getAccountBalances({
+    const balances = await fetchAccountBalances({
       accountAddress: account.addr,
       rpcUrl,
     });

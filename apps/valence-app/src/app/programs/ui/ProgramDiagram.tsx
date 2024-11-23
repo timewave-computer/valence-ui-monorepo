@@ -32,7 +32,6 @@ import {
   DialogDescription,
 } from "@valence-ui/ui-components";
 import { RiSettings5Fill } from "react-icons/ri";
-import { m } from "framer-motion";
 
 type ProgramDiagramProps = TransformerOutput &
   NodeComposerReturnType & {
@@ -59,7 +58,7 @@ function ProgramDiagram({
   authorizations,
   nodeTypes,
   programId,
-  rpcConfig,
+  queryConfig,
 }: ProgramDiagramProps) {
   const { fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -72,7 +71,7 @@ function ProgramDiagram({
   useAutoLayout(defaultDiagramLayoutOptions);
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const mainChain = rpcConfig.find((rpc) => rpc.main);
+  const mainChain = queryConfig.rpcs.find((rpc) => rpc.main);
   if (!mainChain) {
     throw new Error("No main chain ID found in rpc config");
   }
@@ -119,10 +118,10 @@ function ProgramDiagram({
               <DialogDescription />
               <ConnectionConfigPanel
                 defaultValues={{
-                  registryAddress: "0x123",
+                  registryAddress: queryConfig.registryAddress,
                   mainChainId: mainChain.chainId,
                   mainChainRpc: mainChain.rpc,
-                  otherRpcs: rpcConfig
+                  otherRpcs: queryConfig.rpcs
                     .filter((rpc) => rpc.chainId !== mainChain.chainId)
                     .map((rpc) => ({
                       chainId: rpc.chainId,

@@ -23,11 +23,14 @@ export type NormalizedAccounts = {
 };
 export type NormalizedLibraries = ProgramConfig["libraries"];
 export type NormalizedLinks = ProgramConfig["links"];
-export type NormalizedRpcConfig = Array<{
-  rpc: string;
-  main: boolean;
-  chainId: string;
-}>;
+export type NormalizedQueryConfig = {
+  registryAddress: string;
+  rpcs: Array<{
+    rpc: string;
+    main: boolean;
+    chainId: string;
+  }>;
+};
 
 export interface TransformerOutput {
   authorizations: NormalizedAuthorization[];
@@ -36,7 +39,7 @@ export interface TransformerOutput {
   accounts: NormalizedAccounts;
   links: NormalizedLinks;
   libraries: NormalizedLibraries;
-  rpcConfig: NormalizedRpcConfig;
+  queryConfig: NormalizedQueryConfig;
 }
 
 export type TransformerFunction<T> = (config: T) => TransformerOutput;
@@ -69,4 +72,4 @@ export class ConfigTransformer {
   };
 }
 
-export * from "./RpcConfigConstructor";
+export * from "./QueryConfigConstructor";

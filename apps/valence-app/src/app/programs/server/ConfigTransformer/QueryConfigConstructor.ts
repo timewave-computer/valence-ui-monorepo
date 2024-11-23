@@ -1,24 +1,26 @@
 import {
   type NormalizedAccounts,
-  type NormalizedRpcConfig,
+  type NormalizedQueryConfig,
+  type DefaultQueryConfig,
+  preferredRpcs,
 } from "@/app/programs/server";
-import { NEUTRON_RPC } from "@/server/utils";
 import { chains } from "chain-registry";
 
-const defaultMainChainConfig = {
-  chainId: "neutron-1",
-};
+export class QueryConfigConstructor {
+  defaultConfig: DefaultQueryConfig;
+  constructor(defaultConfig: DefaultQueryConfig) {
+    this.defaultConfig = defaultConfig;
+  }
 
-export class RpcConfigConstructor {
   // takes list of accounts and default rpcs and makes rpc config object
-  public static create(accounts: NormalizedAccounts): NormalizedRpcConfig {
-    const rpcConfig: NormalizedRpcConfig = [];
+  create(accounts: NormalizedAccounts): NormalizedQueryConfig {
+    const rpcs: NormalizedQueryConfig["rpcs"] = [];
 
     for (const account of Object.values(accounts)) {
-      if (rpcConfig.find((rpc) => rpc.chainId === account.chainId)) continue;
+      if (rpcs.find((rpc) => rpc.chainId === account.chainId)) continue;
       let rpcUrl;
-      if (account.chainId in PreferredRpcs) {
-        rpcUrl = PreferredRpcs[account.chainId];
+      if (account.chainId in preferredRpcs) {
+        rpcUrl = preferredRpcs[account.chainId];
       } else {
         const registeredChain = chains.find(
           (chain) => chain.chain_id === account.chainId,
@@ -36,16 +38,15 @@ export class RpcConfigConstructor {
         }
         rpcUrl = registeredEndpoint.address;
       }
-      rpcConfig.push({
+      rpcs.push({
         rpc: rpcUrl,
         chainId: account.chainId,
-        main: account.chainId === defaultMainChainConfig.chainId,
+        main: account.chainId === this.defaultConfig.mainChainId,
       });
     }
-    return rpcConfig;
+    return {
+      registryAddress: this.defaultConfig.registryAddress,
+      rpcs: rpcs,
+    };
   }
 }
-
-const PreferredRpcs = {
-  "neutron-1": NEUTRON_RPC,
-};

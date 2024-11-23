@@ -1,7 +1,8 @@
 import { z } from "zod";
 import {
+  defaultQueryConfig,
   NormalizedAccounts,
-  RpcConfigConstructor,
+  QueryConfigConstructor,
   type TransformerFunction,
 } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
@@ -37,7 +38,8 @@ export const transformerV1: TransformerFunction<ProgramConfigV1> = (config) => {
     {} as NormalizedAccounts,
   );
 
-  let rpcConfig = RpcConfigConstructor.create(accountsWithChainId);
+  let configConstructor = new QueryConfigConstructor(defaultQueryConfig);
+  let queryConfig = configConstructor.create(accountsWithChainId);
 
   return {
     // since there is only 1 format we pretty much just return what what we have for now
@@ -47,6 +49,6 @@ export const transformerV1: TransformerFunction<ProgramConfigV1> = (config) => {
     accounts: accountsWithChainId,
     libraries: config.libraries,
     links: config.links,
-    rpcConfig,
+    queryConfig,
   };
 };
