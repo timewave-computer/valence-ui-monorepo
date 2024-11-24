@@ -2,20 +2,20 @@ import { z } from "zod";
 import {
   defaultQueryConfig,
   NormalizedAccounts,
-  QueryConfigConstructor,
-  type TransformerFunction,
+  QueryConfigManager,
+  type ParseFunction,
 } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
 import { chains } from "chain-registry";
 
 type ProgramConfigV1 = z.infer<typeof programConfigSchema>;
-export const transformerV1: TransformerFunction<ProgramConfigV1> = (config) => {
-  if (!config.id) {
+export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
+  if (!programData.id) {
     // should not happen, but its generated as optional in the types, so it needs to get handled
     throw new Error("Program config does not have an ID");
   }
 
-  const accountsWithChainId = Object.entries(config.accounts).reduce(
+  const accountsWithChainId = Object.entries(programData.accounts).reduce(
     (acc, [key, value]) => {
       const chainName = value.domain.CosmosCosmwasm;
       if (!chainName) {
@@ -38,17 +38,12 @@ export const transformerV1: TransformerFunction<ProgramConfigV1> = (config) => {
     {} as NormalizedAccounts,
   );
 
-  let configConstructor = new QueryConfigConstructor(defaultQueryConfig);
-  let queryConfig = configConstructor.create(accountsWithChainId);
-
   return {
     // since there is only 1 format we pretty much just return what what we have for now
-    authorizations: config.authorizations,
-    authorizationData: config.authorization_data,
-    programId: config.id.toString(),
+    authorizations: programData.authorizations,
+    authorizationData: programData.authorization_data,
     accounts: accountsWithChainId,
-    libraries: config.libraries,
-    links: config.links,
-    queryConfig,
+    libraries: programData.libraries,
+    links: programData.links,
   };
 };

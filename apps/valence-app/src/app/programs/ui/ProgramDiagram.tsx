@@ -19,10 +19,14 @@ import {
   DiagramTitle,
   ConnectionConfigPanel,
   ConnectionConfigFormValues,
+  createQueryArgsStore,
+  ProgramQueryArgsContext,
+  useProgramQuery,
 } from "@/app/programs/ui";
 import {
-  type TransformerOutput,
+  type ProgramParserResult,
   type NodeComposerReturnType,
+  QueryConfig,
 } from "@/app/programs/server";
 import {
   IconButton,
@@ -33,10 +37,14 @@ import {
 } from "@valence-ui/ui-components";
 import { RiSettings5Fill } from "react-icons/ri";
 
-type ProgramDiagramProps = TransformerOutput &
-  NodeComposerReturnType & {
-    nodeTypes: NodeTypes;
-  };
+import { useRef } from "react";
+
+export type ProgramDiagramProps = {
+  initialData: ProgramParserResult & NodeComposerReturnType;
+  queryConfig: QueryConfig;
+  nodeTypes: NodeTypes;
+  programId: string;
+};
 
 const defaultDiagramLayoutOptions = {
   algorithm: "dagre" as DiagramLayoutAlgorithm,
@@ -52,17 +60,38 @@ const defaultEdgeOptions = {
 };
 
 function ProgramDiagram({
-  nodes: initialNodes,
-  edges: initialEdges,
-  authorizationData,
-  authorizations,
-  nodeTypes,
+  initialData,
   programId,
+  nodeTypes,
   queryConfig,
 }: ProgramDiagramProps) {
   const { fitView } = useReactFlow();
+  const {
+    nodes: initialNodes,
+    edges: initialEdges,
+    authorizationData,
+    authorizations,
+  } = initialData;
+
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // TODO: subscribe to store to prevent rerenders
+  // const scratchRef = useRef(useScratchStore.getState().scratches)
+  // // Connect to the store on mount, disconnect on unmount, catch state-changes in a reference
+  // useEffect(() => useScratchStore.subscribe(
+  //   state => (scratchRef.current = state.scratches)
+  // ), [])
+
+  /***
+   * initial args are supplied in context provider higher in the tree
+   *  this is the recommended way to create a store with initialized props
+   *  https://zustand.docs.pmnd.rs/guides/initialize-state-with-props#initialize-state-with-props
+   */
+
+  useProgramQuery({
+    initialData,
+  });
 
   // every time  nodes change, center the graph
   useEffect(() => {
@@ -71,10 +100,6 @@ function ProgramDiagram({
   useAutoLayout(defaultDiagramLayoutOptions);
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const mainChain = queryConfig.rpcs.find((rpc) => rpc.main);
-  if (!mainChain) {
-    throw new Error("No main chain ID found in rpc config");
-  }
 
   // TODO: config panel submit should refetch data with new registryid and chain IDs
   // need to put data in useQuery
@@ -118,11 +143,11 @@ function ProgramDiagram({
               <DialogDescription />
               <ConnectionConfigPanel
                 defaultValues={{
-                  registryAddress: queryConfig.registryAddress,
-                  mainChainId: mainChain.chainId,
-                  mainChainRpc: mainChain.rpc,
-                  otherRpcs: queryConfig.rpcs
-                    .filter((rpc) => rpc.chainId !== mainChain.chainId)
+                  registryAddress: queryConfig.main.registryAddress,
+                  mainChainId: queryConfig.main.chainId,
+                  mainChainRpc: queryConfig.main.rpc,
+                  otherRpcs: queryConfig.allChains
+                    .filter((rpc) => rpc.chainId !== queryConfig.main.chainId)
                     .map((rpc) => ({
                       chainId: rpc.chainId,
                       chainRpc: rpc.rpc,
@@ -151,9 +176,15 @@ function ProgramDiagram({
 }
 
 export function ProgramDiagramWithProvider(props: ProgramDiagramProps) {
+  const queryArgsStore = useRef(
+    createQueryArgsStore(props.queryConfig),
+  ).current;
+
   return (
-    <ReactFlowProvider>
-      <ProgramDiagram {...props} />
-    </ReactFlowProvider>
+    <ProgramQueryArgsContext.Provider value={queryArgsStore}>
+      <ReactFlowProvider>
+        <ProgramDiagram {...props} />
+      </ReactFlowProvider>
+    </ProgramQueryArgsContext.Provider>
   );
 }

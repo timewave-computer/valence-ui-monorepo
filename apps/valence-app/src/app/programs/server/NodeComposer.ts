@@ -1,5 +1,5 @@
 import {
-  type TransformerOutput,
+  type ProgramParserResult,
   type AccountBalances,
 } from "@/app/programs/server";
 import { type Edge, type Node } from "@xyflow/react";
@@ -13,7 +13,7 @@ export class NodeComposer {
     program,
     accountBalances,
   }: {
-    program: Pick<TransformerOutput, "accounts" | "libraries" | "links">;
+    program: Pick<ProgramParserResult, "accounts" | "libraries" | "links">;
     accountBalances: AccountBalances;
   }): NodeComposerReturnType => {
     return {
@@ -26,7 +26,7 @@ export class NodeComposer {
   };
 }
 const makeAccountNodes = (
-  accounts: TransformerOutput["accounts"],
+  accounts: ProgramParserResult["accounts"],
   balancesData: AccountBalances,
 ) => {
   return Object.entries(accounts).map(([id, account]) => {
@@ -51,7 +51,7 @@ const makeAccountNodes = (
   });
 };
 
-const makeLibraryNodes = (libraries: TransformerOutput["libraries"]) => {
+const makeLibraryNodes = (libraries: ProgramParserResult["libraries"]) => {
   return Object.entries(libraries).map(([id, library]) => ({
     id: `library:${id}`,
     type: "library",
@@ -65,7 +65,7 @@ const makeLibraryNodes = (libraries: TransformerOutput["libraries"]) => {
   }));
 };
 
-const makeEdges = (links: TransformerOutput["links"]) => {
+const makeEdges = (links: ProgramParserResult["links"]) => {
   const edges: Edge[] = [];
   Object.entries(links).forEach(([id, link]) => {
     link.input_accounts_id.forEach((inputAccountId) => {

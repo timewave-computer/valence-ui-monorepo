@@ -1,4 +1,4 @@
-import { transformerV1 } from "./transformer-v1";
+import { parserV1 } from "./parser-v1";
 import {
   programConfigSchema,
   type ProgramConfig,
@@ -15,7 +15,6 @@ import { z, ZodObject } from "zod";
 export type NormalizedAuthorization = ProgramConfig["authorizations"][0];
 export type NormalizedAuthorizationData = ProgramConfig["authorization_data"];
 type NormalizedAccount = ProgramConfig["accounts"][0];
-
 export type NormalizedAccounts = {
   [k: string]: NormalizedAccount & {
     chainId: string;
@@ -23,53 +22,43 @@ export type NormalizedAccounts = {
 };
 export type NormalizedLibraries = ProgramConfig["libraries"];
 export type NormalizedLinks = ProgramConfig["links"];
-export type NormalizedQueryConfig = {
-  registryAddress: string;
-  rpcs: Array<{
-    rpc: string;
-    main: boolean;
-    chainId: string;
-  }>;
-};
 
-export interface TransformerOutput {
+export interface ProgramParserResult {
   authorizations: NormalizedAuthorization[];
   authorizationData: NormalizedAuthorizationData;
-  programId: string;
   accounts: NormalizedAccounts;
   links: NormalizedLinks;
   libraries: NormalizedLibraries;
-  queryConfig: NormalizedQueryConfig;
 }
 
-export type TransformerFunction<T> = (config: T) => TransformerOutput;
+export type ParseFunction<T> = (rawProgram: T) => ProgramParserResult;
 
 // ratchet solution to have a better typed transformer function
 type InferInputType<T extends ZodObject<any>> = z.infer<T>;
-type TransformerConfig = Record<
+type ProgramParserConfig = Record<
   string,
   {
     schema: ZodObject<any, any, any>;
-    transform: TransformerFunction<InferInputType<ZodObject<any, any, any>>>;
+    parse: ParseFunction<InferInputType<ZodObject<any, any, any>>>;
   }
 >;
 
 /***
  * add new file versions here
  */
-const transformerConfig: TransformerConfig = {
+const parserConfig: ProgramParserConfig = {
   v1: {
-    transform: transformerV1,
+    parse: parserV1,
     schema: programConfigSchema,
   },
 };
 
-export class ConfigTransformer {
-  static transform = (config: unknown) => {
+export class ProgramParser {
+  static extractData = (programData: unknown) => {
     // for now, only 1 version, so we just use v1
-    const { transform, schema } = transformerConfig.v1;
-    return transform(schema.parse(config));
+    const { parse, schema } = parserConfig.v1;
+    return parse(schema.parse(programData));
   };
 }
 
-export * from "./QueryConfigConstructor";
+export * from "../QueryConfigManager";

@@ -22,4 +22,5 @@ export const QUERY_KEYS = {
   HISTORICAL_GRAPH: "historical-graph",
   CREATE_PROJECTION_GRAPH: "create-projection-graph",
   REBALANCER_FORM_MESSAGE_PREVIEW: "rebalancer-form-message-preview",
+  PROGRAMS_FETCH_PROGRAM: "programs-fetch-program",
 };

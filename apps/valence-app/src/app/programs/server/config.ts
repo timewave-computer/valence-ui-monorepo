@@ -1,12 +1,12 @@
 import { NEUTRON_RPC } from "@/server/utils";
+import { QueryConfig } from "@/app/programs/server";
 
-export const defaultQueryConfig = {
-  mainChainId: "neutron-1",
+export const defaultMainChainConfig: QueryConfig["main"] = {
+  chainId: "neutron-1",
   registryAddress: "neutron1hj5fveer5cjtn4wd6wstzugjfdxzl0xpznmsky",
+  rpc: NEUTRON_RPC!,
 };
 
 export const preferredRpcs = {
   "neutron-1": NEUTRON_RPC,
 };
-
-export type DefaultQueryConfig = typeof defaultQueryConfig;

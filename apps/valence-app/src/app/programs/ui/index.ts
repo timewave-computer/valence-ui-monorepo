@@ -1,4 +1,5 @@
 "use client";
+
 export * from "./AccountNode";
 export * from "./ProgramDiagram";
 export * from "./useAutoLayout";
@@ -9,3 +10,4 @@ export * from "./ProgramRegistryTable";
 export * from "./DiagramSidePanelContent";
 export * from "./DiagramTitle";
 export * from "./ConnectionConfigPanel";
+export * from "./useProgramQuery";

@@ -4,11 +4,11 @@ import {
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
 } from "@valence-ui/ui-components";
-import { TransformerOutput } from "@/app/programs/server";
+import { ProgramParserResult } from "@/app/programs/server";
 import React from "react";
 
 type SidePanelProps = Pick<
-  TransformerOutput,
+  ProgramParserResult,
   "authorizationData" | "authorizations" | "programId"
 > & {
   // add other things, if needed
