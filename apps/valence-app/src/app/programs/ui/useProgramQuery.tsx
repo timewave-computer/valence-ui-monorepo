@@ -1,24 +1,39 @@
-import { ProgramDiagramProps } from "@/app/programs/ui";
 import { createStore, useStore } from "zustand";
 import { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
-import { QueryConfig } from "../server";
+import { type QueryConfig } from "@/app/programs/server";
+import {
+  getProgramData,
+  type GetProgramDataReturnValue,
+} from "@/app/programs/server-actions/get-program-data";
+import { toast } from "sonner";
+import { ToastMessage } from "@/components";
 
-export const createQueryArgsStore = (initProps: QueryConfig) => {
-  return createStore<QueryConfig>()((set) => ({
+interface QueryConfigProps {
+  queryConfig: QueryConfig;
+}
+interface QueryConfigState extends QueryConfigProps {
+  setQueryConfig: (newQueryConfig: QueryConfig) => void;
+}
+
+export type QueryArgsStore = ReturnType<typeof createQueryArgsStore>;
+
+export const createQueryArgsStore = (initProps: {
+  queryConfig: QueryConfig;
+}) => {
+  return createStore<QueryConfigState>()((set, get) => ({
     ...initProps,
-    setQueryConfig: (newQueryConfig: QueryConfig) => set(newQueryConfig),
+    setQueryConfig: (newQueryConfig: QueryConfig) =>
+      set({ queryConfig: newQueryConfig }),
   }));
 };
-
-type QueryArgsStore = ReturnType<typeof createQueryArgsStore>;
 
 export const ProgramQueryArgsContext = createContext<QueryArgsStore | null>(
   null,
 );
 
-const useQueryArgsStore = () => {
+export const useQueryArgsStore = () => {
   const store = useContext(ProgramQueryArgsContext);
   if (!store)
     throw new Error(
@@ -28,25 +43,37 @@ const useQueryArgsStore = () => {
 };
 
 type UseProgramQueryArgs = {
-  initialData: ProgramDiagramProps["initialData"];
+  programId: string;
+  initialQueryData: GetProgramDataReturnValue;
 };
-export const useProgramQuery = ({ initialData }: UseProgramQueryArgs) => {
-  const { programId, registryAddress, rpcs, setRegistryAndRpcs } =
-    useQueryArgsStore();
-  console.log("programId", programId);
-
-  const { data, error, isLoading } = useQuery({
+export const useProgramQuery = ({
+  programId,
+  initialQueryData,
+}: UseProgramQueryArgs) => {
+  const { queryConfig } = useQueryArgsStore();
+  return useQuery<GetProgramDataReturnValue>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM],
+    retry: false,
+    queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM, queryConfig],
     refetchInterval: 30 * 1000, // 30 seconds
+    initialData: initialQueryData,
+    staleTime: 0,
 
-    queryFn: () => {
-      // TODO: make server function that returns this data
-      // return data
-      // consume in graph
-      console.log("fetching");
-      return true;
+    queryFn: async () => {
+      const data = await getProgramData({
+        programId,
+        queryConfig,
+      });
+      if (data.code === 400) {
+        toast.error(
+          <ToastMessage variant="error" title={data.message}>
+            {data.error}
+          </ToastMessage>,
+        );
+        throw new Error(data.message);
+      }
+      return data;
     },
   });
 };

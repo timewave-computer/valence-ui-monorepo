@@ -1,4 +1,4 @@
-import { getProgramData } from "@/app/programs/server";
+import { getProgramData } from "@/app/programs/server-actions/get-program-data";
 import {
   AccountNode,
   LibraryNode,
@@ -17,7 +17,7 @@ const nodeTypes = {
 export default async function ProgramPage({ params: { programId } }) {
   // on initial render, there is no query config supplied. it will be set from the UI
   // TODO: read query config from url search params
-  const { queryConfig, ...program } = await getProgramData({ programId });
+  const data = await getProgramData({ programId });
 
   return (
     <div className="w-screen h-screen flex flex-col items-center ">
@@ -25,10 +25,7 @@ export default async function ProgramPage({ params: { programId } }) {
       <div className="w-full h-full">
         <ProgramDiagramWithProvider
           nodeTypes={nodeTypes}
-          initialData={{
-            ...program,
-          }}
-          queryConfig={queryConfig}
+          initialData={data}
           programId={programId}
         />
       </div>

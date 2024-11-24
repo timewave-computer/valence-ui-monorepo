@@ -17,46 +17,56 @@ export const getProgramData = async ({
   programId: string;
   queryConfig?: QueryConfig;
 }) => {
-  let queryConfigManager = new QueryConfigManager(
-    userSuppliedQueryConfig ?? {
-      main: defaultMainChainConfig,
-      allChains: undefined, // need to construct this from accounts
-    },
-  );
+  try {
+    let queryConfigManager = new QueryConfigManager(
+      userSuppliedQueryConfig ?? {
+        main: defaultMainChainConfig,
+        allChains: undefined, // need to construct this from accounts
+      },
+    );
 
-  // must default registry address and mainchain RPC if no config given
-  const rawProgram = await fetchProgram({
-    programId,
-    config: queryConfigManager.getMainChainConfig(),
-  });
+    // must default registry address and mainchain RPC if no config given
+    const rawProgram = await fetchProgram({
+      programId,
+      config: queryConfigManager.getMainChainConfig(),
+    });
 
-  const program = ProgramParser.extractData(rawProgram);
+    const program = ProgramParser.extractData(rawProgram);
 
-  const { accounts, links, libraries } = program;
+    const { accounts, links, libraries } = program;
 
-  queryConfigManager.setAllChainsConfigIfEmpty(accounts);
-  const completeQueryConfig = queryConfigManager.getQueryConfig();
+    queryConfigManager.setAllChainsConfigIfEmpty(accounts);
+    const completeQueryConfig = queryConfigManager.getQueryConfig();
 
-  const balances = await queryAccountBalances(accounts, completeQueryConfig);
+    const balances = await queryAccountBalances(accounts, completeQueryConfig);
 
-  const { edges, nodes } = NodeComposer.generate({
-    program: {
-      accounts,
-      libraries,
-      links,
-    },
-    accountBalances: balances,
-  });
+    const { edges, nodes } = NodeComposer.generate({
+      program: {
+        accounts,
+        libraries,
+        links,
+      },
+      accountBalances: balances,
+    });
 
-  return {
-    nodes,
-    edges,
-    queryConfig: completeQueryConfig,
-    ...program,
-  };
+    return {
+      nodes,
+      edges,
+      queryConfig: completeQueryConfig,
+      ...program,
+    };
+  } catch (e) {
+    return {
+      code: 400,
+      message: "Could not fetch program",
+      error: e.message + " " + JSON.stringify(e),
+    };
+  }
 };
 
-export type GetProgramDataReturnValue = ReturnType<typeof getProgramData>;
+export type GetProgramDataReturnValue = Awaited<
+  ReturnType<typeof getProgramData>
+>;
 
 const fetchProgram = async ({
   programId,
@@ -65,7 +75,6 @@ const fetchProgram = async ({
   programId: string;
   config: QueryConfig["main"];
 }) => {
-  console.log("TEMP: pretend fetching program from", config);
   if (!(programId in mockRegistry))
     throw new Error(`Program ${programId} not found in registry`);
   return Promise.resolve(mockRegistry[programId]);

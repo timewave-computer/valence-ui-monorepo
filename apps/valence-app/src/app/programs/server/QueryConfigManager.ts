@@ -63,7 +63,7 @@ export class QueryConfigManager {
   private static makeAllChainsConfig(
     accounts: NormalizedAccounts,
     mainChainId: string,
-  ): QueryConfig["crosschain"] {
+  ): QueryConfig["allChains"] {
     const rpcs: QueryConfig["allChains"] = [];
 
     for (const account of Object.values(accounts)) {

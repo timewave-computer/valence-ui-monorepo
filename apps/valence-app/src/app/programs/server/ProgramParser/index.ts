@@ -60,5 +60,3 @@ export class ProgramParser {
     return parse(schema.parse(programData));
   };
 }
-
-export * from "../QueryConfigManager";
