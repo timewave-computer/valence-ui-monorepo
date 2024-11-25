@@ -4,21 +4,18 @@ import {
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
 } from "@valence-ui/ui-components";
-import { TransformerOutput } from "@/app/programs/server";
+import { ProgramParserResult } from "@/app/programs/server";
 import React from "react";
 
-type SidePanelProps = Pick<
-  TransformerOutput,
-  "authorizationData" | "authorizations" | "programId"
-> & {
-  // add other things, if needed
-};
+type DiagramSidePanelProps = Pick<
+  ProgramParserResult,
+  "authorizationData" | "authorizations"
+> & {};
 
 export const DiagramSidePanelContent = ({
   authorizationData,
   authorizations,
-  programId,
-}: SidePanelProps) => {
+}: DiagramSidePanelProps) => {
   return (
     <div
       style={{

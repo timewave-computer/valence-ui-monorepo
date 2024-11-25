@@ -6,9 +6,12 @@
  */
 
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
+const _API_CACHE_URL = process.env.API_CACHE_URL;
 
-const API_CACHE_URL = process.env.API_CACHE_URL;
-if (!API_CACHE_URL) throw new Error("Please provide API_CACHE_URL");
+const getApiCacheUrl = () => {
+  if (!_API_CACHE_URL) throw new Error("Please provide API_CACHE_URL");
+  return _API_CACHE_URL;
+};
 
 export const fetchMaybeCached = async (
   queryName: string,
@@ -17,6 +20,7 @@ export const fetchMaybeCached = async (
     cache?: "no-store" | "force-cache";
   },
 ): Promise<unknown> => {
+  const API_CACHE_URL = getApiCacheUrl();
   const url =
     API_CACHE_URL + "/q/" + queryName + "?" + new URLSearchParams(args);
 

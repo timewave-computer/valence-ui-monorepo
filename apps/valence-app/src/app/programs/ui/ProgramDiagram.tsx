@@ -19,24 +19,30 @@ import {
   DiagramTitle,
   ConnectionConfigPanel,
   ConnectionConfigFormValues,
+  createQueryArgsStore,
+  ProgramQueryArgsContext,
+  useProgramQuery,
+  useQueryArgsStore,
+  QueryArgsStore,
 } from "@/app/programs/ui";
-import {
-  type TransformerOutput,
-  type NodeComposerReturnType,
-} from "@/app/programs/server";
 import {
   IconButton,
   Dialog,
   DialogContent,
   DialogTitle,
   DialogDescription,
+  cn,
 } from "@valence-ui/ui-components";
-import { RiSettings5Fill } from "react-icons/ri";
+import { RiSettings5Fill, RiRefreshLine } from "react-icons/ri";
 
-type ProgramDiagramProps = TransformerOutput &
-  NodeComposerReturnType & {
-    nodeTypes: NodeTypes;
-  };
+import { useRef } from "react";
+import { GetProgramDataReturnValue } from "../server/get-program-data";
+
+export type ProgramDiagramProps = {
+  initialData: GetProgramDataReturnValue;
+  nodeTypes: NodeTypes;
+  programId: string;
+};
 
 const defaultDiagramLayoutOptions = {
   algorithm: "dagre" as DiagramLayoutAlgorithm,
@@ -52,16 +58,34 @@ const defaultEdgeOptions = {
 };
 
 function ProgramDiagram({
-  nodes: initialNodes,
-  edges: initialEdges,
-  authorizationData,
-  authorizations,
-  nodeTypes,
+  initialData,
   programId,
+  nodeTypes,
 }: ProgramDiagramProps) {
   const { fitView } = useReactFlow();
+  const {
+    nodes: initialNodes,
+    edges: initialEdges,
+    authorizationData,
+    authorizations,
+  } = initialData;
+
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  /***
+   * initial args are supplied in context provider higher in the tree
+   *  this is the recommended way to create a store with initialized props
+   *  https://zustand.docs.pmnd.rs/guides/initialize-state-with-props#initialize-state-with-props
+   */
+
+  const { queryConfig, setQueryConfig } = useQueryArgsStore();
+
+  const { refetch: refetchProgram, isFetching: isProgramFetching } =
+    useProgramQuery({
+      programId,
+      initialQueryData: initialData,
+    });
 
   // every time  nodes change, center the graph
   useEffect(() => {
@@ -71,8 +95,27 @@ function ProgramDiagram({
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  // TODO: config panel submit should refetch data with new registryid and chain IDs
-  // need to put data in useQuery
+  const handleUpdateQueryConfig = (data: ConnectionConfigFormValues) => {
+    setQueryConfig({
+      main: {
+        registryAddress: data.registryAddress,
+        chainId: data.mainChainId,
+        rpc: data.mainChainRpc,
+      },
+      allChains: [
+        {
+          chainId: data.mainChainId,
+          rpc: data.mainChainRpc,
+          crosschain: false,
+        },
+        ...data.otherRpcs.map((rpc) => ({
+          chainId: rpc.chainId,
+          rpc: rpc.chainRpc,
+          crosschain: true,
+        })),
+      ],
+    });
+  };
 
   return (
     <div style={{ height: "100%" }}>
@@ -91,12 +134,21 @@ function ProgramDiagram({
         <Background />
         <Panel position="bottom-left">
           <Dialog open={isSettingsOpen}>
-            <IconButton
-              onClick={() => {
-                setIsSettingsOpen(true);
-              }}
-              Icon={RiSettings5Fill}
-            />
+            <div className="flex flex-col gap-1">
+              <IconButton
+                className={cn(isProgramFetching && "animate-spin")}
+                onClick={() => {
+                  refetchProgram();
+                }}
+                Icon={RiRefreshLine}
+              />
+              <IconButton
+                onClick={() => {
+                  setIsSettingsOpen(true);
+                }}
+                Icon={RiSettings5Fill}
+              />
+            </div>
 
             <DialogContent
               onEscapeKeyDown={() => {
@@ -113,18 +165,19 @@ function ProgramDiagram({
               <DialogDescription />
               <ConnectionConfigPanel
                 defaultValues={{
-                  registryAddress: "0x123",
-                  mainChainId: "neutron-1",
-                  mainChainRpc: "https://neutron-1.valence.network",
-                  rpcs: [
-                    {
-                      chainId: "stargaze-1",
-                      chainRpc: "https://neutron-1.valence.network",
-                    },
-                  ],
+                  registryAddress: queryConfig.main.registryAddress,
+                  mainChainId: queryConfig.main.chainId,
+                  mainChainRpc: queryConfig.main.rpc,
+                  otherRpcs: queryConfig.allChains
+                    .filter((rpc) => rpc.chainId !== queryConfig.main.chainId)
+                    .map((rpc) => ({
+                      chainId: rpc.chainId,
+                      chainRpc: rpc.rpc,
+                    })),
                 }}
                 onSubmit={(data: ConnectionConfigFormValues) => {
                   setIsSettingsOpen(false);
+                  handleUpdateQueryConfig(data);
                 }}
               />
             </DialogContent>
@@ -135,7 +188,6 @@ function ProgramDiagram({
         </Panel>
         <Panel position="top-right">
           <DiagramSidePanelContent
-            programId={programId}
             authorizationData={authorizationData}
             authorizations={authorizations}
           />
@@ -146,9 +198,18 @@ function ProgramDiagram({
 }
 
 export function ProgramDiagramWithProvider(props: ProgramDiagramProps) {
+  const store = useRef<QueryArgsStore>();
+  if (!store.current) {
+    store.current = createQueryArgsStore({
+      queryConfig: props.initialData.queryConfig,
+    });
+  }
+
   return (
-    <ReactFlowProvider>
-      <ProgramDiagram {...props} />
-    </ReactFlowProvider>
+    <ProgramQueryArgsContext.Provider value={store.current}>
+      <ReactFlowProvider>
+        <ProgramDiagram {...props} />
+      </ReactFlowProvider>
+    </ProgramQueryArgsContext.Provider>
   );
 }

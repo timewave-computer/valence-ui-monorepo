@@ -1,14 +1,12 @@
 import {
-  getAccountBalances,
-  getProgram,
-  TransformerOutput,
+  getProgramData,
+  GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import {
   AccountNode,
   LibraryNode,
   ProgramDiagramWithProvider,
 } from "@/app/programs/ui";
-import { ConfigTransformer, NodeComposer } from "@/app/programs/server";
 
 /***
  * Defined outside of rendering tree so it does not cause uneccessary rerenders
@@ -19,69 +17,24 @@ const nodeTypes = {
   library: LibraryNode,
 };
 
-export default async function ProgramPage({
-  params: { programId: _programId },
-}) {
-  // TODO: registry address should be passed here
-  const _program = await getProgram(_programId);
-  const {
-    authorizationData,
-    authorizations,
+export default async function ProgramPage({ params: { programId } }) {
+  // on initial render, there is no query config supplied. it will be set from the UI
+  // TODO: read query config from url search params
+  const data = (await getProgramData({
     programId,
-    accounts,
-    links,
-    libraries,
-  } = ConfigTransformer.transform(_program);
-
-  const balances = await fetchBalances(accounts);
-
-  const { edges, nodes } = NodeComposer.generate({
-    program: {
-      accounts,
-      libraries,
-      links,
-    },
-    accountBalances: balances,
-  });
+    throwError: true,
+  })) as GetProgramDataReturnValue; // temp solution to handle function throwing error
 
   return (
     <div className="w-screen h-screen flex flex-col items-center ">
       {/* this div is the container for the diagram, needs to have defined height and width */}
       <div className="w-full h-full">
         <ProgramDiagramWithProvider
-          edges={edges}
-          nodes={nodes}
           nodeTypes={nodeTypes}
-          authorizationData={authorizationData}
-          authorizations={authorizations}
+          initialData={data}
           programId={programId}
-          accounts={accounts}
-          links={links}
-          libraries={libraries}
         />
       </div>
     </div>
   );
 }
-
-const fetchBalances = async (accounts: TransformerOutput["accounts"]) => {
-  const requests = Object.entries(accounts).map(async ([id, account]) => {
-    if (!account.domain.CosmosCosmwasm) {
-      throw new Error(
-        `Non-cosmos domain ${JSON.stringify(account.domain)} not currently supported`,
-      );
-    }
-    if (!account.addr) {
-      // should not happen, just to make typescript happy
-      throw new Error(`Account ${id} does not have an address`);
-    }
-    return {
-      address: account.addr,
-      balances: await getAccountBalances({
-        chainName: account.domain.CosmosCosmwasm,
-        accountAddress: account.addr,
-      }),
-    };
-  });
-  return Promise.all(requests);
-};

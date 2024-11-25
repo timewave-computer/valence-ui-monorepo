@@ -95,7 +95,7 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
             ]
           : []),
       ];
-    }, [config?.targets, getOriginAsset]);
+    }, [config, getOriginAsset]);
 
   return (
     <div className="flex grow flex-col  overflow-x-auto border-valence-black bg-valence-white ">
