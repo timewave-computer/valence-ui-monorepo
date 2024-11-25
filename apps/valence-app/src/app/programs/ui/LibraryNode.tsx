@@ -1,4 +1,4 @@
-import { PrettyJson } from "@valence-ui/ui-components";
+import { cn, PrettyJson } from "@valence-ui/ui-components";
 import {
   Handle,
   type Position,
@@ -10,7 +10,12 @@ type LibraryNode = Node<{ number: number }, "library">;
 
 export function LibraryNode({ data, id }: NodeProps<LibraryNode>) {
   return (
-    <div className="border border-valence-black p-4 bg-valence-white ">
+    <div
+      className={cn(
+        "border border-valence-black p-4 bg-valence-white",
+        data.selected && "bg-valence-blue",
+      )}
+    >
       <Handle type="target" position={"top" as Position} />
 
       <h1>Library</h1>

@@ -11,3 +11,4 @@ export * from "./DiagramSidePanelContent";
 export * from "./DiagramTitle";
 export * from "./ConnectionConfigPanel";
 export * from "./useProgramQuery";
+export * from "./useDisplayStore";

@@ -5,7 +5,7 @@ import {
   CollapsibleSectionRoot,
 } from "@valence-ui/ui-components";
 import { ProgramParserResult } from "@/app/programs/server";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SortableTableHeader, TextCell, Label } from "@/components";
 import {
   AtomicSubroutine,
@@ -13,16 +13,21 @@ import {
   PermissionTypeInfo,
   Subroutine,
 } from "@valence-ui/generated-types";
-import { displayAddress } from "@/utils";
+import { cn, displayAddress } from "@/utils";
 
 type DiagramSidePanelProps = Pick<
   ProgramParserResult,
   "authorizationData" | "authorizations"
-> & {};
+> & {
+  selected: string[];
+  select: (addressList: string[]) => void;
+};
 
 export const DiagramSidePanelContent = ({
   authorizationData,
   authorizations,
+  select,
+  selected,
 }: DiagramSidePanelProps) => {
   return (
     <div
@@ -55,6 +60,8 @@ export const DiagramSidePanelContent = ({
             {authorizations.map((auth) => {
               return (
                 <AuthorizationData
+                  select={select}
+                  selected={selected}
                   key={`authorization-${auth.label}`}
                   authorization={auth}
                 />
@@ -112,14 +119,19 @@ export function isAtomic(obj: Subroutine): obj is {
 
 type Authorization = DiagramSidePanelProps["authorizations"][number];
 
-const AtomicSubroutine = ({ subroutine }: { subroutine: AtomicSubroutine }) => {
-  console.log("subroutine", subroutine);
+const AtomicSubroutineData = ({
+  subroutine,
+}: {
+  subroutine: AtomicSubroutine;
+}) => {
   return (
-    <div className="flex flex-col gap-1 pb-1">
-      <h2 className="text-xs font-semibold">Functions</h2>
+    <div className="flex flex-col gap-1 pb-1 justify-start">
+      <h2 className="text-xs font-semibold text-left">Functions</h2>
 
       {subroutine.functions.length === 0 ? (
-        <span className="text-xs font-mono">No functions in subroutine</span>
+        <span className="text-xxs font-mono text-left">
+          No functions in subroutine
+        </span>
       ) : (
         <>
           <div className="grid grid-cols-[3fr_1fr] overflow-x-auto border-x border-b border-valence-lightgray">
@@ -175,14 +187,38 @@ const subroutineHeaders = [
 ];
 function AuthorizationData({
   authorization,
+  selected,
+  select,
 }: {
   authorization: Authorization;
+  selected: string[];
+  select: (addressList: string[]) => void;
 }) {
   const { mode, label, subroutine, ...rest } = authorization;
 
   const atomicSubroutine = isAtomic(subroutine) ? subroutine.atomic : null;
+
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const addressList = atomicSubroutine?.functions.map((func) => {
+    return func.contract_address["|library_account_addr|" as string];
+  });
+
+  const isSelected =
+    selected.length &&
+    selected.sort().toString() === addressList?.sort().toString();
+
   return (
-    <div className="overflow-x-scroll pl-4 border-l-4  ">
+    <button
+      ref={buttonRef}
+      onClick={() => {
+        if (isSelected) select([]);
+        else select(addressList);
+      }}
+      className={cn(
+        "overflow-x-scroll pl-4 border-l-4 hover:border-valence-blue transition-all ",
+        isSelected && "border-valence-blue",
+      )}
+    >
       <div className="flex flex-row w-full justify-between gap-2 items-center pb-1">
         <h2 className="font-semibold">{label}</h2>
         <div className="flex flex-row gap-1 items-center">
@@ -191,10 +227,14 @@ function AuthorizationData({
         </div>
       </div>
 
-      {atomicSubroutine && <AtomicSubroutine subroutine={atomicSubroutine} />}
+      {atomicSubroutine && (
+        <AtomicSubroutineData subroutine={atomicSubroutine} />
+      )}
 
-      <h2 className="text-xs font-semibold">Config</h2>
-      <PrettyJson data={rest} />
-    </div>
+      <div className="flex flex-col items-left">
+        <h2 className="text-xs font-semibold text-left">Config</h2>
+        <PrettyJson data={rest} />
+      </div>
+    </button>
   );
 }

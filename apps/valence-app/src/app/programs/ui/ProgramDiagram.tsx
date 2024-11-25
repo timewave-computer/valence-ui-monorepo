@@ -24,6 +24,7 @@ import {
   useProgramQuery,
   useQueryArgsStore,
   QueryArgsStore,
+  useDisplayStore,
 } from "@/app/programs/ui";
 import {
   IconButton,
@@ -80,6 +81,27 @@ function ProgramDiagram({
    */
 
   const { queryConfig, setQueryConfig } = useQueryArgsStore();
+  const [selected, select] = useState<string[]>([]);
+
+  // const [selected, select] = useDisplayStore((state) => [state.selected, state.select]);
+
+  const displaySelectedNodes = (addresses: string[]) => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            selected: addresses.includes(node.data.address) ? true : false,
+          },
+        };
+      }),
+    );
+  };
+
+  useEffect(() => {
+    displaySelectedNodes(selected);
+  }, [selected]);
 
   const { refetch: refetchProgram, isFetching: isProgramFetching } =
     useProgramQuery({
@@ -188,6 +210,8 @@ function ProgramDiagram({
         </Panel>
         <Panel position="top-right">
           <DiagramSidePanelContent
+            select={select}
+            selected={selected}
             authorizationData={authorizationData}
             authorizations={authorizations}
           />
