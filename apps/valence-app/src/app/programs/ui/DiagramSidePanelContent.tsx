@@ -5,7 +5,7 @@ import {
   CollapsibleSectionRoot,
 } from "@valence-ui/ui-components";
 import { ProgramParserResult } from "@/app/programs/server";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { SortableTableHeader, TextCell, Label } from "@/components";
 import {
   AtomicSubroutine,
@@ -212,6 +212,7 @@ function AuthorizationData({
       ref={buttonRef}
       onClick={() => {
         if (isSelected) select([]);
+        //@ts-ignore
         else select(addressList);
       }}
       className={cn(

@@ -13,6 +13,7 @@ export function LibraryNode({ data, id }: NodeProps<LibraryNode>) {
     <div
       className={cn(
         "border border-valence-black p-4 bg-valence-white",
+        //@ts-ignore
         data.selected && "bg-valence-blue",
       )}
     >

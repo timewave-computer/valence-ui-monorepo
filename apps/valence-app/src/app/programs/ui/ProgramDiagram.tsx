@@ -92,6 +92,7 @@ function ProgramDiagram({
           ...node,
           data: {
             ...node.data,
+            //@ts-ignore
             selected: addresses.includes(node.data.address) ? true : false,
           },
         };
