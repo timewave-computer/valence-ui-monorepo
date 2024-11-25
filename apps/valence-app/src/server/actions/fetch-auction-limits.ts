@@ -7,6 +7,7 @@ import { AuctionsManagerQueryClient } from "@valence-ui/generated-types/dist/cos
 /***
  * for surfacing whether upcoming trade is above the minimum
  */
+
 export const fetchAuctionLimits = async (): Promise<
   Array<{ denom: string; data: MinAmount }>
 > => {

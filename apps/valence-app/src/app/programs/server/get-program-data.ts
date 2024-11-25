@@ -8,7 +8,7 @@ import {
   ProgramParserResult,
   QueryConfigManager,
 } from "@/app/programs/server";
-import { defaultMainChainConfig } from "@/app/programs/const/config";
+import { getDefaultMainChainConfig } from "@/app/programs/server";
 
 type GetProgramDataProps = {
   programId: string;
@@ -45,7 +45,7 @@ const _getProgramData = async ({
 }: GetProgramDataProps) => {
   let queryConfigManager = new QueryConfigManager(
     userSuppliedQueryConfig ?? {
-      main: defaultMainChainConfig,
+      main: getDefaultMainChainConfig(),
       allChains: undefined, // need to construct this from accounts
     },
   );

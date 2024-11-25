@@ -2,11 +2,12 @@ import { createStore, useStore } from "zustand";
 import { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
-import { type QueryConfig, isErrorResponse } from "@/app/programs/server";
 import {
+  type QueryConfig,
+  isErrorResponse,
   getProgramData,
   type GetProgramDataReturnValue,
-} from "@/app/programs/server-actions/get-program-data";
+} from "@/app/programs/server";
 import { toast } from "sonner";
 import { ToastMessage } from "@/components";
 

@@ -1,7 +1,7 @@
 import {
   getProgramData,
   GetProgramDataReturnValue,
-} from "@/app/programs/server-actions/get-program-data";
+} from "@/app/programs/server";
 import {
   AccountNode,
   LibraryNode,

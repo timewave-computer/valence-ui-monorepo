@@ -1,6 +1,6 @@
 import { type NormalizedAccounts } from "@/app/programs/server";
 import { chains } from "chain-registry";
-import { preferredRpcs } from "@/app/programs/const/config";
+import { getPreferredRpcs } from "@/app/programs/server/config";
 
 export type QueryConfig = {
   main: {
@@ -72,6 +72,7 @@ export class QueryConfigManager {
       if (rpcs.find((rpc) => rpc.chainId === account.chainId)) continue;
 
       let rpcUrl;
+      const preferredRpcs = getPreferredRpcs();
       if (account.chainId in preferredRpcs) {
         rpcUrl = preferredRpcs[account.chainId];
       } else {

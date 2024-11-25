@@ -1,5 +1,5 @@
 "use server";
-import { getCosmwasmClient } from "@/server/rpc";
+import { getCosmwasmClient, getStargateClient } from "@/server/rpc";
 import { AuctionsManagerQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/AuctionsManager.client";
 import {
   ActiveAuction,

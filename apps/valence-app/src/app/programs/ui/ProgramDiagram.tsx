@@ -36,7 +36,7 @@ import {
 import { RiSettings5Fill, RiRefreshLine } from "react-icons/ri";
 
 import { useRef } from "react";
-import { GetProgramDataReturnValue } from "../server-actions/get-program-data";
+import { GetProgramDataReturnValue } from "../server/get-program-data";
 
 export type ProgramDiagramProps = {
   initialData: GetProgramDataReturnValue;
