@@ -6,9 +6,10 @@ import { type QueryConfig } from "@/app/programs/server";
 import {
   getProgramData,
   type GetProgramDataReturnValue,
-} from "@/app/programs/server-actions/get-program-data";
+} from "@/app/programs/server-actions";
 import { toast } from "sonner";
 import { ToastMessage } from "@/components";
+import { isErrorResponse } from "@/server/utils";
 
 interface QueryConfigProps {
   queryConfig: QueryConfig;
@@ -55,17 +56,17 @@ export const useProgramQuery = ({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
-    queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM, queryConfig],
+    queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM, queryConfig, programId],
     refetchInterval: 30 * 1000, // 30 seconds
     initialData: initialQueryData,
     staleTime: 0,
-
     queryFn: async () => {
       const data = await getProgramData({
         programId,
         queryConfig,
+        throwError: false,
       });
-      if (data.code === 400) {
+      if (isErrorResponse(data)) {
         toast.error(
           <ToastMessage variant="error" title={data.message}>
             {data.error}
@@ -73,7 +74,9 @@ export const useProgramQuery = ({
         );
         throw new Error(data.message);
       }
-      return data;
+
+      // this is a temporary solution. ideally it can be derived through a type guard
+      return data as GetProgramDataReturnValue;
     },
   });
 };

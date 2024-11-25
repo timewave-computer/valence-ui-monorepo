@@ -1,10 +1,5 @@
 import { z } from "zod";
-import {
-  defaultQueryConfig,
-  NormalizedAccounts,
-  QueryConfigManager,
-  type ParseFunction,
-} from "@/app/programs/server";
+import { NormalizedAccounts, type ParseFunction } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
 import { chains } from "chain-registry";
 

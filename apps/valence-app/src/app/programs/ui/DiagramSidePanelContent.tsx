@@ -7,18 +7,15 @@ import {
 import { ProgramParserResult } from "@/app/programs/server";
 import React from "react";
 
-type SidePanelProps = Pick<
+type DiagramSidePanelProps = Pick<
   ProgramParserResult,
-  "authorizationData" | "authorizations" | "programId"
-> & {
-  // add other things, if needed
-};
+  "authorizationData" | "authorizations"
+> & {};
 
 export const DiagramSidePanelContent = ({
   authorizationData,
   authorizations,
-  programId,
-}: SidePanelProps) => {
+}: DiagramSidePanelProps) => {
   return (
     <div
       style={{

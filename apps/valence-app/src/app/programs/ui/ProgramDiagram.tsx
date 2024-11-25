@@ -95,6 +95,28 @@ function ProgramDiagram({
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const handleUpdateQueryConfig = (data: ConnectionConfigFormValues) => {
+    setQueryConfig({
+      main: {
+        registryAddress: data.registryAddress,
+        chainId: data.mainChainId,
+        rpc: data.mainChainRpc,
+      },
+      allChains: [
+        {
+          chainId: data.mainChainId,
+          rpc: data.mainChainRpc,
+          crosschain: false,
+        },
+        ...data.otherRpcs.map((rpc) => ({
+          chainId: rpc.chainId,
+          rpc: rpc.chainRpc,
+          crosschain: true,
+        })),
+      ],
+    });
+  };
+
   return (
     <div style={{ height: "100%" }}>
       <ReactFlow
@@ -155,25 +177,7 @@ function ProgramDiagram({
                 }}
                 onSubmit={(data: ConnectionConfigFormValues) => {
                   setIsSettingsOpen(false);
-                  setQueryConfig({
-                    main: {
-                      registryAddress: data.registryAddress,
-                      chainId: data.mainChainId,
-                      rpc: data.mainChainRpc,
-                    },
-                    allChains: [
-                      {
-                        chainId: data.mainChainId,
-                        rpc: data.mainChainRpc,
-                        crosschain: false,
-                      },
-                      ...data.otherRpcs.map((rpc) => ({
-                        chainId: rpc.chainId,
-                        rpc: rpc.chainRpc,
-                        crosschain: true,
-                      })),
-                    ],
-                  });
+                  handleUpdateQueryConfig(data);
                 }}
               />
             </DialogContent>
@@ -184,7 +188,6 @@ function ProgramDiagram({
         </Panel>
         <Panel position="top-right">
           <DiagramSidePanelContent
-            programId={programId}
             authorizationData={authorizationData}
             authorizations={authorizations}
           />

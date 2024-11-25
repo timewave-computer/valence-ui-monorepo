@@ -1,4 +1,7 @@
-import { getProgramData } from "@/app/programs/server-actions/get-program-data";
+import {
+  getProgramData,
+  GetProgramDataReturnValue,
+} from "@/app/programs/server-actions/";
 import {
   AccountNode,
   LibraryNode,
@@ -17,7 +20,10 @@ const nodeTypes = {
 export default async function ProgramPage({ params: { programId } }) {
   // on initial render, there is no query config supplied. it will be set from the UI
   // TODO: read query config from url search params
-  const data = await getProgramData({ programId });
+  const data = (await getProgramData({
+    programId,
+    throwError: true,
+  })) as GetProgramDataReturnValue; // temp solution to handle function throwing error
 
   return (
     <div className="w-screen h-screen flex flex-col items-center ">

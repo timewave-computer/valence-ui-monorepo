@@ -10,52 +10,22 @@ import {
   QueryConfigManager,
 } from "@/app/programs/server";
 
-export const getProgramData = async ({
-  programId,
-  queryConfig: userSuppliedQueryConfig,
-}: {
+type GetProgramDataProps = {
   programId: string;
   queryConfig?: QueryConfig;
-}) => {
+};
+// TODO: make a generic wrapper with input props and success return value is auto derived
+export const getProgramData = async (
+  props: GetProgramDataProps & {
+    throwError?: boolean;
+  },
+) => {
+  const { throwError, ...restOfProps } = props;
   try {
-    let queryConfigManager = new QueryConfigManager(
-      userSuppliedQueryConfig ?? {
-        main: defaultMainChainConfig,
-        allChains: undefined, // need to construct this from accounts
-      },
-    );
-
-    // must default registry address and mainchain RPC if no config given
-    const rawProgram = await fetchProgram({
-      programId,
-      config: queryConfigManager.getMainChainConfig(),
-    });
-
-    const program = ProgramParser.extractData(rawProgram);
-
-    const { accounts, links, libraries } = program;
-
-    queryConfigManager.setAllChainsConfigIfEmpty(accounts);
-    const completeQueryConfig = queryConfigManager.getQueryConfig();
-
-    const balances = await queryAccountBalances(accounts, completeQueryConfig);
-
-    const { edges, nodes } = NodeComposer.generate({
-      program: {
-        accounts,
-        libraries,
-        links,
-      },
-      accountBalances: balances,
-    });
-
-    return {
-      nodes,
-      edges,
-      queryConfig: completeQueryConfig,
-      ...program,
-    };
+    return await _getProgramData(restOfProps);
   } catch (e) {
+    // nextjs obscures the error message from failed server actions, so this is a rudimentary solution to get proper error messages in the client
+    if (throwError) throw e;
     return {
       code: 400,
       message: "Could not fetch program",
@@ -65,8 +35,52 @@ export const getProgramData = async ({
 };
 
 export type GetProgramDataReturnValue = Awaited<
-  ReturnType<typeof getProgramData>
+  ReturnType<typeof _getProgramData>
 >;
+
+// defined separetely to isolate the return type
+const _getProgramData = async ({
+  programId,
+  queryConfig: userSuppliedQueryConfig,
+}: GetProgramDataProps) => {
+  let queryConfigManager = new QueryConfigManager(
+    userSuppliedQueryConfig ?? {
+      main: defaultMainChainConfig,
+      allChains: undefined, // need to construct this from accounts
+    },
+  );
+
+  // must default registry address and mainchain RPC if no config given
+  const rawProgram = await fetchProgram({
+    programId,
+    config: queryConfigManager.getMainChainConfig(),
+  });
+
+  const program = ProgramParser.extractData(rawProgram);
+
+  const { accounts, links, libraries } = program;
+
+  queryConfigManager.setAllChainsConfigIfEmpty(accounts);
+  const completeQueryConfig = queryConfigManager.getQueryConfig();
+
+  const balances = await queryAccountBalances(accounts, completeQueryConfig);
+
+  const { edges, nodes } = NodeComposer.generate({
+    program: {
+      accounts,
+      libraries,
+      links,
+    },
+    accountBalances: balances,
+  });
+
+  return {
+    nodes,
+    edges,
+    queryConfig: completeQueryConfig,
+    ...program,
+  };
+};
 
 const fetchProgram = async ({
   programId,
