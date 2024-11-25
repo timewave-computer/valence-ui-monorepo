@@ -1,4 +1,4 @@
-import { getStargateClient } from "@/server/utils";
+import { getStargateClient } from "@/server/rpc";
 import { Coin } from "@cosmjs/stargate";
 
 export const fetchAccountBalances = async ({

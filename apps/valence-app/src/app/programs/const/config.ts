@@ -1,4 +1,4 @@
-import { NEUTRON_RPC } from "@/server/utils";
+import { NEUTRON_RPC } from "@/app/server";
 import { QueryConfig } from "@/app/programs/server";
 
 export const defaultMainChainConfig: QueryConfig["main"] = {

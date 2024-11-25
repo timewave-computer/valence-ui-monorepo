@@ -1,5 +1,6 @@
-import { type NormalizedAccounts, preferredRpcs } from "@/app/programs/server";
+import { type NormalizedAccounts } from "@/app/programs/server";
 import { chains } from "chain-registry";
+import { preferredRpcs } from "@/app/programs/const/config";
 
 export type QueryConfig = {
   main: {

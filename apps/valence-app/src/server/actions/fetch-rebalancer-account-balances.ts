@@ -1,6 +1,6 @@
 "use server";
 import { chainConfig } from "@/const/config";
-import { getStargateClient } from "@/server/utils";
+import { getStargateClient } from "@/server/rpc";
 import { Coin } from "@cosmjs/proto-signing";
 
 export async function fetchRebalancerAccountBalances({

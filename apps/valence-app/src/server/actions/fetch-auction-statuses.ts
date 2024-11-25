@@ -1,5 +1,5 @@
 "use server";
-import { getCosmwasmClient } from "@/server/utils";
+import { getCosmwasmClient } from "@/server/rpc";
 import { IndexerAuction } from "@/types/rebalancer";
 import { chainConfig } from "@/const/config";
 import { AuctionsManagerQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/AuctionsManager.client";

@@ -6,9 +6,9 @@ import {
   NodeComposer,
   QueryConfig,
   ProgramParserResult,
-  defaultMainChainConfig,
   QueryConfigManager,
 } from "@/app/programs/server";
+import { defaultMainChainConfig } from "@/app/programs/const/config";
 
 type GetProgramDataProps = {
   programId: string;

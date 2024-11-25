@@ -1,7 +1,7 @@
 import {
   getProgramData,
   GetProgramDataReturnValue,
-} from "@/app/programs/server-actions/";
+} from "@/app/programs/server-actions/get-program-data";
 import {
   AccountNode,
   LibraryNode,
@@ -38,5 +38,3 @@ export default async function ProgramPage({ params: { programId } }) {
     </div>
   );
 }
-
-export type RpcConfig = Record<string, string | undefined>;

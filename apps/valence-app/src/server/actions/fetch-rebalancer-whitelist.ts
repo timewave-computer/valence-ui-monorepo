@@ -1,7 +1,7 @@
 "use server";
 import { WhitelistsResponse } from "@valence-ui/generated-types/dist/cosmwasm/types/Rebalancer.types";
 import { chainConfig } from "@/const/config";
-import { getCosmwasmClient } from "@/server/utils";
+import { getCosmwasmClient } from "@/server/rpc";
 
 export async function fetchRebalancerWhitelist(): Promise<WhitelistsResponse> {
   const cowsmwasmClient = await getCosmwasmClient();

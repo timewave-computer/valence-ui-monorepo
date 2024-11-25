@@ -1,9 +1,9 @@
 "use server";
-import { getStargateClient } from "@/server/utils";
 import { chainConfig } from "@/const/config";
 import { getPrices } from "./fetch-prices";
 import { Coin } from "@cosmjs/stargate";
 import { fetchOriginAssets } from "@/server/actions";
+import { getStargateClient } from "@/server/rpc";
 
 export async function fetchSupportedBalances({
   address,

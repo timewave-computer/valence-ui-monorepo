@@ -1,3 +1,4 @@
+// TODO: move into general 'lib' folder
 export type ErrorResponse = {
   code: number;
   message: string;
