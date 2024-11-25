@@ -1,7 +1,7 @@
 import { cn } from "../utils";
 
 interface JsonTextProps extends React.HTMLAttributes<HTMLPreElement> {
-  data?: { [key: string]: any };
+  data?: { [key: string]: any } | string;
 }
 
 export const PrettyJson = ({ data, className, ...props }: JsonTextProps) => {
