@@ -1,2 +1,2 @@
 export * from "./composer";
-export * from "./node-types";
+export * from "./composer.types";
