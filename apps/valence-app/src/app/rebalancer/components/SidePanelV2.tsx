@@ -8,7 +8,6 @@ import { scaleAtom, accountAtom } from "@/app/rebalancer/globals";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { DEFAULT_ACCOUNT } from "@/app/rebalancer/const";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
 import {
@@ -32,7 +31,7 @@ export const SidePanelV2: React.FC<{
   rerouteOnConnect = true,
 }) => {
   const [accountUrlParam] = useQueryState("account", {
-    defaultValue: DEFAULT_ACCOUNT,
+    defaultValue: "",
   });
   const [_, setAccount] = useAtom(accountAtom);
   useMemo(() => {

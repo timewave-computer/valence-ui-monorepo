@@ -5,23 +5,24 @@ import {
   CollapsibleSectionRoot,
 } from "@valence-ui/ui-components";
 import { ProgramParserResult } from "@/app/programs/server";
+import { SubroutinesDisplay } from "@/app/programs/ui";
 import React from "react";
 
-type DiagramSidePanelProps = Pick<
+export type ProgramInfoProps = Pick<
   ProgramParserResult,
   "authorizationData" | "authorizations"
 > & {};
 
-export const DiagramSidePanelContent = ({
+export const ProgramInfo = ({
   authorizationData,
   authorizations,
-}: DiagramSidePanelProps) => {
+}: ProgramInfoProps) => {
   return (
     <div
       style={{
         maxHeight: "calc(100vh - 5rem)",
       }}
-      className="bg-valence-white w-96 h-full border border-valence-black flex flex-col overflow-y-scroll"
+      className="bg-valence-white w-[440px] h-full border border-valence-black flex flex-col overflow-y-scroll"
     >
       <CollapsibleSectionRoot
         className="p-4 border-b border-valence-black"
@@ -40,13 +41,18 @@ export const DiagramSidePanelContent = ({
         defaultIsOpen={true}
       >
         <CollapsibleSectionHeader className="flex flex-row w-full justify-between ">
-          <h1 className="font-semibold">Authorizations</h1>
+          <h1 className="font-semibold">Subroutines</h1>
         </CollapsibleSectionHeader>
         <CollapsibleSectionContent>
-          <div className="flex flex-col gap-2">
-            {authorizations.map((auth) => (
-              <PrettyJson key={`authorization-${auth.label}`} data={auth} />
-            ))}
+          <div className="flex flex-col gap-6">
+            {authorizations.map((auth) => {
+              return (
+                <SubroutinesDisplay
+                  key={`authorization-${auth.label}`}
+                  authorization={auth}
+                />
+              );
+            })}
           </div>
         </CollapsibleSectionContent>
       </CollapsibleSectionRoot>

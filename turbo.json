@@ -15,7 +15,6 @@
       "env": [
         "NODE_ENV",
         "API_CACHE_URL",
-        "COSMOS_RPC_URL",
         "NEUTRON_RPC_URL",
         "NEXT_PUBLIC_FF_COVENANTS_VIEW_POL",
         "NEXT_PUBLIC_FF_REBALANCER_NONUSDC_VALUE",
