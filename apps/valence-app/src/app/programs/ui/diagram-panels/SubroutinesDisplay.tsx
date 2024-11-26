@@ -3,15 +3,16 @@ import React, { useRef } from "react";
 import { SortableTableHeader, TextCell, Label } from "@/components";
 import { AtomicSubroutine } from "@valence-ui/generated-types";
 import { cn, displayAddress } from "@/utils";
+import { ProgramInfoProps, useDisplayStore } from "@/app/programs/ui";
+import { useShallow } from "zustand/react/shallow";
+
 import {
-  isAtomic,
-  isNonAtomic,
+  getFunctionAddress,
+  isAtomicSubroutine,
+  isNonAtomicSubroutine,
   isPermissioned,
   isPermissionless,
-  ProgramInfoProps,
-  useDisplayStore,
-} from "@/app/programs/ui";
-import { useShallow } from "zustand/react/shallow";
+} from "@/app/programs/server";
 
 type Authorization = ProgramInfoProps["authorizations"][number];
 
@@ -22,11 +23,13 @@ export function SubroutinesDisplay({
 }) {
   const { mode, label, subroutine, ...rest } = authorization;
   const [selectedNodes, selectNodes] = useDisplayStore(
-    useShallow((state) => [state.selected, state.select]),
+    useShallow((state) => [state.selectedAddresses, state.selectAddresses]),
   ); // useShallow prevents infinite loop
 
-  const atomicSubroutine = isAtomic(subroutine) ? subroutine.atomic : null;
-  const nonAtomicSubroutine = isNonAtomic(subroutine)
+  const atomicSubroutine = isAtomicSubroutine(subroutine)
+    ? subroutine.atomic
+    : null;
+  const nonAtomicSubroutine = isNonAtomicSubroutine(subroutine)
     ? subroutine.non_atomic
     : null;
 
@@ -98,13 +101,11 @@ const AtomicSubroutineDisplay = ({
         ))}
 
         {subroutine.functions.map((func, i) => {
-          const { contract_address, domain, message_details } = func;
-          const address = contract_address["|library_account_addr|"];
-
+          const address = getFunctionAddress(func);
           return (
             <React.Fragment key={`subroutine-atomic-${address}`}>
               <TextCell className="border border-b">
-                <PrettyJson data={message_details} />
+                <PrettyJson data={func.message_details} />
               </TextCell>
               <TextCell className="border border-b">
                 {displayAddress(address)}

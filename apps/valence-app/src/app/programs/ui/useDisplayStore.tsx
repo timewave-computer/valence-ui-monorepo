@@ -1,10 +1,10 @@
 import { create } from "zustand";
 
 interface DisplayStore {
-  selected: string[];
-  select: (addrs: string[]) => void;
+  selectedAddresses: string[];
+  selectAddresses: (addrs: string[]) => void;
 }
 export const useDisplayStore = create<DisplayStore>((set) => ({
-  selected: [],
-  select: (addresses) => set({ selected: addresses }),
+  selectedAddresses: [],
+  selectAddresses: (addresses) => set({ selectedAddresses: addresses }),
 }));

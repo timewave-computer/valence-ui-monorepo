@@ -20,13 +20,13 @@ export function isPermissioned(
   return typeof obj === "object" && obj !== null && "permissioned" in obj;
 }
 
-export function isAtomic(obj: Subroutine): obj is {
+export function isAtomicSubroutine(obj: Subroutine): obj is {
   atomic: AtomicSubroutine;
 } {
   return typeof obj === "object" && obj !== null && "atomic" in obj;
 }
 
-export function isNonAtomic(obj: Subroutine): obj is {
+export function isNonAtomicSubroutine(obj: Subroutine): obj is {
   non_atomic: NonAtomicSubroutine;
 } {
   return typeof obj === "object" && obj !== null && "non_atomic" in obj;

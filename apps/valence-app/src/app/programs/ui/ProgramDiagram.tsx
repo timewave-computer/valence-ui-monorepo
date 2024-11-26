@@ -68,7 +68,7 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
   const { queryConfig, setQueryConfig } = useQueryArgsStore();
 
   const [selectedNodes] = useDisplayStore(
-    useShallow((state) => [state.selected]),
+    useShallow((state) => [state.selectedAddresses]),
   ); // useShallow prevents infinite loop
 
   const displaySelectedNodes = (addresses: string[]) => {

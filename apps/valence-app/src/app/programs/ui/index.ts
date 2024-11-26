@@ -9,4 +9,3 @@ export * from "./DiagramTitle";
 export * from "./useProgramQuery";
 export * from "./useDisplayStore";
 export * from "./diagram-panels";
-export * from "./type-guards";
