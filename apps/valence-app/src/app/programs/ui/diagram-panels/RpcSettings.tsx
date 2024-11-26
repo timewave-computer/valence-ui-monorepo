@@ -7,7 +7,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useCallback, useEffect } from "react";
 
-export type ConnectionConfigFormValues = {
+export type RpcSettingsFormValues = {
   registryAddress: string;
   mainChainId: string;
   mainChainRpc: string;
@@ -22,14 +22,14 @@ const formLabels = {
   mainChainId: "Main Chain ID",
   mainChainRpc: "Main Chain RPC",
 };
-export function ConnectionConfigPanel({
+export function RpcSettingsPanel({
   onSubmit,
   defaultValues,
 }: {
-  onSubmit: (args: ConnectionConfigFormValues) => void;
-  defaultValues: ConnectionConfigFormValues;
+  onSubmit: (args: RpcSettingsFormValues) => void;
+  defaultValues: RpcSettingsFormValues;
 }) {
-  const { register, getValues } = useForm<ConnectionConfigFormValues>({
+  const { register, getValues } = useForm<RpcSettingsFormValues>({
     defaultValues,
   });
 

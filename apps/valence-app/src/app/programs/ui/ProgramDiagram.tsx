@@ -15,10 +15,10 @@ import {
   useAutoLayout,
   type DiagramLayoutAlgorithm,
   type Direction,
-  DiagramSidePanelContent,
+  ProgramInfo,
   DiagramTitle,
-  ConnectionConfigPanel,
-  ConnectionConfigFormValues,
+  RpcSettingsPanel,
+  RpcSettingsFormValues,
   createQueryArgsStore,
   ProgramQueryArgsContext,
   useProgramQuery,
@@ -35,27 +35,14 @@ import {
   cn,
 } from "@valence-ui/ui-components";
 import { RiSettings5Fill, RiRefreshLine } from "react-icons/ri";
-
 import { useRef } from "react";
-import { GetProgramDataReturnValue } from "../server/get-program-data";
+import { GetProgramDataReturnValue } from "@/app/programs/server";
+import { useShallow } from "zustand/react/shallow";
 
 export type ProgramDiagramProps = {
   initialData: GetProgramDataReturnValue;
   nodeTypes: NodeTypes;
   programId: string;
-};
-
-const defaultDiagramLayoutOptions = {
-  algorithm: "dagre" as DiagramLayoutAlgorithm,
-  direction: "TB" as Direction,
-  spacing: [60, 60] as [number, number],
-};
-const defaultEdgeOptions = {
-  markerEnd: {
-    type: "arrowclosed" as MarkerType,
-    width: 44,
-    height: 36,
-  },
 };
 
 function ProgramDiagram({
@@ -81,9 +68,10 @@ function ProgramDiagram({
    */
 
   const { queryConfig, setQueryConfig } = useQueryArgsStore();
-  const [selected, select] = useState<string[]>([]);
 
-  // const [selected, select] = useDisplayStore((state) => [state.selected, state.select]);
+  const [selectedNodes] = useDisplayStore(
+    useShallow((state) => [state.selected]),
+  ); // useShallow prevents infinite loop
 
   const displaySelectedNodes = (addresses: string[]) => {
     setNodes((nodes) =>
@@ -92,7 +80,6 @@ function ProgramDiagram({
           ...node,
           data: {
             ...node.data,
-            //@ts-ignore
             selected: addresses.includes(node.data.address) ? true : false,
           },
         };
@@ -101,8 +88,8 @@ function ProgramDiagram({
   };
 
   useEffect(() => {
-    displaySelectedNodes(selected);
-  }, [selected]);
+    displaySelectedNodes(selectedNodes);
+  }, [selectedNodes]);
 
   const { refetch: refetchProgram, isFetching: isProgramFetching } =
     useProgramQuery({
@@ -118,7 +105,7 @@ function ProgramDiagram({
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  const handleUpdateQueryConfig = (data: ConnectionConfigFormValues) => {
+  const handleUpdateQueryConfig = (data: RpcSettingsFormValues) => {
     setQueryConfig({
       main: {
         registryAddress: data.registryAddress,
@@ -186,7 +173,7 @@ function ProgramDiagram({
               </DialogTitle>
               {/* empty description, here to prevent warning */}
               <DialogDescription />
-              <ConnectionConfigPanel
+              <RpcSettingsPanel
                 defaultValues={{
                   registryAddress: queryConfig.main.registryAddress,
                   mainChainId: queryConfig.main.chainId,
@@ -198,7 +185,7 @@ function ProgramDiagram({
                       chainRpc: rpc.rpc,
                     })),
                 }}
-                onSubmit={(data: ConnectionConfigFormValues) => {
+                onSubmit={(data: RpcSettingsFormValues) => {
                   setIsSettingsOpen(false);
                   handleUpdateQueryConfig(data);
                 }}
@@ -210,9 +197,7 @@ function ProgramDiagram({
           <DiagramTitle programId={programId} />
         </Panel>
         <Panel position="top-right">
-          <DiagramSidePanelContent
-            select={select}
-            selected={selected}
+          <ProgramInfo
             authorizationData={authorizationData}
             authorizations={authorizations}
           />
@@ -238,3 +223,16 @@ export function ProgramDiagramWithProvider(props: ProgramDiagramProps) {
     </ProgramQueryArgsContext.Provider>
   );
 }
+
+const defaultDiagramLayoutOptions = {
+  algorithm: "dagre" as DiagramLayoutAlgorithm,
+  direction: "TB" as Direction,
+  spacing: [60, 60] as [number, number],
+};
+const defaultEdgeOptions = {
+  markerEnd: {
+    type: "arrowclosed" as MarkerType,
+    width: 44,
+    height: 36,
+  },
+};

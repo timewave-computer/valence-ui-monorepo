@@ -1,6 +1,6 @@
-// same as 2 but with stargaze
-export const mockProgram3 = {
-  id: 3,
+// two domains, bi directional
+export const mockProgram2 = {
+  id: 2,
   owner: "neutron1hj5fveer5cjtn4wd6wstzugjfdxzl0xpznmsky",
   links: {
     "0": {
@@ -140,22 +140,6 @@ export const mockProgram3 = {
               },
             },
           ],
-          retry_logic: null,
-        },
-      },
-      priority: null,
-    },
-    {
-      label: "empty",
-      mode: "permissionless",
-      not_before: {
-        never: {},
-      },
-      duration: "forever",
-      max_concurrent_executions: null,
-      subroutine: {
-        atomic: {
-          functions: [],
           retry_logic: null,
         },
       },

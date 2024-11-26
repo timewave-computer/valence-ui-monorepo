@@ -74,25 +74,43 @@ export const mockProgram1 = {
       },
       duration: "forever",
       max_concurrent_executions: null,
-      actions_config: {
+      subroutine: {
         atomic: {
-          actions: [
+          functions: [
             {
               domain: "main",
               message_details: {
                 message_type: "cosmwasm_execute_msg",
                 message: {
-                  name: "process_action",
+                  name: "process_function",
                   params_restrictions: [
                     {
-                      must_be_included: ["process_action", "split"],
+                      must_be_included: ["process_function", "split"],
                     },
                   ],
                 },
               },
               contract_address: {
-                "|service_account_addr|":
-                  "neutron1n66wet7z04p85wgh594g20yp0zm9wu3r2eqp08ga9ecqlkqwujqsmjv5yz",
+                "|library_account_addr|":
+                  "neutron15rldvafc5ufsf34fmjegyul32dm8uvjhg3xgk48j0qrrxqd8e0ssagamfj",
+              },
+            },
+            {
+              domain: "main",
+              message_details: {
+                message_type: "cosmwasm_execute_msg",
+                message: {
+                  name: "process_function",
+                  params_restrictions: [
+                    {
+                      must_be_included: ["process_function", "split"],
+                    },
+                  ],
+                },
+              },
+              contract_address: {
+                "|library_account_addr|":
+                  "neutron12e9sfu7jg28z4dg5qhzjkf50tj05d5la5uwj2auqpedx5ph2757qhe336u",
               },
             },
           ],
@@ -100,51 +118,6 @@ export const mockProgram1 = {
         },
       },
       priority: null,
-      subroutine: {
-        atomic: {
-          functions: [],
-        },
-      },
-    },
-    {
-      label: "swap",
-      mode: "permissionless",
-      not_before: {
-        never: {},
-      },
-      duration: "forever",
-      max_concurrent_executions: null,
-      actions_config: {
-        atomic: {
-          actions: [
-            {
-              domain: "main",
-              message_details: {
-                message_type: "cosmwasm_execute_msg",
-                message: {
-                  name: "process_action",
-                  params_restrictions: [
-                    {
-                      must_be_included: ["process_action", "split"],
-                    },
-                  ],
-                },
-              },
-              contract_address: {
-                "|service_account_addr|":
-                  "neutron1n66wet7z04p85wgh594g20yp0zm9wu3r2eqp08ga9ecqlkqwujqsmjv5yz",
-              },
-            },
-          ],
-          retry_logic: null,
-        },
-      },
-      priority: null,
-      subroutine: {
-        atomic: {
-          functions: [],
-        },
-      },
     },
   ],
   authorization_data: {
