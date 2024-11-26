@@ -1,7 +1,6 @@
 import {
   ReactFlow,
   Background,
-  type NodeTypes,
   useReactFlow,
   useNodesState,
   useEdgesState,
@@ -36,20 +35,19 @@ import {
 } from "@valence-ui/ui-components";
 import { RiSettings5Fill, RiRefreshLine } from "react-icons/ri";
 import { useRef } from "react";
-import { GetProgramDataReturnValue } from "@/app/programs/server";
+import {
+  GetProgramDataReturnValue,
+  isLibraryNode,
+  nodeTypes,
+} from "@/app/programs/server";
 import { useShallow } from "zustand/react/shallow";
 
 export type ProgramDiagramProps = {
   initialData: GetProgramDataReturnValue;
-  nodeTypes: NodeTypes;
   programId: string;
 };
 
-function ProgramDiagram({
-  initialData,
-  programId,
-  nodeTypes,
-}: ProgramDiagramProps) {
+function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
   const { fitView } = useReactFlow();
   const {
     nodes: initialNodes,
@@ -76,6 +74,10 @@ function ProgramDiagram({
   const displaySelectedNodes = (addresses: string[]) => {
     setNodes((nodes) =>
       nodes.map((node) => {
+        if (!isLibraryNode(node)) {
+          return node;
+        }
+
         return {
           ...node,
           data: {

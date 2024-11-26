@@ -31,6 +31,8 @@ export function SubroutinesDisplay({
     : null;
 
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // TODO: this should be handled more gracefully. either extracted from parser or type should be simplified
   const addressList = atomicSubroutine?.functions.map((func) => {
     return func.contract_address["|library_account_addr|" as string];
   });

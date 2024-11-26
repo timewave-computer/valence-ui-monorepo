@@ -3,6 +3,11 @@ import {
   type AccountBalances,
 } from "@/app/programs/server";
 import { type Edge, type Node } from "@xyflow/react";
+import {
+  type TAccountNode,
+  type TLibraryNode,
+  NodeTypeOptions,
+} from "@/app/programs/server";
 
 export type NodeComposerReturnType = {
   edges: Edge[];
@@ -38,7 +43,7 @@ const makeAccountNodes = (
     }
     return {
       id: `account:${id}`,
-      type: "account",
+      type: NodeTypeOptions.account,
       position: { x: 0, y: 0 },
       data: {
         id: id,
@@ -47,22 +52,25 @@ const makeAccountNodes = (
         domain: account.domain,
         address: account.addr,
       },
-    };
+    } as TAccountNode;
   });
 };
 
 const makeLibraryNodes = (libraries: ProgramParserResult["libraries"]) => {
-  return Object.entries(libraries).map(([id, library]) => ({
-    id: `library:${id}`,
-    type: "library",
-    position: { x: 0, y: 0 },
-    data: {
-      id: id,
-      config: library.config,
-      domain: library.domain,
-      address: library.addr,
-    },
-  }));
+  return Object.entries(libraries).map(
+    ([id, library]) =>
+      ({
+        id: `library:${id}`,
+        type: NodeTypeOptions.library,
+        position: { x: 0, y: 0 },
+        data: {
+          id: id,
+          config: library.config,
+          domain: library.domain,
+          address: library.addr,
+        },
+      }) as TLibraryNode,
+  );
 };
 
 const makeEdges = (links: ProgramParserResult["links"]) => {

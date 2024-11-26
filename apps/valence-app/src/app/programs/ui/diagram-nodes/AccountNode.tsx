@@ -1,14 +1,8 @@
 import { PrettyJson } from "@valence-ui/ui-components";
-import {
-  Handle,
-  type Position,
-  type Node,
-  type NodeProps,
-} from "@xyflow/react";
+import { Handle, type Position, type NodeProps } from "@xyflow/react";
+import { type TAccountNode } from "@/app/programs/server";
 
-type AccountNode = Node<{ number: number }, "account">;
-
-export function AccountNode({ data, id }: NodeProps<AccountNode>) {
+export function AccountNode({ data, id }: NodeProps<TAccountNode>) {
   return (
     <div className="border border-valence-black rounded-2xl p-2 bg-valence-lightgray">
       <Handle type="target" position={"top" as Position} />
