@@ -8,6 +8,7 @@ type NormalizedAccount = ProgramConfig["accounts"][0];
 export type NormalizedAccounts = {
   [k: string]: NormalizedAccount & {
     chainId: string;
+    chainName: string;
   };
 };
 export type NormalizedLibraries = ProgramConfig["libraries"];

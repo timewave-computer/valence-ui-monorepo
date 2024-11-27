@@ -6,6 +6,7 @@ export const getDefaultMainChainConfig = (): QueryConfig["main"] => {
     chainId: "neutron-1",
     registryAddress: "neutron1hj5fveer5cjtn4wd6wstzugjfdxzl0xpznmsky",
     rpc: getNeutronRpc(),
+    name: "neutron",
   };
 };
 

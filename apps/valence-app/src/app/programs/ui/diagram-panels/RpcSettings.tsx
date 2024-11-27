@@ -3,25 +3,25 @@ import {
   FormField,
   FormTextInput,
   FormInputLabel,
+  Label,
 } from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
-import { useCallback, useEffect } from "react";
+import { Fragment, useCallback, useEffect } from "react";
 
 export type RpcSettingsFormValues = {
-  registryAddress: string;
-  mainChainId: string;
-  mainChainRpc: string;
-  otherRpcs: Array<{
-    chainRpc: string;
+  main: {
+    registryAddress: string;
+    chainId: string;
+    rpc: string;
+    name: string;
+  };
+  otherChains: Array<{
+    rpc: string;
+    name: string;
     chainId: string;
   }>;
 };
 
-const formLabels = {
-  registryAddress: "Registry Address",
-  mainChainId: "Main Chain ID",
-  mainChainRpc: "Main Chain RPC",
-};
 export function RpcSettingsPanel({
   onSubmit,
   defaultValues,
@@ -60,39 +60,67 @@ export function RpcSettingsPanel({
         e.preventDefault();
         handleSubmitForm();
       }}
-      className="flex flex-col gap-4 pt-4"
+      className="flex flex-col gap-6 pt-4"
     >
-      <FormField name="registryAddress" className="flex flex-col gap-1">
-        <FormInputLabel label={formLabels.registryAddress} />
+      <div className="flex flex-col gap-4 pl-4 border-l-4  border-valence-mediumgray ">
+        <div className="flex flex-row items-center gap-2 justify-between">
+          {" "}
+          <h2 className="font-semibold">{defaultValues.main.name} </h2>{" "}
+          <Label className="" text="main chain" />
+        </div>
 
-        <FormTextInput {...register("registryAddress")} />
-      </FormField>
+        <FormField name="mainChainId" className="flex flex-col gap-1">
+          <FormInputLabel label={formLabels.chainId} />
 
-      <FormField name="mainChainId" className="flex flex-col gap-1">
-        <FormInputLabel label={formLabels.mainChainId} />
+          <FormTextInput {...register("main.chainId")} />
+        </FormField>
 
-        <FormTextInput {...register("mainChainId")} />
-      </FormField>
+        <FormField name="mainChainRpc" className="flex flex-col gap-1">
+          <FormInputLabel label={formLabels.rpc} />
 
-      <FormField name="mainChainRpc" className="flex flex-col gap-1">
-        <FormInputLabel label={formLabels.mainChainRpc} />
+          <FormTextInput {...register("main.rpc")} />
+        </FormField>
+        <FormField name="registryAddress" className="flex flex-col gap-1">
+          <FormInputLabel label={formLabels.registryAddress} />
 
-        <FormTextInput {...register("mainChainRpc")} />
-      </FormField>
+          <FormTextInput {...register("main.registryAddress")} />
+        </FormField>
+      </div>
 
-      {defaultValues.otherRpcs.map((rpc, i) => {
-        return (
-          <FormField
-            key={`rpc-input-${rpc.chainId}`}
-            name={`rpcs.${i}.chainRpc`}
-            className="flex flex-col gap-1"
-          >
-            <FormInputLabel label={`${rpc.chainId} RPC:`} />
+      {defaultValues.otherChains.length > 0 && (
+        <div className="flex flex-col gap-4 pl-4 border-l-4 border-valence-lightgray">
+          {defaultValues.otherChains.map((chain, i) => {
+            return (
+              <Fragment key={`settings-input-${chain.chainId}`}>
+                <h2 className="font-semibold">{chain.name} </h2>
+                <FormField
+                  name={`otherChains.${i}.chainId`}
+                  className="flex flex-col gap-1"
+                >
+                  <FormInputLabel label={formLabels.chainId} />
 
-            <FormTextInput {...register(`otherRpcs.${i}.chainRpc`)} />
-          </FormField>
-        );
-      })}
+                  <FormTextInput {...register(`otherChains.${i}.chainId`)} />
+                </FormField>
+                <FormField
+                  key={`rpc-input-${chain.rpc}`}
+                  name={`otherChains.${i}.rpc`}
+                  className="flex flex-col gap-1"
+                >
+                  <FormInputLabel label={formLabels.rpc} />
+
+                  <FormTextInput {...register(`otherChains.${i}.rpc`)} />
+                </FormField>
+              </Fragment>
+            );
+          })}
+        </div>
+      )}
     </FormRoot>
   );
 }
+
+const formLabels = {
+  registryAddress: "Registry Address",
+  chainId: "Chain ID",
+  rpc: "RPC",
+};

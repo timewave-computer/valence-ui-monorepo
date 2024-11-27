@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from "../utils";
 
 export interface LabelProps extends React.HTMLAttributes<HTMLElement> {
   text: string;

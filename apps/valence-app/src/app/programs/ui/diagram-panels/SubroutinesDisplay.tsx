@@ -1,11 +1,10 @@
-import { PrettyJson } from "@valence-ui/ui-components";
+import { PrettyJson, Label } from "@valence-ui/ui-components";
 import React, { useRef } from "react";
-import { SortableTableHeader, TextCell, Label } from "@/components";
-import { AtomicSubroutine } from "@valence-ui/generated-types";
+import { SortableTableHeader, TextCell } from "@/components";
+import { type AtomicSubroutine } from "@valence-ui/generated-types";
 import { cn, displayAddress } from "@/utils";
-import { ProgramInfoProps, useDisplayStore } from "@/app/programs/ui";
+import { type ProgramInfoProps, useDisplayStore } from "@/app/programs/ui";
 import { useShallow } from "zustand/react/shallow";
-
 import {
   getFunctionAddress,
   isAtomicSubroutine,
@@ -15,7 +14,6 @@ import {
 } from "@/app/programs/server";
 
 type Authorization = ProgramInfoProps["authorizations"][number];
-
 export function SubroutinesDisplay({
   authorization,
 }: {
@@ -35,12 +33,15 @@ export function SubroutinesDisplay({
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // TODO: this should be handled more gracefully. either extracted from parser or type should be simplified
-  const addressList = atomicSubroutine?.functions.map((func) => {
-    return func.contract_address["|library_account_addr|" as string];
-  });
+  const addressList = isAtomicSubroutine(subroutine)
+    ? subroutine.atomic.functions.map((func) => {
+        return getFunctionAddress(func);
+      })
+    : subroutine.non_atomic.functions.map((func) => {
+        return getFunctionAddress(func);
+      });
 
-  const isSelected =
+  const isSubroutineSelected =
     selectedNodes.length &&
     selectedNodes.sort().toString() === addressList?.sort().toString();
 
@@ -48,12 +49,12 @@ export function SubroutinesDisplay({
     <button
       ref={buttonRef}
       onClick={() => {
-        if (isSelected) selectNodes([]);
+        if (isSubroutineSelected) selectNodes([]);
         else selectNodes(addressList ?? []);
       }}
       className={cn(
         "overflow-x-scroll pl-4 border-l-4 hover:border-valence-blue transition-all ",
-        isSelected && "border-valence-blue",
+        isSubroutineSelected && "border-valence-blue",
       )}
     >
       <div className="flex flex-row w-full justify-between gap-2 items-center pb-1">

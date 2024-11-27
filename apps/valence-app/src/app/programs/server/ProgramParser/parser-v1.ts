@@ -27,6 +27,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
       acc[key] = {
         ...value,
         chainId: registeredChain.chain_id,
+        chainName: chainName,
       };
       return acc;
     },

@@ -1,5 +1,5 @@
 "use client";
-import { LinkText, TextInput, Label, ConnectWalletButton } from "@/components";
+import { LinkText, TextInput, ConnectWalletButton } from "@/components";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { useWallet } from "@/hooks";
 import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
+import { Label } from "@valence-ui/ui-components";
 import {
   useMultipleValenceAccounts,
   useValenceAccount,
