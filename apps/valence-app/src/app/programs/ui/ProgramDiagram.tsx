@@ -108,21 +108,20 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleUpdateQueryConfig = (data: RpcSettingsFormValues) => {
+    console.log("data", data);
     setQueryConfig({
-      main: {
-        registryAddress: data.registryAddress,
-        chainId: data.mainChainId,
-        rpc: data.mainChainRpc,
-      },
+      main: data.main,
       allChains: [
         {
-          chainId: data.mainChainId,
-          rpc: data.mainChainRpc,
+          chainId: data.main.chainId,
+          rpc: data.main.rpc,
+          name: data.main.name,
           crosschain: false,
         },
-        ...data.otherRpcs.map((rpc) => ({
-          chainId: rpc.chainId,
-          rpc: rpc.chainRpc,
+        ...data.otherChains.map((chain) => ({
+          chainId: chain.chainId,
+          rpc: chain.rpc,
+          name: chain.name,
           crosschain: true,
         })),
       ],
@@ -177,14 +176,15 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
               <DialogDescription />
               <RpcSettingsPanel
                 defaultValues={{
-                  registryAddress: queryConfig.main.registryAddress,
-                  mainChainId: queryConfig.main.chainId,
-                  mainChainRpc: queryConfig.main.rpc,
-                  otherRpcs: queryConfig.allChains
-                    .filter((rpc) => rpc.chainId !== queryConfig.main.chainId)
-                    .map((rpc) => ({
-                      chainId: rpc.chainId,
-                      chainRpc: rpc.rpc,
+                  main: queryConfig.main,
+                  otherChains: queryConfig.allChains
+                    .filter(
+                      (chain) => chain.chainId !== queryConfig.main.chainId,
+                    )
+                    .map((chain) => ({
+                      chainId: chain.chainId,
+                      rpc: chain.rpc,
+                      name: chain.name,
                     })),
                 }}
                 onSubmit={(data: RpcSettingsFormValues) => {
@@ -216,6 +216,8 @@ export function ProgramDiagramWithProvider(props: ProgramDiagramProps) {
       queryConfig: props.initialData.queryConfig,
     });
   }
+
+  console.log("initial config", props.initialData.queryConfig);
 
   return (
     <ProgramQueryArgsContext.Provider value={store.current}>

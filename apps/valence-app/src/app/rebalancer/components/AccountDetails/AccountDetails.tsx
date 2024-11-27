@@ -16,13 +16,13 @@ import {
 } from "@/app/rebalancer/hooks";
 import React, { useMemo, useState } from "react";
 import { useWallet } from "@/hooks";
-import { Label } from "@/components";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import { displayMinBalance, displayPid } from "@/utils";
 import {
   Button,
   WithIconAndTooltip,
   LoadingSkeleton,
+  Label,
 } from "@valence-ui/ui-components";
 import Link from "next/link";
 import { BsCheck, BsInfo } from "react-icons/bs";

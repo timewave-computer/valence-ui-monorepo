@@ -105,10 +105,10 @@ const queryAccountBalances = async (
     }
 
     const rpcUrl = config.allChains.find(
-      (rpc) => rpc.chainId === account.chainId,
+      (chain) => chain.name === account.chainName,
     )?.rpc;
     if (!rpcUrl) {
-      throw new Error(`No RPC URL found for chain ID ${account.chainId}`);
+      throw new Error(`No RPC URL found for chain ID ${account.chainName}`);
     }
 
     const balances = await fetchAccountBalances({

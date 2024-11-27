@@ -1,6 +1,5 @@
 "use client";
-import { Label } from "@/components";
-import { cn } from "@/utils";
+import { Label, cn } from "@valence-ui/ui-components";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { ReactNode, useState } from "react";
 export const HoverToCopy: React.FC<{

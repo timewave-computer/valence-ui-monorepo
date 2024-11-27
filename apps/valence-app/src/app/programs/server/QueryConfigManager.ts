@@ -7,11 +7,13 @@ export type QueryConfig = {
     registryAddress: string;
     chainId: string;
     rpc: string;
+    name: string;
   };
   allChains: Array<{
     rpc: string;
     chainId: string;
     crosschain: boolean;
+    name: string;
   }>;
 };
 
@@ -96,6 +98,7 @@ export class QueryConfigManager {
         rpc: rpcUrl,
         chainId: account.chainId,
         crosschain: account.chainId !== mainChainId,
+        name: account.chainName,
       });
     }
     return rpcs;

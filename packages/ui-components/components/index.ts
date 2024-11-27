@@ -11,3 +11,4 @@ export * from "./Form";
 export * from "./WithIconAndTooltip";
 export * from "./FormTableCell";
 export * from "./LoadingSkeleton";
+export * from "./Label";

@@ -7,7 +7,6 @@ export * from "./DropdowTextField";
 export * from "./MobileOverlay";
 export * from "./LinkText";
 export * from "./coming-soon-tooltip";
-export * from "./Label";
 export * from "./RouterButton";
 export * from "./Dropdown";
 export * from "./RadioGroup";
