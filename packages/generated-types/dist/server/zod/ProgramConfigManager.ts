@@ -78,6 +78,61 @@ export const retryTimesSchema = z.union([
   }),
 ]);
 
+export const uncheckedDenomSchema = z.union([
+  z.object({
+    native: z.string(),
+  }),
+  z.object({
+    cw20: z.string(),
+  }),
+]);
+
+export const decimalSchema = z.string();
+
+export const uncheckedSplitAmount2Schema = z.union([
+  z.object({
+    fixed_amount: uint128Schema,
+  }),
+  z.object({
+    fixed_ratio: decimalSchema,
+  }),
+  z.object({
+    dynamic_ratio: z.object({
+      contract_addr: z.string(),
+      params: z.string(),
+    }),
+  }),
+]);
+
+export const pairTypeSchema = z.union([
+  z.object({
+    xyk: z.object({}),
+  }),
+  z.object({
+    stable: z.object({}),
+  }),
+  z.object({
+    custom: z.string(),
+  }),
+]);
+
+export const pairType2Schema = z.union([
+  z.object({
+    xyk: z.object({}),
+  }),
+  z.object({
+    stable: z.object({}),
+  }),
+  z.object({
+    custom: z.string(),
+  }),
+]);
+
+export const poolType2Schema = z.union([
+  z.literal("native_lp_token"),
+  z.literal("cw20_lp_token"),
+]);
+
 export const authorizationDataSchema = z.object({
   authorization_addr: z.string(),
   authorization_bridge_addrs: z.object({}),
@@ -114,11 +169,53 @@ export const functionCallbackSchema = z.object({
   contract_address: addrSchema,
 });
 
-export const libraryInfoSchema = z.object({
-  addr: z.string().optional().nullable(),
-  domain: domainSchema,
-  name: z.string(),
-  config: z.record(z.unknown()).optional(),
+export const uncheckedForwardingConfigSchema = z.object({
+  denom: uncheckedDenomSchema,
+  max_amount: uint128Schema,
+});
+
+export const forwardingConstraintsSchema = z.object({
+  min_interval: durationSchema.optional().nullable(),
+});
+
+export const uncheckedSplitAmountSchema = z.union([
+  z.object({
+    fixed_amount: uint128Schema,
+  }),
+  z.object({
+    fixed_ratio: decimalSchema,
+  }),
+  z.object({
+    dynamic_ratio: z.object({
+      contract_addr: z.string(),
+      params: z.string(),
+    }),
+  }),
+]);
+
+export const uncheckedSplitConfig2Schema = z.object({
+  account: libraryAccountTypeSchema,
+  amount: uncheckedSplitAmount2Schema,
+  denom: uncheckedDenomSchema,
+  factor: z.number().optional().nullable(),
+});
+
+export const assetDataSchema = z.object({
+  asset1: z.string(),
+  asset2: z.string(),
+});
+
+export const poolTypeSchema = z.union([
+  z.object({
+    native_lp_token: pairTypeSchema,
+  }),
+  z.object({
+    cw20_lp_token: pairType2Schema,
+  }),
+]);
+
+export const liquidityWithdrawerConfigSchema = z.object({
+  pool_type: poolType2Schema,
 });
 
 export const linkSchema = z.object({
@@ -137,6 +234,29 @@ export const permissionTypeInfoSchema = z.union([
 ]);
 
 export const timestampSchema = uint64Schema;
+
+export const libraryConfigUpdate2Schema = z.object({
+  forwarding_configs: z
+    .array(uncheckedForwardingConfigSchema)
+    .optional()
+    .nullable(),
+  forwarding_constraints: forwardingConstraintsSchema.optional().nullable(),
+  input_addr: libraryAccountTypeSchema.optional().nullable(),
+  output_addr: libraryAccountTypeSchema.optional().nullable(),
+});
+
+export const libraryConfigUpdate4Schema = z.object({
+  base_denom: uncheckedDenomSchema.optional().nullable(),
+  output_addr: libraryAccountTypeSchema.optional().nullable(),
+  splits: z.array(uncheckedSplitConfig2Schema).optional().nullable(),
+});
+
+export const libraryConfigUpdate6Schema = z.object({
+  input_addr: libraryAccountTypeSchema.optional().nullable(),
+  output_addr: libraryAccountTypeSchema.optional().nullable(),
+  pool_addr: z.string().optional().nullable(),
+  withdrawer_config: liquidityWithdrawerConfigSchema.optional().nullable(),
+});
 
 export const expirationSchema = z.union([
   z.object({
@@ -167,6 +287,30 @@ export const messageDetailsSchema = z.object({
   message_type: messageTypeSchema,
 });
 
+export const uncheckedSplitConfigSchema = z.object({
+  account: libraryAccountTypeSchema,
+  amount: uncheckedSplitAmountSchema,
+  denom: uncheckedDenomSchema,
+});
+
+export const liquidityProviderConfigSchema = z.object({
+  asset_data: assetDataSchema,
+  pool_type: poolTypeSchema,
+  slippage_tolerance: decimalSchema.optional().nullable(),
+});
+
+export const libraryConfigUpdate3Schema = z.object({
+  input_addr: libraryAccountTypeSchema.optional().nullable(),
+  splits: z.array(uncheckedSplitConfigSchema).optional().nullable(),
+});
+
+export const libraryConfigUpdate5Schema = z.object({
+  input_addr: libraryAccountTypeSchema.optional().nullable(),
+  lp_config: liquidityProviderConfigSchema.optional().nullable(),
+  output_addr: libraryAccountTypeSchema.optional().nullable(),
+  pool_addr: z.string().optional().nullable(),
+});
+
 export const atomicFunctionSchema = z.object({
   contract_address: libraryAccountTypeSchema,
   domain: domain2Schema,
@@ -180,6 +324,25 @@ export const nonAtomicFunctionSchema = z.object({
   message_details: messageDetailsSchema,
   retry_logic: retryLogicSchema.optional().nullable(),
 });
+
+export const libraryConfigUpdateSchema = z.union([
+  z.literal("None"),
+  z.object({
+    ValenceForwarderLibrary: libraryConfigUpdate2Schema,
+  }),
+  z.object({
+    ValenceSplitterLibrary: libraryConfigUpdate3Schema,
+  }),
+  z.object({
+    ValenceReverseSplitterLibrary: libraryConfigUpdate4Schema,
+  }),
+  z.object({
+    ValenceAstroportLper: libraryConfigUpdate5Schema,
+  }),
+  z.object({
+    ValenceAstroportWithdrawer: libraryConfigUpdate6Schema,
+  }),
+]);
 
 export const atomicSubroutineSchema = z.object({
   functions: z.array(atomicFunctionSchema),
@@ -198,6 +361,13 @@ export const subroutineSchema = z.union([
     non_atomic: nonAtomicSubroutineSchema,
   }),
 ]);
+
+export const libraryInfoSchema = z.object({
+  addr: z.string().optional().nullable(),
+  domain: domainSchema,
+  name: z.string(),
+  config: libraryConfigUpdateSchema.optional(),
+});
 
 export const authorizationInfoSchema = z.object({
   duration: authorizationDurationSchema,
