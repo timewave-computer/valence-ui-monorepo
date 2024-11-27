@@ -19,10 +19,8 @@ export const ProgramInfo = ({
 }: ProgramInfoProps) => {
   return (
     <div
-      style={{
-        maxHeight: "calc(100vh - 5rem)",
-      }}
-      className="bg-valence-white w-[440px] h-full border border-valence-black flex flex-col overflow-y-scroll"
+      style={{ maxHeight: `calc(100vh - 2.55rem)` }}
+      className="bg-valence-white w-full border-l  border-valence-black flex flex-col overflow-y-scroll"
     >
       <CollapsibleSectionRoot
         className="p-4 border-b border-valence-black"
