@@ -13,6 +13,7 @@ import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
 import { STATIC_URL } from "@/const";
 
+export const NAV_HEIGHT = "3.25rem";
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
     return path === "/"; // special case for home
@@ -69,7 +70,8 @@ export const ValenceAppNav = () => {
   return (
     <nav
       className={cn(
-        "flex min-h-[3.25rem] flex-row items-center justify-between border-b border-valence-black bg-valence-white px-4 text-valence-black",
+        `$min-h-${NAV_HEIGHT}`,
+        "flex flex-row items-center justify-between border-b border-valence-black bg-valence-white px-4 text-valence-black",
       )}
     >
       <div className="flex items-center gap-2 md:gap-8">
