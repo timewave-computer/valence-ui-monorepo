@@ -171,6 +171,93 @@ export type RetryTimes =
   | {
       amount: number;
     };
+export type LibraryConfigUpdate =
+  | "None"
+  | {
+      ValenceForwarderLibrary: LibraryConfigUpdate2;
+    }
+  | {
+      ValenceSplitterLibrary: LibraryConfigUpdate3;
+    }
+  | {
+      ValenceReverseSplitterLibrary: LibraryConfigUpdate4;
+    }
+  | {
+      ValenceAstroportLper: LibraryConfigUpdate5;
+    }
+  | {
+      ValenceAstroportWithdrawer: LibraryConfigUpdate6;
+    };
+/**
+ * A denom that has not been checked to confirm it points to a valid asset.
+ */
+export type UncheckedDenom =
+  | {
+      native: string;
+    }
+  | {
+      cw20: string;
+    };
+export type UncheckedSplitAmount =
+  | {
+      fixed_amount: Uint128;
+    }
+  | {
+      fixed_ratio: Decimal;
+    }
+  | {
+      dynamic_ratio: {
+        contract_addr: string;
+        params: string;
+      };
+    };
+/**
+ * A fixed-point decimal value with 18 fractional digits, i.e. Decimal(1_000_000_000_000_000_000) == 1.0
+ *
+ * The greatest possible value that can be represented is 340282366920938463463.374607431768211455 (which is (2^128 - 1) / 10^18)
+ */
+export type Decimal = string;
+export type UncheckedSplitAmount2 =
+  | {
+      fixed_amount: Uint128;
+    }
+  | {
+      fixed_ratio: Decimal;
+    }
+  | {
+      dynamic_ratio: {
+        contract_addr: string;
+        params: string;
+      };
+    };
+export type PoolType =
+  | {
+      native_lp_token: PairType;
+    }
+  | {
+      cw20_lp_token: PairType2;
+    };
+export type PairType =
+  | {
+      xyk: {};
+    }
+  | {
+      stable: {};
+    }
+  | {
+      custom: string;
+    };
+export type PairType2 =
+  | {
+      xyk: {};
+    }
+  | {
+      stable: {};
+    }
+  | {
+      custom: string;
+    };
+export type PoolType2 = "native_lp_token" | "cw20_lp_token";
 export type AuthorizationInfoUpdate =
   | {
       Add: AuthorizationInfo;
@@ -307,9 +394,97 @@ export interface LibraryInfo {
   addr?: string | null;
   domain: Domain;
   name: string;
-  config?: {
-    [k: string]: unknown;
-  };
+  config?: LibraryConfigUpdate;
+}
+export interface LibraryConfigUpdate2 {
+  forwarding_configs?: UncheckedForwardingConfig[] | null;
+  forwarding_constraints?: ForwardingConstraints | null;
+  input_addr?: LibraryAccountType | null;
+  output_addr?: LibraryAccountType | null;
+}
+/**
+ * Struct representing an unchecked forwarding configuration.
+ */
+export interface UncheckedForwardingConfig {
+  /**
+   * The denom to be forwarded.
+   */
+  denom: UncheckedDenom;
+  /**
+   * The maximum amount of tokens to be transferred per forward operation.
+   */
+  max_amount: Uint128;
+}
+/**
+ * Struct representing the time constraints on forwarding operations.
+ */
+export interface ForwardingConstraints {
+  /**
+   * The minimum interval between forwarding operations.
+   */
+  min_interval?: Duration | null;
+}
+export interface LibraryConfigUpdate3 {
+  input_addr?: LibraryAccountType | null;
+  splits?: UncheckedSplitConfig[] | null;
+}
+export interface UncheckedSplitConfig {
+  account: LibraryAccountType;
+  amount: UncheckedSplitAmount;
+  denom: UncheckedDenom;
+}
+export interface LibraryConfigUpdate4 {
+  base_denom?: UncheckedDenom | null;
+  output_addr?: LibraryAccountType | null;
+  splits?: UncheckedSplitConfig2[] | null;
+}
+export interface UncheckedSplitConfig2 {
+  account: LibraryAccountType;
+  amount: UncheckedSplitAmount2;
+  denom: UncheckedDenom;
+  factor?: number | null;
+}
+export interface LibraryConfigUpdate5 {
+  input_addr?: LibraryAccountType | null;
+  lp_config?: LiquidityProviderConfig | null;
+  output_addr?: LibraryAccountType | null;
+  pool_addr?: string | null;
+}
+export interface LiquidityProviderConfig {
+  /**
+   * Denoms of both native assets we are going to provide liquidity for
+   */
+  asset_data: AssetData;
+  /**
+   * Pool type, old Astroport pools use Cw20 lp tokens and new pools use native tokens, so we specify here what kind of token we are going to get. We also provide the PairType structure of the right Astroport version that we are going to use for each scenario
+   */
+  pool_type: PoolType;
+  /**
+   * Slippage tolerance when providing liquidity
+   */
+  slippage_tolerance?: Decimal | null;
+}
+export interface AssetData {
+  /**
+   * Denom of the first asset
+   */
+  asset1: string;
+  /**
+   * Denom of the second asset
+   */
+  asset2: string;
+}
+export interface LibraryConfigUpdate6 {
+  input_addr?: LibraryAccountType | null;
+  output_addr?: LibraryAccountType | null;
+  pool_addr?: string | null;
+  withdrawer_config?: LiquidityWithdrawerConfig | null;
+}
+export interface LiquidityWithdrawerConfig {
+  /**
+   * Pool type, old Astroport pools use Cw20 lp tokens and new pools use native tokens, so we specify here what kind of token we are going to get. We also provide the PairType structure of the right Astroport version that we are going to use for each scenario
+   */
+  pool_type: PoolType2;
 }
 export interface Link {
   /**

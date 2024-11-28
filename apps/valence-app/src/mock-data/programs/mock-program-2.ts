@@ -8,11 +8,11 @@ export const mockProgram2 = {
       output_accounts_id: [1],
       library_id: 0,
     },
-    "1": {
-      input_accounts_id: [1],
-      output_accounts_id: [0],
-      library_id: 1,
-    },
+    // "1": {
+    //   input_accounts_id: [1],
+    //   output_accounts_id: [0],
+    //   library_id: 1,
+    // },
   },
   accounts: {
     "0": {

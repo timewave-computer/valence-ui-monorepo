@@ -774,7 +774,7 @@
         },
         "config": {
           "type": "object",
-          "additionalProperties": true
+          "$ref": "#/definitions/LibraryConfigUpdate"
         }
       },
       "additionalProperties": false

@@ -32,6 +32,7 @@ import {
   DialogTitle,
   DialogDescription,
   cn,
+  Button,
 } from "@valence-ui/ui-components";
 import { RiSettings5Fill, RiRefreshLine } from "react-icons/ri";
 import { useRef } from "react";
@@ -106,9 +107,9 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
   useAutoLayout(defaultDiagramLayoutOptions);
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   const handleUpdateQueryConfig = (data: RpcSettingsFormValues) => {
-    console.log("data", data);
     setQueryConfig({
       main: data.main,
       allChains: [
@@ -129,7 +130,10 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
   };
 
   return (
-    <div style={{ height: "100%" }}>
+    <div
+      style={{ height: "100%" }}
+      className={cn(isConfigOpen && "grid grid-cols-[2fr_1fr]")}
+    >
       <ReactFlow
         proOptions={{ hideAttribution: true }}
         onNodesChange={onNodesChange}
@@ -199,12 +203,23 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
           <DiagramTitle programId={programId} />
         </Panel>
         <Panel position="top-right">
-          <ProgramInfo
-            authorizationData={authorizationData}
-            authorizations={authorizations}
-          />
+          {isConfigOpen ? (
+            <Button onClick={() => setIsConfigOpen(false)} variant="secondary">
+              Hide Config
+            </Button>
+          ) : (
+            <Button onClick={() => setIsConfigOpen(true)} variant="secondary">
+              Show Config
+            </Button>
+          )}
         </Panel>
       </ReactFlow>
+      {isConfigOpen && (
+        <ProgramInfo
+          authorizationData={authorizationData}
+          authorizations={authorizations}
+        />
+      )}
     </div>
   );
 }
@@ -216,8 +231,6 @@ export function ProgramDiagramWithProvider(props: ProgramDiagramProps) {
       queryConfig: props.initialData.queryConfig,
     });
   }
-
-  console.log("initial config", props.initialData.queryConfig);
 
   return (
     <ProgramQueryArgsContext.Provider value={store.current}>

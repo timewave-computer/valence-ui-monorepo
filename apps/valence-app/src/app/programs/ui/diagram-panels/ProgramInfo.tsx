@@ -7,6 +7,7 @@ import {
 import { ProgramParserResult } from "@/app/programs/server";
 import { SubroutinesDisplay } from "@/app/programs/ui";
 import React from "react";
+import { NAV_HEIGHT } from "@/components";
 
 export type ProgramInfoProps = Pick<
   ProgramParserResult,
@@ -19,10 +20,8 @@ export const ProgramInfo = ({
 }: ProgramInfoProps) => {
   return (
     <div
-      style={{
-        maxHeight: "calc(100vh - 5rem)",
-      }}
-      className="bg-valence-white w-[440px] h-full border border-valence-black flex flex-col overflow-y-scroll"
+      style={{ maxHeight: `calc(100vh - ${NAV_HEIGHT})` }}
+      className="bg-valence-white w-full border-l  border-valence-black flex flex-col overflow-y-scroll"
     >
       <CollapsibleSectionRoot
         className="p-4 border-b border-valence-black"

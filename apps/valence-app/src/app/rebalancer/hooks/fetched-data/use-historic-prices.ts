@@ -13,11 +13,12 @@ export const useHistoricPrices = () => {
       queryKey: [QUERY_KEYS.HISTORIC_PRICES_COINGECKO, asset.denom],
       refetchInterval: 0,
       retry: (errorCount: number) => errorCount < 1,
-      queryFn: () => {
-        return fetchHistoricalPricesV2({
+      queryFn: async () => {
+        const data = await fetchHistoricalPricesV2({
           denom: asset.denom,
           coingeckoId: asset.coingeckoId,
         });
+        return data;
       },
     })),
   });

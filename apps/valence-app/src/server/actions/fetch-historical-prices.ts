@@ -73,6 +73,12 @@ const getRangeBounds = (range: TimeRange, endDate = new Date()) => {
   };
 };
 
+// these timestamps will use an internally calculate twap and drop the price at this timestamp
+const priceExclusions = {
+  newt: {
+    "1731888000000": true,
+  },
+};
 export const fetchHistoricalPricesV2 = async (asset: {
   denom: string;
   coingeckoId: string;
@@ -98,14 +104,70 @@ export const fetchHistoricalPricesV2 = async (asset: {
   // const response = await data.json();
 
   const validated = CoinGeckoHistoricPricesSchema.safeParse(response);
-
   if (!validated.success) {
     const errMsg = validated.error.errors.slice(0, 3); // truncate, array errors are large and redunant
     throw ErrorHandler.makeError(
       `${ERROR_MESSAGES.INDEXER_HISTORICAL_PRICES_ERROR}, Validation Error (first three items): ${JSON.stringify(errMsg, null, 2)}`,
     );
   }
-  return validated.data;
+  const twapLength = getTwapLength(twapRadius);
+  const exclusion =
+    asset.coingeckoId in priceExclusions && validated.data.length > twapLength
+      ? priceExclusions[asset.coingeckoId]
+      : null;
+
+  let result;
+  if (exclusion) {
+    result = validated.data.map(([timestamp, price], i) => {
+      if (timestamp in exclusion) {
+        return [
+          timestamp,
+          calculateTwapAtIndex({ index: i, data: validated.data, twapRadius }),
+        ];
+      }
+      return [timestamp, price];
+    });
+  } else result = validated.data;
+
+  return result;
+};
+
+const twapRadius = 2; // 2 data points on each side, 4 total
+const getTwapLength = (radius: number) => {
+  return twapRadius * 2 + 1;
+};
+
+const calculateTwapAtIndex = ({
+  index,
+  data,
+  twapRadius,
+}: {
+  index: number;
+  data: CoinGeckoHistoricPrices;
+  twapRadius: number;
+}) => {
+  let twapBounds = [index - twapRadius, index + twapRadius];
+
+  if (twapBounds.some((i) => i < 0)) {
+    while (twapBounds.some((i) => i < 0)) {
+      twapBounds = shiftArrayValues(twapBounds, 1);
+    }
+  } else if (twapBounds.some((i) => i > data.length - 1)) {
+    while (twapBounds.some((i) => i < 0)) {
+      twapBounds = shiftArrayValues(twapBounds, -1);
+    }
+  }
+  const dataPointsToAverage = [...data.slice(twapBounds[0], twapBounds[1] + 1)];
+  // remove the middle element
+  dataPointsToAverage.splice(twapRadius, 1);
+  const twap =
+    dataPointsToAverage.reduce((acc, [timestamp, price]) => acc + price, 0) /
+    dataPointsToAverage.length;
+  // compute twap of 5 prices
+  return twap;
+};
+const shiftArrayValues = (arr: number[], constant: number) => {
+  return arr.map((value) => value + constant);
 };
 
 export type FetchHistoricalValuesReturnValue = {
