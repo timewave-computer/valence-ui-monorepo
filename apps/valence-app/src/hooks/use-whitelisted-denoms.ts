@@ -1,4 +1,4 @@
-import { withTimeout } from "@/app/rebalancer/hooks";
+import { withTimeout } from "@/app/rebalancer/ui";
 import { WhitelistsResponse } from "@valence-ui/generated-types/dist/cosmwasm/types/Rebalancer.types";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { fetchRebalancerWhitelist } from "@/server/actions";

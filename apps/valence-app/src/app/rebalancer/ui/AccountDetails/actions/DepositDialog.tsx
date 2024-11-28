@@ -18,15 +18,15 @@ import { useWallet, useWalletBalances } from "@/hooks";
 import { toast } from "sonner";
 import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import { Fragment, useState } from "react";
-import { BalanceReturnValue, useAssetMetadata } from "@/app/rebalancer/hooks";
+import { BalanceReturnValue, useAssetMetadata } from "@/app/rebalancer/ui";
 import { baseToMicro, displayNumberV2, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
 import { Coin, DeliverTxResponse } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { useAtom } from "jotai";
-import { accountAtom } from "@/app/rebalancer/globals";
+import { accountAtom } from "@/app/rebalancer/ui";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
-import { SupportedAssets } from "@/app/rebalancer/components";
+import { SupportedAssets } from "@/app/rebalancer/ui";
 
 type DepositInputForm = {
   amounts: Coin[];

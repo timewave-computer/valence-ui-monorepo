@@ -5,8 +5,8 @@ import {
 import { Fragment, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { displayNumber } from "@/utils";
-import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/hooks";
-import { Asset } from "@/app/rebalancer/components";
+import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/ui";
+import { Asset } from "@/app/rebalancer/ui";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import { Dropdown } from "@/components";
 import {

@@ -19,10 +19,10 @@ import {
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
 import { useWhitelistedDenoms } from "@/hooks";
-import { useAssetMetadata } from "@/app/rebalancer/hooks";
+import { useAssetMetadata } from "@/app/rebalancer/ui";
 import { cn } from "@/utils";
 import { RebalancerFormTooltipCopy } from "../../copy";
-import { Asset } from "@/app/rebalancer/components";
+import { Asset } from "@/app/rebalancer/ui";
 
 export const AdvancedSettings: React.FC<{
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;

@@ -1,6 +1,6 @@
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
 import { useCallback } from "react";
-import { useAssetMetadata, useLivePrices } from "@/app/rebalancer/hooks";
+import { useAssetMetadata, useLivePrices } from "@/app/rebalancer/ui";
 
 export const getBalance = (
   denom?: string,

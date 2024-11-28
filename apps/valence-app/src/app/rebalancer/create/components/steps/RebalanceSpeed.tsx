@@ -30,11 +30,8 @@ import {
   scaleFormatter,
   SymbolColors,
 } from "@/app/rebalancer/const";
-import {
-  useAssetMetadata,
-  useSettingsProjection,
-} from "@/app/rebalancer/hooks";
-import { ValueTooltip } from "@/app/rebalancer/components";
+import { useAssetMetadata, useSettingsProjection } from "@/app/rebalancer/ui";
+import { ValueTooltip } from "@/app/rebalancer/ui";
 
 type PidKey = keyof CreateRebalancerForm["pid"];
 const CustomPid = "custom-pid";

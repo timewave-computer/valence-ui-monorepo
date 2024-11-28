@@ -13,11 +13,11 @@ import { cn, compareNumbers, compareStrings, displayNumber } from "@/utils";
 import {
   useAccountConfigQuery,
   useLivePortfolio,
-} from "@/app/rebalancer/hooks";
+  Asset,
+} from "@/app/rebalancer/ui";
 import { useAtom } from "jotai";
-import { accountAtom } from "@/app/rebalancer/globals";
+import { accountAtom } from "@/app/rebalancer/ui";
 import { LivePortfolioTooltipCopy } from "@/app/rebalancer/const";
-import { Asset } from "@/app/rebalancer/components";
 
 export type LiveBalancesTableData = {
   symbol: string;

@@ -8,7 +8,7 @@ import {
   useHistoricBalances,
   useHistoricPrices,
   useHistoricTargets,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { CoinGeckoHistoricPrices } from "@/types/coingecko";
@@ -19,7 +19,7 @@ import {
 import { UTCDate } from "@date-fns/utc";
 import { ErrorHandler } from "@/const/error";
 import { USDC_DENOM } from "@/const/chain-data";
-import { priceSourceAtom } from "@/app/rebalancer/globals";
+import { priceSourceAtom } from "@/app/rebalancer/ui";
 import { useAtom } from "jotai";
 
 export const useHistoricValues = ({

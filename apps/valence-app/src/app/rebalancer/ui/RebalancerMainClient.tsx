@@ -4,11 +4,8 @@ import {
   SidePanelV2,
   AccountDetailsPanel,
   HistoricalGraph,
-} from "@/app/rebalancer/components";
-import {
-  useAccountConfigQuery,
-  useHistoricValues,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
+import { useAccountConfigQuery, useHistoricValues } from "@/app/rebalancer/ui";
 
 export const RebalancerMainClient = ({ account }: { account?: string }) => {
   const accountConfigQuery = useAccountConfigQuery({

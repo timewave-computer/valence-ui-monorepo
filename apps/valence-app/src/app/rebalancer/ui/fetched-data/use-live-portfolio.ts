@@ -5,7 +5,7 @@ import {
   fetchAuctionStatuses,
 } from "@/server/actions";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { useAssetMetadata, useLivePrices } from "@/app/rebalancer/hooks";
+import { useAssetMetadata, useLivePrices } from "@/app/rebalancer/ui";
 import { microToBase } from "@/utils";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { chainConfig } from "@/const/config";

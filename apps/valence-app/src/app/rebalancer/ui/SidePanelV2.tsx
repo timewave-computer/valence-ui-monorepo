@@ -4,7 +4,7 @@ import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { useWallet } from "@/hooks";
 import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
-import { scaleAtom, accountAtom } from "@/app/rebalancer/globals";
+import { scaleAtom, accountAtom } from "@/app/rebalancer/ui";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
@@ -14,7 +14,7 @@ import { Label } from "@valence-ui/ui-components";
 import {
   useMultipleValenceAccounts,
   useValenceAccount,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { ValenceProductBrand } from "@/components/ValenceProductBrand";
 
 export const SidePanelV2: React.FC<{

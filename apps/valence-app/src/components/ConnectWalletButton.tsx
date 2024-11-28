@@ -5,10 +5,7 @@ import { ToastMessage } from "@/components";
 import { useAlert, useIsServer, useWallet } from "@/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  useFetchValenceAccount,
-  useValenceAccount,
-} from "@/app/rebalancer/hooks";
+import { useFetchValenceAccount, useValenceAccount } from "@/app/rebalancer/ui";
 import { WalletStatus } from "@cosmos-kit/core";
 import { toast } from "sonner";
 

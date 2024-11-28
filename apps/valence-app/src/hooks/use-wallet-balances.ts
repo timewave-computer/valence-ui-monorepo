@@ -1,4 +1,4 @@
-import { withTimeout } from "@/app/rebalancer/hooks";
+import { withTimeout } from "@/app/rebalancer/ui";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
   fetchSupportedBalances,

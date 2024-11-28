@@ -10,11 +10,8 @@ import {
   useLivePortfolio,
   useMinimumRequiredValue,
   useNoSupportedAssetsWarning,
-} from "@/app/rebalancer/hooks";
-import {
-  NoFundsActionItems,
-  SupportedAssets,
-} from "@/app/rebalancer/components";
+} from "@/app/rebalancer/ui";
+import { NoFundsActionItems, SupportedAssets } from "@/app/rebalancer/ui";
 import {
   FormInputLabel,
   FormTableCell,

@@ -7,7 +7,7 @@ import {
   BalanceReturnValue,
   useAccountConfigQuery,
   useTestSignerConnection,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {

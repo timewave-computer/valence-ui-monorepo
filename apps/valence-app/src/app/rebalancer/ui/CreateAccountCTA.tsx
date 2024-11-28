@@ -1,6 +1,6 @@
 "use client";
-import { Asset } from "@/app/rebalancer/components";
-import { useAssetMetadata } from "@/app/rebalancer/hooks";
+import { Asset } from "@/app/rebalancer/ui";
+import { useAssetMetadata } from "@/app/rebalancer/ui";
 import { displayNumberV2, microToBase } from "@/utils";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { useRouter } from "next/navigation";

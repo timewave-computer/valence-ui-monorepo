@@ -6,12 +6,12 @@ import {
   useAssetMetadata,
   useLivePrices,
   useBaseTokenValue,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { UTCDate } from "@date-fns/utc";
 import init, { do_pid } from "@/wasm/pid/pkg/pid";
 import { addDays } from "date-fns";
 import Decimal from "decimal.js";
-import { GraphData } from "@/app/rebalancer/components";
+import { GraphData } from "@/app/rebalancer/ui";
 import { OriginAsset } from "@/types/ibc";
 import { GraphKey, KeyTag } from "@/app/rebalancer/const";
 

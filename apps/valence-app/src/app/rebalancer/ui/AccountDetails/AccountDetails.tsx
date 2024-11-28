@@ -6,14 +6,14 @@ import {
   DepositDialog,
   DoneRebalancingTooltip,
   RebalanceInProgressTooltip,
-} from "@/app/rebalancer/components";
+} from "@/app/rebalancer/ui";
 import {
   useAccountConfigQuery,
   useAssetMetadata,
   useLivePortfolio,
   useMultipleValenceAccounts,
   useRebalanceStatusQuery,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import React, { useMemo, useState } from "react";
 import { useWallet } from "@/hooks";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";

@@ -24,14 +24,14 @@ import {
   useBaseTokenValue,
   useMinimumRequiredValue,
   useNoSupportedAssetsWarning,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { chainConfig } from "@/const/config";
 import { BsExclamationCircle } from "react-icons/bs";
 import {
   Asset,
   NoFundsActionItems,
   SupportedAssets,
-} from "@/app/rebalancer/components";
+} from "@/app/rebalancer/ui";
 
 export const DepositAssets: React.FC<{
   address: string;

@@ -2,11 +2,7 @@
 import { Dropdown } from "@/components";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
-import {
-  Graph,
-  ValueTooltip,
-  CreateAccountCTA,
-} from "@/app/rebalancer/components";
+import { Graph, ValueTooltip, CreateAccountCTA } from "@/app/rebalancer/ui";
 import {
   useAccountConfigQuery,
   useAssetMetadata,
@@ -15,7 +11,7 @@ import {
   useLivePortfolio,
   useHistoricalGraph,
   useValenceAccount,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import {
   Scale,
@@ -29,7 +25,7 @@ import {
   accountAtom,
   baseDenomAtom,
   priceSourceAtom,
-} from "@/app/rebalancer/globals";
+} from "@/app/rebalancer/ui";
 import { USDC_DENOM } from "@/const/chain-data";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";

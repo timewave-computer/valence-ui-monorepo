@@ -1,8 +1,5 @@
 "use client";
-import {
-  useAssetMetadata,
-  useRebalanceStatusQuery,
-} from "@/app/rebalancer/hooks";
+import { useAssetMetadata, useRebalanceStatusQuery } from "@/app/rebalancer/ui";
 import React from "react";
 import { IconTooltipContent } from "@valence-ui/ui-components";
 import { displayNumber } from "@/utils";

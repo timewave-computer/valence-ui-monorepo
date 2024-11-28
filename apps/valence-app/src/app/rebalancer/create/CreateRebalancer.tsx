@@ -39,7 +39,7 @@ import {
   useBaseTokenValue,
   useMinimumRequiredValue,
   useTestSignerConnection,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { HiMiniArrowLeft } from "react-icons/hi2";
 import { BetaDisclaimer } from "./copy";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";

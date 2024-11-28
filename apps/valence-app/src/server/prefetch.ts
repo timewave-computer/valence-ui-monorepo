@@ -12,7 +12,7 @@ import {
   fetchOraclePrices,
 } from "@/server/actions";
 import { chainConfig } from "@/const/config";
-import { withTimeout } from "@/app/rebalancer/hooks";
+import { withTimeout } from "@/app/rebalancer/ui";
 import { UTCDate } from "@date-fns/utc";
 import { subDays } from "date-fns";
 import { OriginAsset } from "@/types/ibc";

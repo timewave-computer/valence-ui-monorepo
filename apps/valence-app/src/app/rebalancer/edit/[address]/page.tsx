@@ -1,4 +1,4 @@
-import { SidePanelV2 } from "@/app/rebalancer/components";
+import { SidePanelV2 } from "@/app/rebalancer/ui";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ABSOLUTE_URL, EDIT_REBALANCER_DESCRIPTION } from "@/const";

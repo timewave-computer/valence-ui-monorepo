@@ -8,7 +8,7 @@ import {
   useAccountConfigQuery,
   useAssetMetadata,
   useLivePortfolio,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { difference } from "next/dist/build/utils";
 
 type TradeStatusData = {

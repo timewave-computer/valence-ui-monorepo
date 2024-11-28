@@ -2,7 +2,7 @@ import {
   AccountDetailsPanel,
   SidePanelV2,
   HistoricalGraph,
-} from "@/app/rebalancer/components";
+} from "@/app/rebalancer/ui";
 
 export default function RebalancerMainSuspenseFallback() {
   return (

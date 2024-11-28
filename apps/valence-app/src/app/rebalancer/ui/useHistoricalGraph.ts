@@ -16,19 +16,19 @@ import {
 import { simulate } from "@/utils";
 import { UTCDate } from "@date-fns/utc";
 import { addDays, subDays } from "date-fns";
-import type { GraphData } from "@/app/rebalancer/components/Graph/graph";
+import type { GraphData } from "@/app/rebalancer/ui/Graph/graph";
 import {
   useAssetMetadata,
   UseLivePortfolioReturnValue,
   UseHistoricalValuesReturnValue,
   UseAccountConfigQueryReturnValue,
-} from "@/app/rebalancer/hooks";
+} from "@/app/rebalancer/ui";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { OriginAsset } from "@/types/ibc";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 import { useAtom } from "jotai";
-import { priceSourceAtom } from "@/app/rebalancer/globals";
+import { priceSourceAtom } from "@/app/rebalancer/ui";
 
 export const useHistoricalGraph = ({
   scale = Scale.Month,

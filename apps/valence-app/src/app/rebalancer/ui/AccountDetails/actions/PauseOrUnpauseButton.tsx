@@ -1,7 +1,7 @@
 "use client";
 import { useAtom } from "jotai";
-import { useAccountConfigQuery } from "@/app/rebalancer/hooks";
-import { accountAtom } from "@/app/rebalancer/globals";
+import { useAccountConfigQuery } from "@/app/rebalancer/ui";
+import { accountAtom } from "@/app/rebalancer/ui";
 import { Button } from "@valence-ui/ui-components";
 import { ToastMessage } from "@/components";
 import { QUERY_KEYS } from "@/const/query-keys";

@@ -1,7 +1,7 @@
 import { useWhitelistedDenoms } from "@/hooks";
 import { displayValue, microToBase } from "@/utils";
 import { useMemo } from "react";
-import { useAssetMetadata } from "@/app/rebalancer/hooks";
+import { useAssetMetadata } from "@/app/rebalancer/ui";
 
 const DEFAULT_MIN_VALUE = {
   value: 10,

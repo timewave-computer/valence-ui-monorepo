@@ -2,7 +2,7 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { fetchHistoricalBalances } from "@/server/actions";
 import { microToBase } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
-import { useAssetMetadata } from "@/app/rebalancer/hooks";
+import { useAssetMetadata } from "@/app/rebalancer/ui";
 
 export const useHistoricBalances = ({
   accountAddress,

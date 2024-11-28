@@ -1,5 +1,5 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { RebalancerMainClient } from "./RebalancerMainClient";
+import { RebalancerMainClient } from "./ui/RebalancerMainClient";
 import {
   prefetchAuctionLimits,
   prefetchAuctionStatuses,
