@@ -110,7 +110,6 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
   const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   const handleUpdateQueryConfig = (data: RpcSettingsFormValues) => {
-    console.log("data", data);
     setQueryConfig({
       main: data.main,
       allChains: [

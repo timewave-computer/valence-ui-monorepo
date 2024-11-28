@@ -11,13 +11,15 @@ export const useHistoricPrices = () => {
     queries: chainConfig.supportedAssets.map((asset) => ({
       staleTime: 60 * 1000 * 10, // 10 mins
       queryKey: [QUERY_KEYS.HISTORIC_PRICES_COINGECKO, asset.denom],
-      refetchInterval: 0,
+      refetchInterval: 5000,
       retry: (errorCount: number) => errorCount < 1,
-      queryFn: () => {
-        return fetchHistoricalPricesV2({
+      queryFn: async () => {
+        const data = await fetchHistoricalPricesV2({
           denom: asset.denom,
           coingeckoId: asset.coingeckoId,
         });
+        console.log(asset.denom, data);
+        return data;
       },
     })),
   });
