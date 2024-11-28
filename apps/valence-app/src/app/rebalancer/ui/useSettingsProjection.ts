@@ -13,7 +13,7 @@ import { addDays } from "date-fns";
 import Decimal from "decimal.js";
 import { GraphData } from "@/app/rebalancer/ui";
 import { OriginAsset } from "@/types/ibc";
-import { GraphKey, KeyTag } from "@/app/rebalancer/const";
+import { GraphKey, KeyTag } from "@/app/rebalancer/ui/const";
 
 const historicalYTickCount = 200;
 

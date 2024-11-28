@@ -1,14 +1,9 @@
-import {
-  CreateRebalancerCopy,
-  RebalancerFormTooltipCopy,
-} from "@/app/rebalancer/create/copy";
 import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
-import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import { CalloutBox, Checkbox } from "@/components";
 import {
   FormTextInput,
@@ -19,18 +14,19 @@ import {
   FormTableCell,
   LoadingSkeleton,
 } from "@valence-ui/ui-components";
-import {
-  useAssetMetadata,
-  useBaseTokenValue,
-  useMinimumRequiredValue,
-  useNoSupportedAssetsWarning,
-} from "@/app/rebalancer/ui";
 import { chainConfig } from "@/const/config";
 import { BsExclamationCircle } from "react-icons/bs";
 import {
   Asset,
   NoFundsActionItems,
   SupportedAssets,
+  CreateRebalancerCopy,
+  RebalancerFormTooltipCopy,
+  useAssetMetadata,
+  useBaseTokenValue,
+  useMinimumRequiredValue,
+  useNoSupportedAssetsWarning,
+  WarnTextV2,
 } from "@/app/rebalancer/ui";
 
 export const DepositAssets: React.FC<{

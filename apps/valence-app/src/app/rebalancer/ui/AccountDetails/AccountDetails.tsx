@@ -6,8 +6,6 @@ import {
   DepositDialog,
   DoneRebalancingTooltip,
   RebalanceInProgressTooltip,
-} from "@/app/rebalancer/ui";
-import {
   useAccountConfigQuery,
   useAssetMetadata,
   useLivePortfolio,

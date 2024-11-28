@@ -11,13 +11,13 @@ import {
   decodeInstatiateMessage,
   decodeRegisterMessage,
   makeCreateRebalancerMessages,
-} from "@/app/rebalancer/utils";
+  WarnTextV2,
+} from "@/app/rebalancer/ui";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useWallet } from "@/hooks";
 import { useEffect, useMemo } from "react";
 import { ErrorHandler } from "@/const/error";
-import { WarnTextV2 } from "../WarnText";
 
 export const PreviewMessage: React.FC<{
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;

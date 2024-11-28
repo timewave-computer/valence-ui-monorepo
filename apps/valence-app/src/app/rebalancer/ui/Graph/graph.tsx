@@ -7,7 +7,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Scale, scaleFormatter } from "@/app/rebalancer/const/graph";
+import { Scale, scaleFormatter } from "@/app/rebalancer/ui/const/graph";
 
 export type GraphData = Array<{
   timestamp: number;

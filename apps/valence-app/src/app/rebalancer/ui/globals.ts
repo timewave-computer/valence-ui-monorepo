@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { Scale } from "@/app/rebalancer/const";
+import { Scale } from "@/app/rebalancer/ui/const";
 import { chainConfig } from "@/const/config";
 
 export const accountAtom = atom("");

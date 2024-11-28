@@ -1,5 +1,5 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { RebalancerMainClient } from "./ui/RebalancerMainClient";
+import { RebalancerMainClient } from "../ui/RebalancerMainClient";
 import {
   prefetchAuctionLimits,
   prefetchAuctionStatuses,
@@ -15,7 +15,7 @@ import { getQueryClient } from "@/utils/get-query-client";
 /***
  * making own server component to prefetch data with a manual suspense boundary to provide search params as a key
  */
-export default async function RebalancerMainServerComponent({
+export async function RebalancerMainServerComponent({
   searchParams: { account },
 }: {
   searchParams: {

@@ -13,7 +13,6 @@ import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { useRouter } from "next/navigation";
 import { useForm, UseFormReturn } from "react-hook-form";
-import { makeCreateRebalancerMessages } from "@/app/rebalancer/utils";
 import { displayValue, useDateRange } from "@/utils";
 import { chainConfig } from "@/const/config";
 import { toast } from "sonner";
@@ -23,7 +22,12 @@ import {
   RebalanceSpeed,
   AdvancedSettings,
   PreviewMessage,
-} from "@/app/rebalancer/create/components";
+  useBaseTokenValue,
+  useMinimumRequiredValue,
+  useTestSignerConnection,
+  BetaDisclaimer,
+  makeCreateRebalancerMessages,
+} from "@/app/rebalancer/ui";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeliverTxResponse } from "@cosmjs/stargate";
@@ -35,13 +39,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@radix-ui/react-hover-card";
-import {
-  useBaseTokenValue,
-  useMinimumRequiredValue,
-  useTestSignerConnection,
-} from "@/app/rebalancer/ui";
 import { HiMiniArrowLeft } from "react-icons/hi2";
-import { BetaDisclaimer } from "./copy";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 
 type CreateRebalancerProps = {};

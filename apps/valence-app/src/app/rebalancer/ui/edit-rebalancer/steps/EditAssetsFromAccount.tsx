@@ -1,4 +1,3 @@
-import { CreateRebalancerCopy } from "@/app/rebalancer/create/copy";
 import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
@@ -6,12 +5,14 @@ import { displayNumber, displayValue } from "@/utils";
 import { produce } from "immer";
 import { CalloutBox, Checkbox } from "@/components";
 import {
+  NoFundsActionItems,
+  SupportedAssets,
+  CreateRebalancerCopy,
   useBaseTokenValue,
   useLivePortfolio,
   useMinimumRequiredValue,
   useNoSupportedAssetsWarning,
 } from "@/app/rebalancer/ui";
-import { NoFundsActionItems, SupportedAssets } from "@/app/rebalancer/ui";
 import {
   FormInputLabel,
   FormTableCell,

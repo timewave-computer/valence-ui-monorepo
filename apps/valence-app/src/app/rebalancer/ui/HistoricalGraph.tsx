@@ -19,7 +19,7 @@ import {
   LOAD_CONFIG_ERROR,
   SymbolColors,
   GraphStyles,
-} from "@/app/rebalancer/const";
+} from "@/app/rebalancer/ui/const";
 import {
   scaleAtom,
   accountAtom,

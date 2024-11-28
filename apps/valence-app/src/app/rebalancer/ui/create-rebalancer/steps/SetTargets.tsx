@@ -1,12 +1,15 @@
-import {
-  CreateRebalancerCopy,
-  RebalancerFormTooltipCopy,
-} from "@/app/rebalancer/create/copy";
 import { Fragment, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { displayNumber } from "@/utils";
-import { useAssetMetadata, useBaseTokenValue } from "@/app/rebalancer/ui";
-import { Asset } from "@/app/rebalancer/ui";
+import {
+  useAssetMetadata,
+  useBaseTokenValue,
+  Asset,
+  CreateRebalancerCopy,
+  RebalancerFormTooltipCopy,
+  WarnTextV2,
+  useWhitelistedDenoms,
+} from "@/app/rebalancer/ui";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import { Dropdown } from "@/components";
 import {
@@ -20,10 +23,9 @@ import {
   LoadingSkeleton,
   FormTableCell,
 } from "@valence-ui/ui-components";
-import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
-import { useIsServer, useWhitelistedDenoms } from "@/hooks";
+import { useIsServer } from "@/hooks";
 
 export const SetTargets: React.FC<{
   address: string;

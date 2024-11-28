@@ -1,26 +1,24 @@
 "use client";
 import { useWallet } from "@/hooks/use-wallet";
-import { RebalancerFormHeader } from "../../create/CreateRebalancer";
 import { useForm } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import {
   BalanceReturnValue,
   useAccountConfigQuery,
   useTestSignerConnection,
-} from "@/app/rebalancer/ui";
-import { QUERY_KEYS } from "@/const/query-keys";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
+  RebalancerFormHeader,
   AdvancedSettings,
   RebalanceSpeed,
   SetTargets,
-} from "@/app/rebalancer/create/components";
+  EditAssetsForAccount,
+  makeUpdateRebalancerMessage,
+} from "@/app/rebalancer/ui";
+import { QUERY_KEYS } from "@/const/query-keys";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, FormRoot } from "@valence-ui/ui-components";
 import { ToastMessage } from "@/components";
-import { EditAssetsForAccount } from "@/app/rebalancer/edit/components/";
 import { OriginAsset } from "@/types/ibc";
 import { useMemo } from "react";
-import { makeUpdateRebalancerMessage } from "@/app/rebalancer/utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";

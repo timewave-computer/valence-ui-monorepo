@@ -12,7 +12,7 @@ import {
   MsgExecuteContract,
   MsgInstantiateContract2,
 } from "@/smol_telescope/generated-files";
-import { hasDenom } from "@/app/rebalancer/utils";
+import { hasDenom } from "@/app/rebalancer/ui";
 
 /**
  * If the value starts with a decimal point, add a leading zero.

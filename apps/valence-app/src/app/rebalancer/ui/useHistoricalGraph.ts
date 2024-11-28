@@ -8,7 +8,7 @@ import {
   xTickGenerator,
   maxHistoryDataPoints,
   minTimestampGenerator,
-} from "@/app/rebalancer/const/graph";
+} from "@/app/rebalancer/ui/const/graph";
 import {
   FetchAccountConfigReturnValue,
   FetchHistoricalValuesReturnValue,

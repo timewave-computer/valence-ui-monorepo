@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { ABSOLUTE_URL, REBALANCER_DESCRIPTION } from "@/const";
 import { X_HANDLE } from "@valence-ui/socials";
-
 import { Suspense } from "react";
-import { AccountDetailsPanel, SidePanelV2 } from "./ui";
-import { HistoricalGraph } from "./ui/HistoricalGraph";
-import RebalancerMainServerComponent from "./RebalancerMainServer";
+import {
+  HistoricalGraph,
+  AccountDetailsPanel,
+  SidePanelV2,
+} from "@/app/rebalancer/ui";
+import { RebalancerMainServerComponent } from "@/app/rebalancer/server";
 
 export const metadata: Metadata = {
   title: "Rebalancer",

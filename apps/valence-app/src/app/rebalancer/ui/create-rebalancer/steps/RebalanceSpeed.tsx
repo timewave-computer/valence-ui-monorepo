@@ -1,8 +1,4 @@
 "use client";
-import {
-  CreateRebalancerCopy,
-  RebalancerFormTooltipCopy,
-} from "@/app/rebalancer/create/copy";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import { Dropdown, LinkText } from "@/components";
@@ -12,8 +8,6 @@ import {
   FormInputLabel,
 } from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
-import { cn } from "@/utils";
-import { WarnTextV2 } from "@/app/rebalancer/create/components";
 import {
   Line,
   LineChart,
@@ -29,7 +23,10 @@ import {
   Scale,
   scaleFormatter,
   SymbolColors,
-} from "@/app/rebalancer/const";
+  WarnTextV2,
+  CreateRebalancerCopy,
+  RebalancerFormTooltipCopy,
+} from "@/app/rebalancer/ui";
 import { useAssetMetadata, useSettingsProjection } from "@/app/rebalancer/ui";
 import { ValueTooltip } from "@/app/rebalancer/ui";
 

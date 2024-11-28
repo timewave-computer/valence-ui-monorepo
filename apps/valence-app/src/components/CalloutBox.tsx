@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import React from "react";
-import { WarnTextV2 } from "@/app/rebalancer/create/components";
+import { WarnTextV2 } from "@/app/rebalancer/ui";
 import { BsExclamationCircle } from "react-icons/bs";
 import { cn } from "@/utils";
 

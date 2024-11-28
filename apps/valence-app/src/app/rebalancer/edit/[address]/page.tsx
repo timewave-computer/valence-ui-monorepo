@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { ABSOLUTE_URL, EDIT_REBALANCER_DESCRIPTION } from "@/const";
 import { X_HANDLE } from "@valence-ui/socials";
 import { microToBase } from "@/utils";
-import { EditRebalancer } from "./EditRebalancer";
+import { EditRebalancer } from "../../ui/edit-rebalancer/EditRebalancer";
 import {
   dehydrate,
   HydrationBoundary,

@@ -1,4 +1,4 @@
-import { SymbolColors } from "@/app/rebalancer/const";
+import { SymbolColors } from "@/app/rebalancer/ui/const";
 import { Fragment } from "react";
 
 export const Asset: React.FC<{

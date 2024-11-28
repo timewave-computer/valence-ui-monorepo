@@ -24,6 +24,7 @@ import {
   useAssetMetadata,
   useLivePortfolio,
   UseLivePortfolioReturnValue,
+  WarnTextV2,
 } from "@/app/rebalancer/ui";
 import { baseToMicro, displayNumber, displayNumberV2 } from "@/utils";
 import { useForm } from "react-hook-form";
@@ -33,7 +34,6 @@ import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
 import { useAtom } from "jotai";
 import { accountAtom } from "@/app/rebalancer/ui";
-import { WarnTextV2 } from "@/app/rebalancer/create/components";
 
 type WithdrawInputForm = {
   amounts: Coin[];
