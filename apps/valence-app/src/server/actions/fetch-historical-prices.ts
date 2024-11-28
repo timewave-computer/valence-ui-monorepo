@@ -73,8 +73,8 @@ const getRangeBounds = (range: TimeRange, endDate = new Date()) => {
   };
 };
 
-// TODO: should be some automatic way to derive this
-const priceOverrides = {
+// these timestamps will use an internally calculate twap and drop the price at this timestamp
+const priceExclusions = {
   newt: {
     "1731888000000": true,
   },
@@ -111,15 +111,15 @@ export const fetchHistoricalPricesV2 = async (asset: {
     );
   }
   const twapLength = getTwapLength(twapRadius);
-  const overrides =
-    asset.coingeckoId in priceOverrides && validated.data.length > twapLength
-      ? priceOverrides[asset.coingeckoId]
+  const exclusion =
+    asset.coingeckoId in priceExclusions && validated.data.length > twapLength
+      ? priceExclusions[asset.coingeckoId]
       : null;
 
   let result;
-  if (overrides) {
+  if (exclusion) {
     result = validated.data.map(([timestamp, price], i) => {
-      if (timestamp in overrides) {
+      if (timestamp in exclusion) {
         return [
           timestamp,
           calculateTwapAtIndex({ index: i, data: validated.data, twapRadius }),

@@ -232,8 +232,6 @@ export function ProgramDiagramWithProvider(props: ProgramDiagramProps) {
     });
   }
 
-  console.log("initial config", props.initialData.queryConfig);
-
   return (
     <ProgramQueryArgsContext.Provider value={store.current}>
       <ReactFlowProvider>
