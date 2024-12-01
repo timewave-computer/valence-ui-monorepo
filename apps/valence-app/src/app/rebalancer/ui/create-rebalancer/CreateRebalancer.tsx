@@ -44,7 +44,7 @@ import { X_HANDLE, X_URL } from "@valence-ui/socials";
 
 type CreateRebalancerProps = {};
 
-export default function CreateRebalancer({}: CreateRebalancerProps) {
+export function CreateRebalancer({}: CreateRebalancerProps) {
   const router = useRouter();
 
   const {

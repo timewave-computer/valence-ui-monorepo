@@ -1,5 +1,4 @@
-import { SidePanelV2 } from "@/app/rebalancer/ui";
-import CreateRebalancer from "./CreateRebalancer";
+import { SidePanelV2, CreateRebalancer } from "@/app/rebalancer/ui";
 import type { Metadata } from "next";
 import { CREATE_REBALANCER_DESCRIPTION, ABSOLUTE_URL } from "@/const";
 import { X_HANDLE } from "@valence-ui/socials";

@@ -1,10 +1,13 @@
-import { SidePanelV2 } from "@/app/rebalancer/ui";
+import {
+  SidePanelV2,
+  type BalanceReturnValue,
+  EditRebalancer,
+} from "@/app/rebalancer/ui";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ABSOLUTE_URL, EDIT_REBALANCER_DESCRIPTION } from "@/const";
 import { X_HANDLE } from "@valence-ui/socials";
 import { microToBase } from "@/utils";
-import { EditRebalancer } from "../../ui/edit-rebalancer/EditRebalancer";
 import {
   dehydrate,
   HydrationBoundary,
@@ -15,7 +18,6 @@ import {
   fetchRebalancerAccountBalances,
   fetchRebalancerWhitelist,
 } from "@/server/actions";
-import { BalanceReturnValue } from "../../hooks";
 import { OriginAsset } from "@/types/ibc";
 import { ErrorHandler } from "@/const/error";
 import {
