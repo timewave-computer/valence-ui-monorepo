@@ -8,7 +8,7 @@ import {
   xTickGenerator,
   maxHistoryDataPoints,
   minTimestampGenerator,
-} from "@/app/rebalancer/ui/const/graph";
+} from "@/app/rebalancer/ui";
 import {
   FetchAccountConfigReturnValue,
   FetchHistoricalValuesReturnValue,
@@ -16,7 +16,7 @@ import {
 import { simulate } from "@/utils";
 import { UTCDate } from "@date-fns/utc";
 import { addDays, subDays } from "date-fns";
-import type { GraphData } from "@/app/rebalancer/ui/Graph/graph";
+import type { GraphData } from "@/app/rebalancer/ui/view-rebalancer/HistoricalRebalancerGraph";
 import {
   useAssetMetadata,
   UseLivePortfolioReturnValue,

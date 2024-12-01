@@ -2,7 +2,7 @@ import {
   KeyTag,
   GraphKey,
   SymbolColors,
-} from "@/app/rebalancer/ui/const/graph";
+} from "@/app/rebalancer/ui/rebalancer-graph";
 import {
   cn,
   displayNumber,
