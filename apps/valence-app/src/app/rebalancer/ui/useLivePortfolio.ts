@@ -144,7 +144,7 @@ export const useLivePortfolio = ({
         const accountBalances = results[0].data;
         const rawAuctionBalances = results[1].data;
 
-        const formattedData = chainConfig.supportedAssets.map(
+        const formattedData = chainConfig.supportedRebalancerAssets.map(
           (supportedAsset) => {
             const denom = supportedAsset.denom;
 

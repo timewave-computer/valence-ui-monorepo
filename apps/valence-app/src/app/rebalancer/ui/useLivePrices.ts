@@ -20,7 +20,7 @@ export const useLivePrices = () => {
   );
 
   const queryState = useQueries({
-    queries: chainConfig.supportedAssets.map((asset) => {
+    queries: chainConfig.supportedRebalancerAssets.map((asset) => {
       return {
         // eslint-disable-next-line @tanstack/query/exhaustive-deps
         queryKey: [QUERY_KEYS.COINGECKO_PRICE, asset.denom],

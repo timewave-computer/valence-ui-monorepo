@@ -10,7 +10,7 @@ export async function fetchRebalancerAccountBalances({
 }): Promise<Coin[]> {
   const stargateClient = await getStargateClient();
 
-  const balanceRequests = chainConfig.supportedAssets.map((asset) =>
+  const balanceRequests = chainConfig.supportedRebalancerAssets.map((asset) =>
     stargateClient.getBalance(address, asset.denom),
   );
 

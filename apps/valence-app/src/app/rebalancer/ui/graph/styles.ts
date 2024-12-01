@@ -27,7 +27,7 @@ class SymbolColorsClass {
 
   constructor() {
     const colorMap: Record<string, GraphColor> = {};
-    chainConfig.supportedAssets.forEach((asset, i) => {
+    chainConfig.supportedRebalancerAssets.forEach((asset, i) => {
       colorMap[asset.symbol] = COLORS[i];
     });
     this.assetColors = colorMap;

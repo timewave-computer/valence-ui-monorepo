@@ -8,7 +8,7 @@ import { useQueries } from "@tanstack/react-query";
 // TODO: lazy load oracle prices. they are not even used in production.
 export const useHistoricPrices = () => {
   const historicCoingeckoPriceQueries = useQueries({
-    queries: chainConfig.supportedAssets.map((asset) => ({
+    queries: chainConfig.supportedRebalancerAssets.map((asset) => ({
       staleTime: 60 * 1000 * 10, // 10 mins
       queryKey: [QUERY_KEYS.HISTORIC_PRICES_COINGECKO, asset.denom],
       refetchInterval: 0,
@@ -23,7 +23,7 @@ export const useHistoricPrices = () => {
     })),
   });
   const historicOraclePriceQueries = useQueries({
-    queries: chainConfig.supportedAssets.map((asset) => ({
+    queries: chainConfig.supportedRebalancerAssets.map((asset) => ({
       staleTime: 60 * 1000 * 10, // 10 mins
       queryKey: [QUERY_KEYS.HISTORIC_PRICES_ORACLE, asset.denom],
       refetchInterval: 0,
