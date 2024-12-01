@@ -1,8 +1,4 @@
-import {
-  KeyTag,
-  GraphKey,
-  SymbolColors,
-} from "@/app/rebalancer/ui/rebalancer-graph";
+import { KeyTag, GraphKey, SymbolColors } from "@/app/rebalancer/ui/graph";
 import {
   cn,
   displayNumber,

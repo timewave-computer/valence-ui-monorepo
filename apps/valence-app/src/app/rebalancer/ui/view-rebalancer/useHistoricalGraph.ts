@@ -8,27 +8,25 @@ import {
   xTickGenerator,
   maxHistoryDataPoints,
   minTimestampGenerator,
+  type GraphData,
+  priceSourceAtom,
+  useAssetMetadata,
+  type UseLivePortfolioReturnValue,
+  type UseHistoricalValuesReturnValue,
+  type UseAccountConfigQueryReturnValue,
 } from "@/app/rebalancer/ui";
 import {
-  FetchAccountConfigReturnValue,
-  FetchHistoricalValuesReturnValue,
+  type FetchAccountConfigReturnValue,
+  type FetchHistoricalValuesReturnValue,
 } from "@/server/actions";
 import { simulate } from "@/utils";
 import { UTCDate } from "@date-fns/utc";
 import { addDays, subDays } from "date-fns";
-import type { GraphData } from "@/app/rebalancer/ui/view-rebalancer/HistoricalRebalancerGraph";
-import {
-  useAssetMetadata,
-  UseLivePortfolioReturnValue,
-  UseHistoricalValuesReturnValue,
-  UseAccountConfigQueryReturnValue,
-} from "@/app/rebalancer/ui";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { OriginAsset } from "@/types/ibc";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 import { useAtom } from "jotai";
-import { priceSourceAtom } from "@/app/rebalancer/ui";
 
 export const useHistoricalGraph = ({
   scale = Scale.Month,

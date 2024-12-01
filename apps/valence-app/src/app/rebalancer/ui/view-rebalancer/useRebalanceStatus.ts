@@ -4,12 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { ErrorHandler } from "@/const/error";
 import {
-  useAuctionLimits,
   useAccountConfigQuery,
   useAssetMetadata,
   useLivePortfolio,
 } from "@/app/rebalancer/ui";
-import { difference } from "next/dist/build/utils";
+import { fetchAuctionLimits } from "@/server/actions";
 
 type TradeStatusData = {
   currentValue: number;
@@ -115,6 +114,16 @@ export const useRebalanceStatusQuery = ({
           (t) => Math.abs(t.tradeAmount) < t.limit,
         ),
       };
+    },
+  });
+};
+
+const useAuctionLimits = () => {
+  return useQuery({
+    refetchInterval: 0,
+    queryKey: [QUERY_KEYS.AUCTION_LIMITS],
+    queryFn: async () => {
+      return await fetchAuctionLimits();
     },
   });
 };
