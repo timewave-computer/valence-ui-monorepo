@@ -14,10 +14,10 @@ import {
   useAccountConfigQuery,
   useLivePortfolio,
   Asset,
+  accountAtom,
+  LivePortfolioTooltipCopy,
 } from "@/app/rebalancer/ui";
 import { useAtom } from "jotai";
-import { accountAtom } from "@/app/rebalancer/ui";
-import { LivePortfolioTooltipCopy } from "@/app/rebalancer/ui/const";
 
 export type LiveBalancesTableData = {
   symbol: string;

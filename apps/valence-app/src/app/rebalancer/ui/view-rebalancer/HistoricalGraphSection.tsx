@@ -2,7 +2,6 @@
 import { Dropdown } from "@/components";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
-import { Graph, ValueTooltip, CreateAccountCTA } from "@/app/rebalancer/ui";
 import {
   useAccountConfigQuery,
   useAssetMetadata,
@@ -11,21 +10,20 @@ import {
   useLivePortfolio,
   useHistoricalGraph,
   useValenceAccount,
-} from "@/app/rebalancer/ui";
-import { Label, Line, ReferenceLine, Tooltip } from "recharts";
-import {
+  HistoricalRebalancerGraph,
+  ValueTooltip,
+  CreateAccountCTA,
   Scale,
   GraphKey,
   LOAD_CONFIG_ERROR,
   SymbolColors,
   GraphStyles,
-} from "@/app/rebalancer/ui/const";
-import {
   scaleAtom,
   accountAtom,
   baseDenomAtom,
   priceSourceAtom,
 } from "@/app/rebalancer/ui";
+import { Label, Line, ReferenceLine, Tooltip } from "recharts";
 import { USDC_DENOM } from "@/const/chain-data";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
@@ -264,7 +262,7 @@ export const HistoricalGraph: React.FC<{
           </Overlay>,
           graphRef.current,
         )}
-      <Graph
+      <HistoricalRebalancerGraph
         ref={graphRef}
         scale={scale}
         xAxisTicks={data?.xAxisTicks ?? []}
@@ -343,7 +341,7 @@ export const HistoricalGraph: React.FC<{
               </Fragment>
             );
           })}
-      </Graph>
+      </HistoricalRebalancerGraph>
     </>
   );
 };

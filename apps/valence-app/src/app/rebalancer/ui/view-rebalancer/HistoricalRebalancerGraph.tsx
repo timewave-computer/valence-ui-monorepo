@@ -7,7 +7,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Scale, scaleFormatter } from "@/app/rebalancer/ui/const/graph";
+import { Scale, scaleFormatter } from "@/app/rebalancer/ui";
 
 export type GraphData = Array<{
   timestamp: number;
@@ -22,7 +22,7 @@ type GraphProps = {
   children: ReactNode;
 };
 
-export const Graph = forwardRef<HTMLDivElement, GraphProps>(
+export const HistoricalRebalancerGraph = forwardRef<HTMLDivElement, GraphProps>(
   ({ xAxisTicks, yAxisTicks, scale, data, children }, ref) => {
     return (
       <ResponsiveContainer key={scale} height={500} minWidth={824} ref={ref}>
@@ -68,4 +68,4 @@ export const Graph = forwardRef<HTMLDivElement, GraphProps>(
   },
 );
 
-Graph.displayName = "Graph";
+HistoricalRebalancerGraph.displayName = "HistoricalRebalancerGraph";

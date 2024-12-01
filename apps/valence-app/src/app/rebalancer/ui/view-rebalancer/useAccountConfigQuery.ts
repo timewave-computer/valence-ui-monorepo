@@ -6,7 +6,7 @@ import {
 } from "@/server/actions";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useState } from "react";
-import { LOAD_CONFIG_ERROR } from "@/app/rebalancer/ui/const";
+import { LOAD_CONFIG_ERROR } from "@/app/rebalancer/ui";
 import { ERROR_CODES } from "@/const/error";
 
 export type UseAccountConfigQueryReturnValue = Omit<
