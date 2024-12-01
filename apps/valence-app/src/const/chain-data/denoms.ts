@@ -28,6 +28,18 @@ export const supportedAssets: Record<
       denom: "factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt",
       coingeckoId: "newt",
     },
+    {
+      symbol: "stATOM",
+      denom:
+        "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
+      coingeckoId: "stride-staked-atom",
+    },
+    {
+      symbol: "dATOM",
+      denom:
+        "factory/neutron1k6hr0f83e7un2wjf29cspk7j69jrnskk65k3ek2nj9dztrlzpj6q00rtsa/udatom",
+      coingeckoId: "drop-staked-atom",
+    },
   ],
   "pion-1": [
     { symbol: "NTRN", denom: NTRN_DENOM, coingeckoId: "neutron-3" },
