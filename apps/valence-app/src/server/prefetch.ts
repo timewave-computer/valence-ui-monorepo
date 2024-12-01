@@ -44,7 +44,7 @@ const getPriceQueryArgs = (denom: string, coingeckoId: string) => ({
 // fetch assets and prices
 export const prefetchLivePrices = async (queryClient: QueryClient) => {
   return Promise.all(
-    chainConfig.supportedAssets.map((asset) => {
+    chainConfig.supportedRebalancerAssets.map((asset) => {
       return queryClient.prefetchQuery(
         getPriceQueryArgs(asset.denom, asset.coingeckoId),
       );
@@ -55,7 +55,7 @@ export const prefetchLivePrices = async (queryClient: QueryClient) => {
 // fetch assets and prices
 export const prefetchAssetMetdata = async (queryClient: QueryClient) => {
   return Promise.all(
-    chainConfig.supportedAssets.map((asset) => {
+    chainConfig.supportedRebalancerAssets.map((asset) => {
       return queryClient.prefetchQuery(getOriginAssetQueryArgs(asset.denom));
     }),
   );
@@ -78,8 +78,8 @@ export const prefetchAuctionLimits = async (queryClient: QueryClient) => {
 
 // fetch historical prices, and if account fetch balances and targets
 export const prefetchHistoricalPrices = async (queryClient: QueryClient) => {
-  const prefetchedHistoricOraclePrices = chainConfig.supportedAssets.map(
-    (asset) => {
+  const prefetchedHistoricOraclePrices =
+    chainConfig.supportedRebalancerAssets.map((asset) => {
       return queryClient.prefetchQuery({
         staleTime: 60 * 1000 * 10, // 10 mins
         queryKey: [QUERY_KEYS.HISTORIC_PRICES_ORACLE, asset.denom],
@@ -89,11 +89,10 @@ export const prefetchHistoricalPrices = async (queryClient: QueryClient) => {
             return fetchOraclePrices(asset.denom);
           }, QUERY_KEYS.HISTORIC_PRICES_ORACLE),
       });
-    },
-  );
+    });
 
-  const prefetchedHistoricCoingeckoPrices = chainConfig.supportedAssets.map(
-    (asset) => {
+  const prefetchedHistoricCoingeckoPrices =
+    chainConfig.supportedRebalancerAssets.map((asset) => {
       return queryClient.prefetchQuery({
         staleTime: 60 * 1000 * 10, // 10 mins
         queryKey: [QUERY_KEYS.HISTORIC_PRICES_COINGECKO, asset.denom],
@@ -106,8 +105,7 @@ export const prefetchHistoricalPrices = async (queryClient: QueryClient) => {
             });
           }, QUERY_KEYS.HISTORIC_PRICES_ORACLE),
       });
-    },
-  );
+    });
 
   await Promise.all([
     ...prefetchedHistoricOraclePrices,

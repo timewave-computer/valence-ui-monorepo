@@ -21,8 +21,8 @@ export const CreateAccountCTA = () => {
 
   if (isBalancesLoading) return <StatusBar variant="loading" />;
 
-  const allButOneAsset = chainConfig.supportedAssets.slice(0, -1);
-  const lastAsset = chainConfig.supportedAssets.slice(-1)[0];
+  const allButOneAsset = chainConfig.supportedRebalancerAssets.slice(0, -1);
+  const lastAsset = chainConfig.supportedRebalancerAssets.slice(-1)[0];
 
   const assetList =
     allButOneAsset.map((a) => a.symbol).join(", ") + " and " + lastAsset.symbol;

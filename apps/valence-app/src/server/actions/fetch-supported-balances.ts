@@ -11,7 +11,7 @@ export async function fetchSupportedBalances({
   address: string;
 }): Promise<FetchSupportedBalancesReturnValue> {
   const stargateClient = await getStargateClient();
-  const requests = chainConfig.supportedAssets.map((asset) => {
+  const requests = chainConfig.supportedRebalancerAssets.map((asset) => {
     return stargateClient.getBalance(address, asset.denom);
   });
   const balances = (await Promise.all(requests)).filter(

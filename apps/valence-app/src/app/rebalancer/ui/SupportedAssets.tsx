@@ -4,11 +4,11 @@ import { Fragment, ReactNode } from "react";
 export const SupportedAssets = (): ReactNode => {
   return (
     <Fragment>
-      {chainConfig.supportedAssets.map((a, i) => {
+      {chainConfig.supportedRebalancerAssets.map((a, i) => {
         return (
           <>
             <span className="font-semibold">{a.symbol}</span>
-            {i !== chainConfig.supportedAssets.length - 1 && ", "}
+            {i !== chainConfig.supportedRebalancerAssets.length - 1 && ", "}
           </>
         );
       })}

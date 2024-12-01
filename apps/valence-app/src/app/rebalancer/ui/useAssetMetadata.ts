@@ -21,7 +21,7 @@ export const useAssetMetadata = () => {
   );
 
   const queryState = useQueries({
-    queries: chainConfig.supportedAssets.map((asset) => {
+    queries: chainConfig.supportedRebalancerAssets.map((asset) => {
       return {
         queryKey: [QUERY_KEYS.ORIGIN_ASSET, asset.denom],
         queryFn: async () => {

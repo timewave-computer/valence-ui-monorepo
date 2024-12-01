@@ -16,14 +16,16 @@ export const fetchAuctionLimits = async (): Promise<
     cosmwasmClient,
     chainConfig.addresses.auctionsManager,
   );
-  const limitRequests = chainConfig.supportedAssets.map(async (asset) => {
-    return {
-      denom: asset.denom,
-      data: await auctionsManager.getMinLimit({
+  const limitRequests = chainConfig.supportedRebalancerAssets.map(
+    async (asset) => {
+      return {
         denom: asset.denom,
-      }),
-    };
-  });
+        data: await auctionsManager.getMinLimit({
+          denom: asset.denom,
+        }),
+      };
+    },
+  );
 
   return Promise.all(limitRequests);
 };

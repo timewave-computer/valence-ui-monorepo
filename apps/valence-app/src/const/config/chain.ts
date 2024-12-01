@@ -1,6 +1,6 @@
 import { assets } from "chain-registry";
 import { AssetList, Chain } from "@chain-registry/types";
-import { supportedAssets, USDC_DENOM } from "@/const/chain-data";
+import { supportedRebalancerAssets, USDC_DENOM } from "@/const/chain-data";
 import { getFeaturedAccounts } from "@/const/config/featured";
 import { NEUTRON_CHAIN, NEUTRON_TESTNET_CHAIN } from "../chain-data";
 
@@ -27,7 +27,7 @@ type SupportedChainConfig = {
   chain: Chain;
   assets: AssetList[];
   codeIds: CodeIdsType;
-  supportedAssets: SupportedAsset[];
+  supportedRebalancerAssets: SupportedAsset[];
   indexerUrl: string;
   addresses: {
     rebalancer: string;
@@ -68,7 +68,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       Oracle: 1619,
       Account: 1618,
     },
-    supportedAssets: supportedAssets["neutron-1"],
+    supportedRebalancerAssets: supportedRebalancerAssets["neutron-1"],
     indexerUrl: "https://neutron-mainnet.indexer.daodao.zone",
     addresses: {
       rebalancer:
@@ -105,7 +105,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       Oracle: 5676,
       Account: 5677,
     },
-    supportedAssets: supportedAssets["pion-1"],
+    supportedRebalancerAssets: supportedRebalancerAssets["pion-1"],
     indexerUrl: "https://neutron-testnet.indexer.daodao.zone",
     addresses: {
       rebalancer:
