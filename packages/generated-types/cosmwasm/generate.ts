@@ -21,6 +21,10 @@ codegen
         name: "Processor",
         dir: `${inputDir}/processor/schema`,
       },
+      {
+        name: "Authorizations",
+        dir: `${inputDir}/authorizations/schema`,
+      },
     ],
     outPath: outputDir,
     // options are completely optional ;)
