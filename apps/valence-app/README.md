@@ -1,4 +1,4 @@
-# valence-ui
+# valence-app
 
 A UI for the various Valence services, built in Next.JS
 
@@ -14,7 +14,7 @@ A UI for the various Valence services, built in Next.JS
 
 ## Preview Env & Feature Flags
 
-In addition to commit-level previews in vercel, we also have a long-standing 'robot/preview' branch that stays up to date with main via github workflows. This branch is deployed with preview environment variables, and lets us view features that are enabled on in preview.
+In addition to commit-level previews in vercel, we also have a long-standing 'auto/preview' branch that stays up to date with main via github workflows. This branch is deployed with preview environment variables, and lets us view features that are enabled on in preview.
 
 ## Linting
 
