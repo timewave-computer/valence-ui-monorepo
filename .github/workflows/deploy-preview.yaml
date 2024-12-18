@@ -1,4 +1,4 @@
-name: Release to robot/preview
+name: Release to auto/preview
 
 on:
   push:
@@ -24,10 +24,10 @@ jobs:
 
       - name: Rebase preview onto main
         run: |
-          git checkout robot/preview
+          git checkout auto/preview
           git rebase main
 
       - name: Push changes
-        run: git push origin robot/preview --force
+        run: git push origin auto/preview --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
