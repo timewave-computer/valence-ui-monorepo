@@ -1,4 +1,4 @@
-name: Release to auto/preview
+name: Release to auto/preview #temp
 
 on:
   push:
