@@ -96,9 +96,10 @@ export const HistoricalGraph: React.FC<{
     FeatureFlags.REBALANCER_NONUSDC_VALUE,
   );
 
-  const isPriceSourceEnabled = useFeatureFlag(
-    FeatureFlags.REBALANCE_PRICE_SOURCE_TOGGLE,
-  );
+  // const isPriceSourceEnabled = useFeatureFlag(
+  //   FeatureFlags.REBALANCE_PRICE_SOURCE_TOGGLE,
+  // );
+  const isPriceSourceEnabled = true;
 
   const [showTargets, setShowTargets] = useState(false);
 
