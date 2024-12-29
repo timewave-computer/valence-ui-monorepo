@@ -369,7 +369,7 @@ export default CovenantPage;
 
 const PLACEHOLDER_PARTY_A_DATA = {
   chainId: "neutron-1",
-  name: " Neutron",
+  name: "Neutron",
   returnedAssetDest:
     "neutron1ajjddqsr9spepwsrt4u2nxpy4hmheyek5uxqc2gsy7sgt905s86sa3xzy6",
   neutronAddress:

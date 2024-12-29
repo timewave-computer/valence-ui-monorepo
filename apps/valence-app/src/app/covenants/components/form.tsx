@@ -67,7 +67,8 @@ export const Field = ({ field, value, onChange, data }: FieldProps) => {
         <TextInput
           input={value}
           onChange={onChange}
-          containerClassName="w-full"
+          textClassName="font-mono"
+          containerClassName="w-full text-sm"
           label={field.inlineLabel ? field.label : undefined}
           placeholder={field.placeholder}
         />
@@ -75,6 +76,7 @@ export const Field = ({ field, value, onChange, data }: FieldProps) => {
         <Checkbox checked={!!value} onChange={onChange} />
       ) : field.type === "dropdown" ? (
         <Dropdown
+          containerClassName="font-mono text-sm"
           options={field.options}
           selected={value}
           onSelected={onChange}
