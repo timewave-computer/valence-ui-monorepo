@@ -69,7 +69,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
       Account: 1618,
     },
     supportedRebalancerAssets: supportedRebalancerAssets["neutron-1"],
-    indexerUrl: "https://neutron-mainnet.indexer.daodao.zone",
+    indexerUrl: "https://neutron-mainnet.indexer.zone",
     addresses: {
       rebalancer:
         "neutron1qs6mzpmcw3dvg5l8nyywetcj326scszdj7v4pfk55xwshd4prqnqfwc0z2",
