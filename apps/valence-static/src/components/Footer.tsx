@@ -5,7 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { X_URL, GITHUB_URL } from "@valence-ui/socials";
+import { X_URL, GITHUB_URL, DOCS_URL } from "@valence-ui/socials";
 import { VALENCE_DESCRIPTION } from "~/const";
 import { submitSubscribe } from "~/server/actions/submit-subscribe";
 
@@ -105,6 +105,14 @@ export const Footer = (
         <Link className="hover:underline" href="/blog">
           blog
         </Link>
+        <a
+          href={DOCS_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="hover:underline"
+        >
+          documentation
+        </a>
       </div>
       <div className=" col-span-1 col-start-2 row-start-3 self-start  md:self-end">
         <p>© 2024 Timewave </p>
