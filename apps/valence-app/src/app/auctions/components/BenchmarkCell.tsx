@@ -25,7 +25,7 @@ export const BenchmarkCell = ({
           <span
             className={clsx(
               isFetching && "animate-pulse-fetching",
-              "text-xxs",
+              "text-xs",
               highlight && "text-valence-red",
             )}
           >
@@ -36,7 +36,7 @@ export const BenchmarkCell = ({
 
         <div className="flex flex-col">
           <span className="text-[8px]">Osmosis</span>
-          <span className="text-xxs">-</span>
+          <span className="text-xs">-</span>
         </div>
       </TextCell>
     );
