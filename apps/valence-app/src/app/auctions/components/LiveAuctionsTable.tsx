@@ -302,7 +302,7 @@ export function LiveAuctionsTable({
                     )}
                   </span>
                   {isFinished && (
-                    <span className="self-start text-xxs font-light">*</span>
+                    <span className="self-start text-xs font-light">*</span>
                   )}
                 </TextCell>
                 <BenchmarkCell

@@ -9,7 +9,7 @@ export const PrettyJson = ({ data, className, ...props }: JsonTextProps) => {
     <pre
       {...props}
       className={cn(
-        "break-words text-xxs whitespace-pre-wrap text-left",
+        "break-words text-xs whitespace-pre-wrap text-left",
         className,
       )}
     >
