@@ -1,5 +1,5 @@
-import { fn } from "@storybook/test";
-import { Button } from "@/lib/Button";
+import { Button } from "./Button";
+import React from "react";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 export default {
@@ -16,40 +16,30 @@ export default {
     backgroundColor: { control: "color" },
   },
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-  args: { onClick: fn() },
+  args: { onClick: () => {}, children: "Sample Text" },
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary = {
   args: {
-    primary: true,
-    label: "Button",
+    variant: "primary",
   },
 };
 
 export const Secondary = {
   args: {
-    label: "Button",
+    variant: "secondary",
   },
 };
 
-export const Large = {
+export const Loading = {
   args: {
-    size: "large",
-    label: "Button",
+    variant: "loading",
   },
 };
 
-export const Small = {
+export const Disabled = {
   args: {
-    size: "small",
-    label: "Button",
-  },
-};
-
-export const T = {
-  args: {
-    primary: false,
-    label: "Button",
+    disabled: true,
   },
 };

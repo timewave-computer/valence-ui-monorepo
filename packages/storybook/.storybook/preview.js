@@ -1,6 +1,6 @@
-/** @type { import('@storybook/react').Preview } */
+import "@valence-ui/ui-components/styles/index.css";
 
-import "~/styles/index.css";
+/** @type { import('@storybook/react').Preview } */
 const preview = {
   parameters: {
     controls: {
