@@ -8,10 +8,10 @@ export default function Home() {
       <StoryLabel className="text-h5">All</StoryLabel>
 
       {stories.map((story: GetStories[number]) => {
-        const StoryComponent = require(`./stories/${story.id}`).default;
+        const StoryComponent = require(`./stories/${story.fileName}`).default;
         return (
           <div className="p-4 flex flex-col gap-2" key={`story-${story.id}`}>
-            <StoryLabel>{story.id}</StoryLabel>
+            <StoryLabel>{story.prettyName}</StoryLabel>
 
             <StoryComponent key={story.id} />
           </div>
