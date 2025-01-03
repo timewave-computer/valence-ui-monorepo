@@ -53,7 +53,7 @@ export const AdvancedSettings: React.FC<{
   const [allowOtherAddressInput, setAllowOtherAddressInput] = useState(false);
 
   return (
-    <CollapsibleSectionRoot defaultIsOpen={false}>
+    <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
       <CollapsibleSectionHeader>
         <span className="text-lg font-bold">Advanced settings</span>
       </CollapsibleSectionHeader>

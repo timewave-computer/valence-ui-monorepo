@@ -13,7 +13,7 @@ const CollapsibleSectionContext = createContext<{
 }>({
   isOpen: false,
   setIsOpen: (isOpen: boolean) => {},
-  variant: "secondary" as VarProps["variant"],
+  variant: "primary" as VarProps["variant"],
 });
 
 const rootVariants = cva("flex flex-col gap-2", {

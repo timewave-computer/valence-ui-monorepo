@@ -70,7 +70,7 @@ export const PreviewMessage: React.FC<{
     if (!!error) console.log("Error loading preview", error);
   }, [error]);
   return (
-    <CollapsibleSectionRoot defaultIsOpen={false}>
+    <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
       <CollapsibleSectionHeader>
         <span className="text-lg font-bold">Preview transaction</span>
       </CollapsibleSectionHeader>

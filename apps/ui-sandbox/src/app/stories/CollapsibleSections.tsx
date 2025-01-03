@@ -9,7 +9,7 @@ import {
 const CollapsibleSections = () => (
   <Section className="w-full">
     <Story>
-      <CollapsibleSectionRoot defaultIsOpen={false}>
+      <CollapsibleSectionRoot variant="primary" defaultIsOpen={false}>
         <CollapsibleSectionHeader>
           <Heading level="h6">Heading</Heading>
         </CollapsibleSectionHeader>
@@ -17,7 +17,7 @@ const CollapsibleSections = () => (
       </CollapsibleSectionRoot>
     </Story>
     <Story>
-      <CollapsibleSectionRoot variant="primary" defaultIsOpen={false}>
+      <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
         <CollapsibleSectionHeader>
           <Heading level="h6">Heading</Heading>
         </CollapsibleSectionHeader>
