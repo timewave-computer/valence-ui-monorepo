@@ -10,10 +10,7 @@ export default function Home() {
       {stories.map((story: GetStories[number]) => {
         const StoryComponent = require(`./stories/${story.id}`).default;
         return (
-          <div
-            className="p-4 flex flex-col gap-2 w-fit"
-            key={`story-${story.id}`}
-          >
+          <div className="p-4 flex flex-col gap-2" key={`story-${story.id}`}>
             <StoryLabel>{story.id}</StoryLabel>
 
             <StoryComponent key={story.id} />

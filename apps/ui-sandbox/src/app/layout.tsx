@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <div className="flex flex-row">
           <SandboxNav stories={stories} />
-          <div> {children}</div>
+          <div className="grow"> {children}</div>
         </div>
       </body>
     </html>

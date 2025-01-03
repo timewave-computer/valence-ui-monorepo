@@ -18,22 +18,20 @@ const Buttons = () => (
         Go Back
       </Button>
     </Story>
-
     <Story>
       <Button disabled>Test</Button>
     </Story>
-
     <Story>
       <Button SuffixIcon={HiMiniArrowRight} disabled>
         Test
       </Button>
     </Story>
-
     <Story>
       <Button SuffixIcon={HiMiniArrowRight} isLoading>
         Test
       </Button>
     </Story>
+    <p>Todo: icon buttons, CTA, no border</p>
   </Section>
 );
 
