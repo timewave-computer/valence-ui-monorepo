@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@valence-ui/config/ts/react-library.json",
-  "include": ["**/*.ts", "**/*.tsx", "**/*.jsx"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
