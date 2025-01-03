@@ -50,7 +50,7 @@ export async function generateMetadata({
   };
 }
 
-const BlogPost = async ({ params }: BlogPostProps) => {
+const BlogPost: React.FC<BlogPostProps> = async ({ params }) => {
   let postData: Post | null = null;
   let error: boolean | null = null;
 
