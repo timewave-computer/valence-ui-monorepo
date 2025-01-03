@@ -2,7 +2,7 @@ import { Section, Story } from "~/components";
 import { Heading } from "@valence-ui/ui-components";
 
 const Typography = () => (
-  <Section label="Typography">
+  <Section>
     <>
       <Story label="h1">
         <Heading level="h1">Heading 1</Heading>

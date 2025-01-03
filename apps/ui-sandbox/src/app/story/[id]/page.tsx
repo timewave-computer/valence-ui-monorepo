@@ -1,3 +1,4 @@
+import { StoryLabel } from "~/components";
 import React from "react";
 import { getStories, GetStories } from "~/lib";
 
@@ -18,7 +19,9 @@ export const StoryPage = ({
   const StoryComponent = require(`../../../app/stories/${story.id}`).default;
 
   return (
-    <div>
+    <div className="p-4 flex flex-col gap-2 w-fit">
+      <StoryLabel>{story.id}</StoryLabel>
+
       <StoryComponent />
     </div>
   );
