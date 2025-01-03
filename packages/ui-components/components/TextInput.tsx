@@ -1,7 +1,6 @@
 "use client";
-import { cn } from "@/utils";
+import { cn } from "../utils";
 import { useRef } from "react";
-import { BsPencilSquare } from "react-icons/bs";
 
 export type TextInputProps = {
   /**
@@ -50,7 +49,7 @@ export const TextInput = ({
   return (
     <div
       className={cn(
-        "relative flex w-[12rem] cursor-text flex-row items-center gap-4",
+        "relative flex w-[12rem] cursor-text flex-row items-center gap-4 font-mono",
         style !== "ghost" && "border border-valence-mediumgray px-3 py-2",
         containerClassName,
       )}
@@ -66,11 +65,15 @@ export const TextInput = ({
         ref={ref}
         type="text"
         className={cn(
-          "z-[1] flex w-full min-w-0 grow basis-0 flex-row items-center gap-2 bg-transparent text-valence-black outline-none",
+          "z-[1] flex w-full min-w-0 grow basis-0 font-momo flex-row items-center gap-2 bg-transparent text-valence-black outline-none",
           textClassName,
         )}
-        value={input}
-        onChange={(e) => onChange(e.target.value)}
+        {...(onChange
+          ? {
+              value: input,
+              onChange: (e) => onChange(e.target.value),
+            }
+          : {})}
       />
 
       {/* Placeholder when input is empty */}

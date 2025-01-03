@@ -1,5 +1,9 @@
 "use client";
-import { LinkText, TextInput, ConnectWalletButton } from "@/components";
+import {
+  LinkText,
+  ConnectWalletButton,
+  ValenceProductBrand,
+} from "@/components";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { useWallet } from "@/hooks";
 import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
@@ -15,8 +19,7 @@ import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
-import { Label } from "@valence-ui/ui-components";
-import { ValenceProductBrand } from "@/components/ValenceProductBrand";
+import { Label, TextInput } from "@valence-ui/ui-components";
 
 export const SidePanelV2: React.FC<{
   rerouteOnConnect?: boolean;
