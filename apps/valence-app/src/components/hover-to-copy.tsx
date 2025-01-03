@@ -38,7 +38,7 @@ export const HoverToCopy: React.FC<{
         )}
       >
         {hoverContent}
-        {isCopied ? <Label text="Copied" /> : <Label text="Click to copy" />}
+        {isCopied ? <Label>Copied</Label> : <Label>Click to copy</Label>}
 
         <HoverCard.Arrow />
       </HoverCard.Content>

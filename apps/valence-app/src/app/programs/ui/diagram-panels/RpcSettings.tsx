@@ -66,7 +66,7 @@ export function RpcSettingsPanel({
         <div className="flex flex-row items-center gap-2 justify-between">
           {" "}
           <h2 className="font-semibold">{defaultValues.main.name} </h2>{" "}
-          <Label className="" text="main chain" />
+          <Label>main chain</Label>
         </div>
 
         <FormField name="mainChainId" className="flex flex-col gap-1">

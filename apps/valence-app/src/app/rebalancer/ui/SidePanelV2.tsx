@@ -196,7 +196,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
                 >
                   <span className="flex w-full flex-row justify-between gap-2 ">
                     <span className="text-left">{displayAddress(a)}</span>
-                    <Label text="Your account" />
+                    <Label>Your account</Label>
                   </span>
                 </button>
               );
@@ -226,7 +226,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
             >
               <span className="flex w-full flex-row justify-between gap-2 ">
                 <span className="text-left">{option.label}</span>
-                <Label text="Featured" />
+                <Label>Featured</Label>
               </span>
             </button>
           );

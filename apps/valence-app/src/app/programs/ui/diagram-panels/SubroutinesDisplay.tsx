@@ -60,8 +60,8 @@ export function SubroutinesDisplay({
       <div className="flex flex-row w-full justify-between gap-2 items-center pb-1">
         <h2 className="font-semibold">{label}</h2>
         <div className="flex flex-row gap-1 items-center">
-          <Label className="" text={modeText(mode)} />
-          {atomicSubroutine && <Label className="" text="atomic" />}
+          <Label>{modeText(mode)}</Label>
+          {atomicSubroutine && <Label>atomic</Label>}
         </div>
       </div>
 

@@ -2,14 +2,15 @@ import { StoryLabel } from "~/components";
 import React from "react";
 import { getStories, GetStories } from "~/lib";
 
-export const StoryPage = ({
-  params: { id },
+export const StoryPage = async ({
+  params,
 }: {
   params: {
     id: string;
   };
 }) => {
   const stories: GetStories = getStories();
+  const { id } = await params;
   const story = stories.find(
     (story: GetStories[number]) => story.prettyName === id
   );
