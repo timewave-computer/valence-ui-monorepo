@@ -2,13 +2,10 @@
 import { cn } from "@valence-ui/ui-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import path from "path";
 import { GetStories } from "~/lib";
 
 export const SandboxNav = ({ stories }: { stories: GetStories }) => {
   const pathname = usePathname();
-  console.log("pathname", pathname);
-
   return (
     <nav className="p-2">
       <ul>
