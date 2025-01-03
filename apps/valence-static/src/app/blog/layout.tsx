@@ -15,3 +15,4 @@ const BlogLayout: FC<{ children: ReactNode }> = ({ children }) => {
     </main>
   );
 };
+export default BlogLayout;
