@@ -1,19 +1,38 @@
 import { Section, Story } from "~/components";
 import { Button } from "@valence-ui/ui-components";
+import { HiMiniArrowLeft, HiMiniArrowRight } from "react-icons/hi2";
 
 const Buttons = () => (
   <Section>
-    <Story label="primary">
+    <Story>
       <Button>Test</Button>
-    </Story>{" "}
-    <Story label="secondary">
+    </Story>
+    <Story>
+      <Button SuffixIcon={HiMiniArrowRight}>Create a Covenant</Button>
+    </Story>
+    <Story>
       <Button variant="secondary">Test</Button>
     </Story>
-    <Story label="loading">
-      <Button isLoading>Test</Button>
+    <Story>
+      <Button variant="secondary" PrefixIcon={HiMiniArrowLeft}>
+        Go Back
+      </Button>
     </Story>
-    <Story label="disabled">
+
+    <Story>
       <Button disabled>Test</Button>
+    </Story>
+
+    <Story>
+      <Button SuffixIcon={HiMiniArrowRight} disabled>
+        Test
+      </Button>
+    </Story>
+
+    <Story>
+      <Button SuffixIcon={HiMiniArrowRight} isLoading>
+        Test
+      </Button>
     </Story>
   </Section>
 );

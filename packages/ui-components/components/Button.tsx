@@ -5,7 +5,7 @@ import React from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
 
 const buttonVariants = cva(
-  "text-center py-1.5 px-2  min-h-9 min-w-20  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border",
+  "text-center py-1.5 px-2  min-h-9 min-w-20 w-fit  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border",
   {
     variants: {
       variant: {
@@ -32,6 +32,8 @@ export interface ButtonProps
   disabled?: boolean;
   isLoading?: boolean;
   children: React.ReactNode;
+  PrefixIcon?: React.ElementType;
+  SuffixIcon?: React.ElementType;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -43,6 +45,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       asChild = false,
       isLoading,
       children,
+      PrefixIcon,
+      SuffixIcon,
       ...props
     },
     ref,
@@ -62,7 +66,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {isLoading ? <LoadingIndicator variant="s" /> : <>{children}</>}
+        {isLoading ? (
+          <LoadingIndicator variant="s" />
+        ) : (
+          <div className="flex flex-row gap-2 items-center">
+            {PrefixIcon && <PrefixIcon className="h-4 w-4" />}
+            {children}
+            {SuffixIcon && <SuffixIcon className="h-4 w-4" />}
+          </div>
+        )}
       </Comp>
     );
   },
