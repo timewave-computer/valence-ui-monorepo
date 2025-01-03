@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@valence-ui/ui-components/styles/index.css";
+import { getStories } from "~/lib";
+import { SandboxNav } from "~/components";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,12 +24,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const stories = getStories();
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex flex-row">
+          <SandboxNav stories={stories} />
+          <div> {children}</div>
+        </div>
       </body>
     </html>
   );
