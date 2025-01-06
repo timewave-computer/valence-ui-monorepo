@@ -58,7 +58,6 @@ export const Footer = (
             <p>Sign up for our newsletter</p>
             <div className="flex flex-row items-stretch">
               <TextInput
-                id="email"
                 input={email}
                 onChange={setEmail}
                 containerClassName="!border-valence-black border-r-0 w-full max-w-xs"

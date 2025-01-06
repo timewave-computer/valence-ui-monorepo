@@ -48,7 +48,7 @@ const Inputs = () => {
           <FormField name="maxLimit">
             <FormTextInput
               value={num}
-              onChange={(e) => setNum(e.target.value)}
+              onChange={(e) => setNum(Number(e.target.value))}
               isError={num < 0 || num > 1}
               type="number"
               placeholder="0"
@@ -56,6 +56,10 @@ const Inputs = () => {
           </FormField>
         </FormRoot>
       </Story>
+      <p>
+        TODO: consolidate these two. deprecate the old, make 2 variants. use
+        radix input? seperate out form logic?{" "}
+      </p>
     </Section>
   );
 };

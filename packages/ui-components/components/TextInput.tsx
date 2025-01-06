@@ -68,12 +68,7 @@ export const TextInput = ({
           "z-[1] flex w-full min-w-0 grow basis-0 font-momo flex-row items-center gap-2 bg-transparent text-valence-black outline-none",
           textClassName,
         )}
-        {...(onChange
-          ? {
-              value: input,
-              onChange: (e) => onChange(e.target.value),
-            }
-          : {})}
+        onChange={(e) => onChange(e.target.value)}
       />
 
       {/* Placeholder when input is empty */}

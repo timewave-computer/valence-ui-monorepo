@@ -32,7 +32,7 @@ import { FetchMetadataResponse } from "@/server/actions";
 import { useCache, useInitializeMetadataCache } from "@/hooks";
 import { UTCDate } from "@date-fns/utc";
 import { addDays } from "date-fns";
-import { Label } from "@valence-ui/ui-components";
+import { Label, LabelProps } from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({
   initialAuctionsData,
@@ -500,7 +500,7 @@ export const LIVE_AUCTION_SORTERS: Sorter<
 
 const auctionStatusCellVariant: Record<
   LiveAuctionStatus,
-  StatusCellProps["variant"]
+  LabelProps["variant"]
 > = {
   [LiveAuctionStatus.Active]: "green",
   [LiveAuctionStatus.Finished]: "yellow",

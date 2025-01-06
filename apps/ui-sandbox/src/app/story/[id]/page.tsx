@@ -2,13 +2,13 @@ import { StoryLabel } from "~/components";
 import React from "react";
 import { getStories, GetStories } from "~/lib";
 
-export const StoryPage = async ({
+export default async function StoryPage({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string;
-  };
-}) => {
+  }>;
+}) {
   const stories: GetStories = getStories();
   const { id } = await params;
   const story = stories.find(
@@ -29,6 +29,4 @@ export const StoryPage = async ({
       <StoryComponent />
     </div>
   );
-};
-
-export default StoryPage;
+}
