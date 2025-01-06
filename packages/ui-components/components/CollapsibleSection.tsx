@@ -54,21 +54,14 @@ export const CollapsibleSectionRoot: React.FC<RootProps> = ({
   variant,
 }) => {
   const [isOpen, setIsOpen] = useState(defaultIsOpen);
-  // const context = useMemo(
-  //   () => ({
-  //     isOpen,
-  //     setIsOpen,
-  //     variant,
-  //   }),
-  //   [isOpen],
-  // );
-
-  useEffect(() => {
-    console.log("CollapsibleSectionRoot mounted");
-    return () => {
-      console.log("CollapsibleSectionRoot unmounted");
-    };
-  }, []);
+  const context = useMemo(
+    () => ({
+      isOpen,
+      setIsOpen,
+      variant,
+    }),
+    [isOpen],
+  );
 
   return (
     <CollapsibleSectionContext.Provider
@@ -78,9 +71,7 @@ export const CollapsibleSectionRoot: React.FC<RootProps> = ({
         variant,
       }}
     >
-      <section className={cn(rootVariants({ variant, className: className }))}>
-        {children}
-      </section>
+      <section className={cn(rootVariants(context))}>{children}</section>
     </CollapsibleSectionContext.Provider>
   );
 };
