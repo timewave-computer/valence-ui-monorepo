@@ -4,35 +4,35 @@ import { Heading } from "@valence-ui/ui-components";
 const Typography = () => (
   <Section>
     <>
-      <Story label="h1">
+      <Story>
         <Heading level="h1">Heading 1</Heading>
       </Story>
-      <Story label="h2">
+      <Story>
         <Heading level="h2">Heading 2</Heading>
       </Story>
-      <Story label="h3">
+      <Story>
         <Heading level="h3">Heading 3</Heading>
       </Story>
-      <Story label="h4">
+      <Story>
         <Heading level="h4">Heading 4</Heading>
       </Story>
-      <Story label="h5">
+      <Story>
         <Heading level="h5">Heading 5</Heading>
       </Story>
-      <Story label="h6">
+      <Story>
         <Heading level="h6">Heading 6</Heading>
       </Story>
 
-      <Story label="p">
+      <Story>
         <p>Paragraph</p>
       </Story>
-      <Story label="p small">
+      <Story>
         <p className="text-sm">Paragraph small</p>
       </Story>
-      <Story label="data">
+      <Story>
         <p className="font-mono">data</p>
       </Story>
-      <Story label="data small">
+      <Story>
         <p className="font-mono text-sm">data small</p>
       </Story>
     </>

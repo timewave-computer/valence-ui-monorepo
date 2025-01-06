@@ -196,7 +196,7 @@ const AccountDetailsHeader: React.FC<{
           )}
 
           <div className="flex flex-row items-center gap-2">
-            {config?.isPaused && <Label text="PAUSED" />}
+            {config?.isPaused && <Label>Paused</Label>}
             {!config?.isPaused &&
               selectedAddress?.length > 0 &&
               !livePortfolio?.balances.every(

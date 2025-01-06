@@ -1,4 +1,5 @@
-import { Checkbox, Dropdown, DropdownOption, TextInput } from "@/components";
+import { Checkbox, Dropdown, DropdownOption } from "@/components";
+import { TextInput } from "@valence-ui/ui-components";
 import { cn } from "@/utils";
 
 export type Field = {

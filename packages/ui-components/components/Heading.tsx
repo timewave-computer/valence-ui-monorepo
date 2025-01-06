@@ -20,12 +20,15 @@ interface HeadingProps
   extends React.HTMLAttributes<HTMLHeadingElement>,
     VariantProps<typeof headingVariants> {
   className?: string;
+  children: React.ReactNode;
 }
 
-export const Heading = ({ level, className = "" }: HeadingProps) => {
+export const Heading = ({ level, className = "", children }: HeadingProps) => {
   const _level = level ?? "h1";
   const Tag = _level; // Dynamically decide the heading level (h1, h2, etc.)
-  return <Tag className={cn(headingVariants({ level }), className)} />;
+  return (
+    <Tag className={cn(headingVariants({ level }), className)}>{children}</Tag>
+  );
 };
 
 export default Heading;

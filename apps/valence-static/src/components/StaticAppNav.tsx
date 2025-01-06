@@ -52,6 +52,7 @@ const LaunchButton = () => (
     </Button>
   </Link>
 );
+
 export const StaticAppNav = () => {
   const path = usePathname();
   const links = (

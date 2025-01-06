@@ -1,18 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "@valence-ui/ui-components/styles/index.css";
 import { getStories } from "~/lib";
 import { SandboxNav } from "~/components";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Valence UI Sandbox",
@@ -27,12 +16,10 @@ export default function RootLayout({
   const stories = getStories();
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="">
         <div className="flex flex-row">
           <SandboxNav stories={stories} />
-          <div> {children}</div>
+          <div className="grow"> {children}</div>
         </div>
       </body>
     </html>

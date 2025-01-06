@@ -85,17 +85,18 @@ export const ConnectWalletButton: React.FC<{
 
   if (isServer)
     return (
-      <Button disabled={true} variant="primary">
+      <Button disabled={true} className="w-full" variant="primary">
         Connect Wallet
       </Button>
     );
 
   const button = disabled ? (
-    <Button disabled={true} variant="primary">
+    <Button className="w-full" disabled={true} variant="primary">
       Connect Wallet
     </Button>
   ) : (
     <Button
+      className="w-full"
       isLoading={isWalletConnecting || isValenceAccountLoading}
       onClick={async () => {
         if (disabled) return;

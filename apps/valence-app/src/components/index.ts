@@ -2,7 +2,6 @@ export * from "./Checkbox";
 export * from "./ValenceAppNav";
 export * from "./NumberInput";
 export * from "./table";
-export * from "./TextInput";
 export * from "./DropdowTextField";
 export * from "./MobileOverlay";
 export * from "./LinkText";

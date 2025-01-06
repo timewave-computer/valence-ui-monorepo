@@ -1,11 +1,5 @@
 "use client";
-import {
-  SortableTableHeader,
-  Sorter,
-  TextCell,
-  StatusCell,
-  StatusCellProps,
-} from "@/components";
+import { SortableTableHeader, Sorter, TextCell } from "@/components";
 import {
   AuctionStatus,
   CelatoneUrl,
@@ -38,6 +32,7 @@ import { FetchMetadataResponse } from "@/server/actions";
 import { useCache, useInitializeMetadataCache } from "@/hooks";
 import { UTCDate } from "@date-fns/utc";
 import { addDays } from "date-fns";
+import { Label, LabelProps } from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({
   initialAuctionsData,
@@ -314,9 +309,15 @@ export function LiveAuctionsTable({
                 <TextCell>{isClosed ? "-" : row.startPrice}</TextCell>
                 <TextCell>{isClosed ? "-" : row.endPrice}</TextCell>
                 <TextCell>{isClosed ? "-" : row.decreasePerBlock}</TextCell>
-                <StatusCell variant={auctionStatusCellVariant[row.status]}>
-                  {row.status.toUpperCase()}
-                </StatusCell>
+                <TextCell>
+                  <Label
+                    className="w-full"
+                    variant={auctionStatusVariant[row.status]}
+                  >
+                    {row.status}
+                  </Label>
+                </TextCell>
+
                 <TextCell>{isClosed ? "-" : row.amountRemaining}</TextCell>
                 <TextCell>{isClosed ? "-" : row.initialAmount}</TextCell>
                 <TextCell href={CelatoneUrl.block(row.startBlock)}>
@@ -497,10 +498,7 @@ export const LIVE_AUCTION_SORTERS: Sorter<
   },
 ];
 
-const auctionStatusCellVariant: Record<
-  LiveAuctionStatus,
-  StatusCellProps["variant"]
-> = {
+const auctionStatusVariant: Record<LiveAuctionStatus, LabelProps["variant"]> = {
   [LiveAuctionStatus.Active]: "green",
   [LiveAuctionStatus.Finished]: "yellow",
   [LiveAuctionStatus.Closed]: "gray",

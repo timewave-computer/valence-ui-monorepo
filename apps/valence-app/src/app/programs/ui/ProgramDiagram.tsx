@@ -225,7 +225,7 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
 }
 
 export function ProgramDiagramWithProvider(props: ProgramDiagramProps) {
-  const store = useRef<QueryArgsStore>();
+  const store = useRef<QueryArgsStore | null>(null);
   if (!store.current) {
     store.current = createQueryArgsStore({
       queryConfig: props.initialData.queryConfig,

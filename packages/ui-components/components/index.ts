@@ -13,3 +13,5 @@ export * from "./FormTableCell";
 export * from "./LoadingSkeleton";
 export * from "./Label";
 export * from "./Heading";
+export * from "./Card";
+export * from "./TextInput";

@@ -23,7 +23,7 @@ import {
   baseDenomAtom,
   priceSourceAtom,
 } from "@/app/rebalancer/ui";
-import { Label, Line, ReferenceLine, Tooltip } from "recharts";
+import { Label as ChartLabel, Line, ReferenceLine, Tooltip } from "recharts";
 import { USDC_DENOM } from "@/const/chain-data";
 import { createPortal } from "react-dom";
 import { Overlay } from "@/components/Overlay";
@@ -288,7 +288,7 @@ export const HistoricalGraph: React.FC<{
                   stroke="black"
                   isFront
                 >
-                  <Label
+                  <ChartLabel
                     value="Today"
                     position="insideTopLeft"
                     style={{ fill: "black" }}
