@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import "@valence-ui/ui-components/styles/index.css";
 import { getStories } from "~/lib";
 import { SandboxNav } from "~/components";
+import "@valence-ui/ui-components/styles/index.css";
 
 export const metadata: Metadata = {
   title: "Valence UI Sandbox",
