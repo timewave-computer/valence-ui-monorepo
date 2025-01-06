@@ -2,6 +2,7 @@ import { StoryLabel } from "~/components";
 import React from "react";
 import { getStories, GetStories } from "~/lib";
 import dynamic from "next/dynamic";
+import { SandboxConfig } from "~/config";
 
 export default async function StoryPage({
   params,
@@ -20,12 +21,9 @@ export default async function StoryPage({
     return <div>Story not found</div>;
   }
 
-  const StoryComponent = dynamic(
-    () => import(`../../../app/stories/${story.fileName}`),
-    {
-      loading: () => <p>Loading...</p>,
-    }
-  );
+  const StoryComponent = dynamic(() => import(`~/stories/${story.fileName}`), {
+    loading: () => <p>Loading...</p>,
+  });
   return (
     <div className="p-4 flex flex-col gap-2 w-fit">
       <StoryLabel>{story.prettyName}</StoryLabel>

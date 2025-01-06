@@ -53,7 +53,7 @@ export const CollapsibleSectionRoot: React.FC<RootProps> = ({
       setIsOpen,
       variant,
     }),
-    [isOpen],
+    [isOpen, variant, setIsOpen],
   );
 
   return (

@@ -1,19 +1,20 @@
 import fs from "fs";
 import path from "path";
+import { SandboxConfig } from "~/config";
 
-const storiesDirectory = path.join(process.cwd(), "src/app/stories");
+const storyDirectory = path.join(process.cwd(), "src/stories");
 
 export function getStories() {
-  const fileNames = fs.readdirSync(storiesDirectory);
+  const regex = SandboxConfig.storyFileRegex;
+
+  const fileNames = fs.readdirSync(storyDirectory);
   return fileNames
-    .filter((fileName) => fileName.includes(".stories"))
+    .filter((fileName) => regex.test(fileName))
     .map((fileName) => {
-      const id = fileName.replace(/\.tsx$/, "");
       return {
-        id,
         fileName: fileName,
-        filePath: path.join(storiesDirectory, fileName),
-        prettyName: fileName.replaceAll(".stories.tsx", ""),
+        filePath: path.join(storyDirectory, fileName),
+        prettyName: fileName.replace(regex, ""),
       };
     });
 }

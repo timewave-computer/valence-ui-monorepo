@@ -14,7 +14,7 @@ export const SandboxNav = ({ stories }: { stories: GetStories }) => {
         </li>
 
         {stories.map((story: GetStories[number]) => (
-          <li key={story.id}>
+          <li key={story.prettyName}>
             <NavItem
               href={`/story/${story.prettyName}`}
               label={story.prettyName}

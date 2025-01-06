@@ -10,15 +10,18 @@ export default function Home() {
 
       {stories.map((story: GetStories[number]) => {
         const StoryComponent = dynamic(
-          () => import(`./stories/${story.fileName}`),
+          () => import(`~/stories/${story.fileName}`),
           {
             loading: () => <p>Loading...</p>,
           }
         );
         return (
-          <div className="p-4 flex flex-col gap-2" key={`story-${story.id}`}>
+          <div
+            className="p-4 flex flex-col gap-2"
+            key={`story-${story.prettyName}`}
+          >
             <StoryLabel>{story.prettyName}</StoryLabel>
-            <StoryComponent key={story.id} />
+            <StoryComponent key={story.prettyName} />
           </div>
         );
       })}
