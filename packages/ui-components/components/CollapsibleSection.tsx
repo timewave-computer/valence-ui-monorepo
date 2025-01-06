@@ -1,5 +1,12 @@
 "use client";
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { cn } from "../utils";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import { cva, VariantProps } from "class-variance-authority";
@@ -47,17 +54,30 @@ export const CollapsibleSectionRoot: React.FC<RootProps> = ({
   variant,
 }) => {
   const [isOpen, setIsOpen] = useState(defaultIsOpen);
-  const context = useMemo(
-    () => ({
-      isOpen,
-      setIsOpen,
-      variant,
-    }),
-    [isOpen],
-  );
+  // const context = useMemo(
+  //   () => ({
+  //     isOpen,
+  //     setIsOpen,
+  //     variant,
+  //   }),
+  //   [isOpen],
+  // );
+
+  useEffect(() => {
+    console.log("CollapsibleSectionRoot mounted");
+    return () => {
+      console.log("CollapsibleSectionRoot unmounted");
+    };
+  }, []);
 
   return (
-    <CollapsibleSectionContext.Provider value={context}>
+    <CollapsibleSectionContext.Provider
+      value={{
+        isOpen,
+        setIsOpen,
+        variant,
+      }}
+    >
       <section className={cn(rootVariants({ variant, className: className }))}>
         {children}
       </section>
