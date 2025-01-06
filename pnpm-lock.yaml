@@ -31,16 +31,16 @@ importers:
         version: link:../../packages/ui-components
       next:
         specifier: 15.1.3
-        version: 15.1.3(react-dom@19.0.0)(react@19.0.0)
+        version: 15.1.3(react-dom@19.0.0)(react@18.3.1)
       react:
-        specifier: ^19.0.0
-        version: 19.0.0
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
         specifier: ^19.0.0
-        version: 19.0.0(react@19.0.0)
+        version: 19.0.0(react@18.3.1)
       react-icons:
         specifier: ^4.12.0
-        version: 4.12.0(react@19.0.0)
+        version: 4.12.0(react@18.3.1)
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3
@@ -437,7 +437,7 @@ importers:
     devDependencies:
       '@tanstack/react-query-devtools':
         specifier: ^5.56.2
-        version: 5.59.15(@tanstack/react-query@5.59.15)(react@19.0.0)
+        version: 5.59.15(@tanstack/react-query@5.59.15)(react@18.3.1)
       '@typescript-eslint/eslint-plugin':
         specifier: 6.14.0
         version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.57.1)(typescript@5.3.3)
@@ -5607,17 +5607,6 @@ packages:
       react: 18.3.1
     dev: true
 
-  /@tanstack/react-query-devtools@5.59.15(@tanstack/react-query@5.59.15)(react@19.0.0):
-    resolution: {integrity: sha512-rX28KTivkA2XEn3Fj9ckDtnTPY8giWYgssySSAperpVol4+th+NCij/MhLylfB+Mfg2JfCxOcwnM/fwzS8iSog==}
-    peerDependencies:
-      '@tanstack/react-query': ^5.59.15
-      react: ^18 || ^19
-    dependencies:
-      '@tanstack/query-devtools': 5.58.0
-      '@tanstack/react-query': 5.59.15(react@19.0.0)
-      react: 19.0.0
-    dev: true
-
   /@tanstack/react-query@5.59.15(react@18.3.1):
     resolution: {integrity: sha512-QbVlAkTI78wB4Mqgf2RDmgC0AOiJqer2c5k9STOOSXGv1S6ZkY37r/6UpE8DbQ2Du0ohsdoXgFNEyv+4eDoPEw==}
     peerDependencies:
@@ -5625,15 +5614,6 @@ packages:
     dependencies:
       '@tanstack/query-core': 5.59.13
       react: 18.3.1
-
-  /@tanstack/react-query@5.59.15(react@19.0.0):
-    resolution: {integrity: sha512-QbVlAkTI78wB4Mqgf2RDmgC0AOiJqer2c5k9STOOSXGv1S6ZkY37r/6UpE8DbQ2Du0ohsdoXgFNEyv+4eDoPEw==}
-    peerDependencies:
-      react: ^18 || ^19
-    dependencies:
-      '@tanstack/query-core': 5.59.13
-      react: 19.0.0
-    dev: true
 
   /@testing-library/dom@10.4.0:
     resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
@@ -12467,7 +12447,7 @@ packages:
       - babel-plugin-macros
     dev: false
 
-  /next@15.1.3(react-dom@19.0.0)(react@19.0.0):
+  /next@15.1.3(react-dom@19.0.0)(react@18.3.1):
     resolution: {integrity: sha512-5igmb8N8AEhWDYzogcJvtcRDU6n4cMGtBklxKD4biYv4LXN8+awc/bbQ2IM2NQHdVPgJ6XumYXfo3hBtErg1DA==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
     hasBin: true
@@ -12494,9 +12474,9 @@ packages:
       busboy: 1.6.0
       caniuse-lite: 1.0.30001669
       postcss: 8.4.31
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
-      styled-jsx: 5.1.6(react@19.0.0)
+      react: 18.3.1
+      react-dom: 19.0.0(react@18.3.1)
+      styled-jsx: 5.1.6(react@18.3.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 15.1.3
       '@next/swc-darwin-x64': 15.1.3
@@ -13408,12 +13388,12 @@ packages:
       react: 18.3.1
       scheduler: 0.23.2
 
-  /react-dom@19.0.0(react@19.0.0):
+  /react-dom@19.0.0(react@18.3.1):
     resolution: {integrity: sha512-4GV5sHFG0e/0AD4X+ySy6UJd3jVl1iNsNHdpad0qhABJ11twS3TTBnseqsKurKcsNqCEFeGL3uLpVChpIO3QfQ==}
     peerDependencies:
       react: ^19.0.0
     dependencies:
-      react: 19.0.0
+      react: 18.3.1
       scheduler: 0.25.0
     dev: false
 
@@ -13445,14 +13425,6 @@ packages:
       react: '*'
     dependencies:
       react: 18.3.1
-    dev: false
-
-  /react-icons@4.12.0(react@19.0.0):
-    resolution: {integrity: sha512-IBaDuHiShdZqmfc/TwHu6+d6k2ltNCf3AszxNmjJc1KUfXdEeRJOKyNvLmAHaarhzGmTSVygNdyu8/opXv2gaw==}
-    peerDependencies:
-      react: '*'
-    dependencies:
-      react: 19.0.0
     dev: false
 
   /react-is@16.13.1:
@@ -13554,10 +13526,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-
-  /react@19.0.0:
-    resolution: {integrity: sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==}
-    engines: {node: '>=0.10.0'}
 
   /read-cache@1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
@@ -14518,7 +14486,7 @@ packages:
       react: 18.3.1
     dev: false
 
-  /styled-jsx@5.1.6(react@19.0.0):
+  /styled-jsx@5.1.6(react@18.3.1):
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -14532,7 +14500,7 @@ packages:
         optional: true
     dependencies:
       client-only: 0.0.1
-      react: 19.0.0
+      react: 18.3.1
     dev: false
 
   /sucrase@3.35.0:
