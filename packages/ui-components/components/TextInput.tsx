@@ -65,7 +65,7 @@ export const TextInput = ({
         ref={ref}
         type="text"
         className={cn(
-          "z-[1] flex w-full min-w-0 grow basis-0 font-momo flex-row items-center gap-2 bg-transparent text-valence-black outline-none",
+          "z-[1] flex w-full min-w-0 grow basis-0 font-mono flex-row items-center gap-2 bg-transparent text-valence-black outline-none",
           textClassName,
         )}
         onChange={(e) => onChange(e.target.value)}

@@ -312,7 +312,7 @@ export function LiveAuctionsTable({
                 <TextCell>
                   <Label
                     className="w-full"
-                    variant={auctionStatusCellVariant[row.status]}
+                    variant={auctionStatusVariant[row.status]}
                   >
                     {row.status}
                   </Label>
@@ -498,10 +498,7 @@ export const LIVE_AUCTION_SORTERS: Sorter<
   },
 ];
 
-const auctionStatusCellVariant: Record<
-  LiveAuctionStatus,
-  LabelProps["variant"]
-> = {
+const auctionStatusVariant: Record<LiveAuctionStatus, LabelProps["variant"]> = {
   [LiveAuctionStatus.Active]: "green",
   [LiveAuctionStatus.Finished]: "yellow",
   [LiveAuctionStatus.Closed]: "gray",
