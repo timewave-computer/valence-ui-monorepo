@@ -2,13 +2,42 @@ import { cn } from "../../utils";
 import React, { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
 import { WithIconAndTooltip } from "../WithIconAndTooltip";
+import { cva } from "class-variance-authority";
+import { TableVariants } from "./Table";
+
+const tableHeaderVariants = cva(
+  "flex flex-row items-center gap-2 text-nowrap  outline-none",
+  {
+    variants: {
+      variant: {
+        primary: "border-y border-valence-black p-4",
+        secondary: "px-4 py-2",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+    },
+  },
+);
+
+const headerTextVariants = cva("text-nowrap text-sm font-bold", {
+  variants: {
+    variant: {
+      primary: "text-sm",
+      secondary: "text-xs",
+    },
+  },
+  defaultVariants: {
+    variant: "primary",
+  },
+});
 
 export type Sorter<T, K> = {
   key: K;
   sort: (a: T, b: T, ascending: boolean) => number;
 };
 
-export type SortableTableHeaderProps<T, K> = {
+type HeaderProps<T, K> = {
   /**
    * The label of the header.
    */
@@ -33,19 +62,20 @@ export type SortableTableHeaderProps<T, K> = {
    * Set whether or not sorter is ascending.
    */
   setSortAscending?: Dispatch<SetStateAction<boolean>>;
-  /**
-   * An optional class name for the button.
-   */
-  buttonClassName?: string;
-  /**
-   * An optional class name for the button.
-   */
-  textClassName?: string;
+
   /***
    * An optional hover tooltip.
    */
   hoverTooltip?: React.ReactNode;
+  /**
+   * The variant of the header.
+   */
+  variant: TableVariants;
 };
+
+export interface SortableTableHeaderProps<T, K>
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HeaderProps<T, K> {}
 
 export const SortableTableHeader = <T extends unknown, K>({
   label,
@@ -54,20 +84,21 @@ export const SortableTableHeader = <T extends unknown, K>({
   ascending,
   setSorter,
   setSortAscending,
-  buttonClassName,
-  textClassName,
   hoverTooltip,
+  variant,
 }: SortableTableHeaderProps<T, K>) => {
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
+  const isSortable =
+    sorterKey && currentSorter && setSortAscending && setSorter;
+
+  const Comp = isSortable ? "button" : "div";
   return (
-    <div
-      className={cn(
-        "flex flex-row items-center gap-2 text-nowrap border-y border-valence-black p-4 outline-none",
-        buttonClassName,
-      )}
+    <Comp
+      className={cn(tableHeaderVariants({ variant }))}
       onClick={() => {
         if (!sorterKey || !currentSorter || !setSortAscending || !setSorter)
           return;
+
         if (currentSorter.key === sorterKey) {
           setSortAscending((a) => !a);
         } else {
@@ -81,18 +112,10 @@ export const SortableTableHeader = <T extends unknown, K>({
         side="top"
         tooltipContent={hoverTooltip}
       >
-        <button
-          disabled={!sorterKey}
-          className={cn(
-            "text-nowrap text-sm font-bold",
-            !sorterKey && "cursor-default",
-            textClassName,
-          )}
-        >
-          {label}
-        </button>
+        <span className={cn(headerTextVariants({ variant }))}>{label}</span>
       </WithIconAndTooltip>
-      {!!sorterKey && currentSorter?.key === sorterKey && <SortIcon />}
-    </div>
+
+      {isSortable && currentSorter?.key === sorterKey && <SortIcon />}
+    </Comp>
   );
 };

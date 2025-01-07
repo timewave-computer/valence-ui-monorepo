@@ -2,93 +2,44 @@
 import { Fragment, useMemo, useState } from "react";
 import { cn } from "../../utils";
 import { SortableTableHeader } from "./SortableTableHeader";
+import { cva, VariantProps } from "class-variance-authority";
+import { CellData, CellType, TableCells } from "./cell-types";
 
 // TODO:
 // 1. add proper styles for cell headers
 // 2. style cell renderers with a genernal cell body + hrefs
 // 3. add some protection around header keys and data keys lining up (maybe just warnings)
 
-enum Cell {
-  Number = "number",
-  Text = "text",
-  Asset = "asset",
-  Label = "label",
-}
-type CellType = `${Cell}`;
-
-interface NumberCellData {
-  value: number;
-}
-
-interface TextCellData {
-  value: string;
-}
-
-interface AssetCellData {
-  symbol: string;
-  color: string;
-}
-
-interface LabelCellData {
-  value: string;
-}
-
-type CellDataMap = {
-  [Cell.Number]: NumberCellData;
-  [Cell.Text]: TextCellData;
-  [Cell.Asset]: AssetCellData;
-  [Cell.Label]: LabelCellData;
-};
-
-type CellData<T extends CellType> = T extends keyof CellDataMap
-  ? CellDataMap[T]
-  : never;
-
-export const TableCells: {
-  [K in CellType]: {
-    renderer: (value: CellData<K>) => React.ReactNode;
-    sorter: (a: CellData<K>, b: CellData<K>, ascending: boolean) => number;
-  };
-} = {
-  [Cell.Number]: {
-    renderer: (data: NumberCellData) => <span>{data.value}</span>,
-    sorter: (a: NumberCellData, b: NumberCellData, ascending) =>
-      compareNumbers(a.value, b.value, ascending),
+const tableVariants = cva("", {
+  variants: {
+    variant: {
+      primary: "",
+      secondary: "",
+    },
   },
-  [Cell.Text]: {
-    renderer: (data: TextCellData) => <span>{data.value}</span>,
-    sorter: (a: TextCellData, b: TextCellData, ascending) =>
-      compareStrings(a.value, b.value, ascending),
+  defaultVariants: {
+    variant: "primary",
   },
-  [Cell.Asset]: {
-    renderer: (data: AssetCellData) => (
-      <span style={{ color: data.color }}>{data.symbol}</span>
-    ),
-    sorter: (a: AssetCellData, b: AssetCellData, ascending) =>
-      compareStrings(a.symbol, b.symbol, ascending),
-  },
-  [Cell.Label]: {
-    renderer: (data: LabelCellData) => <span>{data.value}</span>,
-    sorter: (a: LabelCellData, b: LabelCellData, ascending) =>
-      compareStrings(a.value, b.value, ascending),
-  },
-};
+});
 
-type TableHeaderCellProps = {
+export type TableHeader = {
   label: string;
   key: string;
   cellType: CellType;
-  href?: string;
+  hoverTooltip?: React.ReactNode;
 };
-
-type RowData = {
+export type TableRow = {
   [key: string]: CellData<CellType>;
 };
 
-interface RootProps extends React.HTMLAttributes<HTMLDivElement> {
+export type TableVariants = VariantProps<typeof tableVariants>;
+
+interface TableProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    TableVariants {
   children: React.ReactNode;
-  headers: Array<TableHeaderCellProps>;
-  data: Array<RowData>;
+  headers: Array<TableHeader>;
+  data: Array<TableRow>;
   tableId: string; // must be unique for each table on same page. required for mapping over keys without collisions.
 }
 
@@ -98,16 +49,21 @@ export const TableRoot = ({
   headers,
   data: _data,
   tableId,
+  variant = "primary",
   ...props
-}: RootProps) => {
+}: TableProps) => {
   const [sortAscending, setSortAscending] = useState(false);
   const [currentSortKey, setCurrentSortKey] = useState<string>(headers[0].key);
   const sorterCellType = headers.find(
     (header) => header.key === currentSortKey,
   )?.cellType;
-  const sorterFunc = TableCells[sorterCellType].sorter;
+  const sorterFunc =
+    !!sorterCellType && sorterCellType in TableCells
+      ? TableCells[sorterCellType].sorter
+      : undefined;
 
   const sortedData = useMemo(() => {
+    if (!sorterFunc) return _data;
     return _data.sort((a, b) =>
       sorterFunc(a[currentSortKey], b[currentSortKey], sortAscending),
     );
@@ -127,14 +83,16 @@ export const TableRoot = ({
             key={`tablehead-${tableId}-${header.key}`}
             label={header.label}
             sorterKey={currentSortKey}
-            currentSorter={{ key: header.key, sort: sorterFunc }}
+            currentSorter={
+              sorterFunc ? { key: header.key, sort: sorterFunc } : undefined
+            }
             ascending={sortAscending}
             setSorter={() => {
               setCurrentSortKey(header.key);
             }}
+            hoverTooltip={header.hoverTooltip}
             setSortAscending={setSortAscending}
-            buttonClassName="pt-0 justify-start px-0  border-y-0"
-            textClassName="text-xs font-base "
+            variant={variant}
           />
         );
       })}
@@ -162,20 +120,3 @@ export const TableRoot = ({
     </div>
   );
 };
-
-export function compareStrings<T extends string>(
-  a: T,
-  b: T,
-  ascending: boolean,
-) {
-  return ascending ? a.localeCompare(b) : b.localeCompare(a);
-}
-export function compareNumbers<T extends number | string>(
-  _a: T,
-  _b: T,
-  ascending: boolean,
-) {
-  const a = Number(_a);
-  const b = Number(_b);
-  return ascending ? a - b : b - a;
-}

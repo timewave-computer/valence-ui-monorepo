@@ -1,24 +1,28 @@
 import { Section, Story } from "~/components";
-import { TableRoot } from "@valence-ui/ui-components";
+import {
+  IconTooltipContent,
+  TableHeader,
+  TableRoot,
+} from "@valence-ui/ui-components";
 
-const headers = [
+const headers: TableHeader[] = [
   {
     key: "asset",
     label: "Asset",
     cellType: "asset",
-    sortable: true,
+    hoverTooltip: (
+      <IconTooltipContent title="Tooltip title" text="Sample tooltip text." />
+    ),
   },
   {
     key: "price",
     label: "Price",
-    cellType: "number", // sorter (a, b, ascending) => compareNumbers(a.amount, b.amount, ascending),
-    sortable: true,
+    cellType: "number",
   },
   {
     key: "address",
-    cellType: "text", //sort: (a, b, ascending) => compareStrings(a.symbol, b.symbol, ascending),
+    cellType: "text",
     label: "Address",
-    sortable: false,
   },
 ];
 
@@ -73,8 +77,12 @@ const Tables = () => {
     <Section id="table">
       <>
         <Story>
+          <TableRoot tableId="table1" headers={headers} data={data}></TableRoot>
+        </Story>
+        <Story>
           <TableRoot
-            tableId="section1"
+            variant="secondary"
+            tableId="table2"
             headers={headers}
             data={data}
           ></TableRoot>
