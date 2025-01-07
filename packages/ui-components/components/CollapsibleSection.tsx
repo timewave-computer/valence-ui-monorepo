@@ -1,12 +1,5 @@
 "use client";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 import { cn } from "../utils";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import { cva, VariantProps } from "class-variance-authority";
@@ -71,7 +64,9 @@ export const CollapsibleSectionRoot: React.FC<RootProps> = ({
         variant,
       }}
     >
-      <section className={cn(rootVariants(context))}>{children}</section>
+      <section className={cn(rootVariants(context), className)}>
+        {children}
+      </section>
     </CollapsibleSectionContext.Provider>
   );
 };

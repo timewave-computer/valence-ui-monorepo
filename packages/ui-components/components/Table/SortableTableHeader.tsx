@@ -1,7 +1,7 @@
-import { cn } from "@/utils";
+import { cn } from "../../utils";
 import React, { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
-import { WithIconAndTooltip } from "@valence-ui/ui-components";
+import { WithIconAndTooltip } from "../WithIconAndTooltip";
 
 export type Sorter<T, K> = {
   key: K;
@@ -59,7 +59,6 @@ export const SortableTableHeader = <T extends unknown, K>({
   hoverTooltip,
 }: SortableTableHeaderProps<T, K>) => {
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
-
   return (
     <div
       className={cn(
