@@ -7,10 +7,6 @@ import {
   Cells,
 } from "@valence-ui/ui-components";
 
-// saving these
-// const isExternalLink = href.startsWith("http");, set link comp
-// getting symbol color in rebalancer ui
-
 const headers: TableHeader[] = [
   {
     key: "asset",

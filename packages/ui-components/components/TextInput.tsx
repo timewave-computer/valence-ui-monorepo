@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "../utils";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type TextInputProps = {
   /**
@@ -68,22 +68,10 @@ export const TextInput = ({
           "z-[1] flex w-full min-w-0 grow basis-0 font-mono flex-row items-center gap-2 bg-transparent text-valence-black outline-none",
           textClassName,
         )}
+        placeholder={placeholder}
+        value={input}
         onChange={(e) => onChange(e.target.value)}
       />
-
-      {/* Placeholder when input is empty */}
-      {!input && !!placeholder && (
-        <div
-          className={cn(
-            "absolute bottom-0 left-0 top-0 z-0",
-            style !== "ghost" && "p-2 pl-3",
-          )}
-        >
-          <p className={cn("text-valence-gray", textClassName)}>
-            {placeholder}
-          </p>
-        </div>
-      )}
     </div>
   );
 };

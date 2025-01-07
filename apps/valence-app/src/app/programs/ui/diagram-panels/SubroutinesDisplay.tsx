@@ -1,6 +1,10 @@
-import { PrettyJson, Label } from "@valence-ui/ui-components";
+import {
+  PrettyJson,
+  Label,
+  SortableTableHeader,
+  TableCell,
+} from "@valence-ui/ui-components";
 import React, { useRef } from "react";
-import { SortableTableHeader, TableCell } from "@/components";
 import { type AtomicSubroutine } from "@valence-ui/generated-types";
 import { cn, displayAddress } from "@/utils";
 import { type ProgramInfoProps, useDisplayStore } from "@/app/programs/ui";
@@ -93,8 +97,7 @@ const AtomicSubroutineDisplay = ({
       <div className="grid grid-cols-[3fr_1fr] overflow-x-auto border-x border-b border-valence-lightgray">
         {subroutineHeaders.map((header) => (
           <SortableTableHeader
-            textClassName="font-semibold text-xs"
-            buttonClassName="border-x  border-y-[1.6px] py-1 px-1.5 flex justify-center text-sm border border-valence-lightgray"
+            variant="secondary"
             key={`auth-table-header-cell-${header.label}`}
             label={header.label}
             ascending={true}
