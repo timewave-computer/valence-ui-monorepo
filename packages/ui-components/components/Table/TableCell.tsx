@@ -1,7 +1,7 @@
 import { ElementType } from "react";
 import { cn } from "../../utils";
 import { LoadingSkeleton } from "../LoadingSkeleton";
-import { cva, VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { HeaderVariants } from "./SortableTableHeader";
 
 const tableCellVariants = cva(
@@ -31,8 +31,8 @@ const tableCellVariants = cva(
 interface TableCellProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: string | React.ReactNode;
   isLoading?: boolean;
-  variant: HeaderVariants["variant"];
-  align: HeaderVariants["align"];
+  variant?: HeaderVariants["variant"];
+  align?: HeaderVariants["align"];
   link?: {
     href: string;
     blankTarget?: boolean;
@@ -45,8 +45,8 @@ export const TableCell = ({
   className,
   isLoading,
   link,
-  variant,
-  align,
+  variant = "primary",
+  align = "center",
 }: TableCellProps) => {
   if (!link?.href)
     return (

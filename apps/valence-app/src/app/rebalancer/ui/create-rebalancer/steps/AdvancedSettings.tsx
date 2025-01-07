@@ -15,13 +15,14 @@ import {
   FormTextInput,
   FormField,
   FormInputLabel,
+  Asset,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
 import { cn } from "@/utils";
 import {
-  Asset,
   RebalancerFormTooltipCopy,
+  SymbolColors,
   useAssetMetadata,
   useWhitelistedDenoms,
 } from "@/app/rebalancer/ui";
@@ -43,7 +44,12 @@ export const AdvancedSettings: React.FC<{
       return {
         value: a.denom,
         label: asset?.symbol ?? "",
-        display: <Asset symbol={asset?.symbol} />,
+        display: (
+          <Asset
+            color={SymbolColors.get(asset?.symbol ?? "")}
+            symbol={asset?.symbol}
+          />
+        ),
       };
     });
   }, [whitelistedDenoms?.base_denom_whitelist, getOriginAsset]);
@@ -76,7 +82,12 @@ export const AdvancedSettings: React.FC<{
                   onSelected={(value) => setValue(`baseTokenDenom`, value)}
                   options={baseDenomDropdownOptions ?? []}
                   selectedDisplay={
-                    <Asset symbol={selectedBaseDenomAsset?.symbol} />
+                    <Asset
+                      color={SymbolColors.get(
+                        selectedBaseDenomAsset?.symbol ?? "",
+                      )}
+                      symbol={selectedBaseDenomAsset?.symbol}
+                    />
                   }
                 />
               </div>

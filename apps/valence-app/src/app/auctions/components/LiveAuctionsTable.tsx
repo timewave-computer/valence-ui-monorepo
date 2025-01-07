@@ -1,5 +1,4 @@
 "use client";
-import { SortableTableHeader, Sorter, TableCell } from "@/components";
 import {
   AuctionStatus,
   CelatoneUrl,
@@ -32,7 +31,13 @@ import { FetchMetadataResponse } from "@/server/actions";
 import { useCache, useInitializeMetadataCache } from "@/hooks";
 import { UTCDate } from "@date-fns/utc";
 import { addDays } from "date-fns";
-import { Label, LabelProps } from "@valence-ui/ui-components";
+import {
+  Label,
+  LabelProps,
+  SortableTableHeader,
+  Sorter,
+  TableCell,
+} from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({
   initialAuctionsData,
@@ -243,12 +248,7 @@ export function LiveAuctionsTable({
           <p className="pt-0.5 text-center" suppressHydrationWarning>
             {nextStartTimeDisplayString}
           </p>
-        </div>
-      </div>
-
-      <div className="w-full max-w-[1600px] pt-4">
-        <div className="border-[1.6px] border-valence-mediumgray bg-valence-mediumgray px-1.5 py-1">
-          <p className="text-xs font-semibold text-valence-black">
+          <p className="text-xs font-mono font-light text-center">
             Current block:{" "}
             <a
               target="_blank"
@@ -259,11 +259,12 @@ export function LiveAuctionsTable({
             </a>
           </p>
         </div>
-        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
+      </div>
+
+      <div className="w-full max-w-[1600px] pt-4">
+        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-black">
           {headers.map((header) => (
             <SortableTableHeader
-              textClassName="font-semibold"
-              buttonClassName="border-x  border-y-[1.6px] py-1 px-1.5 flex justify-center text-sm border border-valence-lightgray"
               key={`live-auction-header-cell-${header.sorterKey}`}
               label={header.label}
               sorterKey={header.sorterKey ?? ""}
@@ -320,11 +321,21 @@ export function LiveAuctionsTable({
 
                 <TableCell>{isClosed ? "-" : row.amountRemaining}</TableCell>
                 <TableCell>{isClosed ? "-" : row.initialAmount}</TableCell>
-                <TableCell href={CelatoneUrl.block(row.startBlock)}>
+                <TableCell
+                  link={{
+                    href: CelatoneUrl.block(row.startBlock),
+                    blankTarget: true,
+                  }}
+                >
                   {row.startBlock.toString()}
                 </TableCell>
                 <TableCell>{row.endBlock.toString()}</TableCell>
-                <TableCell href={CelatoneUrl.contract(row.auctionAddress)}>
+                <TableCell
+                  link={{
+                    href: CelatoneUrl.contract(row.auctionAddress),
+                    blankTarget: true,
+                  }}
+                >
                   {displayAddress(row.auctionAddress)}
                 </TableCell>
               </Fragment>

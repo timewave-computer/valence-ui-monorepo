@@ -10,8 +10,8 @@ const tableHeaderVariants = cva(
   {
     variants: {
       variant: {
-        primary: "border-y border-valence-black py-4",
-        secondary: " py-2",
+        primary: "border-y border-valence-black py-4 px-4",
+        secondary: "py-2 px-2",
       },
       align: {
         left: " justify-start",
@@ -78,11 +78,11 @@ type HeaderProps<T, K> = {
   /**
    * The variant of the header.
    */
-  variant: HeaderVariants["variant"];
+  variant?: HeaderVariants["variant"];
   /**
    * The alignment of the header.
    */
-  align: HeaderVariants["align"];
+  align?: HeaderVariants["align"];
 };
 
 export interface SortableTableHeaderProps<T, K>
@@ -97,8 +97,9 @@ export const SortableTableHeader = <T extends unknown, K>({
   setSorter,
   setSortAscending,
   hoverTooltip,
-  variant,
-  align,
+  variant = "primary",
+  align = "center",
+  className,
 }: SortableTableHeaderProps<T, K>) => {
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
   const isSortable =
@@ -106,10 +107,9 @@ export const SortableTableHeader = <T extends unknown, K>({
   const isSortArrowVisible = currentSorter?.key === sorterKey;
   const Comp = isSortable ? "button" : "div";
 
-  const horizontalPadding = isSortArrowVisible ? "px-2" : "px-2";
   return (
     <Comp
-      className={cn(tableHeaderVariants({ variant, align }), horizontalPadding)}
+      className={cn(tableHeaderVariants({ variant, align }), className)}
       onClick={() => {
         if (!sorterKey || !currentSorter || !setSortAscending || !setSorter)
           return;

@@ -6,10 +6,10 @@ import { cva, VariantProps } from "class-variance-authority";
 import { CellData, CellType, TableCells } from "./cell-types";
 
 // TODO:
-// 2. style cell renderers with a genernal cell body + hrefs
+// 4. loading states, empty view (spec in header)
+// 5. migrate auctions & rebalancer table
 // 3. add some protection around header keys and data keys lining up (maybe just warnings). or TS
 //      - if a header key is added, make sure the data has that key ?
-// 4. loading states, empty view (spec in header)
 
 const tableVariants = cva("", {
   variants: {

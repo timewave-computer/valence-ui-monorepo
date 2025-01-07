@@ -1,6 +1,11 @@
 "use client";
-import { SortableTableHeader, Sorter } from "@/components";
-import { IconTooltipContent, LoadingSkeleton } from "@valence-ui/ui-components";
+import {
+  IconTooltipContent,
+  LoadingSkeleton,
+  SortableTableHeader,
+  Asset,
+  Sorter,
+} from "@valence-ui/ui-components";
 import {
   Dispatch,
   Fragment,
@@ -13,9 +18,9 @@ import { cn, compareNumbers, compareStrings, displayNumber } from "@/utils";
 import {
   useAccountConfigQuery,
   useLivePortfolio,
-  Asset,
   accountAtom,
   LivePortfolioTooltipCopy,
+  SymbolColors,
 } from "@/app/rebalancer/ui";
 import { useAtom } from "jotai";
 
@@ -122,7 +127,11 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
                   "flex flex-row items-center justify-start gap-2 border-b border-valence-mediumgray px-0 py-4",
                 )}
               >
-                <Asset asChild symbol={holding.symbol} />
+                <Asset
+                  asChild
+                  color={SymbolColors.get(holding.symbol)}
+                  symbol={holding.symbol}
+                />
               </div>
 
               <p
@@ -194,7 +203,7 @@ const LiveBalancesTableLayout: React.FC<{
 }> = ({ children, sortAscending, sorter, setSorter, setSortAscending }) => {
   return (
     <>
-      <div className="grid grid-cols-[0.5fr_1fr_1fr_1.5fr_1.5fr_1fr_1.5fr]">
+      <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto]">
         <SortableTableHeader
           label="Ticker"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.TICKER}
@@ -202,8 +211,9 @@ const LiveBalancesTableLayout: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-start px-0  border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"left"}
+          className="pl-0"
         />
 
         <SortableTableHeader
@@ -213,8 +223,8 @@ const LiveBalancesTableLayout: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0 border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
         <SortableTableHeader
           label="Target"
@@ -223,8 +233,8 @@ const LiveBalancesTableLayout: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0 border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
         <SortableTableHeader
           label="Amount Withdrawable"
@@ -233,8 +243,8 @@ const LiveBalancesTableLayout: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0  border-y-0"
-          textClassName=" text-xs font-base text-wrap "
+          variant={"secondary"}
+          align={"right"}
           hoverTooltip={
             <IconTooltipContent {...LivePortfolioTooltipCopy.withdrawable} />
           }
@@ -246,8 +256,8 @@ const LiveBalancesTableLayout: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0  border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
         <SortableTableHeader
           label="Price"
@@ -256,8 +266,8 @@ const LiveBalancesTableLayout: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0  border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
 
         <SortableTableHeader
@@ -267,8 +277,8 @@ const LiveBalancesTableLayout: React.FC<{
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end  border-y-0 px-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
         {children}
       </div>
