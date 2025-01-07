@@ -1,6 +1,6 @@
 import { PrettyJson, Label } from "@valence-ui/ui-components";
 import React, { useRef } from "react";
-import { SortableTableHeader, TextCell } from "@/components";
+import { SortableTableHeader, TableCell } from "@/components";
 import { type AtomicSubroutine } from "@valence-ui/generated-types";
 import { cn, displayAddress } from "@/utils";
 import { type ProgramInfoProps, useDisplayStore } from "@/app/programs/ui";
@@ -105,12 +105,12 @@ const AtomicSubroutineDisplay = ({
           const address = getFunctionAddress(func);
           return (
             <React.Fragment key={`subroutine-atomic-${address}`}>
-              <TextCell className="border border-b">
+              <TableCell className="border border-b">
                 <PrettyJson data={func.message_details} />
-              </TextCell>
-              <TextCell className="border border-b">
+              </TableCell>
+              <TableCell className="border border-b">
                 {displayAddress(address)}
-              </TextCell>
+              </TableCell>
             </React.Fragment>
           );
         })}

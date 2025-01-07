@@ -1,4 +1,4 @@
-import { TextCell } from "@/components";
+import { TableCell } from "@/components";
 import { displayNumberV2, FeatureFlags, useFeatureFlag } from "@/utils";
 import clsx from "clsx";
 
@@ -18,7 +18,7 @@ export const BenchmarkCell = ({
 
   if (showOsmosis) {
     return (
-      <TextCell isLoading={isLoading} className="gap-2">
+      <TableCell isLoading={isLoading} className="gap-2">
         <div className="flex flex-col">
           <span className="text-[8px]">Astroport</span>
           {/* NOTE: using clsx instead of cn because twMerge overrwrites custom classes */}
@@ -38,11 +38,11 @@ export const BenchmarkCell = ({
           <span className="text-[8px]">Osmosis</span>
           <span className="text-xs">-</span>
         </div>
-      </TextCell>
+      </TableCell>
     );
   } else
     return (
-      <TextCell isLoading={isLoading} className="gap-2 text-xs">
+      <TableCell isLoading={isLoading} className="gap-2 text-xs">
         <span
           className={clsx(
             isFetching && "animate-pulse-fetching",
@@ -51,6 +51,6 @@ export const BenchmarkCell = ({
         >
           {displayNumber}
         </span>
-      </TextCell>
+      </TableCell>
     );
 };

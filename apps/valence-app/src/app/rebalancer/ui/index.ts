@@ -1,6 +1,5 @@
 export * from "./historical-graph-constants"; // needs to be first, items below rely on it
 export * from "./SidePanelV2";
-export * from "./Asset";
 export * from "./SupportedAssets";
 export * from "./useGraphOverlay";
 export * from "./useBaseTokenValue";

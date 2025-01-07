@@ -18,6 +18,7 @@
     "**/*.tsx",
     "next-env.d.ts",
     ".next/types/**/*.ts",
-    "../../packages/ui-components/components/TextInput.tsx"
+    "../../packages/ui-components/components/TextInput.tsx",
+    "../../packages/ui-components/components/Table/Asset.tsx"
   ]
 }

@@ -6,9 +6,10 @@ import { cva, VariantProps } from "class-variance-authority";
 import { CellData, CellType, TableCells } from "./cell-types";
 
 // TODO:
-// 1. add proper styles for cell headers
 // 2. style cell renderers with a genernal cell body + hrefs
-// 3. add some protection around header keys and data keys lining up (maybe just warnings)
+// 3. add some protection around header keys and data keys lining up (maybe just warnings). or TS
+//      - if a header key is added, make sure the data has that key ?
+// 4. loading states, empty view (spec in header)
 
 const tableVariants = cva("", {
   variants: {
@@ -27,6 +28,7 @@ export type TableHeader = {
   key: string;
   cellType: CellType;
   hoverTooltip?: React.ReactNode;
+  align?: "left" | "right" | "center";
 };
 export type TableRow = {
   [key: string]: CellData<CellType>;
@@ -37,13 +39,12 @@ export type TableVariants = VariantProps<typeof tableVariants>;
 interface TableProps
   extends React.HTMLAttributes<HTMLDivElement>,
     TableVariants {
-  children: React.ReactNode;
   headers: Array<TableHeader>;
   data: Array<TableRow>;
   tableId: string; // must be unique for each table on same page. required for mapping over keys without collisions.
 }
 
-export const TableRoot = ({
+export const Table = ({
   children,
   className,
   headers,
@@ -93,6 +94,7 @@ export const TableRoot = ({
             hoverTooltip={header.hoverTooltip}
             setSortAscending={setSortAscending}
             variant={variant}
+            align={header.align}
           />
         );
       })}
@@ -106,17 +108,21 @@ export const TableRoot = ({
               if (!cellType) return <div>-</div>;
               const data = row[key];
 
-              const cell = TableCells[cellType].renderer(data);
+              const cell = TableCells[cellType].renderer(data, {
+                variant: variant,
+                align: header.align,
+              });
               return (
-                <div key={`tablecell-${tableId}-${header.key}-${rowIndex}`}>
+                <Fragment
+                  key={`tablecell-${tableId}-${header.key}-${rowIndex}`}
+                >
                   {cell}
-                </div>
+                </Fragment>
               );
             })}
           </Fragment>
         );
       })}
-      {children}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { SortableTableHeader, TextCell } from "@/components";
+import { SortableTableHeader, TableCell } from "@/components";
 import { CelatoneUrl } from "@/const";
 import { displayAddress } from "@/utils";
 import { Fragment } from "react";
@@ -47,20 +47,20 @@ export const ProgramRegistryTable = ({
             ))}
             {programs.map((program) => (
               <Fragment key={"program-registry-row-" + program.id}>
-                <TextCell href={`/programs/${program.id}`}>
+                <TableCell href={`/programs/${program.id}`}>
                   {program.id}
-                </TextCell>
-                <TextCell href={`/programs/${program.id}`}>
+                </TableCell>
+                <TableCell href={`/programs/${program.id}`}>
                   {program.label}
-                </TextCell>
-                <TextCell
+                </TableCell>
+                <TableCell
                   href={CelatoneUrl.contract(program.authorizationsAddress)}
                 >
                   {displayAddress(program.authorizationsAddress)}
-                </TextCell>
-                <TextCell href={CelatoneUrl.contract(program.adminAddress)}>
+                </TableCell>
+                <TableCell href={CelatoneUrl.contract(program.adminAddress)}>
                   {displayAddress(program.adminAddress)}
-                </TextCell>
+                </TableCell>
               </Fragment>
             ))}
           </div>

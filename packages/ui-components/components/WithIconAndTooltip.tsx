@@ -1,4 +1,5 @@
-import React, { ReactNode } from "react";
+"use client";
+import React, { ReactNode, useEffect, useState } from "react";
 import { LoadingIndicator, Tooltip, TooltipContent, TooltipTrigger } from ".";
 import { BsQuestion } from "react-icons/bs";
 import { cn } from "../utils";
@@ -47,20 +48,25 @@ export const WithIconAndTooltip: React.FC<WithIconAndTooltipProps> = ({
   isLoading = false,
   isServer,
 }) => {
-  if (!tooltipContent) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!tooltipContent || !isClient) {
     return <>{children}</>;
   }
   const containerClassname = cn("flex flex-row  gap-1 items-center", className);
   const _button = (
-    <button
-      disabled={isDisabled}
+    <div
       className={cn(
         isDisabled && "cursor-not-allowed",
         iconVariants({ variant }),
       )}
     >
       <Icon className="h-4 w-4" />
-    </button>
+    </div>
   );
 
   if (isDisabled) {

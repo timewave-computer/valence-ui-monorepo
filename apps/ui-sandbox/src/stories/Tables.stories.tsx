@@ -2,35 +2,49 @@ import { Section, Story } from "~/components";
 import {
   IconTooltipContent,
   TableHeader,
-  TableRoot,
+  Table,
+  TableRow,
+  Cells,
 } from "@valence-ui/ui-components";
+
+// saving these
+// const isExternalLink = href.startsWith("http");, set link comp
+// getting symbol color in rebalancer ui
 
 const headers: TableHeader[] = [
   {
     key: "asset",
     label: "Asset",
-    cellType: "asset",
+    cellType: Cells.Asset,
     hoverTooltip: (
       <IconTooltipContent title="Tooltip title" text="Sample tooltip text." />
     ),
+    align: "left",
   },
   {
     key: "price",
     label: "Price",
-    cellType: "number",
+    cellType: Cells.Number,
+    align: "right",
   },
   {
     key: "address",
-    cellType: "text",
+    cellType: Cells.Text,
     label: "Address",
+    align: "center",
+  },
+  {
+    key: "status",
+    cellType: Cells.Label,
+    label: "Status",
   },
 ];
 
-const data = [
+const data: TableRow[] = [
   {
     asset: {
       symbol: "BTC",
-      color: "yellow",
+      color: "#FF2A00", // red
     },
     price: {
       value: "0.00",
@@ -38,12 +52,16 @@ const data = [
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
       href: "https://google.com",
+    },
+    status: {
+      value: "active",
+      color: "green",
     },
   },
   {
     asset: {
       symbol: "ETH",
-      color: "blue",
+      color: "#00A3FF", // blue
     },
     price: {
       value: "0.00",
@@ -51,15 +69,17 @@ const data = [
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
       href: "https://google.com",
+    },
+    status: {
+      value: "inactive",
+      color: "red",
     },
   },
   {
     asset: {
       symbol: "LTC",
-      color: "silver",
+      color: "#EA80D1", // pink
     },
-
-    // number & text have same interface (?),
     price: {
       value: "0.00",
     },
@@ -67,27 +87,27 @@ const data = [
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
       href: "https://google.com",
     },
+    status: {
+      value: "inactive",
+      color: "gray",
+    },
   },
 ];
 
-//todo: handle default view
-//todo: handle loading
 const Tables = () => {
   return (
-    <Section id="table">
-      <>
-        <Story>
-          <TableRoot tableId="table1" headers={headers} data={data}></TableRoot>
-        </Story>
-        <Story>
-          <TableRoot
-            variant="secondary"
-            tableId="table2"
-            headers={headers}
-            data={data}
-          ></TableRoot>
-        </Story>
-      </>
+    <Section id="table" className="flex flex-col gap-10">
+      <Story>
+        <Table tableId="table1" headers={headers} data={data} />
+      </Story>
+      <Story>
+        <Table
+          variant="secondary"
+          tableId="table2"
+          headers={headers}
+          data={data}
+        />
+      </Story>
     </Section>
   );
 };

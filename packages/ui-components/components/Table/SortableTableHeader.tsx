@@ -2,23 +2,31 @@ import { cn } from "../../utils";
 import React, { Dispatch, SetStateAction } from "react";
 import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
 import { WithIconAndTooltip } from "../WithIconAndTooltip";
-import { cva } from "class-variance-authority";
-import { TableVariants } from "./Table";
+import { cva, VariantProps } from "class-variance-authority";
 
+// NOTE: horizontal padding defined below to prevent jitter with the sort arrow
 const tableHeaderVariants = cva(
-  "flex flex-row items-center gap-2 text-nowrap  outline-none",
+  "flex flex-row  gap-2 text-nowrap  outline-none items-center",
   {
     variants: {
       variant: {
-        primary: "border-y border-valence-black p-4",
-        secondary: "px-4 py-2",
+        primary: "border-y border-valence-black py-4",
+        secondary: " py-2",
+      },
+      align: {
+        left: " justify-start",
+        center: "justify-center",
+        right: "justify-end",
       },
     },
     defaultVariants: {
       variant: "primary",
+      align: "center",
     },
   },
 );
+
+export type HeaderVariants = VariantProps<typeof tableHeaderVariants>;
 
 const headerTextVariants = cva("text-nowrap text-sm font-bold", {
   variants: {
@@ -70,7 +78,11 @@ type HeaderProps<T, K> = {
   /**
    * The variant of the header.
    */
-  variant: TableVariants;
+  variant: HeaderVariants["variant"];
+  /**
+   * The alignment of the header.
+   */
+  align: HeaderVariants["align"];
 };
 
 export interface SortableTableHeaderProps<T, K>
@@ -86,15 +98,18 @@ export const SortableTableHeader = <T extends unknown, K>({
   setSortAscending,
   hoverTooltip,
   variant,
+  align,
 }: SortableTableHeaderProps<T, K>) => {
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
   const isSortable =
     sorterKey && currentSorter && setSortAscending && setSorter;
-
+  const isSortArrowVisible = currentSorter?.key === sorterKey;
   const Comp = isSortable ? "button" : "div";
+
+  const horizontalPadding = isSortArrowVisible ? "px-2" : "px-2";
   return (
     <Comp
-      className={cn(tableHeaderVariants({ variant }))}
+      className={cn(tableHeaderVariants({ variant, align }), horizontalPadding)}
       onClick={() => {
         if (!sorterKey || !currentSorter || !setSortAscending || !setSorter)
           return;
@@ -115,7 +130,7 @@ export const SortableTableHeader = <T extends unknown, K>({
         <span className={cn(headerTextVariants({ variant }))}>{label}</span>
       </WithIconAndTooltip>
 
-      {isSortable && currentSorter?.key === sorterKey && <SortIcon />}
+      {isSortArrowVisible && <SortIcon className="w-4 h-4" />}
     </Comp>
   );
 };
