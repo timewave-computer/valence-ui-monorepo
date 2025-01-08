@@ -4,14 +4,14 @@ import {
   TableHeader,
   Table,
   TableRow,
-  Cells,
+  CellType,
 } from "@valence-ui/ui-components";
 
 const headers: TableHeader[] = [
   {
     key: "asset",
     label: "Asset",
-    cellType: Cells.Asset,
+    cellType: CellType.Asset,
     hoverTooltip: (
       <IconTooltipContent title="Tooltip title" text="Sample tooltip text." />
     ),
@@ -20,18 +20,18 @@ const headers: TableHeader[] = [
   {
     key: "price",
     label: "Price",
-    cellType: Cells.Number,
+    cellType: CellType.Number,
     align: "right",
   },
   {
     key: "address",
-    cellType: Cells.Text,
+    cellType: CellType.Text,
     label: "Address",
     align: "center",
   },
   {
     key: "status",
-    cellType: Cells.Label,
+    cellType: CellType.Label,
     label: "Status",
   },
 ];

@@ -3,7 +3,13 @@ import { Fragment, useMemo, useState } from "react";
 import { cn } from "../../utils";
 import { SortableTableHeader } from "./SortableTableHeader";
 import { cva, VariantProps } from "class-variance-authority";
-import { CellDataMap, CellType, TableCells } from "./cell-types";
+import {
+  CellDataMap,
+  CellType,
+  CellTypes,
+  isCellDataOfType,
+  TableCells,
+} from "./cell-types";
 
 // TODO:
 // 4. loading states, empty view (spec in header)
@@ -21,20 +27,18 @@ const tableVariants = cva("", {
     variant: "primary",
   },
 });
+export type TableVariants = VariantProps<typeof tableVariants>;
 
 export type TableHeader = {
   label: string;
   key: string;
-  cellType: CellType;
+  cellType: CellTypes;
   hoverTooltip?: React.ReactNode;
   align?: "left" | "right" | "center";
 };
-
 export type TableRow = {
   [key: string]: CellDataMap[keyof CellDataMap];
 };
-
-export type TableVariants = VariantProps<typeof tableVariants>;
 
 interface TableProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -43,7 +47,7 @@ interface TableProps
   data: Array<TableRow>;
   tableId: string; // must be unique for each table on same page. required for mapping over keys without collisions.
 }
-
+type ValueOf<T> = T[keyof T];
 export const Table = ({
   children,
   className,
@@ -58,6 +62,7 @@ export const Table = ({
   const sorterCellType = headers.find(
     (header) => header.key === currentSortKey,
   )?.cellType;
+
   const sorterFunc =
     !!sorterCellType && sorterCellType in TableCells
       ? TableCells[sorterCellType].sorter
@@ -65,7 +70,9 @@ export const Table = ({
 
   const sortedData = useMemo(() => {
     if (!sorterFunc) return _data;
+
     return _data.sort((a, b) =>
+      // @ts-expect-error. typescript incorrectly infers the sorter params as type 'never'
       sorterFunc(a[currentSortKey], b[currentSortKey], sortAscending),
     );
   }, [sorterFunc, currentSortKey, sortAscending, _data]);
@@ -107,18 +114,20 @@ export const Table = ({
               const cellType = header?.cellType;
               if (!cellType) return <div>-</div>;
               const data = row[key];
-
-              const cell = TableCells[cellType].renderer(data, {
-                variant: variant,
-                align: header.align,
-              });
-              return (
-                <Fragment
-                  key={`tablecell-${tableId}-${header.key}-${rowIndex}`}
-                >
-                  {cell}
-                </Fragment>
-              );
+              const renderer = TableCells[cellType].renderer;
+              if (isCellDataOfType(data, cellType)) {
+                const cell = renderer(data, {
+                  variant,
+                  align: header.align,
+                });
+                return (
+                  <Fragment
+                    key={`tablecell-${tableId}-${header.key}-${rowIndex}`}
+                  >
+                    {cell}
+                  </Fragment>
+                );
+              }
             })}
           </Fragment>
         );
