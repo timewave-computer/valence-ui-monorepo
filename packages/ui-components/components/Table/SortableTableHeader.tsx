@@ -4,13 +4,12 @@ import { BsCaretUpFill, BsCaretDownFill } from "react-icons/bs";
 import { WithIconAndTooltip } from "../WithIconAndTooltip";
 import { cva, VariantProps } from "class-variance-authority";
 
-// NOTE: horizontal padding defined below to prevent jitter with the sort arrow
 const tableHeaderVariants = cva(
   "flex flex-row  gap-2 text-nowrap  outline-none items-center",
   {
     variants: {
       variant: {
-        primary: "border-y border-valence-black py-4 px-4",
+        primary: "border-y border-valence-black py-4 px-3",
         secondary: "py-2 px-2",
       },
       align: {

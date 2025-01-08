@@ -47,7 +47,9 @@ const data: TableRow[] = [
     },
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
-      href: "https://google.com",
+      link: {
+        href: "https://google.com",
+      },
     },
     status: {
       value: "active",
@@ -64,7 +66,9 @@ const data: TableRow[] = [
     },
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
-      href: "https://google.com",
+      link: {
+        href: "https://google.com",
+      },
     },
     status: {
       value: "inactive",
@@ -81,7 +85,9 @@ const data: TableRow[] = [
     },
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
-      href: "https://google.com",
+      link: {
+        href: "https://google.com",
+      },
     },
     status: {
       value: "inactive",

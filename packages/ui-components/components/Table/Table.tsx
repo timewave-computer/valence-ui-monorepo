@@ -3,7 +3,7 @@ import { Fragment, useMemo, useState } from "react";
 import { cn } from "../../utils";
 import { SortableTableHeader } from "./SortableTableHeader";
 import { cva, VariantProps } from "class-variance-authority";
-import { CellData, CellType, TableCells } from "./cell-types";
+import { CellDataMap, CellType, TableCells } from "./cell-types";
 
 // TODO:
 // 4. loading states, empty view (spec in header)
@@ -29,8 +29,9 @@ export type TableHeader = {
   hoverTooltip?: React.ReactNode;
   align?: "left" | "right" | "center";
 };
+
 export type TableRow = {
-  [key: string]: CellData<CellType>;
+  [key: string]: CellDataMap[keyof CellDataMap];
 };
 
 export type TableVariants = VariantProps<typeof tableVariants>;

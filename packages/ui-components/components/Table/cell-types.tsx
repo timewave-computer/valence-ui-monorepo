@@ -1,3 +1,4 @@
+import { ElementType } from "react";
 import { LabelProps, Label } from "../Label";
 import { Asset } from "./Asset";
 import { HeaderVariants } from "./SortableTableHeader";
@@ -11,12 +12,19 @@ export enum Cells {
 }
 export type CellType = `${Cells}`;
 
+export type CellLink = {
+  href: string;
+  blankTarget?: boolean;
+  LinkComponent?: ElementType<any>;
+};
 interface NumberCellData {
-  value: number;
+  value: string;
+  link?: CellLink;
 }
 
-interface TableCellData {
+interface TextCellData {
   value: string;
+  link?: CellLink;
 }
 
 interface AssetCellData {
@@ -26,12 +34,12 @@ interface AssetCellData {
 
 interface LabelCellData {
   value: string;
-  color: LabelProps["color"];
+  color: LabelProps["variant"];
 }
 
-type CellDataMap = {
+export type CellDataMap = {
   [Cells.Number]: NumberCellData;
-  [Cells.Text]: TableCellData;
+  [Cells.Text]: TextCellData;
   [Cells.Asset]: AssetCellData;
   [Cells.Label]: LabelCellData;
 };
@@ -40,6 +48,12 @@ export type CellData<T extends CellType> = T extends keyof CellDataMap
   ? CellDataMap[T]
   : never;
 
+const createRenderer =
+  <K extends CellType>(renderContent: (data: CellData<K>) => React.ReactNode) =>
+  (data: CellData<K>, variants: HeaderVariants): React.ReactNode => (
+    <TableCell {...variants}>{renderContent(data)}</TableCell>
+  );
+
 export const TableCells: {
   [K in CellType]: {
     renderer: (value: CellData<K>, variants: HeaderVariants) => React.ReactNode;
@@ -47,36 +61,28 @@ export const TableCells: {
   };
 } = {
   [Cells.Number]: {
-    renderer: (data: NumberCellData, variants) => (
-      <TableCell {...variants}>{data.value}</TableCell>
-    ),
+    renderer: createRenderer<Cells.Number>((data) => <>{data.value}</>),
     sorter: (a: NumberCellData, b: NumberCellData, ascending) =>
       compareNumbers(a.value, b.value, ascending),
   },
   [Cells.Text]: {
-    renderer: (data: TableCellData, variants) => (
-      <TableCell {...variants}>{data.value}</TableCell>
-    ),
-    sorter: (a: TableCellData, b: TableCellData, ascending) =>
+    renderer: createRenderer<Cells.Text>((data) => <>{data.value}</>),
+    sorter: (a: TextCellData, b: TextCellData, ascending) =>
       compareStrings(a.value, b.value, ascending),
   },
   [Cells.Asset]: {
-    renderer: (data: AssetCellData, variants) => (
-      <TableCell {...variants}>
-        <Asset color={data.color} symbol={data.symbol} />
-      </TableCell>
-    ),
+    renderer: createRenderer<Cells.Asset>((data) => (
+      <Asset color={data.color} symbol={data.symbol} />
+    )),
     sorter: (a: AssetCellData, b: AssetCellData, ascending) =>
       compareStrings(a.symbol, b.symbol, ascending),
   },
   [Cells.Label]: {
-    renderer: (data: LabelCellData, variants) => (
-      <TableCell {...variants}>
-        <Label className="w-full" variant={data.color}>
-          {data.value}
-        </Label>
-      </TableCell>
-    ),
+    renderer: createRenderer<Cells.Label>((data) => (
+      <Label className="w-full" variant={data.color}>
+        {data.value}
+      </Label>
+    )),
     sorter: (a: LabelCellData, b: LabelCellData, ascending) =>
       compareStrings(a.value, b.value, ascending),
   },

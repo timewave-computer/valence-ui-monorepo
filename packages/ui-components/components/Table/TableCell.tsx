@@ -1,22 +1,22 @@
-import { ElementType } from "react";
 import { cn } from "../../utils";
 import { LoadingSkeleton } from "../LoadingSkeleton";
 import { cva } from "class-variance-authority";
 import { HeaderVariants } from "./SortableTableHeader";
+import { CellLink } from "./cell-types";
 
 const tableCellVariants = cva(
-  "flex  min-h-12 items-center justify-center px-1.5 py-2 font-mono  text-xs  text-nowrap ",
+  "flex  min-h-12 items-center justify-center  py-2 font-mono  text-xs  text-nowrap ",
   {
     variants: {
       variant: {
-        primary: "border-b border-valence-mediumgray",
-        secondary: "",
+        primary: "border-b border-valence-mediumgray px-4",
+        secondary: "px-3",
       },
       link: {
         true: "underline decoration-valence-lightgray decoration-[1px] underline-offset-4 hover:decoration-valence-gray",
       },
       align: {
-        left: "justify-start items-start",
+        left: "justify-start",
         right: "justify-end",
         center: "justify-center",
       },
@@ -33,11 +33,7 @@ interface TableCellProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   variant?: HeaderVariants["variant"];
   align?: HeaderVariants["align"];
-  link?: {
-    href: string;
-    blankTarget?: boolean;
-    LinkComponent?: ElementType<any>;
-  };
+  link?: CellLink;
 }
 
 export const TableCell = ({

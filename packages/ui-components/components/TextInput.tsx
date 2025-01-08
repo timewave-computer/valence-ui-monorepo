@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "../utils";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 export type TextInputProps = {
   /**
