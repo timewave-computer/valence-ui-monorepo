@@ -1,20 +1,17 @@
 "use client";
 import { Fragment, useMemo, useState } from "react";
 import { cn } from "../../utils";
-import { SortableTableHeader } from "./SortableTableHeader";
 import { cva, VariantProps } from "class-variance-authority";
 import {
   CellDataMap,
-  CellType,
   CellTypes,
   isCellDataOfType,
   TableCells,
 } from "./cell-types";
+import { TableHeader } from "./TableHeader";
 
 // TODO:
 // 4. loading states, empty view (spec in header)
-// 3. add some protection around header keys and data keys lining up (maybe just warnings). or TS
-//      - if a header key is added, make sure the data has that key ?
 
 const tableVariants = cva("", {
   variants: {
@@ -29,25 +26,27 @@ const tableVariants = cva("", {
 });
 export type TableVariants = VariantProps<typeof tableVariants>;
 
-export type TableHeader = {
+export type TableColumnHeader = {
   label: string;
   key: string;
   cellType: CellTypes;
   hoverTooltip?: React.ReactNode;
   align?: "left" | "right" | "center";
 };
+
+type ValueOf<T> = T[keyof T];
 export type TableRow = {
-  [key: string]: CellDataMap[keyof CellDataMap];
+  [key: string]: ValueOf<CellDataMap>;
 };
 
 interface TableProps
   extends React.HTMLAttributes<HTMLDivElement>,
     TableVariants {
-  headers: Array<TableHeader>;
+  headers: Array<TableColumnHeader>;
   data: Array<TableRow>;
   tableId: string; // must be unique for each table on same page. required for mapping over keys without collisions.
 }
-type ValueOf<T> = T[keyof T];
+
 export const Table = ({
   children,
   className,
@@ -72,7 +71,7 @@ export const Table = ({
     if (!sorterFunc) return _data;
 
     return _data.sort((a, b) =>
-      // @ts-expect-error. typescript incorrectly infers the sorter params as type 'never'
+      // @ts-expect-error. typescript incorrectly infers the sort params as type 'never'
       sorterFunc(a[currentSortKey], b[currentSortKey], sortAscending),
     );
   }, [sorterFunc, currentSortKey, sortAscending, _data]);
@@ -87,7 +86,7 @@ export const Table = ({
     >
       {headers.map((header) => {
         return (
-          <SortableTableHeader
+          <TableHeader
             key={`tablehead-${tableId}-${header.key}`}
             label={header.label}
             sorterKey={currentSortKey}

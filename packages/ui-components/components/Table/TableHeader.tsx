@@ -88,7 +88,7 @@ export interface SortableTableHeaderProps<T, K>
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     HeaderProps<T, K> {}
 
-export const SortableTableHeader = <T extends unknown, K>({
+export const TableHeader = <T extends unknown, K>({
   label,
   sorterKey,
   currentSorter,

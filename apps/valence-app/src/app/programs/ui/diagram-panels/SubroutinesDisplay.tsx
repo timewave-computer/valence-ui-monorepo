@@ -1,7 +1,7 @@
 import {
   PrettyJson,
   Label,
-  SortableTableHeader,
+  TableHeader,
   TableCell,
 } from "@valence-ui/ui-components";
 import React, { useRef } from "react";
@@ -96,7 +96,7 @@ const AtomicSubroutineDisplay = ({
       <h2 className="text-xs font-semibold text-left">Functions</h2>
       <div className="grid grid-cols-[3fr_1fr] overflow-x-auto border-x border-b border-valence-lightgray">
         {subroutineHeaders.map((header) => (
-          <SortableTableHeader
+          <TableHeader
             variant="secondary"
             key={`auth-table-header-cell-${header.label}`}
             label={header.label}

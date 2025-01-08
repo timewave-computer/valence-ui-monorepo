@@ -1,7 +1,7 @@
 import { cn } from "../../utils";
 import { LoadingSkeleton } from "../LoadingSkeleton";
 import { cva } from "class-variance-authority";
-import { HeaderVariants } from "./SortableTableHeader";
+import { HeaderVariants } from "./TableHeader";
 import { CellLink } from "./cell-types";
 
 const tableCellVariants = cva(

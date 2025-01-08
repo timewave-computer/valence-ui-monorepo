@@ -1,13 +1,13 @@
 import { Section, Story } from "~/components";
 import {
   IconTooltipContent,
-  TableHeader,
   Table,
-  TableRow,
+  type TableRow,
   CellType,
+  type TableColumnHeader,
 } from "@valence-ui/ui-components";
 
-const headers: TableHeader[] = [
+const headers: TableColumnHeader[] = [
   {
     key: "asset",
     label: "Asset",
@@ -103,11 +103,22 @@ const Tables = () => {
         <Table tableId="table1" headers={headers} data={data} />
       </Story>
       <Story>
+        <Table tableId="table1-empty" headers={headers} data={[]} />
+      </Story>
+      <Story>
         <Table
           variant="secondary"
           tableId="table2"
           headers={headers}
           data={data}
+        />
+      </Story>
+      <Story>
+        <Table
+          variant="secondary"
+          tableId="table2-empty"
+          headers={headers}
+          data={[]}
         />
       </Story>
     </Section>

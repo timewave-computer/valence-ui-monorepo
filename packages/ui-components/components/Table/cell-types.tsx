@@ -1,7 +1,7 @@
 import { ElementType } from "react";
 import { LabelProps, Label } from "../Label";
 import { Asset } from "./Asset";
-import { HeaderVariants } from "./SortableTableHeader";
+import { HeaderVariants } from "./TableHeader";
 import { TableCell } from "./TableCell";
 
 export enum CellType {

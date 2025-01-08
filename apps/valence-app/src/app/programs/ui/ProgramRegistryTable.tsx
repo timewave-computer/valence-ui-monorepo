@@ -1,4 +1,4 @@
-import { SortableTableHeader, TableCell } from "@valence-ui/ui-components";
+import { TableHeader, TableCell } from "@valence-ui/ui-components";
 import { CelatoneUrl } from "@/const";
 import { displayAddress } from "@/utils";
 import { Fragment } from "react";
@@ -38,7 +38,7 @@ export const ProgramRegistryTable = ({
         <div className="w-full max-w-[1600px] pt-4">
           <div className="grid grid-cols-[auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-black">
             {headers.map((header) => (
-              <SortableTableHeader
+              <TableHeader
                 key={`program-header-cell-${header.label}`}
                 label={header.label}
                 ascending={true}

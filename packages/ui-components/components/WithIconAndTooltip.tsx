@@ -48,13 +48,7 @@ export const WithIconAndTooltip: React.FC<WithIconAndTooltipProps> = ({
   isLoading = false,
   isServer,
 }) => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!tooltipContent || !isClient) {
+  if (!tooltipContent) {
     return <>{children}</>;
   }
   const containerClassname = cn("flex flex-row  gap-1 items-center", className);

@@ -34,8 +34,7 @@ import { addDays } from "date-fns";
 import {
   Label,
   LabelProps,
-  SortableTableHeader,
-  Sorter,
+  TableHeader,
   TableCell,
 } from "@valence-ui/ui-components";
 
@@ -264,7 +263,7 @@ export function LiveAuctionsTable({
       <div className="w-full max-w-[1600px] pt-4">
         <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-black">
           {headers.map((header) => (
-            <SortableTableHeader
+            <TableHeader
               key={`live-auction-header-cell-${header.sorterKey}`}
               label={header.label}
               sorterKey={header.sorterKey ?? ""}

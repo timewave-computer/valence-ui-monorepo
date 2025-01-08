@@ -2,7 +2,7 @@
 import {
   IconTooltipContent,
   LoadingSkeleton,
-  SortableTableHeader,
+  TableHeader,
   Asset,
   Sorter,
 } from "@valence-ui/ui-components";
@@ -204,7 +204,7 @@ const LiveBalancesTableLayout: React.FC<{
   return (
     <>
       <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto]">
-        <SortableTableHeader
+        <TableHeader
           label="Ticker"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.TICKER}
           currentSorter={sorter}
@@ -216,7 +216,7 @@ const LiveBalancesTableLayout: React.FC<{
           className="pl-0"
         />
 
-        <SortableTableHeader
+        <TableHeader
           label="Distribution"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.DISTRIBUTION}
           currentSorter={sorter}
@@ -226,7 +226,7 @@ const LiveBalancesTableLayout: React.FC<{
           variant={"secondary"}
           align={"right"}
         />
-        <SortableTableHeader
+        <TableHeader
           label="Target"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.TARGET}
           currentSorter={sorter}
@@ -236,7 +236,7 @@ const LiveBalancesTableLayout: React.FC<{
           variant={"secondary"}
           align={"right"}
         />
-        <SortableTableHeader
+        <TableHeader
           label="Amount Withdrawable"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.WITHDRAWABLE}
           currentSorter={sorter}
@@ -249,7 +249,7 @@ const LiveBalancesTableLayout: React.FC<{
             <IconTooltipContent {...LivePortfolioTooltipCopy.withdrawable} />
           }
         />
-        <SortableTableHeader
+        <TableHeader
           label="Total Holdings"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.HOLDINGS}
           currentSorter={sorter}
@@ -259,7 +259,7 @@ const LiveBalancesTableLayout: React.FC<{
           variant={"secondary"}
           align={"right"}
         />
-        <SortableTableHeader
+        <TableHeader
           label="Price"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.PRICE}
           currentSorter={sorter}
@@ -270,7 +270,7 @@ const LiveBalancesTableLayout: React.FC<{
           align={"right"}
         />
 
-        <SortableTableHeader
+        <TableHeader
           label="USD Value"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.VALUE}
           currentSorter={sorter}
