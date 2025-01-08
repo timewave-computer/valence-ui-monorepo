@@ -88,7 +88,7 @@ export interface SortableTableHeaderProps<T, K>
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     HeaderProps<T, K> {}
 
-export const TableHeader = <T extends unknown, K>({
+export const TableHeader = <T, K>({
   label,
   sorterKey,
   currentSorter,
@@ -109,17 +109,19 @@ export const TableHeader = <T extends unknown, K>({
   return (
     <Comp
       className={cn(tableHeaderVariants({ variant, align }), className)}
-      onClick={() => {
-        if (!sorterKey || !currentSorter || !setSortAscending || !setSorter)
-          return;
+      {...(isSortable && {
+        onClick: () => {
+          if (!sorterKey || !currentSorter || !setSortAscending || !setSorter)
+            return;
 
-        if (currentSorter.key === sorterKey) {
-          setSortAscending((a) => !a);
-        } else {
-          setSorter(sorterKey);
-          setSortAscending(true);
-        }
-      }}
+          if (currentSorter.key === sorterKey) {
+            setSortAscending((a) => !a);
+          } else {
+            setSorter(sorterKey);
+            setSortAscending(true);
+          }
+        },
+      })}
     >
       <WithIconAndTooltip
         className="items-top flex flex-row justify-end gap-0.5"

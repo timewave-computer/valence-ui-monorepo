@@ -70,7 +70,7 @@ export const Table = ({
   const sortedData = useMemo(() => {
     if (!sorterFunc) return _data;
 
-    return _data.sort((a, b) =>
+    return [..._data].sort((a, b) =>
       // @ts-expect-error. typescript incorrectly infers the sort params as type 'never'
       sorterFunc(a[currentSortKey], b[currentSortKey], sortAscending),
     );
