@@ -36,6 +36,7 @@ import {
   LabelProps,
   TableHeader,
   TableCell,
+  Sorter,
 } from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({

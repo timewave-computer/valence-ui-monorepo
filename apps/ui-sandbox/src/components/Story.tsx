@@ -1,4 +1,16 @@
 import React from "react";
-export const Story = ({ children }: { children: React.ReactNode }) => {
-  return <> {children}</>;
+import { StoryLabel } from "./StoryLabel";
+export const Story = ({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label?: string;
+}) => {
+  return (
+    <div className="flex flex-col gap-4">
+      {label && <StoryLabel className="text-xs">{label}</StoryLabel>}
+      {children}
+    </div>
+  );
 };

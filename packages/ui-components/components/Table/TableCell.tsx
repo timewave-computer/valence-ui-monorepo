@@ -9,8 +9,8 @@ const tableCellVariants = cva(
   {
     variants: {
       variant: {
-        primary: "border-b border-valence-mediumgray px-4",
-        secondary: "px-3",
+        primary: "border-b border-valence-mediumgray px-3",
+        secondary: "px-2",
       },
       link: {
         true: "underline decoration-valence-lightgray decoration-[1px] underline-offset-4 hover:decoration-valence-gray",

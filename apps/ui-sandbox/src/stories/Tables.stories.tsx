@@ -43,7 +43,7 @@ const data: TableRow[] = [
       color: "#FF2A00", // red
     },
     price: {
-      value: "0.00",
+      value: "1000.00",
     },
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
@@ -61,7 +61,7 @@ const data: TableRow[] = [
       symbol: "ETH",
       color: "#00A3FF", // blue
     },
-    price: {
+    priceu: {
       value: "0.00",
     },
     address: {
@@ -76,12 +76,12 @@ const data: TableRow[] = [
     },
   },
   {
-    asset: {
+    assetu: {
       symbol: "LTC",
       color: "#EA80D1", // pink
     },
     price: {
-      value: "0.00",
+      value: "4000.00",
     },
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
@@ -98,14 +98,11 @@ const data: TableRow[] = [
 
 const Tables = () => {
   return (
-    <Section id="table" className="flex flex-col gap-10">
-      <Story>
+    <Section id="table" className="flex flex-col gap-12">
+      <Story label="primary">
         <Table tableId="table1" headers={headers} data={data} />
       </Story>
-      <Story>
-        <Table tableId="table1-empty" headers={headers} data={[]} />
-      </Story>
-      <Story>
+      <Story label="secondary">
         <Table
           variant="secondary"
           tableId="table2"
@@ -113,7 +110,32 @@ const Tables = () => {
           data={data}
         />
       </Story>
-      <Story>
+      <div className="pt-2"></div>
+
+      <Story label="secondary,loading">
+        <Table
+          variant="secondary"
+          tableId="table2-loading"
+          headers={headers}
+          data={data}
+          isLoading
+        />
+      </Story>
+      <Story label="primary,loading">
+        <Table
+          variant="primary"
+          tableId="table1-loading"
+          headers={headers}
+          data={data}
+          isLoading
+        />
+      </Story>
+      <div className="pt-2"></div>
+      <Story label="primary,empty">
+        <Table tableId="table1-empty" headers={headers} data={[]} />
+      </Story>
+
+      <Story label="secondary,empty">
         <Table
           variant="secondary"
           tableId="table2-empty"

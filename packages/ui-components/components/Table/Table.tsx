@@ -9,9 +9,7 @@ import {
   TableCells,
 } from "./cell-types";
 import { TableHeader } from "./TableHeader";
-
-// TODO:
-// 4. loading states, empty view (spec in header)
+import { TableCell } from "./TableCell";
 
 const tableVariants = cva("", {
   variants: {
@@ -45,6 +43,8 @@ interface TableProps
   headers: Array<TableColumnHeader>;
   data: Array<TableRow>;
   tableId: string; // must be unique for each table on same page. required for mapping over keys without collisions.
+  isLoading?: boolean;
+  loadingRows?: number;
 }
 
 export const Table = ({
@@ -54,6 +54,8 @@ export const Table = ({
   data: _data,
   tableId,
   variant = "primary",
+  isLoading,
+  loadingRows = 3,
   ...props
 }: TableProps) => {
   const [sortAscending, setSortAscending] = useState(false);
@@ -104,21 +106,61 @@ export const Table = ({
           />
         );
       })}
-      {sortedData.map((row, rowIndex) => {
-        const keys = Object.keys(row);
-        return (
-          <Fragment key={`tablerow-${tableId}-${rowIndex}`}>
-            {keys.map((key) => {
-              const header = headers.find((header) => header.key === key);
-              const cellType = header?.cellType;
-              if (!cellType) return <div>-</div>;
-              const data = row[key];
-              const renderer = TableCells[cellType].renderer;
-              if (isCellDataOfType(data, cellType)) {
-                const cell = renderer(data, {
+
+      {isLoading && (
+        <>
+          {Array.from({ length: loadingRows }).map((_, index) =>
+            headers.map((header) => (
+              <Fragment key={`emptytablerow-${tableId}-${header.key}-${index}`}>
+                <TableCell variant={variant} align={header.align} isLoading />
+              </Fragment>
+            )),
+          )}
+        </>
+      )}
+
+      {!isLoading && sortedData.length === 0 && (
+        <>
+          {headers.map((header) => {
+            const cellType = header.cellType;
+            const cellFunctions = TableCells[cellType];
+
+            return (
+              <Fragment key={`emptytablerow-${tableId}-${header.key}`}>
+                {cellFunctions.renderDefault(undefined, {
                   variant,
                   align: header.align,
-                });
+                })}
+              </Fragment>
+            );
+          })}
+        </>
+      )}
+
+      {!isLoading &&
+        sortedData.map((row, rowIndex) => {
+          return (
+            <Fragment key={`tablerow-${tableId}-${rowIndex}`}>
+              {headers.map((header) => {
+                const rowData = row[header.key];
+                const cellType = header.cellType;
+                const cellFunctions = TableCells[cellType];
+
+                let cell: React.ReactNode;
+                if (!rowData || !isCellDataOfType(rowData, cellType)) {
+                  const renderer = cellFunctions.renderDefault;
+                  cell = renderer(undefined, {
+                    variant,
+                    align: header.align,
+                  });
+                } else {
+                  const renderer = cellFunctions.renderer;
+                  cell = renderer(rowData, {
+                    variant,
+                    align: header.align,
+                  });
+                }
+
                 return (
                   <Fragment
                     key={`tablecell-${tableId}-${header.key}-${rowIndex}`}
@@ -126,11 +168,10 @@ export const Table = ({
                     {cell}
                   </Fragment>
                 );
-              }
-            })}
-          </Fragment>
-        );
-      })}
+              })}
+            </Fragment>
+          );
+        })}
     </div>
   );
 };

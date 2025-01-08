@@ -56,6 +56,7 @@ const createRenderer =
 interface TableCellData<T> {
   renderer: (data: T, variants: HeaderVariants) => React.ReactNode;
   sorter: (a: T, b: T, ascending: boolean) => number;
+  renderDefault: (data: any, variants: HeaderVariants) => React.ReactNode;
 }
 
 // needed for type narrowing
@@ -65,13 +66,13 @@ export function isCellDataOfType<T extends CellTypes>(
 ): data is CellData<T> {
   switch (cellType) {
     case CellType.Number:
-      return (data as NumberCellData).value !== undefined;
+      return (data as NumberCellData)?.value !== undefined;
     case CellType.Text:
-      return (data as TextCellData).value !== undefined;
+      return (data as TextCellData)?.value !== undefined;
     case CellType.Asset:
-      return (data as AssetCellData).symbol !== undefined;
+      return (data as AssetCellData)?.symbol !== undefined;
     case CellType.Label:
-      return (data as LabelCellData).value !== undefined;
+      return (data as LabelCellData)?.value !== undefined;
     default:
       return false;
   }
@@ -85,19 +86,22 @@ export const TableCells: TableCells = {
   [CellType.Number]: {
     renderer: createRenderer<CellType.Number>((data) => <>{data.value}</>),
     sorter: (a: NumberCellData, b: NumberCellData, ascending) =>
-      compareNumbers(a.value, b.value, ascending),
+      compareNumbers(a?.value, b?.value, ascending),
+    renderDefault: createRenderer<CellType.Text>(() => <>0.00</>),
   },
   [CellType.Text]: {
     renderer: createRenderer<CellType.Text>((data) => <>{data.value}</>),
     sorter: (a: TextCellData, b: TextCellData, ascending) =>
-      compareStrings(a.value, b.value, ascending),
+      compareStrings(a?.value, b?.value, ascending),
+    renderDefault: createRenderer<CellType.Text>(() => <>-</>),
   },
   [CellType.Asset]: {
     renderer: createRenderer<CellType.Asset>((data) => (
       <Asset color={data.color} symbol={data.symbol} />
     )),
     sorter: (a: AssetCellData, b: AssetCellData, ascending) =>
-      compareStrings(a.symbol, b.symbol, ascending),
+      compareStrings(a?.symbol, b?.symbol, ascending),
+    renderDefault: createRenderer<CellType.Text>(() => <>-</>),
   },
   [CellType.Label]: {
     renderer: createRenderer<CellType.Label>((data) => (
@@ -106,14 +110,21 @@ export const TableCells: TableCells = {
       </Label>
     )),
     sorter: (a: LabelCellData, b: LabelCellData, ascending) =>
-      compareStrings(a.value, b.value, ascending),
+      compareStrings(a?.value, b?.value, ascending),
+    renderDefault: createRenderer<CellType.Text>(() => <>-</>),
   },
 };
 
-function compareStrings<T extends string>(a: T, b: T, ascending: boolean) {
-  return ascending ? a.localeCompare(b) : b.localeCompare(a);
+function compareStrings<T extends string>(
+  _a: T | undefined,
+  _b: T | undefined,
+  ascending: boolean,
+) {
+  const a = _a ?? "";
+  const b = _b ?? "";
+  return ascending ? a?.localeCompare(b) : b?.localeCompare(a);
 }
-function compareNumbers<T extends number | string>(
+function compareNumbers<T extends number | string | undefined>(
   _a: T,
   _b: T,
   ascending: boolean,
