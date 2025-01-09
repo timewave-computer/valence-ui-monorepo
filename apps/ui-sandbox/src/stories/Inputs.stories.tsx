@@ -78,43 +78,6 @@ const Inputs = () => {
           );
         })}
       </div>
-      <Story>
-        <div
-          className={cn(
-            "border-valence-lightgray bg-valence-lightgray",
-            " flex items-center border-[1.5px]  focus-within:border-valence-blue"
-          )}
-        >
-          <input
-            className={cn(
-              " font-mono",
-
-              "h-full w-full bg-transparent p-2 transition-all focus:outline-none"
-            )}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            type="text"
-            placeholder="neutron1234..."
-          />
-        </div>
-      </Story>
-      <Story>
-        <FormRoot>
-          <FormField name="maxLimit">
-            <FormTextInput
-              value={num}
-              onChange={(e) => setNum(Number(e.target.value))}
-              isError={num < 0 || num > 1}
-              type="number"
-              placeholder="0"
-            />
-          </FormField>
-        </FormRoot>
-      </Story>
-      <p>
-        TODO: consolidate these two. deprecate the old, make 2 variants. use
-        radix input? seperate out form logic?{" "}
-      </p>
     </Section>
   );
 };

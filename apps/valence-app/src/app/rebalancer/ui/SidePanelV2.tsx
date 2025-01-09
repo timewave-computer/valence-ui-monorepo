@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
-import { Label, TextInput, TextInputOLD } from "@valence-ui/ui-components";
+import { Label, TextInput } from "@valence-ui/ui-components";
 
 export const SidePanelV2: React.FC<{
   rerouteOnConnect?: boolean;

@@ -1,10 +1,11 @@
 import { cn } from "../utils";
 import * as FormPrimitive from "@radix-ui/react-form";
 import { forwardRef } from "react";
-import { IconTooltipContent, WithIconAndTooltip } from ".";
+import { IconTooltipContent, TextInput, WithIconAndTooltip } from ".";
 
 export const FormRoot = FormPrimitive.Root;
 export const FormField = FormPrimitive.Field;
+export const FormControl = FormPrimitive.Control;
 
 interface FormTextInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -28,16 +29,7 @@ export const FormTextInput = forwardRef<HTMLInputElement, FormTextInputProps>(
         )}
       >
         <FormPrimitive.Control asChild>
-          <input
-            {...props}
-            ref={ref}
-            // @ts-ignore
-            onWheel={(e) => e.target?.blur()} // prevents scroll from changing input value when element is focused
-            className={cn(
-              " h-full grow  bg-transparent p-2 font-mono focus:outline-none",
-              className,
-            )}
-          />
+          <TextInput {...props} className={className} />
         </FormPrimitive.Control>
 
         {suffix && (

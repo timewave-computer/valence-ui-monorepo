@@ -16,11 +16,11 @@ const CollapsibleSectionContext = createContext<{
   variant: "primary" as VarProps["variant"],
 });
 
-const rootVariants = cva("flex flex-col gap-2", {
+const rootVariants = cva("flex flex-col gap-2 w-full", {
   variants: {
     variant: {
-      primary: "p-4 border border-valence-black w-full",
-      secondary: "w-fit",
+      primary: "p-4 border border-valence-black ",
+      secondary: "",
     },
   },
 });

@@ -1,5 +1,5 @@
 "use client";
-import { Button, cn, TextInput, TextInputOLD } from "@valence-ui/ui-components";
+import { Button, cn, TextInput } from "@valence-ui/ui-components";
 import { useState } from "react";
 import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";

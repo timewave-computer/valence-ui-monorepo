@@ -15,11 +15,13 @@ import {
   FormTextInput,
   FormField,
   FormInputLabel,
+  FormControl,
   Asset,
+  TextInput,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
-import { cn } from "@/utils";
+
 import {
   RebalancerFormTooltipCopy,
   SymbolColors,
@@ -128,13 +130,15 @@ export const AdvancedSettings: React.FC<{
                   tooltipContent={RebalancerFormTooltipCopy.maxLimit.text}
                 />
                 <FormField name="maxLimit">
-                  <FormTextInput
-                    containerClassName="max-w-[30%]"
-                    type="number"
-                    suffix="%"
-                    placeholder="0.00"
-                    {...register(`maxLimit`)}
-                  />
+                  <FormControl asChild>
+                    <TextInput
+                      type="number"
+                      suffix="%"
+                      className="max-w-[30%]"
+                      placeholder="0.00"
+                      {...register(`maxLimit`)}
+                    />
+                  </FormControl>
                 </FormField>
               </div>
               <div className="flex flex-col gap-2 ">
@@ -171,26 +175,13 @@ export const AdvancedSettings: React.FC<{
                   </div>
                 </RadioGroup>
                 {allowOtherAddressInput && (
-                  <div
-                    className={cn(
-                      "mt-2 w-3/4",
-
-                      "border-valence-lightgray bg-valence-lightgray",
-                      " flex items-center border-[1.5px]  focus-within:border-valence-blue",
-                    )}
-                  >
-                    <input
-                      className={cn(
-                        " font-mono",
-                        !allowOtherAddressInput &&
-                          "cursor-not-allowed bg-valence-gray",
-                        "h-full w-full bg-transparent p-2 transition-all focus:outline-none",
-                      )}
-                      type="text"
-                      placeholder="neutron1234..."
-                      {...register("trustee")}
-                    />
-                  </div>
+                  <TextInput
+                    isDisabled={!allowOtherAddressInput}
+                    type="text"
+                    className="max-w-[75%]"
+                    placeholder="neutron1234..."
+                    {...register("trustee")}
+                  />
                 )}
               </div>
             </div>
