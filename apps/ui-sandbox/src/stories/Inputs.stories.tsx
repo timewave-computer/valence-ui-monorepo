@@ -12,60 +12,18 @@ const Inputs = () => {
   const [num, setNum] = useState("");
 
   const sizes = ["base", "sm"] as Array<TextInputProps["size"]>;
-  const variants = ["primary", "form"] as Array<TextInputProps["variant"]>;
+  const variants = ["primary"] as Array<TextInputProps["variant"]>;
   return (
     <Section className="">
       <div className="grid grid-cols-4 gap-4">
-        <Story className="gap-0">
-          <InputLabel size="lg" label="Primary" />
-          <TextInput
-            variant="primary"
-            size="base"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="neutron12345..."
-          />
-        </Story>
-        <Story className="gap-0">
-          <InputLabel size="lg" label="Secondary" />
-          <TextInput
-            variant="form"
-            size="base"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="neutron12345..."
-          />
-        </Story>
-        <div className="col-span-2"></div>
-        <Story className="gap-0">
-          <InputLabel size="sm" label="Primary small" />
-          <TextInput
-            variant="primary"
-            size="sm"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="neutron12345..."
-          />
-        </Story>
-        <Story className="gap-0">
-          <InputLabel size="sm" label="Secondary small" />
-          <TextInput
-            variant="form"
-            size="sm"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="neutron12345..."
-          />
-        </Story>
-        <div className="col-span-2"></div>
-        <div className="col-span-4 py-4" />
         {variants.map((variant) => {
           return (
             <Fragment key={variant}>
               {sizes.map((size) => {
                 return (
                   <Fragment key={`${variant}-${size}`}>
-                    <Story>
+                    <Story className="gap-0">
+                      <InputLabel label={`Label ${size}`} size={size} />
                       <TextInput
                         size={size}
                         variant={variant}
@@ -74,7 +32,8 @@ const Inputs = () => {
                         placeholder="neutron12345..."
                       />
                     </Story>
-                    <Story>
+                    <Story className="gap-0">
+                      <InputLabel label={`Label ${size}`} size={size} />
                       <TextInput
                         size={size}
                         variant={variant}
@@ -85,7 +44,9 @@ const Inputs = () => {
                         suffix="%"
                       />
                     </Story>
-                    <Story>
+                    <Story className="gap-0">
+                      <InputLabel label={`Label ${size}`} size={size} />
+
                       <TextInput
                         size={size}
                         variant={variant}
@@ -98,7 +59,9 @@ const Inputs = () => {
                       />
                     </Story>
 
-                    <Story>
+                    <Story className="gap-0">
+                      <InputLabel label={`Label ${size}`} size={size} />
+
                       <TextInput
                         size={size}
                         variant={variant}
