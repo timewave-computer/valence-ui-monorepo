@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
-import { Label, TextInput } from "@valence-ui/ui-components";
+import { Label, TextInput, TextInputOLD } from "@valence-ui/ui-components";
 
 export const SidePanelV2: React.FC<{
   rerouteOnConnect?: boolean;
@@ -97,10 +97,8 @@ export const SidePanelV2: React.FC<{
           <h1 className="font-bold">Search by address</h1>
 
           <TextInput
-            input={accountUrlParam}
-            onChange={(value) => handleSearchByAddress(value)}
-            textClassName="font-mono"
-            containerClassName="w-full"
+            value={accountUrlParam}
+            onChange={(e) => handleSearchByAddress(e.target.value)}
             placeholder="neutron12345..."
           />
         </div>

@@ -14,5 +14,5 @@ export * from "./LoadingSkeleton";
 export * from "./Label";
 export * from "./Heading";
 export * from "./Card";
-export * from "./TextInput";
 export * from "./Table";
+export * from "./inputs";

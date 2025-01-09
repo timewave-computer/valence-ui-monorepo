@@ -2,7 +2,7 @@
 import { cn } from "~/utils";
 import { useRef } from "react";
 
-export type TextInputProps = {
+export type TextInputPropsOLD = {
   /**
    * The input text.
    */
@@ -39,7 +39,7 @@ export type TextInputProps = {
   id?: string;
 };
 
-export const TextInput = ({
+export const TextInputOLD = ({
   input,
   onChange,
   placeholder,

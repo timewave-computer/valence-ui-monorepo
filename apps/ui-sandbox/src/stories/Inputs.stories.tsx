@@ -6,23 +6,78 @@ import {
   FormRoot,
   FormTextInput,
   TextInput,
+  TextInputProps,
 } from "@valence-ui/ui-components";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 const Inputs = () => {
-  const [value, setValue] = useState("");
-  const [num, setNum] = useState(0);
+  const [text, setText] = useState("");
+  const [num, setNum] = useState("");
 
+  const sizes = ["base", "sm"] as Array<TextInputProps["size"]>;
+  const variants = ["primary", "form"] as Array<TextInputProps["variant"]>;
   return (
-    <Section className="w-1/2">
-      <Story>
-        <TextInput
-          containerClassName="w-full"
-          placeholder="neutron12345..."
-          input={value}
-          onChange={setValue}
-        />
-      </Story>
+    <Section className="">
+      <div className="grid grid-cols-4 gap-4">
+        {variants.map((variant) => {
+          return (
+            <Fragment key={variant}>
+              {sizes.map((size) => {
+                return (
+                  <Fragment key={`${variant}-${size}`}>
+                    <Story>
+                      <TextInput
+                        size={size}
+                        variant={variant}
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="neutron12345..."
+                      />
+                    </Story>
+                    <Story>
+                      <TextInput
+                        size={size}
+                        variant={variant}
+                        type="number"
+                        value={num}
+                        onChange={(e) => setNum(e.target.value)}
+                        placeholder="0.00"
+                        suffix="%"
+                      />
+                    </Story>
+                    <Story>
+                      <TextInput
+                        size={size}
+                        variant={variant}
+                        type="number"
+                        isError={true}
+                        value={num}
+                        onChange={(e) => setNum(e.target.value)}
+                        placeholder="0.00"
+                        suffix="%"
+                      />
+                    </Story>
+
+                    <Story>
+                      <TextInput
+                        size={size}
+                        variant={variant}
+                        type="number"
+                        isDisabled={true}
+                        value={num}
+                        onChange={(e) => setNum(e.target.value)}
+                        placeholder="0.00"
+                        suffix="%"
+                      />
+                    </Story>
+                  </Fragment>
+                );
+              })}
+              <div className="col-span-4 py-4" />
+            </Fragment>
+          );
+        })}
+      </div>
       <Story>
         <div
           className={cn(
@@ -36,8 +91,8 @@ const Inputs = () => {
 
               "h-full w-full bg-transparent p-2 transition-all focus:outline-none"
             )}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
             type="text"
             placeholder="neutron1234..."
           />

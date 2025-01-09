@@ -1,5 +1,5 @@
 "use client";
-import { Button, cn, TextInput } from "@valence-ui/ui-components";
+import { Button, cn, TextInput, TextInputOLD } from "@valence-ui/ui-components";
 import { useState } from "react";
 import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
@@ -54,13 +54,12 @@ export const Footer = (
       <div className="col-span-1 col-start-1 flex flex-col gap-2">
         {showSubscribe ? (
           <>
-            {" "}
             <p>Sign up for our newsletter</p>
-            <div className="flex flex-row items-stretch">
+            <div className="flex flex-row items-stretch ">
               <TextInput
-                input={email}
-                onChange={setEmail}
-                containerClassName="!border-valence-black border-r-0 w-full max-w-xs"
+                className="border-valence-black border border-r-0"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Button
                 variant="secondary"
