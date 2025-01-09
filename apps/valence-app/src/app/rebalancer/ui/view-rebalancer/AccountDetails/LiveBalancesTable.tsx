@@ -1,6 +1,11 @@
 "use client";
-import { SortableTableHeader, Sorter } from "@/components";
-import { IconTooltipContent, LoadingSkeleton } from "@valence-ui/ui-components";
+import {
+  IconTooltipContent,
+  LoadingSkeleton,
+  TableHeader,
+  Asset,
+  Sorter,
+} from "@valence-ui/ui-components";
 import {
   Dispatch,
   Fragment,
@@ -13,9 +18,9 @@ import { cn, compareNumbers, compareStrings, displayNumber } from "@/utils";
 import {
   useAccountConfigQuery,
   useLivePortfolio,
-  Asset,
   accountAtom,
   LivePortfolioTooltipCopy,
+  SymbolColors,
 } from "@/app/rebalancer/ui";
 import { useAtom } from "jotai";
 
@@ -122,7 +127,11 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
                   "flex flex-row items-center justify-start gap-2 border-b border-valence-mediumgray px-0 py-4",
                 )}
               >
-                <Asset asChild symbol={holding.symbol} />
+                <Asset
+                  asChild
+                  color={SymbolColors.get(holding.symbol)}
+                  symbol={holding.symbol}
+                />
               </div>
 
               <p
@@ -194,81 +203,82 @@ const LiveBalancesTableLayout: React.FC<{
 }> = ({ children, sortAscending, sorter, setSorter, setSortAscending }) => {
   return (
     <>
-      <div className="grid grid-cols-[0.5fr_1fr_1fr_1.5fr_1.5fr_1fr_1.5fr]">
-        <SortableTableHeader
+      <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto]">
+        <TableHeader
           label="Ticker"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.TICKER}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-start px-0  border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"left"}
+          className="pl-0"
         />
 
-        <SortableTableHeader
+        <TableHeader
           label="Distribution"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.DISTRIBUTION}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0 border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
-        <SortableTableHeader
+        <TableHeader
           label="Target"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.TARGET}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0 border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
-        <SortableTableHeader
+        <TableHeader
           label="Amount Withdrawable"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.WITHDRAWABLE}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0  border-y-0"
-          textClassName=" text-xs font-base text-wrap "
+          variant={"secondary"}
+          align={"right"}
           hoverTooltip={
             <IconTooltipContent {...LivePortfolioTooltipCopy.withdrawable} />
           }
         />
-        <SortableTableHeader
+        <TableHeader
           label="Total Holdings"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.HOLDINGS}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0  border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
-        <SortableTableHeader
+        <TableHeader
           label="Price"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.PRICE}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end px-0  border-y-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
 
-        <SortableTableHeader
+        <TableHeader
           label="USD Value"
           sorterKey={LIVE_BALANCES_SORTER_KEYS.VALUE}
           currentSorter={sorter}
           ascending={sortAscending}
           setSorter={setSorter}
           setSortAscending={setSortAscending}
-          buttonClassName="pt-0 justify-end  border-y-0 px-0"
-          textClassName=" text-xs font-base "
+          variant={"secondary"}
+          align={"right"}
         />
         {children}
       </div>

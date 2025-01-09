@@ -13,11 +13,11 @@ import {
   WithIconAndTooltip,
   FormTableCell,
   LoadingSkeleton,
+  Asset,
 } from "@valence-ui/ui-components";
 import { chainConfig } from "@/const/config";
 import { BsExclamationCircle } from "react-icons/bs";
 import {
-  Asset,
   NoFundsActionItems,
   SupportedAssets,
   CreateRebalancerCopy,
@@ -27,6 +27,7 @@ import {
   useMinimumRequiredValue,
   useNoSupportedAssetsWarning,
   WarnTextV2,
+  SymbolColors,
 } from "@/app/rebalancer/ui";
 
 export const DepositAssets: React.FC<{
@@ -260,7 +261,11 @@ export const DepositAssets: React.FC<{
               return (
                 <Fragment key={`wallet-balance-row-${balance.denom}`}>
                   <FormTableCell className="flex flex-row items-center gap-2">
-                    <Asset symbol={asset?.symbol} asChild />
+                    <Asset
+                      color={SymbolColors.get(asset?.symbol ?? "")}
+                      symbol={asset?.symbol}
+                      asChild
+                    />
                   </FormTableCell>
 
                   <FormTableCell

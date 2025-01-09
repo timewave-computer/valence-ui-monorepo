@@ -7,7 +7,7 @@ import { GetStories } from "~/lib";
 export const SandboxNav = ({ stories }: { stories: GetStories }) => {
   const pathname = usePathname();
   return (
-    <nav className="p-2">
+    <nav className="p-2 ">
       <ul>
         <li>
           <NavItem href={`/`} label={`All`} isActive={pathname === `/`} />

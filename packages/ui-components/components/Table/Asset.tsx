@@ -1,16 +1,16 @@
-import { SymbolColors } from "@/app/rebalancer/ui";
 import { Fragment } from "react";
 
 export const Asset: React.FC<{
   symbol?: string;
+  color?: string;
   asChild?: boolean;
-}> = ({ symbol, asChild = false }) => {
+}> = ({ symbol, asChild = false, color }) => {
   const AssetWithDot = (
     <>
       <div
         className="h-4 w-4 shrink-0 rounded-full bg-valence-gray"
         style={{
-          backgroundColor: symbol ? SymbolColors.get(symbol ?? "") : "",
+          backgroundColor: color ?? "",
         }}
       ></div>
       <span className="text-sm font-bold">{symbol ?? ""}</span>

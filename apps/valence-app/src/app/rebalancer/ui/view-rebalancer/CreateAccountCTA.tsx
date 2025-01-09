@@ -1,6 +1,6 @@
 "use client";
-import { Asset } from "@/app/rebalancer/ui";
-import { useAssetMetadata } from "@/app/rebalancer/ui";
+import { Asset } from "@valence-ui/ui-components";
+import { SymbolColors, useAssetMetadata } from "@/app/rebalancer/ui";
 import { displayNumberV2, microToBase } from "@/utils";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { useRouter } from "next/navigation";
@@ -50,7 +50,10 @@ export const CreateAccountCTA = () => {
             );
             return (
               <div key={`cta-balance-${balance.denom}`} className="flex gap-2">
-                <Asset symbol={symbol ?? ""} />{" "}
+                <Asset
+                  color={SymbolColors.get(symbol ?? "")}
+                  symbol={symbol ?? ""}
+                />{" "}
                 <span className="font-mono">
                   {displayNumberV2(amount, {
                     minimumFractionDigits: 2,

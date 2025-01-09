@@ -1,5 +1,4 @@
 "use client";
-import { SortableTableHeader, Sorter, TextCell } from "@/components";
 import {
   AuctionStatus,
   CelatoneUrl,
@@ -32,7 +31,13 @@ import { FetchMetadataResponse } from "@/server/actions";
 import { useCache, useInitializeMetadataCache } from "@/hooks";
 import { UTCDate } from "@date-fns/utc";
 import { addDays } from "date-fns";
-import { Label, LabelProps } from "@valence-ui/ui-components";
+import {
+  Label,
+  LabelProps,
+  TableHeader,
+  TableCell,
+  Sorter,
+} from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({
   initialAuctionsData,
@@ -243,12 +248,7 @@ export function LiveAuctionsTable({
           <p className="pt-0.5 text-center" suppressHydrationWarning>
             {nextStartTimeDisplayString}
           </p>
-        </div>
-      </div>
-
-      <div className="w-full max-w-[1600px] pt-4">
-        <div className="border-[1.6px] border-valence-mediumgray bg-valence-mediumgray px-1.5 py-1">
-          <p className="text-xs font-semibold text-valence-black">
+          <p className="text-xs font-mono font-light text-center">
             Current block:{" "}
             <a
               target="_blank"
@@ -259,11 +259,12 @@ export function LiveAuctionsTable({
             </a>
           </p>
         </div>
-        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-lightgray">
+      </div>
+
+      <div className="w-full max-w-[1600px] pt-4">
+        <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-black">
           {headers.map((header) => (
-            <SortableTableHeader
-              textClassName="font-semibold"
-              buttonClassName="border-x  border-y-[1.6px] py-1 px-1.5 flex justify-center text-sm border border-valence-lightgray"
+            <TableHeader
               key={`live-auction-header-cell-${header.sorterKey}`}
               label={header.label}
               sorterKey={header.sorterKey ?? ""}
@@ -279,8 +280,8 @@ export function LiveAuctionsTable({
             const isFinished = row.status === LiveAuctionStatus.Finished;
             return (
               <Fragment key={"row-" + row.pair}>
-                <TextCell>{row.pair}</TextCell>
-                <TextCell className="flex items-center">
+                <TableCell>{row.pair}</TableCell>
+                <TableCell className="flex items-center">
                   <span
                     className={cn(
                       isAuctionsDataFetching &&
@@ -299,34 +300,44 @@ export function LiveAuctionsTable({
                   {isFinished && (
                     <span className="self-start text-xs font-light">*</span>
                   )}
-                </TextCell>
+                </TableCell>
                 <BenchmarkCell
                   isFetching={isAstroportFetching}
                   price={row.astroport.price}
                   isLoading={row.astroport.isLoading}
                   highlight={row.astroport.highlight}
                 />
-                <TextCell>{isClosed ? "-" : row.startPrice}</TextCell>
-                <TextCell>{isClosed ? "-" : row.endPrice}</TextCell>
-                <TextCell>{isClosed ? "-" : row.decreasePerBlock}</TextCell>
-                <TextCell>
+                <TableCell>{isClosed ? "-" : row.startPrice}</TableCell>
+                <TableCell>{isClosed ? "-" : row.endPrice}</TableCell>
+                <TableCell>{isClosed ? "-" : row.decreasePerBlock}</TableCell>
+                <TableCell>
                   <Label
                     className="w-full"
                     variant={auctionStatusVariant[row.status]}
                   >
                     {row.status}
                   </Label>
-                </TextCell>
+                </TableCell>
 
-                <TextCell>{isClosed ? "-" : row.amountRemaining}</TextCell>
-                <TextCell>{isClosed ? "-" : row.initialAmount}</TextCell>
-                <TextCell href={CelatoneUrl.block(row.startBlock)}>
+                <TableCell>{isClosed ? "-" : row.amountRemaining}</TableCell>
+                <TableCell>{isClosed ? "-" : row.initialAmount}</TableCell>
+                <TableCell
+                  link={{
+                    href: CelatoneUrl.block(row.startBlock),
+                    blankTarget: true,
+                  }}
+                >
                   {row.startBlock.toString()}
-                </TextCell>
-                <TextCell>{row.endBlock.toString()}</TextCell>
-                <TextCell href={CelatoneUrl.contract(row.auctionAddress)}>
+                </TableCell>
+                <TableCell>{row.endBlock.toString()}</TableCell>
+                <TableCell
+                  link={{
+                    href: CelatoneUrl.contract(row.auctionAddress),
+                    blankTarget: true,
+                  }}
+                >
                   {displayAddress(row.auctionAddress)}
-                </TextCell>
+                </TableCell>
               </Fragment>
             );
           })}

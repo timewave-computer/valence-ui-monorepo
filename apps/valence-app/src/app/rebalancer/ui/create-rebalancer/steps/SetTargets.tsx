@@ -4,11 +4,11 @@ import { displayNumber } from "@/utils";
 import {
   useAssetMetadata,
   useBaseTokenValue,
-  Asset,
   CreateRebalancerCopy,
   RebalancerFormTooltipCopy,
   WarnTextV2,
   useWhitelistedDenoms,
+  SymbolColors,
 } from "@/app/rebalancer/ui";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import { Dropdown } from "@/components";
@@ -22,6 +22,7 @@ import {
   FormInputLabel,
   LoadingSkeleton,
   FormTableCell,
+  Asset,
 } from "@valence-ui/ui-components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
@@ -50,7 +51,12 @@ export const SetTargets: React.FC<{
         return {
           value: denom,
           label: asset?.symbol ?? "",
-          display: <Asset symbol={asset?.symbol} />,
+          display: (
+            <Asset
+              color={SymbolColors.get(asset?.symbol ?? "")}
+              symbol={asset?.symbol}
+            />
+          ),
         };
       })
     : [];
@@ -174,7 +180,12 @@ export const SetTargets: React.FC<{
                     <FormTableCell className="relative flex items-center justify-start">
                       <Dropdown
                         selectedDisplay={
-                          <Asset symbol={assetMetadata?.symbol} />
+                          <Asset
+                            color={SymbolColors.get(
+                              assetMetadata?.symbol ?? "",
+                            )}
+                            symbol={assetMetadata?.symbol}
+                          />
                         }
                         containerClassName="min-w-32"
                         availableOptions={availableDropdownOptions} // to give field access to the values of what is selected

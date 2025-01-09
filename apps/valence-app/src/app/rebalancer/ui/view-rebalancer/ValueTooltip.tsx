@@ -125,8 +125,8 @@ export const ValueTooltip = ({
                 })}
           <TableRow className="border-t-[0.5px] border-valence-gray">
             <AssetCell placeholderDot={true} symbol="Total" />
-            <TextCell></TextCell>
-            <TextCell></TextCell>
+            <TooltipTableCell></TooltipTableCell>
+            <TooltipTableCell></TooltipTableCell>
 
             <NumberCell className="text-end">{`$${displayNumber(totalValue, { precision: 2 })}`}</NumberCell>
           </TableRow>
@@ -141,7 +141,7 @@ const AssetCell: React.FC<{ symbol: string; placeholderDot?: boolean }> = ({
   placeholderDot = false,
 }) => {
   return (
-    <TextCell
+    <TooltipTableCell
       className="flex items-center  justify-start gap-1 text-xs"
       asHeading={true}
     >
@@ -152,7 +152,7 @@ const AssetCell: React.FC<{ symbol: string; placeholderDot?: boolean }> = ({
       )}
 
       <span>{symbol}</span>
-    </TextCell>
+    </TooltipTableCell>
   );
 };
 const TableRow: React.FC<{ className?: string; children?: ReactNode }> = ({
@@ -173,7 +173,7 @@ const HeaderCell: React.FC<{ className?: string; children?: ReactNode }> = ({
   );
 };
 
-const TextCell: React.FC<{
+const TooltipTableCell: React.FC<{
   className?: string;
   children?: ReactNode;
   asHeading?: boolean;

@@ -11,7 +11,7 @@ export const StoryLabel = ({
   return (
     <h2
       className={cn(
-        "bg-valence-lightgray text-sm font-mono font-bold w-fit px-2 py-1",
+        "bg-valence-lightgray text-sm font-mono font-bold w-fit px-4 py-1  rounded-md  shadow-sm   shadow-valence-gray",
         className
       )}
     >

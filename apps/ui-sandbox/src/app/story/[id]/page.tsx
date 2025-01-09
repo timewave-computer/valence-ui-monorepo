@@ -25,7 +25,7 @@ export default async function StoryPage({
     loading: () => <p>Loading...</p>,
   });
   return (
-    <div className="p-4 flex flex-col gap-2 w-fit">
+    <div className="p-4 flex flex-col gap-2">
       <StoryLabel>{story.prettyName}</StoryLabel>
 
       <StoryComponent />
