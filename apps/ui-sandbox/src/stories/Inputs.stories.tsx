@@ -1,10 +1,7 @@
 "use client";
 import { Section, Story } from "~/components";
 import {
-  cn,
-  FormField,
-  FormRoot,
-  FormTextInput,
+  InputLabel,
   TextInput,
   TextInputProps,
 } from "@valence-ui/ui-components";
@@ -19,6 +16,49 @@ const Inputs = () => {
   return (
     <Section className="">
       <div className="grid grid-cols-4 gap-4">
+        <Story className="gap-0">
+          <InputLabel size="lg" label="Primary" />
+          <TextInput
+            variant="primary"
+            size="base"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="neutron12345..."
+          />
+        </Story>
+        <Story className="gap-0">
+          <InputLabel size="lg" label="Secondary" />
+          <TextInput
+            variant="form"
+            size="base"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="neutron12345..."
+          />
+        </Story>
+        <div className="col-span-2"></div>
+        <Story className="gap-0">
+          <InputLabel size="sm" label="Primary small" />
+          <TextInput
+            variant="primary"
+            size="sm"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="neutron12345..."
+          />
+        </Story>
+        <Story className="gap-0">
+          <InputLabel size="sm" label="Secondary small" />
+          <TextInput
+            variant="form"
+            size="sm"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="neutron12345..."
+          />
+        </Story>
+        <div className="col-span-2"></div>
+        <div className="col-span-4 py-4" />
         {variants.map((variant) => {
           return (
             <Fragment key={variant}>

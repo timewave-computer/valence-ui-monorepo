@@ -1,14 +1,13 @@
 import React from "react";
 import { StoryLabel } from "./StoryLabel";
-export const Story = ({
-  children,
-  label,
-}: {
-  children: React.ReactNode;
+import { cn } from "@valence-ui/ui-components";
+
+interface StoryProps extends React.HTMLAttributes<HTMLDivElement> {
   label?: string;
-}) => {
+}
+export const Story = ({ children, label, className }: StoryProps) => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col gap-4", className)}>
       {label && <StoryLabel className="text-xs">{label}</StoryLabel>}
       {children}
     </div>
