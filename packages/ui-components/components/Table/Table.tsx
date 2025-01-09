@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useMemo, useState, useId } from "react";
 import { cn } from "../../utils";
 import { cva, VariantProps } from "class-variance-authority";
 import {
@@ -42,7 +42,6 @@ interface TableProps
     TableVariants {
   headers: Array<TableColumnHeader>;
   data: Array<TableRow>;
-  tableId: string; // must be unique for each table on same page. required for mapping over keys without collisions.
   isLoading?: boolean;
   loadingRows?: number;
 }
@@ -52,12 +51,12 @@ export const Table = ({
   className,
   headers,
   data: _data,
-  tableId,
   variant = "primary",
   isLoading,
   loadingRows = 3,
   ...props
 }: TableProps) => {
+  const tableId = useId(); // for unique key generation for multiple tables
   const [sortAscending, setSortAscending] = useState(false);
   const [currentSortKey, setCurrentSortKey] = useState<string>(headers[0].key);
   const sorterCellType = headers.find(

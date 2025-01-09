@@ -64,6 +64,7 @@ export function isCellDataOfType<T extends CellTypes>(
   data: CellDataMap[keyof CellDataMap],
   cellType: T,
 ): data is CellData<T> {
+  if (!data) return false;
   switch (cellType) {
     case CellType.Number:
       return (data as NumberCellData)?.value !== undefined;
@@ -131,5 +132,8 @@ function compareNumbers<T extends number | string | undefined>(
 ) {
   const a = Number(_a);
   const b = Number(_b);
+  if (isNaN(a) && isNaN(b)) return 0;
+  if (isNaN(a)) return ascending ? 1 : -1;
+  if (isNaN(b)) return ascending ? -1 : 1;
   return ascending ? a - b : b - a;
 }

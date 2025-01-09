@@ -61,7 +61,7 @@ const data: TableRow[] = [
       symbol: "ETH",
       color: "#00A3FF", // blue
     },
-    priceu: {
+    price: {
       value: "0.00",
     },
     address: {
@@ -76,7 +76,7 @@ const data: TableRow[] = [
     },
   },
   {
-    assetu: {
+    asset: {
       symbol: "LTC",
       color: "#EA80D1", // pink
     },
@@ -100,48 +100,26 @@ const Tables = () => {
   return (
     <Section id="table" className="flex flex-col gap-12">
       <Story label="primary">
-        <Table tableId="table1" headers={headers} data={data} />
+        <Table headers={headers} data={data} />
       </Story>
       <Story label="secondary">
-        <Table
-          variant="secondary"
-          tableId="table2"
-          headers={headers}
-          data={data}
-        />
+        <Table variant="secondary" headers={headers} data={data} />
       </Story>
       <div className="pt-2"></div>
 
       <Story label="secondary,loading">
-        <Table
-          variant="secondary"
-          tableId="table2-loading"
-          headers={headers}
-          data={data}
-          isLoading
-        />
+        <Table variant="secondary" headers={headers} data={data} isLoading />
       </Story>
       <Story label="primary,loading">
-        <Table
-          variant="primary"
-          tableId="table1-loading"
-          headers={headers}
-          data={data}
-          isLoading
-        />
+        <Table variant="primary" headers={headers} data={data} isLoading />
       </Story>
       <div className="pt-2"></div>
       <Story label="primary,empty">
-        <Table tableId="table1-empty" headers={headers} data={[]} />
+        <Table headers={headers} data={[]} />
       </Story>
 
       <Story label="secondary,empty">
-        <Table
-          variant="secondary"
-          tableId="table2-empty"
-          headers={headers}
-          data={[]}
-        />
+        <Table variant="secondary" headers={headers} data={[]} />
       </Story>
     </Section>
   );
