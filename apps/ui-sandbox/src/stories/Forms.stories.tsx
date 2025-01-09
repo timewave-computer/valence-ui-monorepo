@@ -53,7 +53,10 @@ const Forms = () => {
       <p>todo: input errors</p>
       <p>todo: toast msg</p>
       <p>todo: small dropdown, test & asset</p>
-      <p>todo: style input tables further?</p>
+      <p>
+        todo: style input tables further?. need to make input table cell sm lg
+        variants
+      </p>
       <div className="grid grid-cols-2  divide-x-2 divide-valence-lightgray">
         {variants.map((variant, index) => {
           return (

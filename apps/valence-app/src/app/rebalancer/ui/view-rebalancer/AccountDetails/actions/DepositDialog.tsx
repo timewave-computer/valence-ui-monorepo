@@ -6,11 +6,12 @@ import {
   Dialog,
   DialogTrigger,
   DialogContent,
-  FormInputLabel,
+  InputLabel,
   FormField,
-  FormTextInput,
   FormRoot,
   FormTableCell,
+  FormControl,
+  TextInput,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -121,7 +122,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
           Deposit
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex max-w-lg flex-col gap-6">
+      <DialogContent className="flex w-fit flex-col gap-6">
         {
           // to reset when dialog closes
           isDepositDialogOpen && (
@@ -202,10 +203,10 @@ const DepositForm: React.FC<{
             >
               <div
                 role="grid"
-                className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
+                className="grid grid-cols-[1fr_2fr] justify-items-start gap-x-4 gap-y-2"
               >
-                <FormInputLabel label="Available funds" />
-                <FormInputLabel label="Deposit Amount" />
+                <InputLabel noGap size="sm" label="Available funds" />
+                <InputLabel noGap size="sm" label="Deposit Amount" />
 
                 {convertedNonZeroBalances.map((lineItem, index) => {
                   return (
@@ -218,32 +219,31 @@ const DepositForm: React.FC<{
                         {lineItem.symbol ?? ""}
                       </FormTableCell>
                       <FormTableCell>
-                        <FormField name={`amounts.${index}.amount`}>
-                          <FormTextInput
-                            isError={!!errors.amounts?.[index]}
-                            suffix={lineItem.symbol}
-                            autoFocus={index === 0}
-                            {...register(`amounts.${index}.amount`, {
-                              valueAsNumber: true,
-                              max: {
-                                value: lineItem.amount,
-                                message: maxLimitMsg,
-                              },
-                            })}
-                            type="number"
-                            placeholder="0.00"
-                          />
+                        <FormField asChild name={`amounts.${index}.amount`}>
+                          <FormControl asChild>
+                            <TextInput
+                              size="sm"
+                              isError={!!errors.amounts?.[index]}
+                              suffix={lineItem.symbol}
+                              autoFocus={index === 0}
+                              {...register(`amounts.${index}.amount`, {
+                                valueAsNumber: true,
+                                max: {
+                                  value: lineItem.amount,
+                                  message: maxLimitMsg,
+                                },
+                              })}
+                              type="number"
+                              placeholder="0.00"
+                            />
+                          </FormControl>
                         </FormField>
                       </FormTableCell>
                     </Fragment>
                   );
                 })}
               </div>
-              {isOverMax ? (
-                <WarnTextV2 text={maxLimitMsg} variant="error" />
-              ) : (
-                <div className="min-h-4 w-full"></div>
-              )}
+              {isOverMax && <WarnTextV2 text={maxLimitMsg} variant="error" />}
             </FormRoot>
 
             <div className="no-wrap flex flex-row items-center justify-end gap-4">

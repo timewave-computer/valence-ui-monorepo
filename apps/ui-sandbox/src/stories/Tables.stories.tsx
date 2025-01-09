@@ -105,15 +105,15 @@ const Tables = () => {
       <Story label="secondary">
         <Table variant="secondary" headers={headers} data={data} />
       </Story>
-      <div className="pt-2"></div>
+
+      <Story label="primary,loading">
+        <Table variant="primary" headers={headers} data={data} isLoading />
+      </Story>
 
       <Story label="secondary,loading">
         <Table variant="secondary" headers={headers} data={data} isLoading />
       </Story>
-      <Story label="primary,loading">
-        <Table variant="primary" headers={headers} data={data} isLoading />
-      </Story>
-      <div className="pt-2"></div>
+
       <Story label="primary,empty">
         <Table headers={headers} data={[]} />
       </Story>

@@ -12,9 +12,8 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
-  FormTextInput,
   FormField,
-  FormInputLabel,
+  InputLabel,
   FormControl,
   Asset,
   TextInput,
@@ -73,8 +72,9 @@ export const AdvancedSettings: React.FC<{
           </p>
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                <FormInputLabel
+              <div className="flex flex-col">
+                <InputLabel
+                  size="sm"
                   label={RebalancerFormTooltipCopy.baseDenom.title}
                   tooltipContent={RebalancerFormTooltipCopy.baseDenom.text}
                 />
@@ -93,27 +93,26 @@ export const AdvancedSettings: React.FC<{
                   }
                 />
               </div>
-              <div className="flex flex-col gap-2">
-                <div className="h-fit pb-1 text-xs font-normal">
-                  <FormInputLabel
-                    label={RebalancerFormTooltipCopy.strategy.title}
-                    tooltipContent={RebalancerFormTooltipCopy.strategy.text}
-                    tooltipChildren={
-                      <>
-                        See{" "}
-                        <LinkText
-                          className=" border-valence-blue text-valence-blue hover:border-b"
-                          href="https://github.com/timewave-computer/valence-services/tree/main/contracts/services/rebalancer#target-override-strategy"
-                          openInNewTab={true}
-                        >
-                          {" "}
-                          here
-                        </LinkText>{" "}
-                        for an explanation with examples.
-                      </>
-                    }
-                  />
-                </div>
+              <div className="flex flex-col">
+                <InputLabel
+                  size="sm"
+                  label={RebalancerFormTooltipCopy.strategy.title}
+                  tooltipContent={RebalancerFormTooltipCopy.strategy.text}
+                  tooltipChildren={
+                    <>
+                      See{" "}
+                      <LinkText
+                        className=" border-valence-blue text-valence-blue hover:border-b"
+                        href="https://github.com/timewave-computer/valence-services/tree/main/contracts/services/rebalancer#target-override-strategy"
+                        openInNewTab={true}
+                      >
+                        {" "}
+                        here
+                      </LinkText>{" "}
+                      for an explanation with examples.
+                    </>
+                  }
+                />
 
                 <Dropdown
                   className="max-w-[30%]"
@@ -124,8 +123,9 @@ export const AdvancedSettings: React.FC<{
                   options={TargetOverrideStartegyOptions}
                 />
               </div>
-              <div className="flex flex-col gap-2 ">
-                <FormInputLabel
+              <div className="flex flex-col ">
+                <InputLabel
+                  size="sm"
                   label={RebalancerFormTooltipCopy.maxLimit.title}
                   tooltipContent={RebalancerFormTooltipCopy.maxLimit.text}
                 />
@@ -141,12 +141,12 @@ export const AdvancedSettings: React.FC<{
                   </FormControl>
                 </FormField>
               </div>
-              <div className="flex flex-col gap-2 ">
-                <FormInputLabel
+              <div className="flex flex-col ">
+                <InputLabel
+                  size="sm"
                   tooltipContent={RebalancerFormTooltipCopy.trustee.text}
                   label={RebalancerFormTooltipCopy.trustee.title}
                 />
-
                 <RadioGroup
                   onValueChange={() => {
                     setAllowOtherAddressInput(!allowOtherAddressInput);

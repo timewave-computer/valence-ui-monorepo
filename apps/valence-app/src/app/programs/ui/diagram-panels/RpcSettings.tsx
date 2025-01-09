@@ -1,9 +1,10 @@
 import {
   FormRoot,
   FormField,
-  FormTextInput,
-  FormInputLabel,
+  InputLabel,
   Label,
+  FormControl,
+  TextInput,
 } from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
 import { Fragment, useCallback, useEffect } from "react";
@@ -70,20 +71,23 @@ export function RpcSettingsPanel({
         </div>
 
         <FormField name="mainChainId" className="flex flex-col gap-1">
-          <FormInputLabel label={formLabels.chainId} />
-
-          <FormTextInput {...register("main.chainId")} />
+          <InputLabel label={formLabels.chainId} />
+          <FormControl asChild>
+            <TextInput {...register("main.chainId")} />
+          </FormControl>
         </FormField>
 
         <FormField name="mainChainRpc" className="flex flex-col gap-1">
-          <FormInputLabel label={formLabels.rpc} />
-
-          <FormTextInput {...register("main.rpc")} />
+          <InputLabel label={formLabels.rpc} />
+          <FormControl asChild>
+            <TextInput {...register("main.rpc")} />
+          </FormControl>
         </FormField>
         <FormField name="registryAddress" className="flex flex-col gap-1">
-          <FormInputLabel label={formLabels.registryAddress} />
-
-          <FormTextInput {...register("main.registryAddress")} />
+          <InputLabel label={formLabels.registryAddress} />
+          <FormControl asChild>
+            <TextInput {...register("main.registryAddress")} />
+          </FormControl>
         </FormField>
       </div>
 
@@ -97,18 +101,20 @@ export function RpcSettingsPanel({
                   name={`otherChains.${i}.chainId`}
                   className="flex flex-col gap-1"
                 >
-                  <FormInputLabel label={formLabels.chainId} />
-
-                  <FormTextInput {...register(`otherChains.${i}.chainId`)} />
+                  <InputLabel label={formLabels.chainId} />
+                  <FormControl asChild>
+                    <TextInput {...register(`otherChains.${i}.chainId`)} />
+                  </FormControl>
                 </FormField>
                 <FormField
                   key={`rpc-input-${chain.rpc}`}
                   name={`otherChains.${i}.rpc`}
                   className="flex flex-col gap-1"
                 >
-                  <FormInputLabel label={formLabels.rpc} />
-
-                  <FormTextInput {...register(`otherChains.${i}.rpc`)} />
+                  <InputLabel label={formLabels.rpc} />
+                  <FormControl asChild>
+                    <TextInput {...register(`otherChains.${i}.rpc`)} />
+                  </FormControl>
                 </FormField>
               </Fragment>
             );

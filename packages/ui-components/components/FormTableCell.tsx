@@ -3,11 +3,11 @@ import { cn } from "../utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { LoadingSkeleton } from ".";
 
-const formTableCellVariants = cva("flex w-full items-center justify-start  ", {
+const formTableCellVariants = cva("flex w-full items-center  ", {
   variants: {
     variant: {
       unstyled: "",
-      number: "font-mono font-light min-h-11",
+      number: "font-mono font-light min-h-9 text-sm",
     },
   },
   defaultVariants: {

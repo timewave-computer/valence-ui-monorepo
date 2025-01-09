@@ -7,10 +7,11 @@ import {
   DialogTrigger,
   DialogContent,
   FormRoot,
-  FormInputLabel,
+  InputLabel,
   FormField,
-  FormTextInput,
   FormTableCell,
+  TextInput,
+  FormControl,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -26,7 +27,7 @@ import {
   UseLivePortfolioReturnValue,
   WarnTextV2,
 } from "@/app/rebalancer/ui";
-import { baseToMicro, displayNumber, displayNumberV2 } from "@/utils";
+import { baseToMicro, displayNumberV2 } from "@/utils";
 import { useForm } from "react-hook-form";
 import { Coin } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
@@ -200,10 +201,10 @@ const WithdrawForm: React.FC<{
         <FormRoot onSubmit={(e) => e.preventDefault()}>
           <div
             role="grid"
-            className="grid grid-cols-[1fr_1fr] justify-items-start gap-x-4 gap-y-2"
+            className="grid grid-cols-[1fr_2fr] justify-items-start gap-x-4 gap-y-2"
           >
-            <FormInputLabel label="Available funds" />
-            <FormInputLabel label="Withdraw Amount" />
+            <InputLabel noGap size="sm" label="Available funds" />
+            <InputLabel noGap size="sm" label="Withdraw Amount" />
 
             {nonZeroBalances.map((lineItem, index) => {
               const asset = getOriginAsset(lineItem.denom);
@@ -217,23 +218,22 @@ const WithdrawForm: React.FC<{
                     {asset?.symbol ?? ""}
                   </FormTableCell>
                   <FormTableCell>
-                    <FormField
-                      name={`amounts.${index}.amount`}
-                      className="flex flex-col gap-1"
-                    >
-                      <FormTextInput
-                        type="number"
-                        suffix={asset?.symbol}
-                        placeholder="0.00"
-                        autoFocus={index === 0}
-                        {...register(`amounts.${index}.amount`, {
-                          valueAsNumber: true,
-                          max: {
-                            value: lineItem.balance.account,
-                            message: maxLimitMsg,
-                          },
-                        })}
-                      />
+                    <FormField asChild name={`amounts.${index}.amount`}>
+                      <FormControl asChild>
+                        <TextInput
+                          type="number"
+                          suffix={asset?.symbol}
+                          placeholder="0.00"
+                          autoFocus={index === 0}
+                          {...register(`amounts.${index}.amount`, {
+                            valueAsNumber: true,
+                            max: {
+                              value: lineItem.balance.account,
+                              message: maxLimitMsg,
+                            },
+                          })}
+                        />
+                      </FormControl>
                     </FormField>
                   </FormTableCell>
                 </Fragment>
