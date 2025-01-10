@@ -6,18 +6,32 @@ import {
   TabsContent,
   TextInput,
   TableCell,
-  TableWriteable,
+  TableForm,
+  InfoText,
 } from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
+
+/***
+ * TODO: tooltip
+ */
 
 const TablesWriteable = () => {
   const [activeTab, setActiveTab] = useState(DisplayState.Data);
   const isLoading = activeTab === DisplayState.Loading;
 
+  const headers = [
+    {
+      label: "Available funds",
+    },
+    {
+      label: "Deposit Amount",
+    },
+  ];
+
   const tableRows = inputTableData.map((lineItem) => {
     return (
-      <Fragment key={`t1${lineItem.denom}`}>
-        <TableCell isLoading={isLoading} variant="input">
+      <Fragment key={`tableform-${lineItem.denom}`}>
+        <TableCell align="left" isLoading={isLoading} variant="input">
           {lineItem.amount} {lineItem.symbol ?? ""}
         </TableCell>
         <TableCell isLoading={isLoading} variant="input">
@@ -50,18 +64,7 @@ const TablesWriteable = () => {
         </TabsList>
         <TabsContent className="flex flex-col gap-8" value={DisplayState.Data}>
           <Story>
-            <TableWriteable
-              headers={[
-                {
-                  label: "Available funds",
-                },
-                {
-                  label: "Deposit Amount",
-                },
-              ]}
-            >
-              {tableRows}
-            </TableWriteable>
+            <TableForm headers={headers}>{tableRows}</TableForm>
           </Story>
         </TabsContent>
         <TabsContent
@@ -69,18 +72,26 @@ const TablesWriteable = () => {
           value={DisplayState.Loading}
         >
           <Story>
-            <TableWriteable
-              headers={[
-                {
-                  label: "Available funds",
-                },
-                {
-                  label: "Deposit Amount",
-                },
+            <TableForm headers={headers}>{tableRows}</TableForm>
+          </Story>
+        </TabsContent>
+        <TabsContent className="flex flex-col gap-8" value={DisplayState.Error}>
+          <Story>
+            <TableForm
+              messages={[
+                <InfoText variant="info">Here is some info</InfoText>,
+                <InfoText variant="warn">
+                  Insufficient funds in wallet
+                </InfoText>,
+                <InfoText variant="error">
+                  {" "}
+                  Value cannot be less than 1.00
+                </InfoText>,
               ]}
+              headers={headers}
             >
               {tableRows}
-            </TableWriteable>
+            </TableForm>
           </Story>
         </TabsContent>
       </TabsRoot>
@@ -93,6 +104,7 @@ export default TablesWriteable;
 enum DisplayState {
   Data = "data",
   Loading = "loading",
+  Error = "error",
 }
 
 const inputTableData = [

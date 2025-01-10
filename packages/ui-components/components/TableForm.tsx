@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "../utils";
 import { InputLabel } from "./inputs";
-import { useId } from "react";
+import React, { Fragment, useId } from "react";
 
 interface TableWriteableProps extends React.HTMLAttributes<HTMLDivElement> {
   headers: Array<{
@@ -9,14 +9,18 @@ interface TableWriteableProps extends React.HTMLAttributes<HTMLDivElement> {
     align?: "left" | "right" | "center";
   }>;
   children: React.ReactNode;
+  messages?: Array<React.ReactNode>;
 }
-export const TableWriteable = ({
+
+export const TableForm = ({
   headers,
   children,
   className,
+  messages,
   ...props
 }: TableWriteableProps) => {
   const gridTemplateColumns = `repeat(${headers.length}, auto)`;
+  const messageColSpan = `col-span-${headers.length}`;
   const tableId = useId(); // for unique key generation for multiple tables
 
   return (
@@ -40,6 +44,12 @@ export const TableWriteable = ({
         );
       })}
       {children}
+
+      <div className={cn(messageColSpan, "flex flex-col gap-1")}>
+        {messages?.map((message, index) => (
+          <Fragment key={`${tableId}-message-${index}`}>{message}</Fragment>
+        ))}
+      </div>
     </div>
   );
 };

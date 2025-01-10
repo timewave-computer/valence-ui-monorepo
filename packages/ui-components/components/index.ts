@@ -17,4 +17,5 @@ export * from "./Card";
 export * from "./Table";
 export * from "./inputs";
 export * from "./Tabs";
-export * from "./TableWriteable";
+export * from "./TableForm";
+export * from "./InfoText";
