@@ -7,6 +7,7 @@ import {
   InputLabel,
   TextInput,
   FormControl,
+  InfoText,
 } from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
 import {
@@ -24,7 +25,6 @@ import {
   Scale,
   scaleFormatter,
   SymbolColors,
-  WarnTextV2,
   CreateRebalancerCopy,
   RebalancerFormTooltipCopy,
 } from "@/app/rebalancer/ui";
@@ -132,11 +132,9 @@ export const RebalanceSpeed: React.FC<{
             const value = parseFloat(pid[key as PidKey]);
             return value < 0 || value > 1;
           }) && (
-            <WarnTextV2
-              className="pt-2"
-              text="All values must be between 0 and 1 (example: 0.1)"
-              variant="error"
-            />
+            <InfoText className="pt-2" variant="error">
+              All values must be between 0 and 1 (example: 0.1)
+            </InfoText>
           )}
         </div>
       )}
@@ -148,16 +146,14 @@ export const RebalanceSpeed: React.FC<{
           label={RebalancerFormTooltipCopy.projection.title}
         />
         {isProjectionError && (
-          <WarnTextV2
-            variant="warn"
-            text="Error: unable to generate projection with these inputs."
-          />
+          <InfoText variant="error">
+            Unable to generate projection with these inputs
+          </InfoText>
         )}
         {!isProjectionEnabled && (
-          <WarnTextV2
-            variant="info"
-            text="Select an initial deposit and two targets to a generate projection."
-          />
+          <InfoText variant="info">
+            Select an initial deposit and two targets to a generate projection
+          </InfoText>
         )}
         <div className="overflow-clip  bg-valence-lightgray">
           <ResponsiveContainer key={"pid-test"} height={300}>

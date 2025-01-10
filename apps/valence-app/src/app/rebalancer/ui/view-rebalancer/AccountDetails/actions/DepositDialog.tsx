@@ -9,9 +9,10 @@ import {
   InputLabel,
   FormField,
   FormRoot,
-  FormTableCell,
   FormControl,
   TextInput,
+  InfoText,
+  TableCell,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -25,7 +26,6 @@ import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { useAtom } from "jotai";
 import {
   accountAtom,
-  WarnTextV2,
   BalanceReturnValue,
   useAssetMetadata,
   SupportedAssets,
@@ -211,14 +211,18 @@ export const DepositForm: React.FC<{
                 {convertedNonZeroBalances.map((lineItem, index) => {
                   return (
                     <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
-                      <FormTableCell className="flex gap-2">
+                      <TableCell
+                        variant="input"
+                        align="left"
+                        className="flex gap-2"
+                      >
                         {displayNumberV2(lineItem.amount, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 10,
                         })}{" "}
                         {lineItem.symbol ?? ""}
-                      </FormTableCell>
-                      <FormTableCell>
+                      </TableCell>
+                      <TableCell variant="input" align="left">
                         <FormField asChild name={`amounts.${index}.amount`}>
                           <FormControl asChild>
                             <TextInput
@@ -238,12 +242,12 @@ export const DepositForm: React.FC<{
                             />
                           </FormControl>
                         </FormField>
-                      </FormTableCell>
+                      </TableCell>
                     </Fragment>
                   );
                 })}
               </div>
-              {isOverMax && <WarnTextV2 text={maxLimitMsg} variant="error" />}
+              {isOverMax && <InfoText variant="warn">{maxLimitMsg} </InfoText>}
             </FormRoot>
 
             <div className="no-wrap flex flex-row items-center justify-end gap-4">

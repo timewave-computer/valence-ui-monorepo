@@ -10,9 +10,14 @@ const infoTextVariants = cva("flex flex-row gap-2 items-center text-sm", {
       info: "border-valence-gray",
       error: "border-valence-red text-valence-red",
     },
+    size: {
+      base: "text-sm",
+      lg: "text-h6 font-semibold",
+    },
   },
   defaultVariants: {
     variant: "warn",
+    size: "base",
   },
 });
 
@@ -22,6 +27,10 @@ const iconVariants = cva("", {
       warn: "text-warn",
       info: "text-valence-gray",
       error: "text-valence-red",
+    },
+    size: {
+      base: "h-4 w-4",
+      lg: "h-5 w-5",
     },
   },
   defaultVariants: {
@@ -44,7 +53,7 @@ const icons: Record<keyof InfoTextVariants["variant"], React.ComponentType> = {
 };
 
 export const InfoText = React.forwardRef<HTMLDivElement, InfoTextProps>(
-  ({ className, variant = "info", children, ...props }, ref) => {
+  ({ className, variant = "info", children, size, ...props }, ref) => {
     const Icon = icons[variant as keyof typeof icons] as React.ComponentType<{
       className?: string;
     }>;
@@ -55,10 +64,10 @@ export const InfoText = React.forwardRef<HTMLDivElement, InfoTextProps>(
         className={cn(
           "flex flex-row gap-2",
           className,
-          infoTextVariants({ variant }),
+          infoTextVariants({ variant, size }),
         )}
       >
-        <Icon className={cn("h-4 w-4", iconVariants({ variant }))} />
+        <Icon className={cn(iconVariants({ variant, size }))} />
         <div>{children}</div>
       </div>
     );

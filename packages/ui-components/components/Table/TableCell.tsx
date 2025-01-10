@@ -20,6 +20,9 @@ const tableCellVariants = cva(
         right: "justify-end",
         center: "justify-center",
       },
+      isError: {
+        true: "!text-valence-red",
+      },
     },
     defaultVariants: {
       variant: "primary",
@@ -36,6 +39,7 @@ interface TableCellProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: TableCellVariants["variant"];
   align?: TableCellVariants["align"];
   link?: CellLink;
+  isError?: boolean;
 }
 
 export const TableCell = ({
@@ -43,6 +47,7 @@ export const TableCell = ({
   className,
   isLoading,
   link,
+  isError,
   variant = "primary",
   align = "center",
 }: TableCellProps) => {
@@ -50,7 +55,9 @@ export const TableCell = ({
     return (
       <div
         role="gridcell"
-        className={cn(tableCellVariants({ variant, align, className }))}
+        className={cn(
+          tableCellVariants({ variant, align, className, isError }),
+        )}
       >
         {isLoading ? (
           <LoadingSkeleton className="h-full w-full" />
@@ -67,7 +74,9 @@ export const TableCell = ({
       role="gridcell"
       href={link?.href}
       {...(link?.blankTarget ? { target: "_blank" } : {})}
-      className={cn(tableCellVariants({ variant, link: !!link, className }))}
+      className={cn(
+        tableCellVariants({ variant, link: !!link, className, isError }),
+      )}
     >
       {isLoading ? (
         <LoadingSkeleton className="h-full w-full" />

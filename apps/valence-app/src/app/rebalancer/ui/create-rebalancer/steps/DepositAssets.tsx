@@ -4,20 +4,22 @@ import { UseFormReturn } from "react-hook-form";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
-import { CalloutBox, Checkbox } from "@/components";
+import { Checkbox } from "@/components";
 import {
   FormField,
   IconTooltipContent,
   InputLabel,
   WithIconAndTooltip,
-  FormTableCell,
   LoadingSkeleton,
   Asset,
   FormControl,
   TextInput,
+  InfoText,
+  TableCell,
+  CalloutBox,
+  Table,
 } from "@valence-ui/ui-components";
 import { chainConfig } from "@/const/config";
-import { BsExclamationCircle } from "react-icons/bs";
 import {
   NoFundsActionItems,
   SupportedAssets,
@@ -27,7 +29,6 @@ import {
   useBaseTokenValue,
   useMinimumRequiredValue,
   useNoSupportedAssetsWarning,
-  WarnTextV2,
   SymbolColors,
 } from "@/app/rebalancer/ui";
 
@@ -121,13 +122,10 @@ export const DepositAssets: React.FC<{
       <DepositAssetsLayout
         baseDenom={baseTokenDenom}
         subContent={
-          <div className="mt-2 flex flex-row items-center gap-4 border border-warn p-4">
-            <BsExclamationCircle className="h-8 w-8 text-warn " />
-            <div className="flex flex-col gap-0.5">
-              <WarnTextV2 variant="warn" text="No wallet connected." />
-              <p className="text-sm">Connect a wallet to continue.</p>
-            </div>
-          </div>
+          <CalloutBox variant="error" title="No wallet connected">
+            {" "}
+            Connect a wallet to continue
+          </CalloutBox>
         }
       />
     );
@@ -142,8 +140,13 @@ export const DepositAssets: React.FC<{
               <CalloutBox
                 variant="warn"
                 title="This wallet does not hold any assets supported by the Rebalancer."
-                text={`Deposit at least one supported asset and ${chainConfig.serviceFee.amount} ${chainConfig.serviceFee.symbol} for the service fee.`}
               >
+                <p>
+                  {" "}
+                  Deposit at least one supported asset and $
+                  {chainConfig.serviceFee.amount} $
+                  {chainConfig.serviceFee.symbol} for the service fee.
+                </p>
                 <NoFundsActionItems />
               </CalloutBox>
             )}
@@ -261,26 +264,27 @@ export const DepositAssets: React.FC<{
 
               return (
                 <Fragment key={`wallet-balance-row-${balance.denom}`}>
-                  <FormTableCell className="flex flex-row items-center gap-2">
+                  <TableCell
+                    align={"left"}
+                    variant="input"
+                    className="flex flex-row items-center gap-2"
+                  >
                     <Asset
+                      size="sm"
                       color={SymbolColors.get(asset?.symbol ?? "")}
                       symbol={asset?.symbol}
                       asChild
                     />
-                  </FormTableCell>
-
-                  <FormTableCell
-                    className={cn(
-                      "flex gap-2",
-                      isOverMax && "text-valence-red",
-                    )}
-                  >
+                  </TableCell>
+                  <TableCell isError={isOverMax} align={"left"} variant="input">
                     <span>{displayNumber(baseBalance, { precision: 2 })}</span>
-                  </FormTableCell>
+                  </TableCell>
 
-                  <FormTableCell>{toalValueDisplayString}</FormTableCell>
+                  <TableCell variant="input" align="left">
+                    {toalValueDisplayString}
+                  </TableCell>
 
-                  <FormTableCell>
+                  <TableCell variant="input" align="left">
                     <FormField name={`initialAssets.${index}.startingAmount`}>
                       <FormControl asChild>
                         <TextInput
@@ -308,15 +312,15 @@ export const DepositAssets: React.FC<{
                         />
                       </FormControl>
                     </FormField>
-                  </FormTableCell>
+                  </TableCell>
 
-                  <FormTableCell>
+                  <TableCell variant="input" align="left">
                     {isOverMax ? (
                       <>{toalValueDisplayString}</>
                     ) : (
                       <>{selectedValueDisplayString}</>
                     )}
-                  </FormTableCell>
+                  </TableCell>
                 </Fragment>
               );
             })}
@@ -346,20 +350,19 @@ export const DepositAssets: React.FC<{
             const isOverMax = Number(selectedAmount ?? 0) > baseBalance;
             return isOverMax;
           }) && (
-          <WarnTextV2
-            variant="error"
-            text="Deposit greater than available funds."
-          />
+          <InfoText variant="error">
+            Deposit greater than available funds
+          </InfoText>
         )}
         {initialAmounts?.length > 0 &&
           initialAmounts.some(
             (a) => a.startingAmount && a.startingAmount > 0,
           ) &&
           totalDepositValue < totalRequiredValue && (
-            <WarnTextV2
-              variant="warn"
-              text={`Minumum deposit must be at least ${minimumValueDisplayString} in value.`}
-            />
+            <InfoText variant="info">
+              Minumum deposit must be at least {minimumValueDisplayString} in
+              value.
+            </InfoText>
           )}
       </div>
     </DepositAssetsLayout>

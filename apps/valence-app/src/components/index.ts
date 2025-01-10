@@ -11,4 +11,3 @@ export * from "./hover-to-copy";
 export * from "./colored-dot";
 export * from "./ValenceProductBrand";
 export * from "./ConnectWalletButton";
-export * from "./CalloutBox";
