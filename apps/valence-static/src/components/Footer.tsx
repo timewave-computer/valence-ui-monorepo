@@ -57,6 +57,7 @@ export const Footer = (
             <p>Sign up for our newsletter</p>
             <div className="flex flex-row items-stretch ">
               <TextInput
+                type="email"
                 className="border-valence-black border border-r-0"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

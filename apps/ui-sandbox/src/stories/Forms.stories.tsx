@@ -28,7 +28,7 @@ const Forms = () => {
       },
     });
 
-  const handleSubmitForm = (values: any) => {
+  const handleSubmitForm = (values: PersonFormValues) => {
     console.log("form submitted:", values);
   };
   // TODO: form errors

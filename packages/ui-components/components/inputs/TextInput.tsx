@@ -67,7 +67,12 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
               e.preventDefault();
               e.currentTarget.blur();
             }
+            if (e.key === "Escape") {
+              e.currentTarget.blur();
+            }
           }}
+          aria-invalid={!!isError}
+          aria-disabled={!!isDisabled}
           className={cn(
             "outline-none bg-transparent w-full",
             isDisabled && "cursor-not-allowed",
