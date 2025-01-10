@@ -140,7 +140,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
 };
 
 // its own compoennt to refresh the form on each render
-const DepositForm: React.FC<{
+export const DepositForm: React.FC<{
   isSubmitPending?: boolean;
   handleSubmit: (inputs: DepositInputForm["amounts"]) => void;
   balances: FetchSupportedBalancesReturnValue;
