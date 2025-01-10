@@ -20,16 +20,11 @@ export const TableForm = ({
   ...props
 }: TableWriteableProps) => {
   const gridTemplateColumns = `repeat(${headers.length}, auto)`;
-  const messageColSpan = `col-span-${headers.length}`;
   const tableId = useId(); // for unique key generation for multiple tables
 
   return (
     <div
-      className={cn(
-        "grid gap-x-4 gap-y-2 w-fit",
-        gridTemplateColumns,
-        className,
-      )}
+      className={cn("grid gap-x-4 gap-y-2 w-fit", className)}
       {...props}
       style={{ gridTemplateColumns }}
     >
@@ -45,7 +40,7 @@ export const TableForm = ({
       })}
       {children}
 
-      <div className={cn(messageColSpan, "flex flex-col gap-1")}>
+      <div className={cn("col-span-full flex flex-col gap-1")}>
         {messages?.map((message, index) => (
           <Fragment key={`${tableId}-message-${index}`}>{message}</Fragment>
         ))}

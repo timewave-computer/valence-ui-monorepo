@@ -77,7 +77,6 @@ const Inputs = () => {
                   </Fragment>
                 );
               })}
-              <div className="col-span-4 py-4" />
             </Fragment>
           );
         })}

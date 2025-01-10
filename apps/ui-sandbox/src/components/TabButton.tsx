@@ -14,7 +14,9 @@ export const TabButton = forwardRef<HTMLButtonElement, TabsButtonProps>(
         ref={ref}
         onClick={onClick}
         className={cn(
-          isActive && "bg-valence-blue text-valence-white border-valence-white"
+          "rounded-2xl",
+          isActive &&
+            " bg-valence-purple text-valence-white border-valence-white"
         )}
         variant="secondary"
       >

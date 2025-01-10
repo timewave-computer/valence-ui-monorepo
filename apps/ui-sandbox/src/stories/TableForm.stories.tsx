@@ -64,7 +64,12 @@ const TablesWriteable = () => {
         </TabsList>
         <TabsContent className="flex flex-col gap-8" value={DisplayState.Data}>
           <Story>
-            <TableForm headers={headers}>{tableRows}</TableForm>
+            <TableForm
+              messages={[<InfoText variant="info">Here is some info</InfoText>]}
+              headers={headers}
+            >
+              {tableRows}
+            </TableForm>
           </Story>
         </TabsContent>
         <TabsContent
@@ -72,7 +77,12 @@ const TablesWriteable = () => {
           value={DisplayState.Loading}
         >
           <Story>
-            <TableForm headers={headers}>{tableRows}</TableForm>
+            <TableForm
+              messages={[<InfoText variant="info">Here is some info</InfoText>]}
+              headers={headers}
+            >
+              {tableRows}
+            </TableForm>
           </Story>
         </TabsContent>
         <TabsContent className="flex flex-col gap-8" value={DisplayState.Error}>
