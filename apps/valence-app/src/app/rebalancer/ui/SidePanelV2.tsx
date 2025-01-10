@@ -97,10 +97,8 @@ export const SidePanelV2: React.FC<{
           <h1 className="font-bold">Search by address</h1>
 
           <TextInput
-            input={accountUrlParam}
-            onChange={(value) => handleSearchByAddress(value)}
-            textClassName="font-mono"
-            containerClassName="w-full"
+            value={accountUrlParam}
+            onChange={(e) => handleSearchByAddress(e.target.value)}
             placeholder="neutron12345..."
           />
         </div>

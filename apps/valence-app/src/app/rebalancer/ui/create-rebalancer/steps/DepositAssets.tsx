@@ -6,14 +6,15 @@ import { cn, displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import { CalloutBox, Checkbox } from "@/components";
 import {
-  FormTextInput,
   FormField,
   IconTooltipContent,
-  FormInputLabel,
+  InputLabel,
   WithIconAndTooltip,
   FormTableCell,
   LoadingSkeleton,
   Asset,
+  FormControl,
+  TextInput,
 } from "@valence-ui/ui-components";
 import { chainConfig } from "@/const/config";
 import { BsExclamationCircle } from "react-icons/bs";
@@ -202,17 +203,17 @@ export const DepositAssets: React.FC<{
       <div className="flex max-w-[90%] flex-col gap-2">
         <div
           role="grid"
-          className="grid grid-cols-[1fr_1fr_1fr_2fr_1fr] justify-items-start gap-x-8 gap-y-2"
+          className="grid grid-cols-[1fr_1fr_1fr_2fr_1fr] justify-items-start gap-x-8 gap-y-1"
         >
-          <FormInputLabel label="Asset" />
+          <InputLabel noGap size="sm" label="Asset" />
 
-          <FormInputLabel label="Amount available" />
+          <InputLabel noGap size="sm" label="Amount available" />
 
-          <FormInputLabel label="Total value" />
+          <InputLabel noGap size="sm" label="Total value" />
 
-          <FormInputLabel label="Initial Deposit" />
+          <InputLabel noGap size="sm" label="Initial Deposit" />
 
-          <FormInputLabel label="Deposit Value" />
+          <InputLabel noGap size="sm" label="Deposit Value" />
 
           {balances
             ?.filter((b) => {
@@ -281,28 +282,31 @@ export const DepositAssets: React.FC<{
 
                   <FormTableCell>
                     <FormField name={`initialAssets.${index}.startingAmount`}>
-                      <FormTextInput
-                        isError={isOverMax}
-                        placeholder="0.00"
-                        type="number"
-                        autoFocus={index === 0}
-                        value={watch(`initialAssets.${index}.startingAmount`)}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          const amount = parseFloat(e.target.value);
-                          setValue(`initialAssets.${index}`, {
-                            startingAmount: amount,
-                            symbol: asset?.symbol ?? "",
-                            denom: balance.denom,
-                          });
+                      <FormControl asChild>
+                        <TextInput
+                          size="sm"
+                          isError={isOverMax}
+                          placeholder="0.00"
+                          type="number"
+                          autoFocus={index === 0}
+                          name={`initialAssets.${index}.startingAmount`}
+                          value={watch(`initialAssets.${index}.startingAmount`)}
+                          onChange={(e) => {
+                            e.preventDefault();
+                            const amount = parseFloat(e.target.value);
+                            setValue(`initialAssets.${index}`, {
+                              startingAmount: amount,
+                              symbol: asset?.symbol ?? "",
+                              denom: balance.denom,
+                            });
 
-                          if (amount > 0) {
-                            addTarget(balance.denom);
-                          }
-                        }}
-                        suffix={asset?.symbol}
-                        containerClassName="w-full"
-                      />
+                            if (amount > 0) {
+                              addTarget(balance.denom);
+                            }
+                          }}
+                          suffix={asset?.symbol}
+                        />
+                      </FormControl>
                     </FormField>
                   </FormTableCell>
 

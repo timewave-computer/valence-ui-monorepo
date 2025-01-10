@@ -12,14 +12,15 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
-  FormTextInput,
   FormField,
-  FormInputLabel,
+  InputLabel,
+  FormControl,
   Asset,
+  TextInput,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
-import { cn } from "@/utils";
+
 import {
   RebalancerFormTooltipCopy,
   SymbolColors,
@@ -71,8 +72,9 @@ export const AdvancedSettings: React.FC<{
           </p>
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                <FormInputLabel
+              <div className="flex flex-col">
+                <InputLabel
+                  size="sm"
                   label={RebalancerFormTooltipCopy.baseDenom.title}
                   tooltipContent={RebalancerFormTooltipCopy.baseDenom.text}
                 />
@@ -91,27 +93,26 @@ export const AdvancedSettings: React.FC<{
                   }
                 />
               </div>
-              <div className="flex flex-col gap-2">
-                <div className="h-fit pb-1 text-xs font-normal">
-                  <FormInputLabel
-                    label={RebalancerFormTooltipCopy.strategy.title}
-                    tooltipContent={RebalancerFormTooltipCopy.strategy.text}
-                    tooltipChildren={
-                      <>
-                        See{" "}
-                        <LinkText
-                          className=" border-valence-blue text-valence-blue hover:border-b"
-                          href="https://github.com/timewave-computer/valence-services/tree/main/contracts/services/rebalancer#target-override-strategy"
-                          openInNewTab={true}
-                        >
-                          {" "}
-                          here
-                        </LinkText>{" "}
-                        for an explanation with examples.
-                      </>
-                    }
-                  />
-                </div>
+              <div className="flex flex-col">
+                <InputLabel
+                  size="sm"
+                  label={RebalancerFormTooltipCopy.strategy.title}
+                  tooltipContent={RebalancerFormTooltipCopy.strategy.text}
+                  tooltipChildren={
+                    <>
+                      See{" "}
+                      <LinkText
+                        className=" border-valence-blue text-valence-blue hover:border-b"
+                        href="https://github.com/timewave-computer/valence-services/tree/main/contracts/services/rebalancer#target-override-strategy"
+                        openInNewTab={true}
+                      >
+                        {" "}
+                        here
+                      </LinkText>{" "}
+                      for an explanation with examples.
+                    </>
+                  }
+                />
 
                 <Dropdown
                   className="max-w-[30%]"
@@ -122,27 +123,30 @@ export const AdvancedSettings: React.FC<{
                   options={TargetOverrideStartegyOptions}
                 />
               </div>
-              <div className="flex flex-col gap-2 ">
-                <FormInputLabel
+              <div className="flex flex-col ">
+                <InputLabel
+                  size="sm"
                   label={RebalancerFormTooltipCopy.maxLimit.title}
                   tooltipContent={RebalancerFormTooltipCopy.maxLimit.text}
                 />
                 <FormField name="maxLimit">
-                  <FormTextInput
-                    containerClassName="max-w-[30%]"
-                    type="number"
-                    suffix="%"
-                    placeholder="0.00"
-                    {...register(`maxLimit`)}
-                  />
+                  <FormControl asChild>
+                    <TextInput
+                      type="number"
+                      suffix="%"
+                      className="max-w-[30%]"
+                      placeholder="0.00"
+                      {...register(`maxLimit`)}
+                    />
+                  </FormControl>
                 </FormField>
               </div>
-              <div className="flex flex-col gap-2 ">
-                <FormInputLabel
+              <div className="flex flex-col ">
+                <InputLabel
+                  size="sm"
                   tooltipContent={RebalancerFormTooltipCopy.trustee.text}
                   label={RebalancerFormTooltipCopy.trustee.title}
                 />
-
                 <RadioGroup
                   onValueChange={() => {
                     setAllowOtherAddressInput(!allowOtherAddressInput);
@@ -171,26 +175,13 @@ export const AdvancedSettings: React.FC<{
                   </div>
                 </RadioGroup>
                 {allowOtherAddressInput && (
-                  <div
-                    className={cn(
-                      "mt-2 w-3/4",
-
-                      "border-valence-lightgray bg-valence-lightgray",
-                      " flex items-center border-[1.5px]  focus-within:border-valence-blue",
-                    )}
-                  >
-                    <input
-                      className={cn(
-                        " font-mono",
-                        !allowOtherAddressInput &&
-                          "cursor-not-allowed bg-valence-gray",
-                        "h-full w-full bg-transparent p-2 transition-all focus:outline-none",
-                      )}
-                      type="text"
-                      placeholder="neutron1234..."
-                      {...register("trustee")}
-                    />
-                  </div>
+                  <TextInput
+                    isDisabled={!allowOtherAddressInput}
+                    type="text"
+                    className="max-w-[75%]"
+                    placeholder="neutron1234..."
+                    {...register("trustee")}
+                  />
                 )}
               </div>
             </div>

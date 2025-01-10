@@ -1,7 +1,5 @@
 export * from "./Checkbox";
 export * from "./ValenceAppNav";
-export * from "./NumberInput";
-export * from "./DropdowTextField";
 export * from "./MobileOverlay";
 export * from "./LinkText";
 export * from "./coming-soon-tooltip";

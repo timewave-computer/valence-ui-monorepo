@@ -3,9 +3,10 @@ import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import { Dropdown, LinkText } from "@/components";
 import {
-  FormTextInput,
   FormField,
-  FormInputLabel,
+  InputLabel,
+  TextInput,
+  FormControl,
 } from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
 import {
@@ -63,8 +64,9 @@ export const RebalanceSpeed: React.FC<{
         </div>
       </div>
       <div className="grid grid-cols-[1fr_1fr_1fr]">
-        <div className="col-span-1 flex flex-col gap-2">
-          <FormInputLabel
+        <div className="col-span-1 flex flex-col">
+          <InputLabel
+            size="sm"
             tooltipContent={RebalancerFormTooltipCopy.rebalanceSpeed.text}
             label={RebalancerFormTooltipCopy.rebalanceSpeed.title}
           />
@@ -102,24 +104,26 @@ export const RebalanceSpeed: React.FC<{
             controller to determine the amounts to send to Rebalance each day.
             You can configure each parameter below.
           </p>
-          <div className="grid grid-cols-[auto_auto_auto] gap-x-8 gap-y-2 pt-4">
-            <FormInputLabel label="Proportional" />
-            <FormInputLabel label="Integral Parameter" />
+          <div className="grid grid-cols-[auto_auto_auto] gap-x-8 gap-y-1 pt-4">
+            <InputLabel label="Proportional" size="sm" noGap />
+            <InputLabel label="Integral Parameter" size="sm" noGap />
 
-            <FormInputLabel label="Derivative" />
+            <InputLabel label="Derivative" size="sm" noGap />
 
             {Object.keys(pid).map((key) => {
               const value = parseFloat(pid[key as PidKey]);
 
               return (
                 <FormField key={`pid-input-${key}`} name={`pid-input-${key}`}>
-                  <FormTextInput
-                    role="gridcell"
-                    isError={value < 0 || value > 1}
-                    type="number"
-                    placeholder="0"
-                    {...register(`pid.${key as PidKey}`)}
-                  />
+                  <FormControl asChild>
+                    <TextInput
+                      size="sm"
+                      isError={value < 0 || value > 1}
+                      type="number"
+                      placeholder="0"
+                      {...register(`pid.${key as PidKey}`)}
+                    />
+                  </FormControl>
                 </FormField>
               );
             })}
@@ -137,8 +141,9 @@ export const RebalanceSpeed: React.FC<{
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
-        <FormInputLabel
+      <div className="flex flex-col">
+        <InputLabel
+          size="sm"
           tooltipContent={RebalancerFormTooltipCopy.projection.text}
           label={RebalancerFormTooltipCopy.projection.title}
         />

@@ -14,7 +14,7 @@ import {
   useNoSupportedAssetsWarning,
 } from "@/app/rebalancer/ui";
 import {
-  FormInputLabel,
+  InputLabel,
   FormTableCell,
   LoadingSkeleton,
 } from "@valence-ui/ui-components";
@@ -114,11 +114,11 @@ export const EditAssetsForAccount: React.FC<{
       <div className="flex max-w-[90%] flex-row gap-20">
         <div
           role="grid"
-          className="grid grid-cols-[2fr_1fr_1fr] justify-items-start gap-x-8 gap-y-2"
+          className="grid grid-cols-[2fr_1fr_1fr] justify-items-start gap-x-8 gap-y-1"
         >
-          <FormInputLabel label="Funds in rebalancer account" />
-          <FormInputLabel label="Value (USD)" />
-          <FormInputLabel label="Added to Rebalancer" />
+          <InputLabel size="sm" noGap label="Funds in rebalancer account" />
+          <InputLabel size="sm" noGap label="Value (USD)" />
+          <InputLabel size="sm" noGap label="Added to Rebalancer" />
 
           {livePortfolio?.balances
             ?.filter((lineItem) => {

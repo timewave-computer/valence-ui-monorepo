@@ -66,11 +66,8 @@ export const Field = ({ field, value, onChange, data }: FieldProps) => {
 
       {field.type === "text" ? (
         <TextInput
-          input={value}
+          value={value}
           onChange={onChange}
-          textClassName="font-mono"
-          containerClassName="w-full text-sm"
-          label={field.inlineLabel ? field.label : undefined}
           placeholder={field.placeholder}
         />
       ) : field.type === "check" ? (

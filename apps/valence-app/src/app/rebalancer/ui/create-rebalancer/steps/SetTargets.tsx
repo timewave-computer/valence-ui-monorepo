@@ -18,11 +18,12 @@ import {
   TooltipTrigger,
   IconButton,
   FormField,
-  FormTextInput,
-  FormInputLabel,
+  InputLabel,
   LoadingSkeleton,
   FormTableCell,
   Asset,
+  FormControl,
+  TextInput,
 } from "@valence-ui/ui-components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
@@ -139,19 +140,21 @@ export const SetTargets: React.FC<{
           <LoadingSkeleton className="min-h-36" />
         ) : (
           <div className="flex flex-col gap-2">
-            <div className="grid h-fit grid-cols-[1fr_1fr_2fr_2fr_auto] gap-x-8 gap-y-2">
-              <FormInputLabel label="Asset" />
+            <div className="grid h-fit grid-cols-[1fr_1fr_2fr_2fr_auto] gap-x-8 gap-y-1">
+              <InputLabel size="sm" noGap label="Asset" />
 
-              <FormInputLabel label="Current Distribution" />
+              <InputLabel size="sm" noGap label="Current Distribution" />
 
-              <FormInputLabel label="Target Distribution" />
+              <InputLabel size="sm" noGap label="Target Distribution" />
 
-              <FormInputLabel
+              <InputLabel
+                size="sm"
+                noGap
                 tooltipContent={RebalancerFormTooltipCopy.minBalance.text}
                 label={RebalancerFormTooltipCopy.minBalance.title}
               />
 
-              <FormInputLabel label="" />
+              <InputLabel size="sm" noGap label="" />
 
               {targets?.map((field, index: number) => {
                 const initialAsset = getValues("initialAssets")
@@ -210,24 +213,28 @@ export const SetTargets: React.FC<{
                     </FormTableCell>
                     <FormTableCell>
                       <FormField name={`targets.${index}.bps`}>
-                        <FormTextInput
-                          suffix="%"
-                          type="number"
-                          placeholder="10.00"
-                          isError={
-                            target !== 0 &&
-                            !isNaN(target) &&
-                            !isValidPercentage(target)
-                          }
-                          value={target}
-                          onChange={(e) => {
-                            setValue(`targets.${index}`, {
-                              ...targets[index],
-                              bps: parseFloat(e.target.value),
-                              denom: field.denom,
-                            });
-                          }}
-                        />
+                        <FormControl asChild>
+                          <TextInput
+                            size="sm"
+                            name={`targets.${index}.bps`}
+                            suffix="%"
+                            type="number"
+                            placeholder="10.00"
+                            isError={
+                              target !== 0 &&
+                              !isNaN(target) &&
+                              !isValidPercentage(target)
+                            }
+                            value={target}
+                            onChange={(e) => {
+                              setValue(`targets.${index}`, {
+                                ...targets[index],
+                                bps: parseFloat(e.target.value),
+                                denom: field.denom,
+                              });
+                            }}
+                          />
+                        </FormControl>
                       </FormField>
                     </FormTableCell>
 
@@ -235,18 +242,22 @@ export const SetTargets: React.FC<{
                       <TooltipTrigger asChild>
                         <FormTableCell>
                           <FormField name={`targets.${index}.minimumAmount`}>
-                            <FormTextInput
-                              disabled={disableMinimumValue}
-                              type="number"
-                              value={watch(`targets.${index}.minimumAmount`)}
-                              onChange={(e) => {
-                                setValue(`targets.${index}`, {
-                                  ...targets[index],
-                                  minimumAmount: parseFloat(e.target.value),
-                                });
-                              }}
-                              suffix={assetMetadata?.symbol}
-                            />
+                            <FormControl asChild>
+                              <TextInput
+                                name={`targets.${index}.minimumAmount`}
+                                size="sm"
+                                isDisabled={disableMinimumValue}
+                                type="number"
+                                value={watch(`targets.${index}.minimumAmount`)}
+                                onChange={(e) => {
+                                  setValue(`targets.${index}`, {
+                                    ...targets[index],
+                                    minimumAmount: parseFloat(e.target.value),
+                                  });
+                                }}
+                                suffix={assetMetadata?.symbol}
+                              />
+                            </FormControl>
                           </FormField>
                         </FormTableCell>
                       </TooltipTrigger>

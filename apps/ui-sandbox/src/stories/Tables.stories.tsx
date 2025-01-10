@@ -1,3 +1,4 @@
+"use client";
 import { Section, Story } from "~/components";
 import {
   IconTooltipContent,
@@ -5,7 +6,77 @@ import {
   type TableRow,
   CellType,
   type TableColumnHeader,
+  TabsRoot,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  Button,
+  cn,
 } from "@valence-ui/ui-components";
+import { useState } from "react";
+
+const Tables = () => {
+  const [activeTab, setActiveTab] = useState(DisplayState.Data);
+
+  return (
+    <Section id="table">
+      <TabsRoot
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as DisplayState)}
+      >
+        <TabsList className="flex flex-row gap-2 py-2">
+          {Object.values(DisplayState).map((state) => (
+            <TabsTrigger asChild value={state} key={state}>
+              <Button
+                className={cn(
+                  activeTab === state &&
+                    "bg-valence-blue text-valence-white border-valence-white"
+                )}
+                variant="secondary"
+              >
+                {state}
+              </Button>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsContent className="flex flex-col gap-8" value={DisplayState.Data}>
+          <Story>
+            <Table headers={headers} data={data} />
+          </Story>
+          <Story>
+            <Table variant="secondary" headers={headers} data={data} />
+          </Story>
+        </TabsContent>
+        <TabsContent
+          className="flex flex-col gap-8"
+          value={DisplayState.Loading}
+        >
+          <Story>
+            <Table headers={headers} isLoading data={data} />
+          </Story>
+          <Story>
+            <Table
+              variant="secondary"
+              isLoading
+              headers={headers}
+              data={data}
+            />
+          </Story>
+        </TabsContent>
+        <TabsContent className="flex flex-col gap-8" value={DisplayState.Empty}>
+          <Story>
+            <Table headers={headers} data={[]} />
+          </Story>
+          <Story>
+            <Table variant="secondary" headers={headers} data={[]} />
+          </Story>
+        </TabsContent>
+      </TabsRoot>
+    </Section>
+  );
+};
+
+export default Tables;
 
 const headers: TableColumnHeader[] = [
   {
@@ -96,33 +167,8 @@ const data: TableRow[] = [
   },
 ];
 
-const Tables = () => {
-  return (
-    <Section id="table" className="flex flex-col gap-12">
-      <Story label="primary">
-        <Table headers={headers} data={data} />
-      </Story>
-      <Story label="secondary">
-        <Table variant="secondary" headers={headers} data={data} />
-      </Story>
-      <div className="pt-2"></div>
-
-      <Story label="secondary,loading">
-        <Table variant="secondary" headers={headers} data={data} isLoading />
-      </Story>
-      <Story label="primary,loading">
-        <Table variant="primary" headers={headers} data={data} isLoading />
-      </Story>
-      <div className="pt-2"></div>
-      <Story label="primary,empty">
-        <Table headers={headers} data={[]} />
-      </Story>
-
-      <Story label="secondary,empty">
-        <Table variant="secondary" headers={headers} data={[]} />
-      </Story>
-    </Section>
-  );
-};
-
-export default Tables;
+enum DisplayState {
+  Data = "data",
+  Loading = "loading",
+  Empty = "empty",
+}

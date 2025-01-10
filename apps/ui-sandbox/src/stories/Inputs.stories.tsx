@@ -1,65 +1,87 @@
 "use client";
 import { Section, Story } from "~/components";
 import {
-  cn,
-  FormField,
-  FormRoot,
-  FormTextInput,
+  InputLabel,
   TextInput,
+  TextInputProps,
 } from "@valence-ui/ui-components";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 const Inputs = () => {
-  const [value, setValue] = useState("");
-  const [num, setNum] = useState(0);
+  const [text, setText] = useState("");
+  const [num, setNum] = useState("");
+
+  const sizes = ["base", "sm"] as Array<TextInputProps["size"]>;
+  const variants = ["primary"] as Array<TextInputProps["variant"]>;
 
   return (
-    <Section className="w-1/2">
-      <Story>
-        <TextInput
-          containerClassName="w-full"
-          placeholder="neutron12345..."
-          input={value}
-          onChange={setValue}
-        />
-      </Story>
-      <Story>
-        <div
-          className={cn(
-            "border-valence-lightgray bg-valence-lightgray",
-            " flex items-center border-[1.5px]  focus-within:border-valence-blue"
-          )}
-        >
-          <input
-            className={cn(
-              " font-mono",
+    <Section className="">
+      <div className="grid grid-cols-4 gap-4">
+        {variants.map((variant) => {
+          return (
+            <Fragment key={variant}>
+              {sizes.map((size) => {
+                return (
+                  <Fragment key={`${variant}-${size}`}>
+                    <Story className="gap-0">
+                      <InputLabel label={`Label`} size={size} />
+                      <TextInput
+                        size={size}
+                        variant={variant}
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="neutron12345..."
+                      />
+                    </Story>
+                    <Story className="gap-0">
+                      <InputLabel label={`Label`} size={size} />
+                      <TextInput
+                        size={size}
+                        variant={variant}
+                        type="number"
+                        value={num}
+                        onChange={(e) => setNum(e.target.value)}
+                        placeholder="0.00"
+                        suffix="%"
+                      />
+                    </Story>
+                    <Story className="gap-0">
+                      <InputLabel label={`Label`} size={size} />
 
-              "h-full w-full bg-transparent p-2 transition-all focus:outline-none"
-            )}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            type="text"
-            placeholder="neutron1234..."
-          />
-        </div>
-      </Story>
-      <Story>
-        <FormRoot>
-          <FormField name="maxLimit">
-            <FormTextInput
-              value={num}
-              onChange={(e) => setNum(Number(e.target.value))}
-              isError={num < 0 || num > 1}
-              type="number"
-              placeholder="0"
-            />
-          </FormField>
-        </FormRoot>
-      </Story>
-      <p>
-        TODO: consolidate these two. deprecate the old, make 2 variants. use
-        radix input? seperate out form logic?{" "}
-      </p>
+                      <TextInput
+                        size={size}
+                        variant={variant}
+                        type="number"
+                        isError={true}
+                        value={num}
+                        onChange={(e) => setNum(e.target.value)}
+                        placeholder="0.00"
+                        suffix="%"
+                      />
+                    </Story>
+
+                    <Story className="gap-0">
+                      <InputLabel label={`Label`} size={size} />
+
+                      <TextInput
+                        size={size}
+                        variant={variant}
+                        type="number"
+                        isDisabled={true}
+                        value={num}
+                        onChange={(e) => setNum(e.target.value)}
+                        placeholder="0.00"
+                        suffix="%"
+                      />
+                    </Story>
+                  </Fragment>
+                );
+              })}
+              <div className="col-span-4 py-4" />
+            </Fragment>
+          );
+        })}
+      </div>
     </Section>
   );
 };
