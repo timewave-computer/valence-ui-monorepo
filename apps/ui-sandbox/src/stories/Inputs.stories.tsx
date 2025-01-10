@@ -13,6 +13,7 @@ const Inputs = () => {
 
   const sizes = ["base", "sm"] as Array<TextInputProps["size"]>;
   const variants = ["primary"] as Array<TextInputProps["variant"]>;
+
   return (
     <Section className="">
       <div className="grid grid-cols-4 gap-4">
@@ -23,7 +24,7 @@ const Inputs = () => {
                 return (
                   <Fragment key={`${variant}-${size}`}>
                     <Story className="gap-0">
-                      <InputLabel label={`Label ${size}`} size={size} />
+                      <InputLabel label={`Label`} size={size} />
                       <TextInput
                         size={size}
                         variant={variant}
@@ -33,7 +34,7 @@ const Inputs = () => {
                       />
                     </Story>
                     <Story className="gap-0">
-                      <InputLabel label={`Label ${size}`} size={size} />
+                      <InputLabel label={`Label`} size={size} />
                       <TextInput
                         size={size}
                         variant={variant}
@@ -45,7 +46,7 @@ const Inputs = () => {
                       />
                     </Story>
                     <Story className="gap-0">
-                      <InputLabel label={`Label ${size}`} size={size} />
+                      <InputLabel label={`Label`} size={size} />
 
                       <TextInput
                         size={size}
@@ -60,7 +61,7 @@ const Inputs = () => {
                     </Story>
 
                     <Story className="gap-0">
-                      <InputLabel label={`Label ${size}`} size={size} />
+                      <InputLabel label={`Label`} size={size} />
 
                       <TextInput
                         size={size}
