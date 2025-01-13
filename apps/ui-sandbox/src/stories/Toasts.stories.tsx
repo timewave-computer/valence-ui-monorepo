@@ -11,7 +11,7 @@ import {
 const Messages = () => {
   return (
     <Section id="info text">
-      <Toaster /> {/* must define somewhere in layout */}
+      {/* <Toaster /> defined in layout root */}
       <Story>
         <Button
           onClick={() => {

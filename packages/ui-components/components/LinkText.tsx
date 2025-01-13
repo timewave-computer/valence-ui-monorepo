@@ -7,7 +7,7 @@ const linkTextVariants = cva("text-valence-black hover:underline", {
     variant: {
       primary: "font-medium",
       secondary: "",
-      blue: "text-valence-blue",
+      highlighted: "text-valence-blue",
     },
   },
 });

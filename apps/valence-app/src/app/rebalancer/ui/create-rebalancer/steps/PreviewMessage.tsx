@@ -81,7 +81,7 @@ export const PreviewMessage: React.FC<{
           </p>
           {isLoading && <LoadingSkeleton className="min-h-24" />}
           {isError && (
-            <InfoText variant="error">Error loading preview.</InfoText>
+            <InfoText variant="error">Error loading preview</InfoText>
           )}
           {previewData && (
             <pre className="whitespace-pre-wrap text-xs">

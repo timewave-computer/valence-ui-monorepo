@@ -31,12 +31,17 @@ const Typography = () => (
       </Story>
       <Story>
         <LinkText variant="primary" href="#">
-          Major link
+          Primary link
         </LinkText>
       </Story>
       <Story>
         <LinkText variant="secondary" href="#">
-          Minor link
+          Secondary link
+        </LinkText>
+      </Story>
+      <Story>
+        <LinkText variant="highlighted" href="#">
+          Highlighted link
         </LinkText>
       </Story>
       <Story>

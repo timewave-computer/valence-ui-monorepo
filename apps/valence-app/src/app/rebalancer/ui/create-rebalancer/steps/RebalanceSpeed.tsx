@@ -96,7 +96,7 @@ export const RebalanceSpeed: React.FC<{
           <p className=" text-sm">
             The Rebalancer uses a{" "}
             <LinkText
-              variant="blue"
+              variant="highlighted"
               href="https://en.wikipedia.org/wiki/Proportional–integral–derivative_controller"
               blankTarget={true}
             >

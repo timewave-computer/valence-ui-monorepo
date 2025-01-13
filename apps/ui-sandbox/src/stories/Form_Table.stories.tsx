@@ -1,5 +1,5 @@
 "use client";
-import { Section, Story, StoryLabel, TabButton } from "~/components";
+import { Section, Story, TabButton } from "~/components";
 import {
   FormControl,
   FormField,
@@ -22,74 +22,6 @@ import {
 import { useFieldArray, useForm } from "react-hook-form";
 import { Fragment, useState } from "react";
 
-type PersonFormValues = {
-  name: string;
-  email?: string;
-  amount: string;
-};
-const Forms = () => {
-  const { register, getValues, watch, handleSubmit } =
-    useForm<PersonFormValues>({
-      defaultValues: {
-        name: "Ted",
-        email: "lasso@diamonddog.com",
-        amount: "10",
-      },
-    });
-
-  const handleSubmitForm = (values: PersonFormValues) => {
-    toast.success(
-      <ToastMessage variant="success" title="Form submitted">
-        <PrettyJson data={values} />
-      </ToastMessage>
-    );
-  };
-
-  return (
-    <Section className="">
-      <Toaster />
-      <StoryLabel className="text-xs">form</StoryLabel>
-      <Story className="px-4">
-        <FormRoot
-          onSubmit={handleSubmit(handleSubmitForm)}
-          className="flex flex-col gap-6 pt-4"
-        >
-          <FormField name="name">
-            <InputLabel label="Name" />
-            <FormControl asChild>
-              <TextInput {...register("name")} placeholder="Soulja boy" />
-            </FormControl>
-          </FormField>
-
-          <FormField name="email">
-            <InputLabel label="Email" />
-            <FormControl asChild>
-              <TextInput {...register("email")} placeholder="me@me.com" />
-            </FormControl>
-          </FormField>
-
-          <FormField name="amount">
-            <InputLabel label="Amount" />
-            <FormControl asChild>
-              <TextInput
-                type="number"
-                {...register("amount")}
-                placeholder="0.00"
-              />
-            </FormControl>
-          </FormField>
-          <FormSubmit asChild>
-            <Button>Submit</Button>
-          </FormSubmit>
-        </FormRoot>
-      </Story>
-      <TablesWriteable />
-    </Section>
-  );
-};
-
-export default Forms;
-
 type WithdrawFormValues = {
   amounts: Array<{
     amount: string;
@@ -97,32 +29,13 @@ type WithdrawFormValues = {
     denom: string;
   }>;
 };
-const TablesWriteable = () => {
+
+const Form_Table = () => {
   const [activeTab, setActiveTab] = useState(DisplayState.Data);
   const isLoading = activeTab === DisplayState.Loading;
 
   const { register, control, handleSubmit } = useForm<WithdrawFormValues>({
-    defaultValues: {
-      amounts: [
-        {
-          amount: "10",
-          symbol: "USDC",
-          denom:
-            "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
-        },
-        {
-          amount: "10",
-          symbol: "ETH",
-          denom:
-            "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
-        },
-        {
-          amount: "10",
-          symbol: "NTRN",
-          denom: "untrn",
-        },
-      ],
-    },
+    defaultValues: defaultInputs,
   });
 
   const { fields } = useFieldArray({
@@ -172,7 +85,6 @@ const TablesWriteable = () => {
 
   return (
     <Section className="pt-10" id="writeable-table">
-      <StoryLabel className="text-xs">table</StoryLabel>
       <TabsRoot
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as DisplayState)}
@@ -258,3 +170,27 @@ enum DisplayState {
   Loading = "loading",
   Error = "error",
 }
+
+export default Form_Table;
+
+const defaultInputs = {
+  amounts: [
+    {
+      amount: "10",
+      symbol: "USDC",
+      denom:
+        "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
+    },
+    {
+      amount: "10",
+      symbol: "ETH",
+      denom:
+        "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
+    },
+    {
+      amount: "10",
+      symbol: "NTRN",
+      denom: "untrn",
+    },
+  ],
+};

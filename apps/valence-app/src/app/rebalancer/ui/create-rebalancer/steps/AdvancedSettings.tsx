@@ -102,7 +102,7 @@ export const AdvancedSettings: React.FC<{
                     <>
                       See{" "}
                       <LinkText
-                        variant="blue"
+                        variant="highlighted"
                         href="https://github.com/timewave-computer/valence-services/tree/main/contracts/services/rebalancer#target-override-strategy"
                         blankTarget={true}
                       >

@@ -436,7 +436,7 @@ export const RebalancerFormHeader = ({
           <LinkText
             blankTarget={true}
             href={`https://${VALENCE_DOMAIN}/blog/Rebalancer-Protocol-Asset-Management`}
-            variant="blue"
+            variant="highlighted"
           >
             here
           </LinkText>
