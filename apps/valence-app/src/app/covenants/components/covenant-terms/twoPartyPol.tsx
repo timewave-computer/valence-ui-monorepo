@@ -6,7 +6,7 @@ import {
   BothFieldRenderer,
 } from "@/app/covenants/components";
 import { CovenantFields } from ".";
-import { LinkText } from "@/components";
+import { LinkText } from "@valence-ui/ui-components";
 
 export const twoPartyPol: CovenantFields = {
   parties: 2,
