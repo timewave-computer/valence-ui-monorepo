@@ -3,7 +3,6 @@ import { Section, Story, TabButton } from "~/components";
 import {
   FormControl,
   FormField,
-  InputLabel,
   FormRoot,
   TextInput,
   FormSubmit,
@@ -67,7 +66,7 @@ const Form_Table = () => {
           {lineItem.amount} {lineItem.symbol ?? ""}
         </TableCell>
         <TableCell isLoading={isLoading} variant="input">
-          <FormField asChild name={`${i}.amount`}>
+          <FormField className="w-full" asChild name={`${i}.amount`}>
             <FormControl asChild>
               <TextInput
                 {...register(`amounts.${i}.amount`)}
@@ -103,6 +102,7 @@ const Form_Table = () => {
           <Story>
             <FormRoot onSubmit={handleSubmit(handleSubmitForm)}>
               <TableForm
+                className="w-[30%]"
                 messages={[
                   <InfoText variant="info">Here is some info</InfoText>,
                 ]}
@@ -123,6 +123,7 @@ const Form_Table = () => {
           <Story>
             <FormRoot onSubmit={handleSubmit(handleSubmitForm)}>
               <TableForm
+                className="w-[30%]"
                 messages={[
                   <InfoText variant="info">Here is some info</InfoText>,
                 ]}
@@ -140,6 +141,7 @@ const Form_Table = () => {
           <Story>
             <FormRoot onSubmit={handleSubmit(handleSubmitForm)}>
               <TableForm
+                className="w-[30%]"
                 messages={[
                   <InfoText variant="info">Here is some info</InfoText>,
                   <InfoText variant="warn">

@@ -43,7 +43,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       disabled = false,
       variant,
-      asChild = false,
       isLoading,
       children,
       PrefixIcon,
@@ -53,8 +52,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    let Comp = asChild ? Slot : "button";
-    Comp = href ? "a" : Comp;
+    let Comp: React.ElementType = href ? "a" : "button";
 
     const _disabled = isLoading || disabled;
     let _variant = !!isLoading ? "loading" : variant;
@@ -67,6 +65,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           buttonVariants({ disabled: _disabled, variant: _variant, className }),
         )}
+        // @ts-ignore because we sometimes use a button to render <a> tag, but dont accept rest of <a> tag args bedies href
         ref={ref}
         {...props}
       >

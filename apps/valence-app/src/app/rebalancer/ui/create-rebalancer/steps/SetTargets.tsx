@@ -214,7 +214,10 @@ export const SetTargets: React.FC<{
                       %
                     </TableCell>
                     <TableCell variant="input" align="left">
-                      <FormField name={`targets.${index}.bps`}>
+                      <FormField
+                        className="w-full"
+                        name={`targets.${index}.bps`}
+                      >
                         <FormControl asChild>
                           <TextInput
                             size="sm"
@@ -222,6 +225,7 @@ export const SetTargets: React.FC<{
                             suffix="%"
                             type="number"
                             placeholder="10.00"
+                            className="w-full"
                             isError={
                               target !== 0 &&
                               !isNaN(target) &&

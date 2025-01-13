@@ -268,7 +268,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
             onInteractOutside={(e) => {
               e.preventDefault();
             }}
-            className=" max-w-[50%]"
+            className="max-w-[50%]"
           >
             <div className=" flex flex-col gap-4">
               <div className="flex items-center gap-4 ">
@@ -311,19 +311,6 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
         address={walletAddress}
         isEdit={false}
       />
-
-      <CalloutBox
-        variant="warn"
-        title="This wallet does not hold any assets supported by the Rebalancer."
-      >
-        <p>
-          {" "}
-          Deposit at least one supported asset and $
-          {chainConfig.serviceFee.amount} ${chainConfig.serviceFee.symbol} for
-          the service fee.
-        </p>
-        <NoFundsActionItems />
-      </CalloutBox>
       <FormRoot
         onSubmit={(e) => {
           e.preventDefault();

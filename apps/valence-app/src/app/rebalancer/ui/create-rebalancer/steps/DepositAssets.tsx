@@ -289,6 +289,7 @@ export const DepositAssets: React.FC<{
                       <FormControl asChild>
                         <TextInput
                           size="sm"
+                          className="w-full"
                           isError={isOverMax}
                           placeholder="0.00"
                           type="number"
