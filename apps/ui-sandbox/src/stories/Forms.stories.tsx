@@ -1,5 +1,5 @@
 "use client";
-import { Section, Story } from "~/components";
+import { Section, Story, StoryLabel, TabButton } from "~/components";
 import {
   FormControl,
   FormField,
@@ -8,8 +8,15 @@ import {
   TextInput,
   FormSubmit,
   Button,
+  TableForm,
+  TabsContent,
+  TabsList,
+  InfoText,
+  TabsRoot,
+  TableCell,
 } from "@valence-ui/ui-components";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
+import { Fragment, useState } from "react";
 
 type PersonFormValues = {
   name: string;
@@ -22,12 +29,12 @@ const Forms = () => {
       defaultValues: {
         name: "Ted",
         email: "lasso@diamonddog.com",
-        amount: undefined,
+        amount: "10",
       },
     });
 
   const handleSubmitForm = (values: PersonFormValues) => {
-    console.log("form submitted:", values);
+    alert("form submitted " + JSON.stringify(values));
   };
 
   // TODO: toast messages
@@ -35,6 +42,7 @@ const Forms = () => {
 
   return (
     <Section className="">
+      <StoryLabel className="text-xs">form</StoryLabel>
       <Story className="px-4">
         <FormRoot
           onSubmit={handleSubmit(handleSubmitForm)}
@@ -69,8 +77,174 @@ const Forms = () => {
           </FormSubmit>
         </FormRoot>
       </Story>
+      <TablesWriteable />
     </Section>
   );
 };
 
 export default Forms;
+
+type WithdrawFormValues = {
+  amounts: Array<{
+    amount: string;
+    symbol: string;
+    denom: string;
+  }>;
+};
+const TablesWriteable = () => {
+  const [activeTab, setActiveTab] = useState(DisplayState.Data);
+  const isLoading = activeTab === DisplayState.Loading;
+
+  const { register, control, handleSubmit } = useForm<WithdrawFormValues>({
+    defaultValues: {
+      amounts: [
+        {
+          amount: "10",
+          symbol: "USDC",
+          denom:
+            "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
+        },
+        {
+          amount: "10",
+          symbol: "ETH",
+          denom:
+            "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
+        },
+        {
+          amount: "10",
+          symbol: "NTRN",
+          denom: "untrn",
+        },
+      ],
+    },
+  });
+
+  const { fields } = useFieldArray({
+    control,
+    name: "amounts",
+  });
+
+  const handleSubmitForm = (values: WithdrawFormValues) => {
+    alert("form submitted " + JSON.stringify(values));
+  };
+
+  const headers = [
+    {
+      label: "Available funds",
+    },
+    {
+      label: "Deposit Amount",
+    },
+  ];
+
+  const tableRows = fields.map((lineItem, i) => {
+    return (
+      <Fragment key={`tableform-${lineItem.denom}`}>
+        <TableCell align="left" isLoading={isLoading} variant="input">
+          {lineItem.amount} {lineItem.symbol ?? ""}
+        </TableCell>
+        <TableCell isLoading={isLoading} variant="input">
+          <FormField asChild name={`${i}.amount`}>
+            <FormControl asChild>
+              <TextInput
+                {...register(`amounts.${i}.amount`)}
+                className="w-full"
+                size="sm"
+                type="number"
+                suffix={lineItem.symbol}
+              />
+            </FormControl>
+          </FormField>
+        </TableCell>
+      </Fragment>
+    );
+  });
+
+  return (
+    <Section className="pt-10" id="writeable-table">
+      <StoryLabel className="text-xs">table</StoryLabel>
+      <TabsRoot
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as DisplayState)}
+      >
+        <TabsList className="flex flex-row gap-2 py-2">
+          {Object.values(DisplayState).map((state) => (
+            <TabButton
+              key={`tab-button-${state}`}
+              onClick={() => setActiveTab(state)}
+              isActive={activeTab === state}
+              state={state}
+            />
+          ))}
+        </TabsList>
+        <TabsContent className="flex flex-col gap-8" value={DisplayState.Data}>
+          <Story>
+            <FormRoot onSubmit={handleSubmit(handleSubmitForm)}>
+              <TableForm
+                messages={[
+                  <InfoText variant="info">Here is some info</InfoText>,
+                ]}
+                headers={headers}
+              >
+                {tableRows}
+              </TableForm>
+              <FormSubmit className="mt-3" asChild>
+                <Button>Submit</Button>
+              </FormSubmit>
+            </FormRoot>
+          </Story>
+        </TabsContent>
+        <TabsContent
+          className="flex flex-col gap-8"
+          value={DisplayState.Loading}
+        >
+          <Story>
+            <FormRoot onSubmit={handleSubmit(handleSubmitForm)}>
+              <TableForm
+                messages={[
+                  <InfoText variant="info">Here is some info</InfoText>,
+                ]}
+                headers={headers}
+              >
+                {tableRows}
+              </TableForm>
+              <FormSubmit asChild>
+                <Button className="mt-3">Submit</Button>
+              </FormSubmit>
+            </FormRoot>
+          </Story>
+        </TabsContent>
+        <TabsContent className="flex flex-col gap-8" value={DisplayState.Error}>
+          <Story>
+            <FormRoot onSubmit={handleSubmit(handleSubmitForm)}>
+              <TableForm
+                messages={[
+                  <InfoText variant="info">Here is some info</InfoText>,
+                  <InfoText variant="warn">
+                    Insufficient funds in wallet
+                  </InfoText>,
+                  <InfoText variant="error">
+                    {" "}
+                    Value cannot be less than 1.00
+                  </InfoText>,
+                ]}
+                headers={headers}
+              >
+                {tableRows}
+              </TableForm>
+              <FormSubmit asChild>
+                <Button className="mt-3">Submit</Button>
+              </FormSubmit>
+            </FormRoot>
+          </Story>
+        </TabsContent>
+      </TabsRoot>
+    </Section>
+  );
+};
+
+enum DisplayState {
+  Data = "data",
+  Loading = "loading",
+  Error = "error",
+}

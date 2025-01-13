@@ -1,8 +1,8 @@
 "use client";
 import { Section, Story } from "~/components";
-import { InfoText } from "@valence-ui/ui-components";
+import { CalloutBox, InfoText } from "@valence-ui/ui-components";
 
-const InfoTexts = () => {
+const Messages = () => {
   return (
     <Section id="info text">
       <Story>
@@ -29,8 +29,23 @@ const InfoTexts = () => {
           This is information about an error
         </InfoText>
       </Story>
+      <Story>
+        <CalloutBox title="Here is info" variant="info">
+          This is information you should know
+        </CalloutBox>
+      </Story>
+      <Story>
+        <CalloutBox title="Here is a warning" variant="warn">
+          This is information about a warning
+        </CalloutBox>
+      </Story>
+      <Story>
+        <CalloutBox title="Here is an error" variant="error">
+          This is information about an error
+        </CalloutBox>
+      </Story>
     </Section>
   );
 };
 
-export default InfoTexts;
+export default Messages;
