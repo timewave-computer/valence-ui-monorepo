@@ -1,13 +1,14 @@
 "use client";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import { Dropdown, LinkText } from "@/components";
+import { Dropdown } from "@/components";
 import {
   FormField,
   InputLabel,
   TextInput,
   FormControl,
   InfoText,
+  LinkText,
 } from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
 import {
@@ -95,9 +96,9 @@ export const RebalanceSpeed: React.FC<{
           <p className=" text-sm">
             The Rebalancer uses a{" "}
             <LinkText
-              className=" border-valence-blue text-valence-blue hover:border-b"
+              variant="blue"
               href="https://en.wikipedia.org/wiki/Proportional–integral–derivative_controller"
-              openInNewTab={true}
+              blankTarget={true}
             >
               PID
             </LinkText>{" "}

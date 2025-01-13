@@ -1,5 +1,5 @@
 "use client";
-import { LinkText, ToastMessage } from "@/components";
+import {} from "@/components";
 import {
   Button,
   DialogClose,
@@ -8,6 +8,10 @@ import {
   LoadingIndicator,
   FormRoot,
   LoadingSkeleton,
+  LinkText,
+  ToastMessage,
+  CalloutBox,
+  toast,
 } from "@valence-ui/ui-components";
 import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
@@ -15,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { displayValue, useDateRange } from "@/utils";
 import { chainConfig } from "@/const/config";
-import { toast } from "sonner";
 import {
   SetTargets,
   DepositAssets,
@@ -27,6 +30,7 @@ import {
   useTestSignerConnection,
   BetaDisclaimer,
   makeCreateRebalancerMessages,
+  NoFundsActionItems,
 } from "@/app/rebalancer/ui";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -40,7 +44,9 @@ import {
   HoverCardTrigger,
 } from "@radix-ui/react-hover-card";
 import { HiMiniArrowLeft } from "react-icons/hi2";
-import { X_HANDLE, X_URL } from "@valence-ui/socials";
+import { VALENCE_DOMAIN, X_HANDLE, X_URL } from "@valence-ui/socials";
+import Link from "next/link";
+import { CelatoneUrl } from "@/const";
 
 type CreateRebalancerProps = {};
 
@@ -206,12 +212,21 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
       );
       toast.success(
         <ToastMessage
-          transactionHash={result.transactionHash}
           title="Rebalancer account was created and funded sucessfully."
           variant="success"
         >
-          <p className="text-sm">
+          <p>
             Funds will begin rebalancing at the beggining of the next cycle.
+          </p>
+          <p>
+            Transaction hash:{" "}
+            <LinkText
+              variant={"secondary"}
+              blankTarget={true}
+              href={CelatoneUrl.trasaction(result.transactionHash)}
+            >
+              {result.transactionHash}
+            </LinkText>
           </p>
         </ToastMessage>,
       );
@@ -224,10 +239,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
           <p>{ErrorHandler.constructText("", e)}</p>
           <p>
             Try refreshing the page and reconnecting your wallet, or contact{" "}
-            <LinkText
-              className="border-valence-black font-medium text-valence-black hover:border-b"
-              href={X_URL}
-            >
+            <LinkText variant="primary" href={X_URL} blankTarget={true}>
               {X_HANDLE}
             </LinkText>{" "}
             for help.
@@ -299,6 +311,19 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
         address={walletAddress}
         isEdit={false}
       />
+
+      <CalloutBox
+        variant="warn"
+        title="This wallet does not hold any assets supported by the Rebalancer."
+      >
+        <p>
+          {" "}
+          Deposit at least one supported asset and $
+          {chainConfig.serviceFee.amount} ${chainConfig.serviceFee.symbol} for
+          the service fee.
+        </p>
+        <NoFundsActionItems />
+      </CalloutBox>
       <FormRoot
         onSubmit={(e) => {
           e.preventDefault();
@@ -409,9 +434,9 @@ export const RebalancerFormHeader = ({
           The Rebalancer enables automated treasury management. Learn more about
           how the Rebalancer works{" "}
           <LinkText
-            openInNewTab={true}
-            className=" border-valence-blue text-valence-blue hover:border-b"
-            href="/blog/Rebalancer-Protocol-Asset-Management"
+            blankTarget={true}
+            href={`https://${VALENCE_DOMAIN}/blog/Rebalancer-Protocol-Asset-Management`}
+            variant="blue"
           >
             here
           </LinkText>

@@ -4,7 +4,6 @@ import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
 import {
   Dropdown,
   DropdownOption,
-  LinkText,
   RadioGroup,
   RadioGroupItem,
 } from "@/components";
@@ -17,6 +16,7 @@ import {
   FormControl,
   Asset,
   TextInput,
+  LinkText,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
@@ -102,9 +102,9 @@ export const AdvancedSettings: React.FC<{
                     <>
                       See{" "}
                       <LinkText
-                        className=" border-valence-blue text-valence-blue hover:border-b"
+                        variant="blue"
                         href="https://github.com/timewave-computer/valence-services/tree/main/contracts/services/rebalancer#target-override-strategy"
-                        openInNewTab={true}
+                        blankTarget={true}
                       >
                         {" "}
                         here

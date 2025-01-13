@@ -32,6 +32,7 @@ export interface ButtonProps
   disabled?: boolean;
   isLoading?: boolean;
   children: React.ReactNode;
+  href?: string;
   PrefixIcon?: React.ElementType;
   SuffixIcon?: React.ElementType;
 }
@@ -47,17 +48,20 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       PrefixIcon,
       SuffixIcon,
+      href,
       ...props
     },
     ref,
   ) => {
-    const Comp = asChild ? Slot : "button";
+    let Comp = asChild ? Slot : "button";
+    Comp = href ? "a" : Comp;
 
     const _disabled = isLoading || disabled;
     let _variant = !!isLoading ? "loading" : variant;
 
     return (
       <Comp
+        {...(href ? { href, target: "_blank" } : {})}
         // commented out for now to render disabled tooltip
         // disabled={disabled} // keep it here for accessibilty but style is handled in CVA
         className={cn(

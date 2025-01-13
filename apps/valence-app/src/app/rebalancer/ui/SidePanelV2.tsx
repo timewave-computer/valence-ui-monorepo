@@ -1,9 +1,5 @@
 "use client";
-import {
-  LinkText,
-  ConnectWalletButton,
-  ValenceProductBrand,
-} from "@/components";
+import { ConnectWalletButton, ValenceProductBrand } from "@/components";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { useWallet } from "@/hooks";
 import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
@@ -19,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
-import { Label, TextInput } from "@valence-ui/ui-components";
+import { Label, TextInput, LinkText } from "@valence-ui/ui-components";
 
 export const SidePanelV2: React.FC<{
   rerouteOnConnect?: boolean;
@@ -77,10 +73,7 @@ export const SidePanelV2: React.FC<{
           <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
           <p className="text-pretty pt-1">
             Automated balance sheet and treasury management. Contact{" "}
-            <LinkText
-              className=" font-medium text-valence-black hover:border-b-[1.6px] hover:border-valence-black"
-              href={X_URL}
-            >
+            <LinkText variant="primary" blankTarget={true} href={X_URL}>
               {X_HANDLE}
             </LinkText>{" "}
             for support.

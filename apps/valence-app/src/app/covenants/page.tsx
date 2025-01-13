@@ -2,7 +2,6 @@
 import {
   ConnectWalletButton,
   Dropdown,
-  LinkText,
   MobileOverlay,
   ValenceProductBrand,
 } from "@/components";
@@ -21,6 +20,7 @@ import {
   ContractDisplayMode,
   POL_TYPE_PARTIES_OPTIONS,
 } from "@/app/covenants/const";
+import { LinkText } from "@valence-ui/ui-components";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -112,10 +112,7 @@ const CovenantPage = () => {
 
               <p>
                 Crypto-native agreements. Contact{" "}
-                <LinkText
-                  className="border-valence-black font-medium text-valence-black hover:border-b"
-                  href={X_URL}
-                >
+                <LinkText variant={"primary"} blankTarget={true} href={X_URL}>
                   {X_HANDLE}
                 </LinkText>{" "}
                 if your organization wants early access to Covenants.

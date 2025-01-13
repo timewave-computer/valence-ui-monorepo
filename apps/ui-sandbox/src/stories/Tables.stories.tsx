@@ -8,7 +8,6 @@ import {
   type TableColumnHeader,
   TabsRoot,
   TabsList,
-  TabsTrigger,
   TabsContent,
 } from "@valence-ui/ui-components";
 import { useState } from "react";

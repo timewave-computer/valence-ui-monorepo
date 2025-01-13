@@ -2,8 +2,7 @@
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { useWallet } from "@/hooks";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { ToastMessage } from "@/components";
+import { ToastMessage, toast } from "@valence-ui/ui-components";
 
 export const useTestSignerConnection = () => {
   const {

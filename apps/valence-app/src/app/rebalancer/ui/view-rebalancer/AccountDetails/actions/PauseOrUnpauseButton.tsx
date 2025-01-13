@@ -2,14 +2,18 @@
 import { useAtom } from "jotai";
 import { useAccountConfigQuery } from "@/app/rebalancer/ui";
 import { accountAtom } from "@/app/rebalancer/ui";
-import { Button } from "@valence-ui/ui-components";
-import { ToastMessage } from "@/components";
+import {
+  Button,
+  LinkText,
+  toast,
+  ToastMessage,
+} from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
-import { toast } from "sonner";
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import { CelatoneUrl } from "@/const";
 
 export const PauseOrUnpauseButton: React.FC<{}> = () => {
   const queryClient = useQueryClient();
@@ -52,16 +56,22 @@ export const PauseOrUnpauseButton: React.FC<{}> = () => {
 
   const { mutate: handlePause, isPending: isPausePending } = useMutation({
     mutationFn: () => pauseRebalancer(),
-    onSuccess: (data: ExecuteResult) => {
+    onSuccess: (result: ExecuteResult) => {
       toast.success(
-        <ToastMessage
-          transactionHash={data.transactionHash}
-          variant="success"
-          title="Rebalancer paused"
-        >
-          <p className="text-sm">
+        <ToastMessage variant="success" title="Rebalancer paused">
+          <p>
             You can unpause anytime. No funds will be traded while the
             Rebalancer is paused.
+          </p>
+          <p>
+            Transaction hash:{" "}
+            <LinkText
+              variant={"secondary"}
+              blankTarget={true}
+              href={CelatoneUrl.trasaction(result.transactionHash)}
+            >
+              {result.transactionHash}
+            </LinkText>
           </p>
         </ToastMessage>,
       );
@@ -90,16 +100,22 @@ export const PauseOrUnpauseButton: React.FC<{}> = () => {
 
   const { mutate: handleUnpause, isPending: isUnpausePending } = useMutation({
     mutationFn: () => unpauseRebalancer(),
-    onSuccess: (data: ExecuteResult) => {
+    onSuccess: (result: ExecuteResult) => {
       toast.success(
-        <ToastMessage
-          transactionHash={data.transactionHash}
-          variant="success"
-          title="Rebalancer resumed."
-        >
-          <p className="text-sm">
+        <ToastMessage variant="success" title="Rebalancer resumed.">
+          <p>
             This Rebalancer account will be included in the next Rebalancer
             cycle.
+          </p>
+          <p>
+            Transaction hash:{" "}
+            <LinkText
+              variant={"secondary"}
+              blankTarget={true}
+              href={CelatoneUrl.trasaction(result.transactionHash)}
+            >
+              {result.transactionHash}
+            </LinkText>
           </p>
         </ToastMessage>,
       );

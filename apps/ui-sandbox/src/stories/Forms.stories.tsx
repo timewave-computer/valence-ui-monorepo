@@ -14,6 +14,10 @@ import {
   InfoText,
   TabsRoot,
   TableCell,
+  Toaster,
+  ToastMessage,
+  toast,
+  PrettyJson,
 } from "@valence-ui/ui-components";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Fragment, useState } from "react";
@@ -34,14 +38,16 @@ const Forms = () => {
     });
 
   const handleSubmitForm = (values: PersonFormValues) => {
-    alert("form submitted " + JSON.stringify(values));
+    toast.success(
+      <ToastMessage variant="success" title="Form submitted">
+        <PrettyJson data={values} />
+      </ToastMessage>
+    );
   };
-
-  // TODO: toast messages
-  // on inputs: individual input errors, required?
 
   return (
     <Section className="">
+      <Toaster />
       <StoryLabel className="text-xs">form</StoryLabel>
       <Story className="px-4">
         <FormRoot
@@ -125,7 +131,11 @@ const TablesWriteable = () => {
   });
 
   const handleSubmitForm = (values: WithdrawFormValues) => {
-    alert("form submitted " + JSON.stringify(values));
+    toast.success(
+      <ToastMessage variant="success" title="Form submitted">
+        <PrettyJson data={values} />
+      </ToastMessage>
+    );
   };
 
   const headers = [

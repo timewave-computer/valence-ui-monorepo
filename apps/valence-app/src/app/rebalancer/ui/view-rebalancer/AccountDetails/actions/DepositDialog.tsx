@@ -1,5 +1,4 @@
 "use client";
-import { ToastMessage } from "@/components";
 import {
   Button,
   DialogClose,
@@ -13,11 +12,13 @@ import {
   TextInput,
   InfoText,
   TableCell,
+  LinkText,
+  ToastMessage,
+  toast,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet, useWalletBalances } from "@/hooks";
-import { toast } from "sonner";
 import { Fragment, useState } from "react";
 import { baseToMicro, displayNumberV2, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
@@ -31,6 +32,7 @@ import {
   SupportedAssets,
 } from "@/app/rebalancer/ui";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
+import { CelatoneUrl } from "@/const";
 
 type DepositInputForm = {
   amounts: Coin[];
@@ -69,15 +71,22 @@ export const DepositDialog: React.FC<{}> = ({}) => {
   const { mutate: handleDeposit, isPending: isDepositPending } = useMutation({
     mutationFn: deposit,
     onSuccess: async (
-      data: DeliverTxResponse,
+      result: DeliverTxResponse,
       variables: DepositInputForm["amounts"],
     ) => {
       toast.success(
-        <ToastMessage
-          transactionHash={data.transactionHash}
-          title="Deposit completed"
-          variant="success"
-        ></ToastMessage>,
+        <ToastMessage title="Deposit completed" variant="success">
+          <p>
+            Transaction hash:{" "}
+            <LinkText
+              variant={"secondary"}
+              blankTarget={true}
+              href={CelatoneUrl.trasaction(result.transactionHash)}
+            >
+              {result.transactionHash}
+            </LinkText>
+          </p>
+        </ToastMessage>,
       );
       queryClient.setQueryData(
         [QUERY_KEYS.ACCOUNT_BALANCES, accountAddress],

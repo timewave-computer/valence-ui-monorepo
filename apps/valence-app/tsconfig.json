@@ -19,6 +19,7 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "../../packages/ui-components/components/InfoText.tsx",
-    "../../packages/ui-components/components/CalloutBox.tsx"
+    "../../packages/ui-components/components/CalloutBox.tsx",
+    "../../packages/ui-components/components/LinkText.tsx"
   ]
 }

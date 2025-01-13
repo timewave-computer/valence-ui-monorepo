@@ -1,5 +1,4 @@
 "use client";
-import { ToastMessage } from "@/components";
 import {
   Button,
   DialogClose,
@@ -13,12 +12,14 @@ import {
   FormControl,
   InfoText,
   TableCell,
+  LinkText,
+  ToastMessage,
+  toast,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
-import { toast } from "sonner";
 import { Fragment, useState } from "react";
 import {
   BalanceReturnValue,
@@ -35,6 +36,7 @@ import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
 import { useAtom } from "jotai";
 import { accountAtom } from "@/app/rebalancer/ui";
+import { CelatoneUrl } from "@/const";
 
 type WithdrawInputForm = {
   amounts: Coin[];
@@ -92,13 +94,20 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
   };
   const { mutate: handleWithdraw, isPending: isWithdrawPending } = useMutation({
     mutationFn: withdraw,
-    onSuccess: async (data, variables: WithdrawInputForm["amounts"]) => {
+    onSuccess: async (result, variables: WithdrawInputForm["amounts"]) => {
       toast.success(
-        <ToastMessage
-          transactionHash={data.transactionHash}
-          title="Withdraw completed"
-          variant="success"
-        ></ToastMessage>,
+        <ToastMessage title="Withdraw completed" variant="success">
+          <p>
+            Transaction hash:{" "}
+            <LinkText
+              variant={"secondary"}
+              blankTarget={true}
+              href={CelatoneUrl.trasaction(result.transactionHash)}
+            >
+              {result.transactionHash}
+            </LinkText>
+          </p>
+        </ToastMessage>,
       );
       queryClient.setQueryData(
         [QUERY_KEYS.ACCOUNT_BALANCES, accountAddress],
