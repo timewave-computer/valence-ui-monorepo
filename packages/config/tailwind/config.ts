@@ -41,19 +41,29 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       fontFamily: {
-        sans: ["SF Pro", ...defaultTheme.fontFamily.sans],
+        sans: [
+          "var(--font-unica-sans)",
+          "SF Pro",
+          ...defaultTheme.fontFamily.sans,
+        ],
+        sf: ["SF Pro", ...defaultTheme.fontFamily.sans],
         serif: ["Times", "Times New Roman", ...defaultTheme.fontFamily.serif],
-        mono: ["SF Mono", "SFMono-Regular", ...defaultTheme.fontFamily.mono],
+        mono: [
+          "var(--font-unica-mono)",
+          "SF Mono",
+          "SFMono-Regular",
+          ...defaultTheme.fontFamily.mono,
+        ],
       },
       fontSize: {
         // major second (1.125x)
-        h1: ["2.0275rem", { lineHeight: "2.375rem" }], // 32.44px / 38px
-        h2: ["1.8019rem", { lineHeight: "2.125rem" }], // 28.83px / 34px
-        h3: ["1.6019rem", { lineHeight: "1.875rem" }], // 25.63px / 30px
-        h4: ["1.425rem", { lineHeight: "1.75rem" }], // 22.8px / 28px
-        h5: ["1.2663rem", { lineHeight: "1.625rem" }], // 20.26px / 26px
-        h6: ["1.125rem", { lineHeight: "1.5rem" }], // 18px / 24px
-        body: ["1rem", { lineHeight: "1.375rem" }], // 16px / 22px
+        h1: ["2.0275rem", { lineHeight: "2.375rem" }], // 32.44px / 38px text-5xl
+        h2: ["1.8019rem", { lineHeight: "2.125rem" }], // 28.83px / 34px text-4xl
+        h3: ["1.6019rem", { lineHeight: "1.875rem" }], // 25.63px / 30px text-3xl
+        h4: ["1.425rem", { lineHeight: "1.75rem" }], // 22.8px / 28px text-2xl
+        h5: ["1.2663rem", { lineHeight: "1.625rem" }], // 20.26px / 26px text-xl
+        h6: ["1.125rem", { lineHeight: "1.5rem" }], // 18px / 24px text-lg
+        base: ["1rem", { lineHeight: "1.375rem" }], // 16px / 22px text-base
         sm: ["0.9025rem", { lineHeight: "1.25rem" }], // 14.44px / 20px
         xs: ["0.8rem", { lineHeight: "1.125rem" }], // 12.8px / 18px
       },

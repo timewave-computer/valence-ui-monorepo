@@ -23,9 +23,15 @@ importers:
 
   apps/ui-sandbox:
     dependencies:
+      '@next/font':
+        specifier: ^14.2.15
+        version: 14.2.15(next@14.0.4)
       '@valence-ui/config':
         specifier: '*'
         version: link:../../packages/config
+      '@valence-ui/fonts':
+        specifier: '*'
+        version: link:../../packages/fonts
       '@valence-ui/ui-components':
         specifier: '*'
         version: link:../../packages/ui-components
@@ -129,6 +135,9 @@ importers:
       '@valence-ui/config':
         specifier: '*'
         version: link:../../packages/config
+      '@valence-ui/fonts':
+        specifier: '*'
+        version: link:../../packages/fonts
       '@valence-ui/socials':
         specifier: '*'
         version: link:../../packages/socials
@@ -453,6 +462,12 @@ importers:
       typescript:
         specifier: 5.3.3
         version: 5.3.3
+
+  packages/fonts:
+    dependencies:
+      '@next/font':
+        specifier: ^14.2.15
+        version: 14.2.15(next@14.0.4)
 
   packages/generated-types:
     dependencies:
@@ -3521,6 +3536,14 @@ packages:
     dependencies:
       fast-glob: 3.3.1
     dev: true
+
+  /@next/font@14.2.15(next@14.0.4):
+    resolution: {integrity: sha512-QopYhBmCDDrNDynbi+ZD1hDZXmQXVFo7TmAFp4DQgO/kogz1OLbQ92hPigJbj572eZ3GaaVxNIyYVn3/eAsehg==}
+    peerDependencies:
+      next: '*'
+    dependencies:
+      next: 14.0.4(@babel/core@7.18.10)(react-dom@18.3.1)(react@18.3.1)
+    dev: false
 
   /@next/swc-darwin-arm64@14.0.4:
     resolution: {integrity: sha512-mF05E/5uPthWzyYDyptcwHptucf/jj09i2SXBPwNzbgBNc+XnwzrL0U6BmPjQeOL+FiB+iG1gwBeq7mlDjSRPg==}

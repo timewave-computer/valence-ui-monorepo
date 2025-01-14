@@ -14,7 +14,7 @@ const dotVariants = cva("shrink-0 rounded-full bg-valence-gray", {
   },
 });
 
-const assetVariants = cva("font-bold", {
+const assetVariants = cva("font-semibold", {
   variants: {
     size: {
       base: "text-sm",
