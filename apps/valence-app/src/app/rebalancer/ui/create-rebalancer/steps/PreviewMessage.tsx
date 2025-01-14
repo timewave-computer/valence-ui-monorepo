@@ -5,13 +5,13 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  InfoText,
   LoadingSkeleton,
 } from "@valence-ui/ui-components";
 import {
   decodeInstatiateMessage,
   decodeRegisterMessage,
   makeCreateRebalancerMessages,
-  WarnTextV2,
 } from "@/app/rebalancer/ui";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
@@ -81,10 +81,7 @@ export const PreviewMessage: React.FC<{
           </p>
           {isLoading && <LoadingSkeleton className="min-h-24" />}
           {isError && (
-            <WarnTextV2
-              variant="error"
-              text="Error loading preview."
-            ></WarnTextV2>
+            <InfoText variant="error">Error loading preview</InfoText>
           )}
           {previewData && (
             <pre className="whitespace-pre-wrap text-xs">

@@ -19,7 +19,7 @@ const inputContainerVariants = cva(
         true: "border-valence-red outline-valence-red focus-within:border-valence-red",
       },
       isDisabled: {
-        true: "!bg-valence-gray !border-valence-gray cursor-not-allowed",
+        true: "!bg-valence-mediumgray !border-valence-gray cursor-not-allowed",
       },
     },
     defaultVariants: {
@@ -74,6 +74,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           aria-invalid={!!isError}
           aria-disabled={!!isDisabled}
           className={cn(
+            "grow",
             "outline-none bg-transparent w-full",
             isDisabled && "cursor-not-allowed",
           )}

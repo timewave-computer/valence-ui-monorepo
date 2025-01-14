@@ -1,5 +1,5 @@
 import { Section, Story } from "~/components";
-import { Heading } from "@valence-ui/ui-components";
+import { Heading, LinkText } from "@valence-ui/ui-components";
 
 const Typography = () => (
   <Section>
@@ -28,6 +28,21 @@ const Typography = () => (
       </Story>
       <Story>
         <p className="text-sm">Paragraph small</p>
+      </Story>
+      <Story>
+        <LinkText variant="primary" href="#">
+          Primary link
+        </LinkText>
+      </Story>
+      <Story>
+        <LinkText variant="secondary" href="#">
+          Secondary link
+        </LinkText>
+      </Story>
+      <Story>
+        <LinkText variant="highlighted" href="#">
+          Highlighted link
+        </LinkText>
       </Story>
       <Story>
         <p className="font-mono">data</p>

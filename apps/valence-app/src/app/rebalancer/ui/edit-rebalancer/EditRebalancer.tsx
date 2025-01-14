@@ -15,17 +15,22 @@ import {
 } from "@/app/rebalancer/ui";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, FormRoot } from "@valence-ui/ui-components";
-import { ToastMessage } from "@/components";
+import {
+  Button,
+  FormRoot,
+  LinkText,
+  toast,
+  ToastMessage,
+} from "@valence-ui/ui-components";
 import { OriginAsset } from "@/types/ibc";
 import { useMemo } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
 import { ErrorHandler } from "@/const/error";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { DeliverTxResponse } from "@cosmjs/cosmwasm-stargate";
+import { CelatoneUrl } from "@/const";
 
 export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
   const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
@@ -96,16 +101,25 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
           </ToastMessage>,
         );
       },
-      onSuccess: (data: DeliverTxResponse) => {
+      onSuccess: (result: DeliverTxResponse) => {
         toast.success(
           <ToastMessage
-            transactionHash={data.transactionHash}
             title="Rebalancer account updated sucessfully."
             variant="success"
           >
-            <p className="text-sm">
+            <p>
               The most current configuration will be applied to the next
               Rebalancer cycle.
+            </p>
+            <p>
+              Transaction hash:{" "}
+              <LinkText
+                variant={"secondary"}
+                blankTarget={true}
+                href={CelatoneUrl.transaction(result.transactionHash)}
+              >
+                {result.transactionHash}
+              </LinkText>
             </p>
           </ToastMessage>,
         );

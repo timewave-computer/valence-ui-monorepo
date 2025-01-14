@@ -32,6 +32,7 @@ export interface ButtonProps
   disabled?: boolean;
   isLoading?: boolean;
   children: React.ReactNode;
+  href?: string;
   PrefixIcon?: React.ElementType;
   SuffixIcon?: React.ElementType;
 }
@@ -42,27 +43,31 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       disabled = false,
       variant,
-      asChild = false,
       isLoading,
       children,
       PrefixIcon,
       SuffixIcon,
+      href,
       ...props
     },
     ref,
   ) => {
-    const Comp = asChild ? Slot : "button";
+    let Comp: React.ElementType = href ? "a" : "button";
 
     const _disabled = isLoading || disabled;
     let _variant = !!isLoading ? "loading" : variant;
 
     return (
       <Comp
+        {...(href
+          ? { href, target: "_blank", rel: "noopener noreferrer" }
+          : {})}
         // commented out for now to render disabled tooltip
         // disabled={disabled} // keep it here for accessibilty but style is handled in CVA
         className={cn(
           buttonVariants({ disabled: _disabled, variant: _variant, className }),
         )}
+        // @ts-ignore because we sometimes use a button to render <a> tag, but dont accept rest of <a> tag args bedies href
         ref={ref}
         {...props}
       >

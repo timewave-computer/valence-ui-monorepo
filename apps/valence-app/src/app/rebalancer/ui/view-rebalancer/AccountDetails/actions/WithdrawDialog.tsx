@@ -1,5 +1,4 @@
 "use client";
-import { ToastMessage } from "@/components";
 import {
   Button,
   DialogClose,
@@ -9,15 +8,18 @@ import {
   FormRoot,
   InputLabel,
   FormField,
-  FormTableCell,
   TextInput,
   FormControl,
+  InfoText,
+  TableCell,
+  LinkText,
+  ToastMessage,
+  toast,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@/hooks";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
-import { toast } from "sonner";
 import { Fragment, useState } from "react";
 import {
   BalanceReturnValue,
@@ -25,7 +27,6 @@ import {
   useAssetMetadata,
   useLivePortfolio,
   UseLivePortfolioReturnValue,
-  WarnTextV2,
 } from "@/app/rebalancer/ui";
 import { baseToMicro, displayNumberV2 } from "@/utils";
 import { useForm } from "react-hook-form";
@@ -35,6 +36,7 @@ import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
 import { useAtom } from "jotai";
 import { accountAtom } from "@/app/rebalancer/ui";
+import { CelatoneUrl } from "@/const";
 
 type WithdrawInputForm = {
   amounts: Coin[];
@@ -92,13 +94,20 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
   };
   const { mutate: handleWithdraw, isPending: isWithdrawPending } = useMutation({
     mutationFn: withdraw,
-    onSuccess: async (data, variables: WithdrawInputForm["amounts"]) => {
+    onSuccess: async (result, variables: WithdrawInputForm["amounts"]) => {
       toast.success(
-        <ToastMessage
-          transactionHash={data.transactionHash}
-          title="Withdraw completed"
-          variant="success"
-        ></ToastMessage>,
+        <ToastMessage title="Withdraw completed" variant="success">
+          <p>
+            Transaction hash:{" "}
+            <LinkText
+              variant={"secondary"}
+              blankTarget={true}
+              href={CelatoneUrl.transaction(result.transactionHash)}
+            >
+              {result.transactionHash}
+            </LinkText>
+          </p>
+        </ToastMessage>,
       );
       queryClient.setQueryData(
         [QUERY_KEYS.ACCOUNT_BALANCES, accountAddress],
@@ -137,7 +146,7 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
           Withdraw
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex max-w-lg flex-col gap-6">
+      <DialogContent className="flex flex-col gap-6">
         {
           // to reset when dialog closes
           isWithdrawDialogOpen && (
@@ -210,17 +219,22 @@ const WithdrawForm: React.FC<{
               const asset = getOriginAsset(lineItem.denom);
               return (
                 <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
-                  <FormTableCell className="flex gap-2">
+                  <TableCell
+                    variant="input"
+                    align="left"
+                    className="flex gap-2"
+                  >
                     {displayNumberV2(lineItem.balance.account, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 10,
                     })}{" "}
                     {asset?.symbol ?? ""}
-                  </FormTableCell>
-                  <FormTableCell>
+                  </TableCell>
+                  <TableCell variant="input" align="left">
                     <FormField asChild name={`amounts.${index}.amount`}>
                       <FormControl asChild>
                         <TextInput
+                          size="sm"
                           type="number"
                           suffix={asset?.symbol}
                           placeholder="0.00"
@@ -235,13 +249,13 @@ const WithdrawForm: React.FC<{
                         />
                       </FormControl>
                     </FormField>
-                  </FormTableCell>
+                  </TableCell>
                 </Fragment>
               );
             })}
 
             {isOverMax ? (
-              <WarnTextV2 text={maxLimitMsg} variant="warn" />
+              <InfoText variant="warn">{maxLimitMsg}</InfoText>
             ) : (
               <div className="min-h-4 w-full"></div>
             )}

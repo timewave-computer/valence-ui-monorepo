@@ -1,8 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import React from "react";
-import { WarnTextV2 } from "@/app/rebalancer/ui";
-import { BsExclamationCircle } from "react-icons/bs";
-import { cn } from "@/utils";
+import { cn } from "../utils";
+import { InfoText } from "./InfoText";
 
 const calloutBoxVariants = cva("", {
   variants: {
@@ -17,41 +16,15 @@ const calloutBoxVariants = cva("", {
   },
 });
 
-const iconVariants = cva("", {
-  variants: {
-    variant: {
-      warn: "text-warn",
-      info: "text-valence-gray",
-      error: "text-valence-red",
-    },
-  },
-  defaultVariants: {
-    variant: "warn",
-  },
-});
-
 export interface CalloutBoxProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof calloutBoxVariants> {
   children?: React.ReactNode;
-  text?: string;
   title: string;
-  Icon?: React.ElementType;
 }
 
 export const CalloutBox = React.forwardRef<HTMLDivElement, CalloutBoxProps>(
-  (
-    {
-      className,
-      variant,
-      text,
-      title,
-      children,
-      Icon = BsExclamationCircle,
-      ...props
-    },
-    ref,
-  ) => {
+  ({ className, variant, title, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -63,17 +36,11 @@ export const CalloutBox = React.forwardRef<HTMLDivElement, CalloutBoxProps>(
         )}
       >
         <div className="flex items-center gap-2 ">
-          <Icon className={cn("h-5 w-5", iconVariants({ variant }))} />
-          <WarnTextV2
-            className="text-base font-semibold tracking-wide"
-            variant={variant}
-            text={title}
-          />
+          <InfoText size="lg" variant={variant}>
+            {title}
+          </InfoText>
         </div>
-        <div className="flex flex-col gap-2 text-sm">
-          {text && <p>{text}</p>}
-          {children}
-        </div>
+        <div className="flex flex-col gap-2 text-sm">{children}</div>
       </div>
     );
   },

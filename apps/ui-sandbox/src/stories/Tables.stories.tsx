@@ -1,5 +1,5 @@
 "use client";
-import { Section, Story } from "~/components";
+import { Section, Story, TabButton } from "~/components";
 import {
   IconTooltipContent,
   Table,
@@ -8,10 +8,7 @@ import {
   type TableColumnHeader,
   TabsRoot,
   TabsList,
-  TabsTrigger,
   TabsContent,
-  Button,
-  cn,
 } from "@valence-ui/ui-components";
 import { useState } from "react";
 
@@ -26,17 +23,12 @@ const Tables = () => {
       >
         <TabsList className="flex flex-row gap-2 py-2">
           {Object.values(DisplayState).map((state) => (
-            <TabsTrigger asChild value={state} key={state}>
-              <Button
-                className={cn(
-                  activeTab === state &&
-                    "bg-valence-blue text-valence-white border-valence-white"
-                )}
-                variant="secondary"
-              >
-                {state}
-              </Button>
-            </TabsTrigger>
+            <TabButton
+              key={`tab-button-${state}`}
+              onClick={() => setActiveTab(state)}
+              isActive={activeTab === state}
+              state={state}
+            />
           ))}
         </TabsList>
         <TabsContent className="flex flex-col gap-8" value={DisplayState.Data}>

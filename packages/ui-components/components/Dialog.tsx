@@ -38,7 +38,7 @@ const DialogContent = React.forwardRef<
       ref={ref}
       aria-describedby="dialog-description"
       className={cn(
-        "z-50 w-full max-w-xl gap-4 border border-valence-black  bg-valence-white p-6 px-8 ",
+        "z-50 w-fit max-w-xl gap-4 border border-valence-black  bg-valence-white p-6 px-8 ",
         "fixed left-[50%] top-[50%]  translate-x-[-50%] translate-y-[-50%] ",
         className,
       )}

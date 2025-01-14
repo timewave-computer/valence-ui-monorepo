@@ -3,7 +3,7 @@ import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { displayNumber, displayValue } from "@/utils";
 import { produce } from "immer";
-import { CalloutBox, Checkbox } from "@/components";
+import { Checkbox } from "@/components";
 import {
   NoFundsActionItems,
   SupportedAssets,
@@ -15,8 +15,9 @@ import {
 } from "@/app/rebalancer/ui";
 import {
   InputLabel,
-  FormTableCell,
   LoadingSkeleton,
+  CalloutBox,
+  TableCell,
 } from "@valence-ui/ui-components";
 
 export const EditAssetsForAccount: React.FC<{
@@ -140,13 +141,19 @@ export const EditAssetsForAccount: React.FC<{
               const target = targets.find((t) => t.denom === lineItem.denom);
               return (
                 <Fragment key={`wallet-balance-row-${lineItem.denom}`}>
-                  <FormTableCell className="flex gap-2">
+                  <TableCell
+                    align="left"
+                    variant="input"
+                    className="flex gap-2"
+                  >
                     <span>{displayNumber(amount, { precision: 2 })}</span>
                     <span>{lineItem.symbol}</span>
-                  </FormTableCell>
+                  </TableCell>
 
-                  <FormTableCell>{valueDisplayString}</FormTableCell>
-                  <FormTableCell>
+                  <TableCell align="left" variant="input">
+                    {valueDisplayString}
+                  </TableCell>
+                  <TableCell align="left" variant="input">
                     <Checkbox
                       checked={!!target}
                       onChange={(value) => {
@@ -155,7 +162,7 @@ export const EditAssetsForAccount: React.FC<{
                         } else removeTarget(lineItem.denom);
                       }}
                     />
-                  </FormTableCell>
+                  </TableCell>
                 </Fragment>
               );
             })}

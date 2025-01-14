@@ -1,5 +1,4 @@
 "use client";
-import { LinkText, ToastMessage } from "@/components";
 import {
   Button,
   DialogClose,
@@ -8,6 +7,9 @@ import {
   LoadingIndicator,
   FormRoot,
   LoadingSkeleton,
+  LinkText,
+  ToastMessage,
+  toast,
 } from "@valence-ui/ui-components";
 import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
@@ -15,7 +17,6 @@ import { useRouter } from "next/navigation";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { displayValue, useDateRange } from "@/utils";
 import { chainConfig } from "@/const/config";
-import { toast } from "sonner";
 import {
   SetTargets,
   DepositAssets,
@@ -40,7 +41,8 @@ import {
   HoverCardTrigger,
 } from "@radix-ui/react-hover-card";
 import { HiMiniArrowLeft } from "react-icons/hi2";
-import { X_HANDLE, X_URL } from "@valence-ui/socials";
+import { VALENCE_DOMAIN, X_HANDLE, X_URL } from "@valence-ui/socials";
+import { CelatoneUrl } from "@/const";
 
 type CreateRebalancerProps = {};
 
@@ -206,12 +208,21 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
       );
       toast.success(
         <ToastMessage
-          transactionHash={result.transactionHash}
           title="Rebalancer account was created and funded sucessfully."
           variant="success"
         >
-          <p className="text-sm">
-            Funds will begin rebalancing at the beggining of the next cycle.
+          <p>
+            Funds will begin rebalancing at the beginning of the next cycle.
+          </p>
+          <p>
+            Transaction hash:{" "}
+            <LinkText
+              variant={"secondary"}
+              blankTarget={true}
+              href={CelatoneUrl.transaction(result.transactionHash)}
+            >
+              {result.transactionHash}
+            </LinkText>
           </p>
         </ToastMessage>,
       );
@@ -224,10 +235,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
           <p>{ErrorHandler.constructText("", e)}</p>
           <p>
             Try refreshing the page and reconnecting your wallet, or contact{" "}
-            <LinkText
-              className="border-valence-black font-medium text-valence-black hover:border-b"
-              href={X_URL}
-            >
+            <LinkText variant="primary" href={X_URL} blankTarget={true}>
               {X_HANDLE}
             </LinkText>{" "}
             for help.
@@ -256,7 +264,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
             onInteractOutside={(e) => {
               e.preventDefault();
             }}
-            className=" max-w-[50%]"
+            className="max-w-[50%]"
           >
             <div className=" flex flex-col gap-4">
               <div className="flex items-center gap-4 ">
@@ -409,9 +417,9 @@ export const RebalancerFormHeader = ({
           The Rebalancer enables automated treasury management. Learn more about
           how the Rebalancer works{" "}
           <LinkText
-            openInNewTab={true}
-            className=" border-valence-blue text-valence-blue hover:border-b"
-            href="/blog/Rebalancer-Protocol-Asset-Management"
+            blankTarget={true}
+            href={`https://${VALENCE_DOMAIN}/blog/Rebalancer-Protocol-Asset-Management`}
+            variant="highlighted"
           >
             here
           </LinkText>

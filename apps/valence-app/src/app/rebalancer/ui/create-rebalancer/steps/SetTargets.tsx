@@ -6,7 +6,6 @@ import {
   useBaseTokenValue,
   CreateRebalancerCopy,
   RebalancerFormTooltipCopy,
-  WarnTextV2,
   useWhitelistedDenoms,
   SymbolColors,
 } from "@/app/rebalancer/ui";
@@ -20,10 +19,11 @@ import {
   FormField,
   InputLabel,
   LoadingSkeleton,
-  FormTableCell,
   Asset,
   FormControl,
   TextInput,
+  InfoText,
+  TableCell,
 } from "@valence-ui/ui-components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
@@ -54,6 +54,7 @@ export const SetTargets: React.FC<{
           label: asset?.symbol ?? "",
           display: (
             <Asset
+              size="sm"
               color={SymbolColors.get(asset?.symbol ?? "")}
               symbol={asset?.symbol}
             />
@@ -180,10 +181,11 @@ export const SetTargets: React.FC<{
 
                 return (
                   <Fragment key={`target-select-row-${index}`}>
-                    <FormTableCell className="relative flex items-center justify-start">
+                    <TableCell variant="input" align="left">
                       <Dropdown
                         selectedDisplay={
                           <Asset
+                            size="sm"
                             color={SymbolColors.get(
                               assetMetadata?.symbol ?? "",
                             )}
@@ -204,15 +206,18 @@ export const SetTargets: React.FC<{
                         }}
                         selected={watch(`targets.${index}.denom`)}
                       />
-                    </FormTableCell>
-                    <FormTableCell>
+                    </TableCell>
+                    <TableCell variant="input" align="left">
                       {displayNumber(distribution * 100, {
                         precision: 2,
                       })}
                       %
-                    </FormTableCell>
-                    <FormTableCell>
-                      <FormField name={`targets.${index}.bps`}>
+                    </TableCell>
+                    <TableCell variant="input" align="left">
+                      <FormField
+                        className="w-full"
+                        name={`targets.${index}.bps`}
+                      >
                         <FormControl asChild>
                           <TextInput
                             size="sm"
@@ -220,6 +225,7 @@ export const SetTargets: React.FC<{
                             suffix="%"
                             type="number"
                             placeholder="10.00"
+                            className="w-full"
                             isError={
                               target !== 0 &&
                               !isNaN(target) &&
@@ -236,11 +242,11 @@ export const SetTargets: React.FC<{
                           />
                         </FormControl>
                       </FormField>
-                    </FormTableCell>
+                    </TableCell>
 
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
-                        <FormTableCell>
+                        <TableCell variant="input" align="left">
                           <FormField name={`targets.${index}.minimumAmount`}>
                             <FormControl asChild>
                               <TextInput
@@ -259,7 +265,7 @@ export const SetTargets: React.FC<{
                               />
                             </FormControl>
                           </FormField>
-                        </FormTableCell>
+                        </TableCell>
                       </TooltipTrigger>
                       {disableMinimumValue && (
                         <TooltipContent className="max-w-64 text-balance text-center">
@@ -269,7 +275,11 @@ export const SetTargets: React.FC<{
                         </TooltipContent>
                       )}
                     </Tooltip>
-                    <FormTableCell className="h-full flex-col items-center justify-center">
+                    <TableCell
+                      variant="input"
+                      align="center"
+                      className="h-full flex-col items-center justify-center"
+                    >
                       <IconButton
                         isServer={isServer}
                         onClick={() => {
@@ -281,53 +291,45 @@ export const SetTargets: React.FC<{
                         }}
                         Icon={BsX}
                       />
-                    </FormTableCell>
+                    </TableCell>
                   </Fragment>
                 );
               })}
 
-              <FormTableCell>
+              <TableCell align="left" variant="input">
                 <IconButton
                   isServer={isServer}
                   onClick={addEmptyAsset}
                   Icon={BsPlus}
                 />
-              </FormTableCell>
+              </TableCell>
             </div>
             <div className="flex flex-col gap-2">
               {initialAssets?.every(
                 (a) => !a.startingAmount || a.startingAmount === 0,
               ) && (
-                <WarnTextV2
-                  text=" Select at least one starting amount in Step 1 to continue.
-                  "
-                  variant="info"
-                />
+                <InfoText variant="info">
+                  Select at least one starting amount in Step 1 to continue
+                </InfoText>
               )}
 
               {targets?.length < 2 && (
-                <WarnTextV2
-                  text="Select at least two targets.
-                  "
-                  variant="info"
-                />
+                <InfoText variant="info">Select at least two targets</InfoText>
               )}
               {targets?.length > 0 &&
                 targets.some((t) => Number(t.bps) > 0) &&
                 targets.reduce((acc, target) => acc + target.bps, 0) !==
                   100 && (
-                  <WarnTextV2
-                    text=" Total distribution must equal 100%"
-                    variant="warn"
-                  />
+                  <InfoText variant="warn">
+                    Total distribution must equal 100%
+                  </InfoText>
                 )}
 
               {targets?.length > 0 &&
                 targets.some((t) => !isValidPercentage(Number(t.bps))) && (
-                  <WarnTextV2
-                    text="Percentages must be between .01% and 99.99%."
-                    variant="warn"
-                  />
+                  <InfoText variant="warn">
+                    Percentages must be between .01% and 99.99%
+                  </InfoText>
                 )}
             </div>
           </div>

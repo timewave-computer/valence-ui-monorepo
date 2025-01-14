@@ -1,13 +1,11 @@
 "use client";
-import { Button } from "@valence-ui/ui-components";
+import { Button, ToastMessage, toast } from "@valence-ui/ui-components";
 
-import { ToastMessage } from "@/components";
 import { useAlert, useIsServer, useWallet } from "@/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFetchValenceAccount, useValenceAccount } from "@/app/rebalancer/ui";
 import { WalletStatus } from "@cosmos-kit/core";
-import { toast } from "sonner";
 
 export const ConnectWalletButton: React.FC<{
   disabled?: boolean;

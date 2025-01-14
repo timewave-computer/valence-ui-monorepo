@@ -1,5 +1,4 @@
 "use client";
-import { ToastMessage } from "@/components";
 import {
   Button,
   DialogClose,
@@ -9,14 +8,17 @@ import {
   InputLabel,
   FormField,
   FormRoot,
-  FormTableCell,
   FormControl,
   TextInput,
+  InfoText,
+  TableCell,
+  LinkText,
+  ToastMessage,
+  toast,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet, useWalletBalances } from "@/hooks";
-import { toast } from "sonner";
 import { Fragment, useState } from "react";
 import { baseToMicro, displayNumberV2, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
@@ -25,12 +27,12 @@ import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { useAtom } from "jotai";
 import {
   accountAtom,
-  WarnTextV2,
   BalanceReturnValue,
   useAssetMetadata,
   SupportedAssets,
 } from "@/app/rebalancer/ui";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
+import { CelatoneUrl } from "@/const";
 
 type DepositInputForm = {
   amounts: Coin[];
@@ -69,15 +71,22 @@ export const DepositDialog: React.FC<{}> = ({}) => {
   const { mutate: handleDeposit, isPending: isDepositPending } = useMutation({
     mutationFn: deposit,
     onSuccess: async (
-      data: DeliverTxResponse,
+      result: DeliverTxResponse,
       variables: DepositInputForm["amounts"],
     ) => {
       toast.success(
-        <ToastMessage
-          transactionHash={data.transactionHash}
-          title="Deposit completed"
-          variant="success"
-        ></ToastMessage>,
+        <ToastMessage title="Deposit completed" variant="success">
+          <p>
+            Transaction hash:{" "}
+            <LinkText
+              variant={"secondary"}
+              blankTarget={true}
+              href={CelatoneUrl.transaction(result.transactionHash)}
+            >
+              {result.transactionHash}
+            </LinkText>
+          </p>
+        </ToastMessage>,
       );
       queryClient.setQueryData(
         [QUERY_KEYS.ACCOUNT_BALANCES, accountAddress],
@@ -122,7 +131,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
           Deposit
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex w-fit flex-col gap-6">
+      <DialogContent className="flex flex-col gap-6">
         {
           // to reset when dialog closes
           isDepositDialogOpen && (
@@ -140,7 +149,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
 };
 
 // its own compoennt to refresh the form on each render
-const DepositForm: React.FC<{
+export const DepositForm: React.FC<{
   isSubmitPending?: boolean;
   handleSubmit: (inputs: DepositInputForm["amounts"]) => void;
   balances: FetchSupportedBalancesReturnValue;
@@ -211,14 +220,18 @@ const DepositForm: React.FC<{
                 {convertedNonZeroBalances.map((lineItem, index) => {
                   return (
                     <Fragment key={`withdraw-balance-row-${lineItem.denom}`}>
-                      <FormTableCell className="flex gap-2">
+                      <TableCell
+                        variant="input"
+                        align="left"
+                        className="flex gap-2"
+                      >
                         {displayNumberV2(lineItem.amount, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 10,
                         })}{" "}
                         {lineItem.symbol ?? ""}
-                      </FormTableCell>
-                      <FormTableCell>
+                      </TableCell>
+                      <TableCell variant="input" align="left">
                         <FormField asChild name={`amounts.${index}.amount`}>
                           <FormControl asChild>
                             <TextInput
@@ -238,12 +251,12 @@ const DepositForm: React.FC<{
                             />
                           </FormControl>
                         </FormField>
-                      </FormTableCell>
+                      </TableCell>
                     </Fragment>
                   );
                 })}
               </div>
-              {isOverMax && <WarnTextV2 text={maxLimitMsg} variant="error" />}
+              {isOverMax && <InfoText variant="warn">{maxLimitMsg} </InfoText>}
             </FormRoot>
 
             <div className="no-wrap flex flex-row items-center justify-end gap-4">

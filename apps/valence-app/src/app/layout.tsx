@@ -11,8 +11,9 @@ import { Provider as JotaiProvider } from "jotai";
 import { X_HANDLE } from "@valence-ui/socials";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION } from "@/const";
 import { getFeatureFlags } from "@/utils";
-import { Toaster, ValenceAppNav } from "@/components";
+import { ValenceAppNav } from "@/components";
 import React from "react";
+import { Toaster } from "@valence-ui/ui-components";
 import ReactQueryDevToolsWithProd from "@/components/react-query-devtools";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -56,20 +57,7 @@ export default function RootLayout({
                 <ReactQueryDevToolsWithProd />
                 <ValenceAppNav />
                 {children}
-                <Toaster
-                  style={{
-                    borderRadius: 0,
-                  }}
-                  toastOptions={{
-                    duration: 10000,
-                    classNames: {
-                      toast: "rounded-none",
-                      closeButton:
-                        "hover:bg-valence-white hover:text-valence-black bg-valence-black text-valence-white ",
-                    },
-                  }}
-                  closeButton={true}
-                />
+                <Toaster />
               </CosmosProvider>
             </FeatureFlagsProvider>
           </JotaiProvider>

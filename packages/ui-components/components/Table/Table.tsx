@@ -11,7 +11,7 @@ import {
 import { TableHeader } from "./TableHeader";
 import { TableCell } from "./TableCell";
 
-const tableVariants = cva("", {
+const tableVariants = cva("grid", {
   variants: {
     variant: {
       primary: "",
@@ -81,7 +81,7 @@ export const Table = ({
 
   return (
     <div
-      className={cn("grid", className)}
+      className={cn(tableVariants({ variant, className }))}
       {...props}
       style={{ gridTemplateColumns }}
     >

@@ -6,7 +6,7 @@ import {
   BothFieldRenderer,
 } from "@/app/covenants/components";
 import { CovenantFields } from ".";
-import { LinkText } from "@/components";
+import { LinkText } from "@valence-ui/ui-components";
 
 export const swapLp: CovenantFields = {
   parties: 2,
@@ -253,7 +253,7 @@ export const swapLp: CovenantFields = {
         <p>
           This proposal was automatically generated at {VALENCE_DOMAIN}. Reach
           out if you have any questions or feature requests:{" "}
-          <LinkText className="font-medium hover:underline" href={X_URL}>
+          <LinkText variant="primary" blankTarget={true} href={X_URL}>
             {X_HANDLE}
           </LinkText>
           .
