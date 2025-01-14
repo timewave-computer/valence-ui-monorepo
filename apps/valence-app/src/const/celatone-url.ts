@@ -1,7 +1,7 @@
 import { chainConfig } from "@/const/config";
 
 class CelatoneUrl {
-  static trasaction = (transactionHash: string) => {
+  static transaction = (transactionHash: string) => {
     return `${chainConfig.celatoneUrl}/txs/${transactionHash}`;
   };
   static block = (blockHeight: number | string) => {

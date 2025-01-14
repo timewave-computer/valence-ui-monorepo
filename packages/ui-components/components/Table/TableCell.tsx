@@ -33,7 +33,7 @@ const tableCellVariants = cva(
 
 export type TableCellVariants = VariantProps<typeof tableCellVariants>;
 
-interface TableCellProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface TableCellProps extends React.ButtonHTMLAttributes<HTMLElement> {
   children?: string | React.ReactNode;
   isLoading?: boolean;
   variant?: TableCellVariants["variant"];

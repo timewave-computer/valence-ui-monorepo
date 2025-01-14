@@ -116,7 +116,7 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
               <LinkText
                 variant={"secondary"}
                 blankTarget={true}
-                href={CelatoneUrl.trasaction(result.transactionHash)}
+                href={CelatoneUrl.transaction(result.transactionHash)}
               >
                 {result.transactionHash}
               </LinkText>

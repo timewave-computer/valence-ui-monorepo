@@ -1,5 +1,4 @@
 "use client";
-import {} from "@/components";
 import {
   Button,
   DialogClose,
@@ -10,7 +9,6 @@ import {
   LoadingSkeleton,
   LinkText,
   ToastMessage,
-  CalloutBox,
   toast,
 } from "@valence-ui/ui-components";
 import { useIsServer, useWallet } from "@/hooks";
@@ -30,7 +28,6 @@ import {
   useTestSignerConnection,
   BetaDisclaimer,
   makeCreateRebalancerMessages,
-  NoFundsActionItems,
 } from "@/app/rebalancer/ui";
 import { ErrorHandler } from "@/const/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -45,7 +42,6 @@ import {
 } from "@radix-ui/react-hover-card";
 import { HiMiniArrowLeft } from "react-icons/hi2";
 import { VALENCE_DOMAIN, X_HANDLE, X_URL } from "@valence-ui/socials";
-import Link from "next/link";
 import { CelatoneUrl } from "@/const";
 
 type CreateRebalancerProps = {};
@@ -216,14 +212,14 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
           variant="success"
         >
           <p>
-            Funds will begin rebalancing at the beggining of the next cycle.
+            Funds will begin rebalancing at the beginning of the next cycle.
           </p>
           <p>
             Transaction hash:{" "}
             <LinkText
               variant={"secondary"}
               blankTarget={true}
-              href={CelatoneUrl.trasaction(result.transactionHash)}
+              href={CelatoneUrl.transaction(result.transactionHash)}
             >
               {result.transactionHash}
             </LinkText>

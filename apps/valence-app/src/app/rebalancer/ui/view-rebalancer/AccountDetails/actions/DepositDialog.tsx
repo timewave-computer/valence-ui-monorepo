@@ -81,7 +81,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
             <LinkText
               variant={"secondary"}
               blankTarget={true}
-              href={CelatoneUrl.trasaction(result.transactionHash)}
+              href={CelatoneUrl.transaction(result.transactionHash)}
             >
               {result.transactionHash}
             </LinkText>

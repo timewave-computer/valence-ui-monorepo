@@ -59,7 +59,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
-        {...(href ? { href, target: "_blank" } : {})}
+        {...(href
+          ? { href, target: "_blank", rel: "noopener noreferrer" }
+          : {})}
         // commented out for now to render disabled tooltip
         // disabled={disabled} // keep it here for accessibilty but style is handled in CVA
         className={cn(
