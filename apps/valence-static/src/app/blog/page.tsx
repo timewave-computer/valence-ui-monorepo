@@ -10,6 +10,7 @@ import { VALENCE_DESCRIPTION, ABSOLUTE_URL } from "~/const";
 import Image from "next/image";
 import { PostHeading } from "~/app/blog/ui-components";
 import { Fragment } from "react";
+import { cn } from "@valence-ui/ui-components";
 
 const previewLength = 260;
 const trimContent = (content: string) => {
@@ -65,9 +66,14 @@ const BlogHome = async () => {
   return (
     // top padding is to avoid shifting layout for back button in desktop
     <div className="flex flex-col items-start ">
-      {posts.map((post) => (
+      {posts.map((post, i) => (
         <Fragment key={`blog-post-${post.slug}`}>
-          <div className="pb-2   w-full pt-4">
+          <div
+            className={cn(
+              i !== 0 && "border-t border-valence-black",
+              "pb-2 w-full pt-4 ",
+            )}
+          >
             <PostHeading slug={post.slug}>{post.title}</PostHeading>
 
             <span className="col-span-1 col-start-1 row-start-1">

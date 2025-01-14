@@ -17,7 +17,7 @@ article > .h2-container {
   @apply col-span-3 col-start-3 h-fit w-fit pt-2 md:pt-0;
 }
 article > .h2-container > h2 {
-  @apply text-balance  font-sans text-h6 font-medium  underline underline-offset-4 decoration-1;
+  @apply text-balance  font-sans text-h6   underline underline-offset-4 decoration-1;
 }
 
 article > em {

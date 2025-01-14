@@ -23,9 +23,6 @@ importers:
 
   apps/ui-sandbox:
     dependencies:
-      '@next/font':
-        specifier: ^14.2.15
-        version: 14.2.15(next@14.0.4)
       '@valence-ui/config':
         specifier: '*'
         version: link:../../packages/config
@@ -307,6 +304,9 @@ importers:
       '@valence-ui/config':
         specifier: '*'
         version: link:../../packages/config
+      '@valence-ui/fonts':
+        specifier: '*'
+        version: link:../../packages/fonts
       '@valence-ui/socials':
         specifier: '*'
         version: link:../../packages/socials
