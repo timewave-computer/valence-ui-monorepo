@@ -13,7 +13,7 @@ import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
 import { STATIC_URL } from "@/const";
 
-export const NAV_HEIGHT = "3.25rem";
+export const NAV_HEIGHT = "4rem";
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
     return path === "/"; // special case for home
@@ -90,14 +90,16 @@ export const ValenceAppNav = () => {
       {isWalletConnected && address && (
         <Popover.Root>
           <Popover.Trigger>
-            <div
+            <Button
               className={cn(
-                "valence-border-black border-[1px] border-valence-black px-1.5 py-1 font-mono text-sm",
+                "font-mono text-xs py-1 min-h-0",
                 "hidden md:flex", // hide on mobile
               )}
+              variant="secondary"
             >
+              {" "}
               {displayAddress(address)}
-            </div>
+            </Button>
           </Popover.Trigger>
 
           <Popover.Content
@@ -106,8 +108,8 @@ export const ValenceAppNav = () => {
             className="items-left z-50 flex flex-col gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all"
           >
             <div className="items-left flex flex-col gap-3">
-              <div className="flex flex-col items-center gap-1">
-                <h1 className="text-base font-bold">Wallet Connected</h1>
+              <div className="flex flex-col items-start gap-1">
+                <h1 className="text-base font-semibold">Wallet Connected</h1>
                 <span className="h-fit w-fit bg-valence-mediumgray px-1.5 py-0.5 text-xs text-valence-black ">
                   {chain.pretty_name}
                 </span>
@@ -146,7 +148,7 @@ export const ValenceAppNav = () => {
           </SheetTrigger>
 
           <SheetContent>
-            <div className=" flex flex-col gap-8 p-4 text-xl">{links}</div>
+            <div className=" flex flex-col gap-8 p-4 text-h5">{links}</div>
           </SheetContent>
         </Sheet>
       </div>

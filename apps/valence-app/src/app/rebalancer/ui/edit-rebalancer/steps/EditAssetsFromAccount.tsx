@@ -18,6 +18,7 @@ import {
   LoadingSkeleton,
   CalloutBox,
   TableCell,
+  Heading,
 } from "@valence-ui/ui-components";
 
 export const EditAssetsForAccount: React.FC<{
@@ -184,9 +185,11 @@ const DepositAssetsLayout: React.FC<{
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-lg font-bold">
+        <Heading level="h6">
+          {" "}
           {CreateRebalancerCopy.step_edit_SelectAssets.title}
-        </h1>
+        </Heading>
+
         <p className="w-3/4 text-sm">
           {CreateRebalancerCopy.step_edit_SelectAssets.subTitle}
         </p>

@@ -65,7 +65,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     return (
       <div className="min-h-1/2 flex grow flex-col items-start gap-12 pb-24">
         <div className="flex flex-col items-start gap-4 text-left">
-          <h2 className="font-mono text-2xl text-valence-black ">
+          <h2 className="font-mono text-h4 text-valence-black ">
             There was a problem loading this post.
           </h2>
           <RouterButton

@@ -21,6 +21,7 @@ import {
   WithIconAndTooltip,
   LoadingSkeleton,
   Label,
+  Heading,
 } from "@valence-ui/ui-components";
 import Link from "next/link";
 import { BsCheck, BsInfo } from "react-icons/bs";
@@ -100,12 +101,12 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
       <AccountDetailsHeader selectedAddress={selectedAddress} />
       <section className="flex flex-col gap-2 border-b border-valence-black  p-4">
         <button
-          className="flex flex-row justify-between"
+          className="flex flex-row justify-between items-center"
           onClick={() => {
             setIsConfigOpen(!isConfigOpen);
           }}
         >
-          <span className="text-sm font-bold">Configuration</span>
+          <Heading level="h6">Configuration</Heading>
 
           {isConfigOpen ? (
             <FaChevronDown className="h-4 w-4" />
@@ -128,7 +129,7 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
                     key={index}
                     className="no-wrap flex flex-row items-center gap-2"
                   >
-                    <h3 className="text-wrap text-xs font-bold">
+                    <h3 className="text-wrap text-xs font-semibold">
                       {data.title}
                     </h3>
                     <p className="whitespace-normal  font-mono text-xs">
@@ -142,7 +143,9 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
         )}
       </section>
       <section className="flex w-full grow  flex-col gap-4 px-4">
-        <h2 className="pt-4 text-sm font-bold">Live balances</h2>
+        <Heading className="pt-4" level="h6">
+          Live balances
+        </Heading>
         <LiveBalancesTable />
       </section>
     </div>
@@ -190,9 +193,9 @@ const AccountDetailsHeader: React.FC<{
       <div className="flex flex-col gap-1 ">
         <div className="flex flex-row items-center gap-1">
           {isOwnAccount ? (
-            <h1 className="text-base font-bold">Your Rebalancer Account</h1>
+            <Heading level="h5">Your Rebalancer Account</Heading>
           ) : (
-            <h1 className="text-base font-bold">Rebalancer Account</h1>
+            <Heading level="h5">Rebalancer Account</Heading>
           )}
 
           <div className="flex flex-row items-center gap-2">

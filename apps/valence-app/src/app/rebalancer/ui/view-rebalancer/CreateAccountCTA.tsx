@@ -1,5 +1,5 @@
 "use client";
-import { Asset } from "@valence-ui/ui-components";
+import { Asset, Heading } from "@valence-ui/ui-components";
 import { SymbolColors, useAssetMetadata } from "@/app/rebalancer/ui";
 import { displayNumberV2, microToBase } from "@/utils";
 import { useWallet, useWalletBalances } from "@/hooks";
@@ -29,9 +29,8 @@ export const CreateAccountCTA = () => {
 
   return (
     <div className="justify-left flex max-w-[640px] flex-col gap-4 border border-black bg-white p-8">
-      <h1 className="text-xl font-bold">
-        No accounts associated with this wallet
-      </h1>
+      <Heading level="h5"> No accounts associated with this wallet</Heading>
+
       <p className="text-sm">
         The Rebalancer currently supports {assetList}, with more assets coming
         soon.
@@ -68,7 +67,7 @@ export const CreateAccountCTA = () => {
 
       <button
         onClick={() => router.push("/rebalancer/create")}
-        className="w-fit bg-valence-black px-4 py-2 text-lg text-white"
+        className="w-fit bg-valence-black px-4 py-2 text-h6 text-white"
       >
         Start rebalancing funds
       </button>

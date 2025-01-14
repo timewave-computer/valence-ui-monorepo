@@ -97,7 +97,7 @@ export const Dropdown = <T extends string>({
         <button
           disabled={true}
           className={cn(
-            "flex h-full min-h-10 w-full min-w-[12rem] animate-pulse  flex-row items-center justify-between gap-6 border bg-valence-lightgray p-2 ",
+            "flex h-full min-h-10 w-full min-w-[12rem] animate-pulse  flex-row items-center justify-between gap-6 border bg-valence-lightgray px-3 py-2 ",
             containerClassName,
           )}
         ></button>
@@ -131,7 +131,7 @@ export const Dropdown = <T extends string>({
               key={option.value}
               className={cn(
                 "text-sm",
-                "flex flex-row items-center justify-between gap-6 p-2 pl-3 hover:bg-valence-lightgray",
+                "flex flex-row items-center justify-between gap-6 p-2  hover:bg-valence-lightgray",
                 index < options.length - 1 &&
                   "border-b border-valence-mediumgray",
               )}

@@ -1,7 +1,6 @@
 "use client";
 import { Section, Story } from "~/components";
 import {
-  FormControl,
   FormField,
   InputLabel,
   FormRoot,
@@ -46,27 +45,24 @@ const Forms = () => {
         >
           <FormField name="name">
             <InputLabel label="Name" />
-            <FormControl asChild>
-              <TextInput {...register("name")} placeholder="Soulja boy" />
-            </FormControl>
+
+            <TextInput {...register("name")} placeholder="Soulja boy" />
           </FormField>
 
           <FormField name="email">
             <InputLabel label="Email" />
-            <FormControl asChild>
-              <TextInput {...register("email")} placeholder="me@me.com" />
-            </FormControl>
+
+            <TextInput {...register("email")} placeholder="me@me.com" />
           </FormField>
 
           <FormField name="amount">
             <InputLabel label="Amount" />
-            <FormControl asChild>
-              <TextInput
-                type="number"
-                {...register("amount")}
-                placeholder="0.00"
-              />
-            </FormControl>
+
+            <TextInput
+              type="number"
+              {...register("amount")}
+              placeholder="0.00"
+            />
           </FormField>
           <FormSubmit asChild>
             <Button>Submit</Button>

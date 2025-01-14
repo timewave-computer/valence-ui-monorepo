@@ -9,6 +9,7 @@ import {
   FormControl,
   InfoText,
   LinkText,
+  Heading,
 } from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
 import {
@@ -55,9 +56,11 @@ export const RebalanceSpeed: React.FC<{
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-lg font-bold">
+        <Heading level="h6">
+          {" "}
           {CreateRebalancerCopy.step_Settings.title}
-        </h1>
+        </Heading>
+
         <div className="flex flex-col gap-2">
           <p className="w-3/4 text-sm ">
             {CreateRebalancerCopy.step_Settings.subTitle}

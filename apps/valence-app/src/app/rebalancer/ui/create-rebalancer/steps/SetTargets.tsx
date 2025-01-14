@@ -24,6 +24,7 @@ import {
   TextInput,
   InfoText,
   TableCell,
+  Heading,
 } from "@valence-ui/ui-components";
 import { BsPlus, BsX } from "react-icons/bs";
 import { produce } from "immer";
@@ -129,9 +130,11 @@ export const SetTargets: React.FC<{
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-lg font-bold">
+        <Heading level="h6">
+          {" "}
           {CreateRebalancerCopy.step_SelectTargets.title}
-        </h1>
+        </Heading>
+
         <p className="w-3/4 text-sm">
           {CreateRebalancerCopy.step_SelectTargets.subTitle}
         </p>
@@ -213,11 +216,8 @@ export const SetTargets: React.FC<{
                       })}
                       %
                     </TableCell>
-                    <TableCell variant="input" align="left">
-                      <FormField
-                        className="w-full"
-                        name={`targets.${index}.bps`}
-                      >
+                    <TableCell variant="input" align="left" className="w-full">
+                      <FormField asChild name={`targets.${index}.bps`}>
                         <FormControl asChild>
                           <TextInput
                             size="sm"
@@ -247,7 +247,10 @@ export const SetTargets: React.FC<{
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
                         <TableCell variant="input" align="left">
-                          <FormField name={`targets.${index}.minimumAmount`}>
+                          <FormField
+                            className="w-full"
+                            name={`targets.${index}.minimumAmount`}
+                          >
                             <FormControl asChild>
                               <TextInput
                                 name={`targets.${index}.minimumAmount`}

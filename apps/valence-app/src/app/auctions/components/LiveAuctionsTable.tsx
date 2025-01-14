@@ -37,6 +37,7 @@ import {
   TableHeader,
   TableCell,
   Sorter,
+  Heading,
 } from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({
@@ -239,9 +240,9 @@ export function LiveAuctionsTable({
   return (
     <>
       <div className="flex min-h-[72px] flex-col items-center">
-        <h1 className="text-xl font-bold">Live Auctions</h1>
+        <Heading level="h5">Live Auctions</Heading>
 
-        <div className="pt-1 font-mono text-xs font-light">
+        <div className="pt-1 font-mono text-xs">
           <p className="text-center" suppressHydrationWarning>
             {timeDisplayString}
           </p>
