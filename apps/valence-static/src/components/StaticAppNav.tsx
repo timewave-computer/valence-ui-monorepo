@@ -33,8 +33,8 @@ const NavLink = ({
       key={`nav-${href}`}
       className={cn(
         "relative top-[1px] flex flex-row items-center",
-        shouldHightlightItem(href, path) && "font-bold",
-        "transition-all focus:font-bold", // mobile,
+        shouldHightlightItem(href, path) && "font-semibold",
+        "transition-all focus:font-semibold", // mobile,
         "md:focus:font-normal",
       )}
       href={href}

@@ -6,11 +6,14 @@ import { ABSOLUTE_URL } from "~/const";
 import { X_HANDLE } from "@valence-ui/socials";
 import { Metadata } from "next";
 import Image from "next/image";
-import { PostHeading, BackButton } from "~/app/blog/ui-components";
+import { PostHeading } from "~/app/blog/ui-components";
 import "./article.css";
 import path from "path";
 import fs from "fs";
 import { getPost, POSTS_PATH } from "~/server/posts";
+import { Button } from "@valence-ui/ui-components";
+import { FaChevronLeft } from "react-icons/fa";
+import Link from "next/link";
 
 // statically render routes so blog posts not rendered dynamically
 export async function generateStaticParams() {
@@ -50,6 +53,20 @@ export async function generateMetadata({
   };
 }
 
+const BackButton = () => (
+  <Button
+    variant="secondary"
+    PrefixIcon={FaChevronLeft}
+    link={{
+      LinkComponent: Link,
+      href: "/blog",
+      blankTarget: false,
+    }}
+  >
+    Back to blog
+  </Button>
+);
+
 const BlogPost = async ({ params }: BlogPostProps) => {
   let postData: Post | null = null;
   let error: boolean | null = null;
@@ -87,12 +104,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
   return (
     <div className="min-h-1/2 flex grow flex-col pt-4 md:gap-2  ">
       <div className="">
-        <BackButton
-          link={{
-            href: "/blog",
-            label: "Back to Blog",
-          }}
-        />
+        <BackButton />
         <div className=" py-2   ">
           <PostHeading> {postData.frontMatter.title}</PostHeading>
           <span className="col-span-1 col-start-1">
@@ -111,13 +123,8 @@ const BlogPost = async ({ params }: BlogPostProps) => {
       </div>
 
       <article dangerouslySetInnerHTML={{ __html: postData.content }} />
-      <BackButton
-        className="pt-4"
-        link={{
-          href: "/blog",
-          label: "Back to Blog",
-        }}
-      />
+
+      <BackButton />
     </div>
   );
 };
