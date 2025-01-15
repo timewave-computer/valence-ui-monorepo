@@ -100,17 +100,17 @@ const CovenantPage = () => {
               img={
                 <Image
                   priority={true}
-                  className="mb-6 mt-8"
+                  className="my-4"
                   src="/img/covenant.svg"
                   alt="Covenant illustration"
                   width={134}
-                  height={80}
+                  height={72}
                 />
               }
             >
               <Heading level="h4">Covenants (beta)</Heading>
 
-              <p>
+              <p className="pt-1">
                 Crypto-native agreements. Contact{" "}
                 <LinkText variant={"primary"} blankTarget={true} href={X_URL}>
                   {X_HANDLE}
