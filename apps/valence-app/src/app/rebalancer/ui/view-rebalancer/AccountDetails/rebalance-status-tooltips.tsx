@@ -1,7 +1,7 @@
 "use client";
 import { useAssetMetadata, useRebalanceStatusQuery } from "@/app/rebalancer/ui";
 import React from "react";
-import { HoverCardContent, HoverContent } from "@valence-ui/ui-components";
+import { HoverContent } from "@valence-ui/ui-components";
 import { displayNumber } from "@/utils";
 
 export const RebalanceInProgressTooltip: React.FC<{ address: string }> = ({
