@@ -98,10 +98,7 @@ export const EditAssetsForAccount: React.FC<{
               >
                 <p>
                   Deposit funds into the Rebalancer account to continue{" "}
-                  <span className="font-mono text-sm font-light">
-                    ({address})
-                  </span>
-                  .
+                  <span className="font-mono text-sm ">({address})</span>.
                 </p>
                 <NoFundsActionItems />
               </CalloutBox>

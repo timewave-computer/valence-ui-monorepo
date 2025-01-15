@@ -21,3 +21,5 @@ export * from "./InfoText";
 export * from "./CalloutBox";
 export * from "./Toaster";
 export * from "./LinkText";
+export * from "./HoverCard";
+export * from "./HoverContent";

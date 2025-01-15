@@ -1,7 +1,7 @@
 "use client";
 import { useAssetMetadata, useRebalanceStatusQuery } from "@/app/rebalancer/ui";
 import React from "react";
-import { IconTooltipContent } from "@valence-ui/ui-components";
+import { HoverContent } from "@valence-ui/ui-components";
 import { displayNumber } from "@/utils";
 
 export const RebalanceInProgressTooltip: React.FC<{ address: string }> = ({
@@ -12,7 +12,7 @@ export const RebalanceInProgressTooltip: React.FC<{ address: string }> = ({
     accountAddress: address,
   });
   return (
-    <IconTooltipContent title="Rebalance in progress">
+    <HoverContent title="Rebalance in progress">
       <p>
         Taking into account price, rebalance speed, and asset balances, the
         account is projected to undergo rebalancing in the next cycle.
@@ -34,7 +34,7 @@ export const RebalanceInProgressTooltip: React.FC<{ address: string }> = ({
           })}
         </div>
       )}
-    </IconTooltipContent>
+    </HoverContent>
   );
 };
 
@@ -46,7 +46,7 @@ export const DoneRebalancingTooltip: React.FC<{ address: string }> = ({
     accountAddress: address,
   });
   return (
-    <IconTooltipContent title="Rebalancing complete" className=" max-w-80">
+    <HoverContent title="Rebalancing complete" className=" max-w-80">
       <p>
         One or more trades projected for the next cycle are below the minimum
         auction amount. Rebalancing will resume if the rebalance speed is
@@ -74,6 +74,6 @@ export const DoneRebalancingTooltip: React.FC<{ address: string }> = ({
           })}
         </div>
       )}
-    </IconTooltipContent>
+    </HoverContent>
   );
 };

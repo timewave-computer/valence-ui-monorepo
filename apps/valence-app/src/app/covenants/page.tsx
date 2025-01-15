@@ -274,11 +274,11 @@ const CovenantPage = () => {
               <ComingSoonTooltipContent />
             </div>
           )}
-          <div className="flex flex-row items-stretch justify-between border-b border-valence-black">
+          <div className="flex flex-row items-stretch justify-between border-b border-valence-black text-sm">
             <div className="flex flex-row items-stretch">
               <div
                 className={cn(
-                  "flex cursor-pointer flex-col items-center justify-center border-r border-valence-black p-4",
+                  "flex cursor-pointer flex-col items-center justify-center border-r border-valence-black py-2 px-4",
                   contractDisplayMode === "contract" && "bg-valence-white",
                 )}
                 onClick={() =>
@@ -289,7 +289,7 @@ const CovenantPage = () => {
               </div>
               <div
                 className={cn(
-                  "flex cursor-pointer flex-col items-center justify-center border-r border-valence-black p-4",
+                  "flex cursor-pointer flex-col items-center justify-center border-r border-valence-black py-2 px-4",
                   contractDisplayMode === "json" && "bg-valence-white",
                 )}
                 onClick={() => setContractDisplayMode(ContractDisplayMode.JSON)}
@@ -301,7 +301,7 @@ const CovenantPage = () => {
             <div className="flex flex-row items-stretch">
               {contractDisplayMode === "json" && (
                 <div
-                  className="flex cursor-pointer flex-col items-center justify-center p-4 text-base"
+                  className="flex cursor-pointer flex-col items-center justify-center py-2 px-4 "
                   onClick={() => {
                     navigator.clipboard.writeText(json);
                   }}
@@ -310,7 +310,7 @@ const CovenantPage = () => {
                 </div>
               )}
               {contractDisplayMode === "contract" && (
-                <div className="flex cursor-pointer flex-col items-center justify-center p-4 text-base">
+                <div className="flex cursor-pointer flex-col items-center justify-center py-2 px-4">
                   <a target="_blank" download href="/ntrn-atom-swap.txt">
                     Download
                   </a>

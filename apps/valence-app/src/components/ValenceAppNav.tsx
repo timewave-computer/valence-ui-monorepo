@@ -8,6 +8,7 @@ import {
   SheetContent,
   SheetTrigger,
   Button,
+  Label,
 } from "@valence-ui/ui-components";
 import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
@@ -108,23 +109,22 @@ export const ValenceAppNav = () => {
             className="items-left z-50 flex flex-col gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all"
           >
             <div className="items-left flex flex-col gap-3">
-              <div className="flex flex-col items-start gap-1">
-                <h1 className="text-base font-semibold">Wallet Connected</h1>
-                <span className="h-fit w-fit bg-valence-mediumgray px-1.5 py-0.5 text-xs text-valence-black ">
-                  {chain.pretty_name}
-                </span>
-              </div>
+              <div className="flex flex-row justify-between items-start">
+                <h1 className="text-base font-semibold">Wallet connected</h1>
 
-              <div className="flex flex-row flex-nowrap  items-center gap-2">
                 <div
                   className="h-6 w-6 bg-contain bg-center bg-no-repeat "
                   style={{
                     backgroundImage: `url(${walletInfo?.logo})`,
                   }}
                 />
-                <span className="w-fit max-w-44 text-balance break-words text-right font-mono text-xs font-light tracking-tight">
+              </div>
+
+              <div>
+                <Label> {chain.pretty_name}</Label>
+                <div className="max-w-48 text-balance break-words text-left font-mono text-xs">
                   {address}
-                </span>
+                </div>
               </div>
             </div>
 

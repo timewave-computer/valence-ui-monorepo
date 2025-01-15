@@ -13,12 +13,7 @@ export const TabButton = forwardRef<HTMLButtonElement, TabsButtonProps>(
       <Button
         ref={ref}
         onClick={onClick}
-        className={cn(
-          "rounded-2xl",
-          isActive &&
-            " bg-valence-purple text-valence-white border-valence-white"
-        )}
-        variant="secondary"
+        variant={isActive ? "primary" : "secondary"}
       >
         {state}
       </Button>

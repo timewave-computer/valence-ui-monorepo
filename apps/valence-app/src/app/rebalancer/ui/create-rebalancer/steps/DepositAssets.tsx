@@ -7,7 +7,7 @@ import { produce } from "immer";
 import { Checkbox } from "@/components";
 import {
   FormField,
-  IconTooltipContent,
+  HoverContent,
   InputLabel,
   WithIconAndTooltip,
   LoadingSkeleton,
@@ -194,7 +194,7 @@ export const DepositAssets: React.FC<{
         />
         <WithIconAndTooltip
           tooltipContent={
-            <IconTooltipContent {...RebalancerFormTooltipCopy.serviceFee} />
+            <HoverContent {...RebalancerFormTooltipCopy.serviceFee} />
           }
         >
           <span className="text-sm">

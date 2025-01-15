@@ -5,7 +5,6 @@ export * from "./coming-soon-tooltip";
 export * from "./RouterButton";
 export * from "./Dropdown";
 export * from "./RadioGroup";
-export * from "./hover-to-copy";
 export * from "./colored-dot";
 export * from "./ValenceProductBrand";
 export * from "./ConnectWalletButton";
