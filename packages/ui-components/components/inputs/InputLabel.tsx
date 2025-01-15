@@ -1,5 +1,5 @@
 import { cn } from "../../utils";
-import { IconTooltipContent, WithIconAndTooltip } from "..";
+import { HoverContent, WithIconAndTooltip } from "..";
 import { cva, VariantProps } from "class-variance-authority";
 
 const labelVariants = cva("text-nowrap", {
@@ -37,9 +37,13 @@ export function InputLabel({
       <WithIconAndTooltip
         {...(tooltipContent && {
           tooltipContent: (
-            <IconTooltipContent title={label} text={tooltipContent}>
+            <HoverContent
+              className="max-w-lg"
+              title={label}
+              text={tooltipContent}
+            >
               {tooltipChildren}
-            </IconTooltipContent>
+            </HoverContent>
           ),
         })}
       >

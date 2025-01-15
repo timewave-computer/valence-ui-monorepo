@@ -127,7 +127,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
     <div className="flex flex-col  items-stretch gap-2  p-4">
       <InputLabel noGap label="Discover" />
 
-      <div>
+      <div className="">
         {featuredAccounts.length === 0 && (
           <p className="py-2 text-sm">
             No featured accounts to show for {chainConfig.chain.pretty_name}.

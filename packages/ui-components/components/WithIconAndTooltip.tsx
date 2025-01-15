@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode } from "react";
 import { LoadingIndicator, Tooltip, TooltipContent, TooltipTrigger } from ".";
 import { BsQuestion } from "react-icons/bs";
 import { cn } from "../utils";
@@ -78,7 +78,7 @@ export const WithIconAndTooltip: React.FC<WithIconAndTooltipProps> = ({
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>{_button}</TooltipTrigger>
           <TooltipContent
-            className="flex min-h-16 min-w-36 flex-col items-center justify-center bg-valence-black"
+            className="flex max-w-xl flex-col items-center justify-center "
             side={side}
           >
             <LoadingIndicator />
@@ -95,36 +95,6 @@ export const WithIconAndTooltip: React.FC<WithIconAndTooltipProps> = ({
         <TooltipTrigger asChild>{_button}</TooltipTrigger>
         <TooltipContent side={side}>{tooltipContent}</TooltipContent>
       </Tooltip>
-    </div>
-  );
-};
-
-export const IconTooltipContent: React.FC<{
-  title?: string;
-  text?: string;
-  children?: ReactNode;
-  className?: string;
-}> = ({ title, text, children, className }) => {
-  return (
-    <div
-      className={cn(
-        "flex max-w-64 flex-col  items-start justify-start gap-2",
-        className,
-      )}
-    >
-      {(text || title) && (
-        <div className="flex flex-col items-start justify-start gap-2">
-          {title && (
-            <h3 className="text-left text-base font-semibold">{title}</h3>
-          )}
-          {text && (
-            <p className="text-wrap  text-left text-sm font-normal">{text}</p>
-          )}
-        </div>
-      )}
-      {children && (
-        <div className="text-left text-sm font-normal">{children}</div>
-      )}
     </div>
   );
 };

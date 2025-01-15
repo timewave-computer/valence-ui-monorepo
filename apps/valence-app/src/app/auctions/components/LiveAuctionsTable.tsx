@@ -249,7 +249,7 @@ export function LiveAuctionsTable({
           <p className="pt-0.5 text-center" suppressHydrationWarning>
             {nextStartTimeDisplayString}
           </p>
-          <p className="text-xs font-mono font-light text-center">
+          <p className="text-xs font-mono text-center">
             Current block:{" "}
             <a
               target="_blank"
@@ -298,9 +298,7 @@ export function LiveAuctionsTable({
                       </span>
                     )}
                   </span>
-                  {isFinished && (
-                    <span className="self-start text-xs font-light">*</span>
-                  )}
+                  {isFinished && <span className="self-start text-xs ">*</span>}
                 </TableCell>
                 <BenchmarkCell
                   isFetching={isAstroportFetching}
@@ -345,7 +343,7 @@ export function LiveAuctionsTable({
         </div>
       </div>
 
-      <p className="py-1 font-mono text-xs font-light">* = Settled price</p>
+      <p className="py-1 font-mono text-xs ">* = Settled price</p>
     </>
   );
 }

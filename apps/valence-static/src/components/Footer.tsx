@@ -63,6 +63,7 @@ export const Footer = (
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Button
+                className="rounded-l-none"
                 variant="secondary"
                 onClick={() => {
                   subscribeMutation.mutate();

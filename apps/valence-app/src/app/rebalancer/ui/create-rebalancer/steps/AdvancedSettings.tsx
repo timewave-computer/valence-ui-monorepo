@@ -162,9 +162,7 @@ export const AdvancedSettings: React.FC<{
                     />
                     <p className="text-sm">
                       Only my wallet{" "}
-                      <span className="font-mono text-sm font-light">
-                        ({address})
-                      </span>
+                      <span className="font-mono text-xs">({address})</span>
                     </p>
                   </div>
                   <div className="flex items-center gap-2">

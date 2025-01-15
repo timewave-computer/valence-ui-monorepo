@@ -11,6 +11,9 @@ import {
   ToastMessage,
   toast,
   Heading,
+  HoverCardRoot,
+  HoverCardContent,
+  HoverCardTrigger,
 } from "@valence-ui/ui-components";
 import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
@@ -36,11 +39,6 @@ import { DeliverTxResponse } from "@cosmjs/stargate";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { AccountTarget, FetchAccountConfigReturnValue } from "@/server/actions";
 import { useCallback, useState } from "react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@radix-ui/react-hover-card";
 import { HiMiniArrowLeft } from "react-icons/hi2";
 import { VALENCE_DOMAIN, X_HANDLE, X_URL } from "@valence-ui/socials";
 import { CelatoneUrl } from "@/const";
@@ -328,7 +326,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
               <LoadingIndicator />
             </div>
           ) : (
-            <HoverCard openDelay={0}>
+            <HoverCardRoot openDelay={0}>
               <HoverCardTrigger>
                 <Button
                   disabled={!isSubmitEnabled}
@@ -339,10 +337,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
                 </Button>
               </HoverCardTrigger>
               {!isSubmitEnabled && (
-                <HoverCardContent className="flex flex-col gap-1 border border-valence-black bg-valence-lightgray p-4 text-sm text-valence-black">
-                  <h2 className="font-semibold">
-                    Configuration does not meet the below requirements:
-                  </h2>
+                <HoverCardContent title="Configuration does not meet requirements">
                   <ul>
                     {!isServiceFeeIncluded && (
                       <li className="">
@@ -379,7 +374,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
                   </ul>
                 </HoverCardContent>
               )}
-            </HoverCard>
+            </HoverCardRoot>
           )}
         </div>
       </FormRoot>
@@ -410,7 +405,7 @@ export const RebalancerFormHeader = ({
         <Heading level="h5">{title}</Heading>
 
         {!!address.length && (
-          <span className="font-mono text-sm font-medium">{`(wallet: ${address})`}</span>
+          <span className="font-mono text-xs font-medium">{`(wallet: ${address})`}</span>
         )}
       </div>
       <div className="flex flex-col gap-1">

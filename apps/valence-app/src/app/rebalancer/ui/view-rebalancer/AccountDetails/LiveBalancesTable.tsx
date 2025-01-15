@@ -1,6 +1,6 @@
 "use client";
 import {
-  IconTooltipContent,
+  HoverContent,
   LoadingSkeleton,
   TableHeader,
   Asset,
@@ -246,7 +246,7 @@ const LiveBalancesTableLayout: React.FC<{
           variant={"secondary"}
           align={"right"}
           hoverTooltip={
-            <IconTooltipContent {...LivePortfolioTooltipCopy.withdrawable} />
+            <HoverContent {...LivePortfolioTooltipCopy.withdrawable} />
           }
         />
         <TableHeader
