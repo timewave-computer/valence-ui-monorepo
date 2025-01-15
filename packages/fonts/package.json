@@ -1,0 +1,12 @@
+{
+  "name": "@valence-ui/fonts",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "files": [
+    "public/",
+    "index.ts"
+  ],
+  "dependencies": {
+    "@next/font": "^14.2.15"
+  }
+}

@@ -15,6 +15,7 @@ import {
   LinkText,
   ToastMessage,
   toast,
+  Heading,
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -193,7 +194,8 @@ const WithdrawForm: React.FC<{
   return (
     <>
       <div className="flex flex-col gap-2">
-        <h1 className="text-xl font-bold">Withdraw Funds</h1>
+        <Heading level="h5">Withdraw Funds</Heading>
+
         {isFundsInAuction && <UnavailableFundsWarning />}
       </div>
       {nonZeroBalances.length === 0 ? (

@@ -10,6 +10,7 @@ import {
   LinkText,
   ToastMessage,
   toast,
+  Heading,
 } from "@valence-ui/ui-components";
 import { useIsServer, useWallet } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
@@ -268,7 +269,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
           >
             <div className=" flex flex-col gap-4">
               <div className="flex items-center gap-4 ">
-                <h1 className="text-xl font-bold  ">{BetaDisclaimer.title}</h1>
+                <Heading level="h5">{BetaDisclaimer.title}</Heading>
               </div>
               <div className="flex flex-col gap-2">
                 {BetaDisclaimer.text.map((t, i) => (
@@ -406,7 +407,7 @@ export const RebalancerFormHeader = ({
   return (
     <section className="flex w-full flex-col gap-2 p-4">
       <div className="flex flex-wrap items-center gap-1">
-        <h1 className="text-xl font-bold">{title}</h1>
+        <Heading level="h5">{title}</Heading>
 
         {!!address.length && (
           <span className="font-mono text-sm font-medium">{`(wallet: ${address})`}</span>

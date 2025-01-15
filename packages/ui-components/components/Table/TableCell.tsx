@@ -4,7 +4,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { CellLink } from "./cell-types";
 
 const tableCellVariants = cva(
-  "flex   items-center justify-center  py-2 font-mono  text-xs  text-nowrap w-full ",
+  "flex items-center justify-center  py-2 font-mono  text-xs  text-nowrap w-full ",
   {
     variants: {
       variant: {

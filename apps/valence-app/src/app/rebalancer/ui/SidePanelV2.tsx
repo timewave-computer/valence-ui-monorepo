@@ -15,7 +15,13 @@ import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useAtom } from "jotai";
 import { chainConfig } from "@/const/config";
-import { Label, TextInput, LinkText } from "@valence-ui/ui-components";
+import {
+  Label,
+  TextInput,
+  LinkText,
+  InputLabel,
+  Heading,
+} from "@valence-ui/ui-components";
 
 export const SidePanelV2: React.FC<{
   rerouteOnConnect?: boolean;
@@ -70,7 +76,7 @@ export const SidePanelV2: React.FC<{
             />
           }
         >
-          <h1 className="text-xl font-bold">Rebalancer (beta)</h1>
+          <Heading level="h4">Rebalancer (beta)</Heading>
           <p className="text-pretty pt-1">
             Automated balance sheet and treasury management. Contact{" "}
             <LinkText variant="primary" blankTarget={true} href={X_URL}>
@@ -86,8 +92,8 @@ export const SidePanelV2: React.FC<{
           debouncedMouseLeave={debouncedMouseLeave}
         />
 
-        <div className="flex flex-col gap-2  ">
-          <h1 className="font-bold">Search by address</h1>
+        <div className="flex flex-col ">
+          <InputLabel label="Search by address" />
 
           <TextInput
             value={accountUrlParam}
@@ -119,7 +125,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
 
   return (
     <div className="flex flex-col  items-stretch gap-2  p-4">
-      <h1 className="font-bold">Discover</h1>
+      <InputLabel noGap label="Discover" />
 
       <div>
         {featuredAccounts.length === 0 && (

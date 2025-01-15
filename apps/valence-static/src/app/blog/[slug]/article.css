@@ -7,24 +7,24 @@ article > .h1-border {
   @apply col-span-5 md:h-fit md:border-b border-valence-black pt-8;
 }
 article > .h1-container {
-  @apply col-span-2  font-serif text-2xl border-valence-black border-b md:border-0 font-medium md:grid md:h-0 overflow-visible;
+  @apply col-span-2  font-serif text-h4 border-valence-black border-b md:border-0 font-medium md:grid md:h-0 overflow-visible;
 }
 
 article > .h1-container > h1 {
-  @apply col-span-2 col-start-1  text-balance  text-xl  font-sans font-medium;
+  @apply col-span-2 col-start-1  text-balance  text-h5  font-sans font-medium;
 }
 article > .h2-container {
   @apply col-span-3 col-start-3 h-fit w-fit pt-2 md:pt-0;
 }
 article > .h2-container > h2 {
-  @apply text-balance  font-sans text-lg font-medium  underline underline-offset-4 decoration-1;
+  @apply text-balance  font-sans text-h6   underline underline-offset-4 decoration-1;
 }
 
 article > em {
   @apply italic;
 }
 article > p {
-  @apply col-span-3 col-start-3 text-balance text-lg;
+  @apply col-span-3 col-start-3 text-balance text-h6;
 }
 
 article > p > strong {

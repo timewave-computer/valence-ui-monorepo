@@ -344,7 +344,7 @@ export const LIVE_BALANCES_SORTERS: Sorter<
 const EmptyRow = () => (
   <>
     <div className="flex flex-row items-center justify-start gap-2 border-t border-valence-mediumgray p-4 pl-1">
-      <p className="text-center text-sm font-bold">{"-"}</p>
+      <p className="text-center text-sm font-semibold">{"-"}</p>
     </div>
 
     <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray px-0 text-right font-mono text-sm">
@@ -380,10 +380,10 @@ const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
     <p className="flex flex-row items-center border-valence-mediumgray px-0 text-right font-mono text-sm"></p>
 
     <p className="flex flex-row items-center border-valence-mediumgray px-4 text-right font-mono text-sm"></p>
-    <p className="flex flex-row items-center  justify-end border-valence-mediumgray px-0 py-0 text-xs font-bold">
+    <p className="flex flex-row items-center  justify-end border-valence-mediumgray px-0 py-0 text-xs font-semibold">
       Total Value
     </p>
-    <p className="flex flex-row items-center justify-end  border-valence-mediumgray px-0 py-4 text-right font-mono text-xs font-bold">
+    <p className="flex flex-row items-center justify-end  border-valence-mediumgray px-0 py-4 text-right font-mono text-xs font-semibold">
       ${displayNumber(total, { precision: 2 })}
     </p>
   </>

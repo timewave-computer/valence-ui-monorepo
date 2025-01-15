@@ -41,9 +41,19 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       fontFamily: {
-        sans: ["SF Pro", ...defaultTheme.fontFamily.sans],
+        sans: [
+          "var(--font-unica-sans)",
+          "SF Pro",
+          ...defaultTheme.fontFamily.sans,
+        ],
+        sf: ["SF Pro", ...defaultTheme.fontFamily.sans],
         serif: ["Times", "Times New Roman", ...defaultTheme.fontFamily.serif],
-        mono: ["SF Mono", "SFMono-Regular", ...defaultTheme.fontFamily.mono],
+        mono: [
+          "var(--font-unica-mono)",
+          "SF Mono",
+          "SFMono-Regular",
+          ...defaultTheme.fontFamily.mono,
+        ],
       },
       fontSize: {
         // major second (1.125x)
@@ -53,7 +63,7 @@ const config: Config = {
         h4: ["1.425rem", { lineHeight: "1.75rem" }], // 22.8px / 28px
         h5: ["1.2663rem", { lineHeight: "1.625rem" }], // 20.26px / 26px
         h6: ["1.125rem", { lineHeight: "1.5rem" }], // 18px / 24px
-        body: ["1rem", { lineHeight: "1.375rem" }], // 16px / 22px
+        base: ["1rem", { lineHeight: "1.375rem" }], // 16px / 22px
         sm: ["0.9025rem", { lineHeight: "1.25rem" }], // 14.44px / 20px
         xs: ["0.8rem", { lineHeight: "1.125rem" }], // 12.8px / 18px
       },

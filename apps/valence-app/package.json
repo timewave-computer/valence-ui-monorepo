@@ -28,6 +28,7 @@
     "@tanstack/react-query": "^5.56.2",
     "@valence-ui/config": "*",
     "@valence-ui/socials": "*",
+    "@valence-ui/fonts": "*",
     "@valence-ui/ui-components": "*",
     "@xyflow/react": "^12.3.5",
     "chain-registry": "^1.63.89",

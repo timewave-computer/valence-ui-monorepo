@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Heading } from "@valence-ui/ui-components";
 
 export const MobileOverlay = ({ text }: { text: string }) => {
   const router = useRouter();
@@ -18,7 +19,7 @@ export const MobileOverlay = ({ text }: { text: string }) => {
           height={80}
           className="mb-10 self-center"
         />
-        <h2 className="font-mono text-lg font-bold ">{text}</h2>
+        <Heading level="h4">{text}</Heading>
         <p className="pt-4 font-mono ">Please visit from a computer.</p>
         <button
           className="pt-12 font-mono text-valence-blue hover:underline"

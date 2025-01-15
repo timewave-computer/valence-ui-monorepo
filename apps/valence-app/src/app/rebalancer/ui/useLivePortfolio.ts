@@ -159,7 +159,7 @@ export const useLivePortfolio = ({
             const asset = getOriginAsset(denom);
 
             if (!asset || !price)
-              throw ErrorHandler.makeError("data not cached");
+              throw ErrorHandler.makeError("Failed to load asset metadata");
 
             const auctionAmount = microToBase(
               rawAuctionBalance?.amount ?? 0,

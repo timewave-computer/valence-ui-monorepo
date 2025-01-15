@@ -2,7 +2,7 @@
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
 import { Toaster as Sonner, toast } from "sonner";
-import { cn } from "..";
+import { cn, Heading } from "..";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
@@ -27,7 +27,7 @@ export const Toaster = ({ ...props }: ToasterProps) => {
 
 export { toast };
 
-const toastVariants = cva("text-h6 font-bold overflow-x-scroll", {
+const toastVariants = cva(" overflow-x-scroll", {
   variants: {
     variant: {
       info: "text-valence-black",
@@ -53,7 +53,9 @@ export const ToastMessage: React.FC<ToastMessageProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-1.5 overflow-x-scroll">
-      <div className={cn(toastVariants({ variant, className }))}>{title}</div>
+      <Heading className={cn(toastVariants({ variant, className }))} level="h4">
+        {title}
+      </Heading>
       <div className="flex flex-col gap-1 ">{children}</div>
     </div>
   );

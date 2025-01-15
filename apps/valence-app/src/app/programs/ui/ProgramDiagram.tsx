@@ -173,7 +173,7 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
                 setIsSettingsOpen(false);
               }}
             >
-              <DialogTitle className="text-lg font-bold">
+              <DialogTitle className="text-h6 font-semibold">
                 Connection Configuration
               </DialogTitle>
               {/* empty description, here to prevent warning */}

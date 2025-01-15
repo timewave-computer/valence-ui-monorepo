@@ -36,7 +36,7 @@ const InterchainGuild = ({ className }: { className?: string }) => {
         className,
       )}
     >
-      <h2 className="text-lg font-semibold px-4 md:px-0">Interchain Guild</h2>
+      <h2 className="text-h6 font-semibold px-4 md:px-0">Interchain Guild</h2>
 
       <p className="mb-4 mt-2 px-4 md:px-0 ">
         Free and open source software is the foundation of crypto-native
@@ -66,7 +66,7 @@ const HomePage = () => {
         </div>
 
         <div className="flex flex-col gap-x-10  border-valence-black  border-t md:border-0   md:grid md:grid-cols-2">
-          <h2 className="col-start-1 row-start-1 px-4 md:px-0  text-lg font-semibold  pt-4">
+          <h2 className="col-start-1 row-start-1 px-4 md:px-0  text-h6 font-semibold  pt-4">
             Covenants
           </h2>
           <p className="col-start-1 row-start-2 py-4 pt-2 px-4 md:px-0">
@@ -106,7 +106,7 @@ const HomePage = () => {
           />
           <div className=" col-start-1 row-start-5 mt-12 border-b border-black" />
 
-          <h2 className="col-start-2 row-start-1 px-4 md:px-0 border-valence-black   pt-4 text-lg font-semibold ">
+          <h2 className="col-start-2 row-start-1 px-4 md:px-0 border-valence-black   pt-4 text-h6 font-semibold ">
             Rebalancer
           </h2>
           <p className="col-start-2 row-start-2 py-4 pt-2 px-4 md:px-0">

@@ -27,7 +27,7 @@ const tableHeaderVariants = cva(
 
 export type HeaderVariants = VariantProps<typeof tableHeaderVariants>;
 
-const headerTextVariants = cva("text-nowrap text-sm font-bold", {
+const headerTextVariants = cva("text-nowrap text-sm font-semibold", {
   variants: {
     variant: {
       primary: "text-sm",

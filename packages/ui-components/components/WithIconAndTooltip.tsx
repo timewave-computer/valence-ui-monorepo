@@ -114,7 +114,9 @@ export const IconTooltipContent: React.FC<{
     >
       {(text || title) && (
         <div className="flex flex-col items-start justify-start gap-2">
-          {title && <h3 className="text-left text-base font-bold">{title}</h3>}
+          {title && (
+            <h3 className="text-left text-base font-semibold">{title}</h3>
+          )}
           {text && (
             <p className="text-wrap  text-left text-sm font-normal">{text}</p>
           )}

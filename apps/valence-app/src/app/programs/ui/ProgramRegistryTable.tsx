@@ -34,7 +34,7 @@ export const ProgramRegistryTable = ({
   return (
     <>
       <div className="flex min-h-[72px] flex-col items-center">
-        <h1 className="text-xl font-bold">Program Registry</h1>
+        <h1 className="text-h5 font-semibold">Program Registry</h1>
         <div className="w-full max-w-[1600px] pt-4">
           <div className="grid grid-cols-[auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-black">
             {headers.map((header) => (

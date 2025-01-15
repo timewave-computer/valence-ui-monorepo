@@ -20,7 +20,7 @@ import {
   ContractDisplayMode,
   POL_TYPE_PARTIES_OPTIONS,
 } from "@/app/covenants/const";
-import { LinkText } from "@valence-ui/ui-components";
+import { Heading, InputLabel, LinkText } from "@valence-ui/ui-components";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -100,17 +100,17 @@ const CovenantPage = () => {
               img={
                 <Image
                   priority={true}
-                  className="mb-6 mt-8"
+                  className="my-4"
                   src="/img/covenant.svg"
                   alt="Covenant illustration"
                   width={134}
-                  height={80}
+                  height={72}
                 />
               }
             >
-              <h1 className="text-xl font-bold">Covenants (beta)</h1>
+              <Heading level="h4">Covenants (beta)</Heading>
 
-              <p>
+              <p className="pt-1">
                 Crypto-native agreements. Contact{" "}
                 <LinkText variant={"primary"} blankTarget={true} href={X_URL}>
                   {X_HANDLE}
@@ -125,8 +125,8 @@ const CovenantPage = () => {
               disabled={true}
             />
 
-            <div className="flex flex-col gap-2">
-              <p className=" font-bold">Covenant type</p>
+            <div className="flex flex-col">
+              <InputLabel label={"Covenant type"} />
               {canViewPol ? (
                 <Dropdown
                   options={TYPE_OPTIONS}
@@ -182,10 +182,7 @@ const CovenantPage = () => {
             <div className="flex flex-col gap-5 border-l-8 border-l-valence-red p-4 pb-8">
               <div className="flex flex-row items-center gap-2">
                 <div className="h-5 w-5 rounded-sm bg-valence-red"></div>
-
-                <h1 className="text-base font-bold text-valence-black">
-                  Party A
-                </h1>
+                <InputLabel noGap label={"Party A"} />
               </div>
 
               {COVENANT_TYPES[covenantType]?.each.map((field) => (
@@ -209,9 +206,7 @@ const CovenantPage = () => {
                   <div className="flex flex-row items-center gap-2">
                     <div className="h-5 w-5 rounded-sm bg-valence-blue"></div>
 
-                    <h1 className="text-base font-bold text-valence-black">
-                      Party B
-                    </h1>
+                    <InputLabel noGap label={"Party B"} />
                   </div>
 
                   {COVENANT_TYPES[covenantType]?.each.map((field) => (
@@ -240,9 +235,7 @@ const CovenantPage = () => {
                   <div className="flex flex-row items-center gap-2">
                     <div className="h-5 w-5 rounded-sm bg-valence-purple"></div>
 
-                    <h1 className="text-base font-bold text-valence-black">
-                      Both Parties
-                    </h1>
+                    <InputLabel noGap label={"Both Parties"} />
                   </div>
 
                   {COVENANT_TYPES[covenantType]!.both!.map((field) => (

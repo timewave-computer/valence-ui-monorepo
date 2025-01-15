@@ -300,7 +300,7 @@ export const twoPartyPol: CovenantFields = {
 
     return (
       <>
-        <h1 className="text-xl font-bold">I. Summary</h1>
+        <h1 className="text-h5 font-bold">I. Summary</h1>
 
         <p>
           <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
@@ -332,9 +332,9 @@ export const twoPartyPol: CovenantFields = {
           This swap will happen entirely on-chain without any intermediaries.
         </p>
 
-        <h1 className="text-xl font-bold">II. Liquidity Provisioning Terms</h1>
+        <h1 className="text-h5 font-bold">II. Liquidity Provisioning Terms</h1>
 
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-h6 font-semibold">
           A. <AFieldRenderer>{aName}</AFieldRenderer> Details
         </h2>
 
@@ -351,7 +351,7 @@ export const twoPartyPol: CovenantFields = {
           <AFieldRenderer>{aSource}</AFieldRenderer>.
         </p>
 
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-h6 font-semibold">
           B. <BFieldRenderer>{bName}</BFieldRenderer> Details
         </h2>
 
@@ -368,7 +368,7 @@ export const twoPartyPol: CovenantFields = {
           <BFieldRenderer>{bSource}</BFieldRenderer>.
         </p>
 
-        <h2 className="text-lg font-semibold">C. Deposit Deadline</h2>
+        <h2 className="text-h6 font-semibold">C. Deposit Deadline</h2>
 
         {!both.depositDeadlineStrategy ||
         both.depositDeadlineStrategy === "none" ? (
@@ -393,7 +393,7 @@ export const twoPartyPol: CovenantFields = {
           </p>
         )}
 
-        <h2 className="text-lg font-semibold">D. Withdrawal</h2>
+        <h2 className="text-h6 font-semibold">D. Withdrawal</h2>
 
         <p>
           After one party sends its assets to the Covenant, that party may
@@ -409,7 +409,7 @@ export const twoPartyPol: CovenantFields = {
           &apos;s assets is <BFieldRenderer>{b.neutronAddress}</BFieldRenderer>.
         </p>
 
-        <h2 className="text-lg font-semibold">E. Destination</h2>
+        <h2 className="text-h6 font-semibold">E. Destination</h2>
 
         <p>
           Once both parties have sent their assets to the Covenant, the Covenant
@@ -424,14 +424,14 @@ export const twoPartyPol: CovenantFields = {
           .
         </p>
 
-        <h2 className="text-lg font-semibold">F. Duration</h2>
+        <h2 className="text-h6 font-semibold">F. Duration</h2>
 
         <p>
           The assets will remain in the LP position for{" "}
           <BothFieldRenderer>{both.lpHoldDays}</BothFieldRenderer> days.
         </p>
 
-        <h2 className="text-lg font-semibold">G. Redemption</h2>
+        <h2 className="text-h6 font-semibold">G. Redemption</h2>
 
         {!both.completionTrigger || both.completionTrigger === "automatic" ? (
           <p>
@@ -479,7 +479,7 @@ export const twoPartyPol: CovenantFields = {
           </p>
         ) : null}
 
-        <h2 className="text-lg font-semibold">H. Early exit</h2>
+        <h2 className="text-h6 font-semibold">H. Early exit</h2>
 
         {both.ragequitAllowed ? (
           <p>
@@ -502,7 +502,7 @@ export const twoPartyPol: CovenantFields = {
           </p>
         )}
 
-        <h2 className="text-lg font-semibold">I. Slippage protection</h2>
+        <h2 className="text-h6 font-semibold">I. Slippage protection</h2>
 
         <p>
           The Covenant expects a ratio of 1{" "}
@@ -546,7 +546,7 @@ export const twoPartyPol: CovenantFields = {
           <BFieldRenderer>{bName}</BFieldRenderer>.
         </p>
 
-        <h2 className="text-lg font-semibold">J. Fallback split</h2>
+        <h2 className="text-h6 font-semibold">J. Fallback split</h2>
 
         <p>
           Certain circumstances may lead to unforeseen assets accruing within
@@ -559,7 +559,7 @@ export const twoPartyPol: CovenantFields = {
           <BFieldRenderer>{bName}</BFieldRenderer>.
         </p>
 
-        <h2 className="text-lg font-semibold">K. Emergency administrator</h2>
+        <h2 className="text-h6 font-semibold">K. Emergency administrator</h2>
 
         {both.emergencyAdminEnabled ? (
           <p>
@@ -570,7 +570,7 @@ export const twoPartyPol: CovenantFields = {
           <p>This covenant does not have an emergency administrator.</p>
         )}
 
-        <h1 className="text-xl font-bold">III. Next Steps</h1>
+        <h1 className="text-h5 font-bold">III. Next Steps</h1>
 
         <p>
           This proposal was automatically generated at {VALENCE_DOMAIN}. Reach

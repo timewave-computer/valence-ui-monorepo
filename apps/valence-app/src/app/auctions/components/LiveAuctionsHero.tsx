@@ -1,5 +1,5 @@
 import { ValenceProductBrand } from "@/components";
-import { Button } from "@valence-ui/ui-components";
+import { Button, Heading } from "@valence-ui/ui-components";
 import Image from "next/image";
 import Link from "next/link";
 import { HiMiniArrowRight } from "react-icons/hi2";
@@ -19,7 +19,7 @@ export function LiveAuctionsHero() {
           />
         }
       >
-        <h1 className="text-2xl font-bold">Auctions (beta)</h1>
+        <Heading level="h4">Auctions (beta)</Heading>
         <p className="w-full max-w-lg text-pretty pt-1">
           Dutch auctions which enable trades for accounts using the{" "}
           <Link

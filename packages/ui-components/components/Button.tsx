@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../utils/cn";
 import { Slot } from "@radix-ui/react-slot";
-import React from "react";
+import React, { ElementType } from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
 
 const buttonVariants = cva(
@@ -32,7 +32,11 @@ export interface ButtonProps
   disabled?: boolean;
   isLoading?: boolean;
   children: React.ReactNode;
-  href?: string;
+  link?: {
+    href: string;
+    blankTarget?: boolean;
+    LinkComponent?: ElementType<any>;
+  };
   PrefixIcon?: React.ElementType;
   SuffixIcon?: React.ElementType;
 }
@@ -47,12 +51,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       PrefixIcon,
       SuffixIcon,
-      href,
+      link,
       ...props
     },
     ref,
   ) => {
-    let Comp: React.ElementType = href ? "a" : "button";
+    const { href, LinkComponent = "a", blankTarget = true } = link || {};
+
+    let Comp: React.ElementType = href ? LinkComponent : "button";
 
     const _disabled = isLoading || disabled;
     let _variant = !!isLoading ? "loading" : variant;
@@ -60,7 +66,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         {...(href
-          ? { href, target: "_blank", rel: "noopener noreferrer" }
+          ? {
+              href,
+              target: blankTarget ? "_blank" : "",
+              rel: "noopener noreferrer",
+            }
           : {})}
         // commented out for now to render disabled tooltip
         // disabled={disabled} // keep it here for accessibilty but style is handled in CVA

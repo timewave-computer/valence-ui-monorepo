@@ -19,7 +19,7 @@ export function ProgramsHero() {
           />
         }
       >
-        <h1 className="text-2xl font-bold">Programs (beta)</h1>
+        <h1 className="text-h4 font-semibold">Programs (beta)</h1>
         <p className="w-full max-w-lg text-pretty pt-1">
           Programs enable crosschain automation.
         </p>

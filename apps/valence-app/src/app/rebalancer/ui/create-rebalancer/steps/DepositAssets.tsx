@@ -18,6 +18,7 @@ import {
   TableCell,
   CalloutBox,
   Table,
+  Heading,
 } from "@valence-ui/ui-components";
 import { chainConfig } from "@/const/config";
 import {
@@ -382,9 +383,11 @@ const DepositAssetsLayout: React.FC<{
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-lg font-bold">
+        <Heading level="h6">
+          {" "}
           {CreateRebalancerCopy.step_SelectAssets.title}
-        </h1>
+        </Heading>
+
         <p className=" text-sm">
           {CreateRebalancerCopy.step_SelectAssets.subTitle}
         </p>

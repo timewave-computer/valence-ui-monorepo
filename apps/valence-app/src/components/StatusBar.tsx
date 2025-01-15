@@ -4,19 +4,16 @@ import React, { ReactNode } from "react";
 import { IconType } from "react-icons/lib";
 import { LoadingIndicator } from "@valence-ui/ui-components";
 
-const statusBarVariants = cva(
-  "  py-3 px-5 transition-all font-serif  text-2xl ",
-  {
-    variants: {
-      variant: {
-        primary: " bg-valence-black text-valence-white ",
-        error: "bg-valence-red text-valence-white  ",
-        loading:
-          "min-h-[58px]  bg-valence-black text-valence-white flex flex-col  justify-center",
-      },
+const statusBarVariants = cva("  py-3 px-5 transition-all font-sans ", {
+  variants: {
+    variant: {
+      primary: " bg-valence-black text-valence-white ",
+      error: "bg-valence-red text-valence-white  ",
+      loading:
+        "min-h-[58px]  bg-valence-black text-valence-white flex flex-col  justify-center",
     },
   },
-);
+});
 
 export interface StatusBarProps
   extends React.HTMLAttributes<HTMLDivElement | HTMLButtonElement>,
@@ -52,7 +49,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
         {variant === "loading" ? (
           <LoadingIndicator />
         ) : (
-          <span className="text-wrap text-center">{text}</span>
+          <span className="text-wrap text-center text-h5">{text}</span>
         )}
       </div>
     </Comp>

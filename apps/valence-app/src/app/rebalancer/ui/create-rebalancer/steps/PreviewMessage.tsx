@@ -5,6 +5,7 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  Heading,
   InfoText,
   LoadingSkeleton,
 } from "@valence-ui/ui-components";
@@ -72,7 +73,7 @@ export const PreviewMessage: React.FC<{
   return (
     <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
       <CollapsibleSectionHeader>
-        <span className="text-lg font-bold">Preview transaction</span>
+        <Heading level="h6">Preview transaction</Heading>
       </CollapsibleSectionHeader>
       <CollapsibleSectionContent>
         <div className="flex w-full flex-col gap-6">

@@ -10,6 +10,7 @@ import { VALENCE_DESCRIPTION, ABSOLUTE_URL } from "~/const";
 import Image from "next/image";
 import { PostHeading } from "~/app/blog/ui-components";
 import { Fragment } from "react";
+import { cn } from "@valence-ui/ui-components";
 
 const previewLength = 260;
 const trimContent = (content: string) => {
@@ -49,7 +50,7 @@ const BlogHome = async () => {
     return (
       <div className="min-h-1/2 flex grow flex-col items-start gap-12 pb-8">
         <div className="flex flex-col items-start gap-4 text-left">
-          <h2 className="pt-4 font-mono text-2xl text-valence-black ">
+          <h2 className="pt-4 font-mono text-h4 text-valence-black ">
             There was a problem loading the blog.
           </h2>
           <RouterButton
@@ -65,9 +66,14 @@ const BlogHome = async () => {
   return (
     // top padding is to avoid shifting layout for back button in desktop
     <div className="flex flex-col items-start ">
-      {posts.map((post) => (
+      {posts.map((post, i) => (
         <Fragment key={`blog-post-${post.slug}`}>
-          <div className="pb-2   w-full pt-4">
+          <div
+            className={cn(
+              i !== 0 && "border-t border-valence-black",
+              "pb-2 w-full pt-4 ",
+            )}
+          >
             <PostHeading slug={post.slug}>{post.title}</PostHeading>
 
             <span className="col-span-1 col-start-1 row-start-1">
@@ -86,7 +92,7 @@ const BlogHome = async () => {
               width={400}
               height={300}
             />
-            <p className=" col-span-4  col-start-3  row-start-2 text-pretty text-lg ">
+            <p className=" col-span-4  col-start-3  row-start-2 text-pretty text-h6 ">
               {trimContent(post.preview)}
             </p>
           </Link>

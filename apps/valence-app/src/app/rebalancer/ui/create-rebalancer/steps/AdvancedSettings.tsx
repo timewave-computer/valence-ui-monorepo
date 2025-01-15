@@ -17,6 +17,7 @@ import {
   Asset,
   TextInput,
   LinkText,
+  Heading,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
@@ -62,7 +63,7 @@ export const AdvancedSettings: React.FC<{
   return (
     <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
       <CollapsibleSectionHeader>
-        <span className="text-lg font-bold">Advanced settings</span>
+        <Heading level="h6">Advanced settings</Heading>
       </CollapsibleSectionHeader>
       <CollapsibleSectionContent>
         <div className="flex flex-col gap-6">
@@ -178,7 +179,7 @@ export const AdvancedSettings: React.FC<{
                   <TextInput
                     isDisabled={!allowOtherAddressInput}
                     type="text"
-                    className="max-w-[75%]"
+                    className="max-w-[75%] mt-2"
                     placeholder="neutron1234..."
                     {...register("trustee")}
                   />

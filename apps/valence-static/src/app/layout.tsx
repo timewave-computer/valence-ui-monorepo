@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@valence-ui/ui-components/styles/index.css";
 import { Footer, StaticAppNav } from "~/components";
 import { cn } from "@valence-ui/ui-components";
 import { ReactQueryProvider } from "~/context";
 import { ABSOLUTE_URL, VALENCE_DESCRIPTION } from "~/const";
 import { X_HANDLE } from "@valence-ui/socials";
+import { Unica77, Unica77Mono } from "@valence-ui/fonts";
+import "@valence-ui/ui-components/styles/index.css";
 
 import React from "react";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Valence",
@@ -37,10 +35,12 @@ export default function RootLayout({
   return (
     <>
       <ReactQueryProvider>
-        <html lang="en">
+        <html
+          lang="en"
+          className={`${Unica77.variable} ${Unica77Mono.variable} --font-sans`}
+        >
           <body
             className={cn(
-              inter.className,
               "flex max-h-screen min-h-screen px-0 md:px-4 flex-col text-valence-black bg-valence-white overflow-y-scroll",
             )}
           >

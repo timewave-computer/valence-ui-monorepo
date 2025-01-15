@@ -5,7 +5,7 @@ import { cva, VariantProps } from "class-variance-authority";
 const labelVariants = cva("text-nowrap", {
   variants: {
     size: {
-      base: "text-base font-bold pb-2 ",
+      base: "text-base font-semibold pb-2 ",
       sm: "text-xs font-medium pb-1 ",
     },
     noGap: {
