@@ -3,7 +3,7 @@ import localFont from "@next/font/local";
 export const Unica77Mono = localFont({
   src: [
     {
-      path: "./public/fonts/Unica77Mono/Unica77MonoLLWeb-Regular.woff2",
+      path: "./public/fonts/Unica77Mono/Unica77MonoLLWeb-Light.woff2",
       weight: "300", // font-light
     },
     {
