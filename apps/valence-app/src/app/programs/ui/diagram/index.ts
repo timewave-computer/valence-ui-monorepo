@@ -1,3 +1,4 @@
+"use client";
 export * from "./diagram-nodes";
 export * from "./diagram-panels";
 export * from "./layout-algorithms";

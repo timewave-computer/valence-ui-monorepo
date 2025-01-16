@@ -1,3 +1,4 @@
+"use client";
 import {
   ReactFlow,
   Background,
@@ -52,14 +53,14 @@ export type ProgramDiagramProps = {
 function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
   const { fitView } = useReactFlow();
   const {
-    nodes: initialNodes,
-    edges: initialEdges,
+    // nodes: initialNodes,
+    // edges: initialEdges,
     authorizationData,
     authorizations,
   } = initialData;
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   /***
    * initial args are supplied in context provider higher in the tree
@@ -73,27 +74,30 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
     useShallow((state) => [state.selectedAddresses]),
   ); // useShallow prevents infinite loop
 
-  const displaySelectedNodes = (addresses: string[]) => {
-    setNodes((nodes) =>
-      nodes.map((node) => {
-        if (!isLibraryNode(node)) {
-          return node;
-        }
+  /**
+   * commented out because nodes not typed
+   */
+  // const displaySelectedNodes = (addresses: string[]) => {
+  //   setNodes((nodes) =>
+  //     nodes.map((node) => {
+  //       if (!isLibraryNode(node)) {
+  //         return node;
+  //       }
 
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            selected: addresses.includes(node.data.address) ? true : false,
-          },
-        };
-      }),
-    );
-  };
+  //       return {
+  //         ...node,
+  //         data: {
+  //           ...node.data,
+  //           selected: addresses.includes(node.data.address) ? true : false,
+  //         },
+  //       };
+  //     }),
+  //   );
+  // };
 
-  useEffect(() => {
-    displaySelectedNodes(selectedNodes);
-  }, [selectedNodes]);
+  // useEffect(() => {
+  //   displaySelectedNodes(selectedNodes);
+  // }, [selectedNodes]);
 
   const { refetch: refetchProgram, isFetching: isProgramFetching } =
     useProgramQuery({

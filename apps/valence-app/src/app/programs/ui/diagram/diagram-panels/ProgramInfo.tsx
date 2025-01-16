@@ -5,9 +5,9 @@ import {
   CollapsibleSectionRoot,
 } from "@valence-ui/ui-components";
 import { ProgramParserResult } from "@/app/programs/server";
-import { SubroutinesDisplay } from "@/app/programs/ui";
 import React from "react";
 import { NAV_HEIGHT } from "@/components";
+import { SubroutinesDisplay } from "./SubroutinesDisplay";
 
 export type ProgramInfoProps = Pick<
   ProgramParserResult,
