@@ -13,11 +13,6 @@ import { useEffect, useState } from "react";
 import {
   useAutoLayout,
   type DiagramLayoutAlgorithm,
-  type Direction,
-  ProgramInfo,
-  DiagramTitle,
-  RpcSettingsPanel,
-  RpcSettingsFormValues,
   createQueryArgsStore,
   ProgramQueryArgsContext,
   useProgramQuery,
@@ -42,6 +37,12 @@ import {
   nodeTypes,
 } from "@/app/programs/server";
 import { useShallow } from "zustand/react/shallow";
+import {
+  ProgramInfo,
+  RpcSettingsFormValues,
+  RpcSettingsPanel,
+} from "./diagram-panels";
+import { Direction } from "./layout-algorithms";
 
 export type ProgramDiagramProps = {
   initialData: GetProgramDataReturnValue;
@@ -199,9 +200,7 @@ function ProgramDiagram({ initialData, programId }: ProgramDiagramProps) {
             </DialogContent>
           </Dialog>
         </Panel>
-        <Panel position="top-left">
-          <DiagramTitle programId={programId} />
-        </Panel>
+
         <Panel position="top-right">
           {isConfigOpen ? (
             <Button onClick={() => setIsConfigOpen(false)} variant="secondary">

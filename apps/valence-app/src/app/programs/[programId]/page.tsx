@@ -2,8 +2,8 @@ import {
   getProgramData,
   GetProgramDataReturnValue,
 } from "@/app/programs/server";
-import { ProgramDiagramWithProvider } from "@/app/programs/ui";
-import { Heading, LinkText } from "@valence-ui/ui-components";
+import { AccountTable, ExecutionHistoryTable } from "@/app/programs/ui";
+import { Card, Heading, LinkText } from "@valence-ui/ui-components";
 import Link from "next/link";
 
 export default async function ProgramPage({ params: { programId } }) {
@@ -24,9 +24,29 @@ export default async function ProgramPage({ params: { programId } }) {
         <Heading level="h4"> {programId} </Heading>
       </div>
 
-      {/* this div is the container for the diagram, needs to have defined height and width */}
-      <div className="w-full h-full">
-        {/* <ProgramDiagramWithProvider initialData={data} programId={programId} /> */}
+      <div className="flex flex-row gap-4 w-full pt-8">
+        <div className="flex flex-col w-3/5 flex-grow gap-2">
+          <Heading level="h5">Subroutines</Heading>
+          <Card className="overflow-x-scroll flex-grow  ">hi</Card>
+        </div>
+        <div className="w-2/5 flex flex-col  flex-grow gap-2">
+          <Heading level="h5">Accounts</Heading>
+          <Card className="overflow-x-scroll   p-2">
+            <AccountTable />
+          </Card>
+        </div>
+      </div>
+      <div className="flex flex-row gap-4 w-full pt-8">
+        <div className="flex flex-col w-2/5 flex-grow gap-2">
+          <Heading level="h5">Processors</Heading>
+          <Card className="overflow-x-scroll flex-grow  ">hi</Card>
+        </div>
+        <div className="flex flex-col w-3/5 flex-grow gap-2">
+          <Heading level="h5">Execution History</Heading>
+          <Card className="overflow-x-scroll flex-grow p-2  ">
+            <ExecutionHistoryTable />
+          </Card>
+        </div>
       </div>
     </div>
   );

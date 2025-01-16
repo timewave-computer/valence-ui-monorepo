@@ -1,10 +1,8 @@
 "use client";
-export * from "./diagram-nodes";
-export * from "./ProgramDiagram";
-export * from "./useAutoLayout";
-export * from "./layout-algorithms";
+export * from "./diagram/ProgramDiagram";
+export * from "./diagram/useAutoLayout";
 export * from "./ProgramsHero";
-export * from "./DiagramTitle";
 export * from "./useProgramQuery";
 export * from "./useDisplayStore";
-export * from "./diagram-panels";
+export * from "./AccountTable";
+export * from "./ExecutionHistoryTable";
