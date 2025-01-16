@@ -45,6 +45,16 @@ const Typography = () => (
         </LinkText>
       </Story>
       <Story>
+        <div className="flex flex-row gap-2">
+          <LinkText variant="breadcrumb" href="#">
+            Breadcrumb
+          </LinkText>
+          <Heading level="h4">/</Heading>
+
+          <Heading level="h4">Current Page</Heading>
+        </div>
+      </Story>
+      <Story>
         <p className="font-mono">data</p>
       </Story>
       <Story>

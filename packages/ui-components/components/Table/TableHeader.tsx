@@ -5,22 +5,22 @@ import { WithIconAndTooltip } from "../WithIconAndTooltip";
 import { cva, VariantProps } from "class-variance-authority";
 
 const tableHeaderVariants = cva(
-  "flex flex-row  gap-2 text-nowrap  outline-none items-center",
+  "flex flex-row   text-nowrap  outline-none items-center",
   {
     variants: {
       variant: {
-        primary: "border-y border-valence-black py-4 px-3",
-        secondary: "py-2 px-2",
+        primary: "border-y border-valence-black py-4 px-3 gap-2",
+        secondary: "py-2 px-2 gap-1",
       },
       align: {
-        left: " justify-start",
-        center: "justify-center",
-        right: "justify-end",
+        left: "!justify-start",
+        center: "!justify-center",
+        right: "!justify-end",
       },
     },
     defaultVariants: {
       variant: "primary",
-      align: "center",
+      align: "left",
     },
   },
 );
@@ -96,14 +96,14 @@ export const TableHeader = <T, K>({
   setSorter,
   setSortAscending,
   hoverTooltip,
-  variant = "primary",
-  align = "center",
+  variant,
+  align,
   className,
 }: SortableTableHeaderProps<T, K>) => {
   const SortIcon = ascending ? BsCaretUpFill : BsCaretDownFill;
   const isSortable =
     sorterKey && currentSorter && setSortAscending && setSorter;
-  const isSortArrowVisible = currentSorter?.key === sorterKey;
+  const isCurrentSortKey = currentSorter?.key === sorterKey;
   const Comp = isSortable ? "button" : "div";
 
   return (
@@ -131,7 +131,12 @@ export const TableHeader = <T, K>({
         <span className={cn(headerTextVariants({ variant }))}>{label}</span>
       </WithIconAndTooltip>
 
-      {isSortArrowVisible && <SortIcon className="w-4 h-4" />}
+      <SortIcon
+        className={cn(
+          "w-4 h-4",
+          !isCurrentSortKey && "text-valence-mediumgray",
+        )}
+      />
     </Comp>
   );
 };

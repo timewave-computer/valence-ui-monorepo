@@ -212,7 +212,6 @@ const LiveBalancesTableLayout: React.FC<{
           setSorter={setSorter}
           setSortAscending={setSortAscending}
           variant={"secondary"}
-          align={"left"}
           className="pl-0"
         />
 

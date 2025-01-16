@@ -4,17 +4,18 @@ import { cn } from "../../utils";
 import { cva, VariantProps } from "class-variance-authority";
 import {
   CellDataMap,
+  CellLink,
   CellTypes,
   isCellDataOfType,
-  TableCells,
 } from "./cell-types";
 import { TableHeader } from "./TableHeader";
 import { TableCell } from "./TableCell";
+import { TableCells } from "./cell-renderers";
 
 const tableVariants = cva("grid", {
   variants: {
     variant: {
-      primary: "",
+      primary: "border-x border-b border-valence-black",
       secondary: "",
     },
   },
@@ -138,6 +139,7 @@ export const Table = ({
 
       {!isLoading &&
         sortedData.map((row, rowIndex) => {
+          const lastIndexOfData = sortedData.length - 1;
           return (
             <Fragment key={`tablerow-${tableId}-${rowIndex}`}>
               {headers.map((header) => {
@@ -148,15 +150,18 @@ export const Table = ({
                 let cell: React.ReactNode;
                 if (!rowData || !isCellDataOfType(rowData, cellType)) {
                   const renderer = cellFunctions.renderDefault;
+                  // show empty
                   cell = renderer(undefined, {
                     variant,
                     align: header.align,
                   });
                 } else {
                   const renderer = cellFunctions.renderer;
+
                   cell = renderer(rowData, {
                     variant,
                     align: header.align,
+                    isLastRow: rowIndex === lastIndexOfData,
                   });
                 }
 

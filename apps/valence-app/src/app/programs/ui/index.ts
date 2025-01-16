@@ -4,7 +4,6 @@ export * from "./ProgramDiagram";
 export * from "./useAutoLayout";
 export * from "./layout-algorithms";
 export * from "./ProgramsHero";
-export * from "./ProgramRegistryTable";
 export * from "./DiagramTitle";
 export * from "./useProgramQuery";
 export * from "./useDisplayStore";

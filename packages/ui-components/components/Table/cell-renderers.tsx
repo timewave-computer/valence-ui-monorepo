@@ -1,82 +1,35 @@
-import { ElementType } from "react";
-import { LabelProps, Label } from "../Label";
-import { Asset } from "./Asset";
-import { HeaderVariants } from "./TableHeader";
-import { TableCell } from "./TableCell";
-
-export enum CellType {
-  Number = "number",
-  Text = "text",
-  Asset = "asset",
-  Label = "label",
-}
-export type CellTypes = `${CellType}`;
-
-export type CellLink = {
-  href: string;
-  blankTarget?: boolean;
-  LinkComponent?: ElementType<any>;
-};
-interface NumberCellData {
-  value: string;
-  link?: CellLink;
-}
-interface TextCellData {
-  value: string;
-  link?: CellLink;
-}
-interface AssetCellData {
-  symbol: string;
-  color: string;
-}
-interface LabelCellData {
-  value: string;
-  color: LabelProps["variant"];
-}
-
-export type CellDataMap = {
-  [CellType.Number]: NumberCellData;
-  [CellType.Text]: TextCellData;
-  [CellType.Asset]: AssetCellData;
-  [CellType.Label]: LabelCellData;
-};
-
-export type CellData<T extends CellTypes> = T extends keyof CellDataMap
-  ? CellDataMap[T]
-  : never;
+import { Label } from "../Label";
+import { Asset } from "../Asset";
+import { TableCell, type TableCellVariants } from "./TableCell";
+import {
+  type CellData,
+  type CellTypes,
+  CellType,
+  type NumberCellData,
+  type AssetCellData,
+  type TextCellData,
+  type LabelCellData,
+  isCellDataLinkable,
+} from "./cell-types";
 
 const createRenderer =
   <K extends CellTypes>(
     renderContent: (data: CellData<K>) => React.ReactNode,
   ) =>
-  (data: CellData<K>, variants: HeaderVariants): React.ReactNode => (
-    <TableCell {...variants}>{renderContent(data)}</TableCell>
+  (data: CellData<K>, variants: TableCellVariants): React.ReactNode => (
+    <TableCell
+      // @ts-expect-error data typed as never
+      link={data?.link}
+      {...variants}
+    >
+      {renderContent(data)}
+    </TableCell>
   );
 
 interface TableCellData<T> {
-  renderer: (data: T, variants: HeaderVariants) => React.ReactNode;
+  renderer: (data: T, variants: TableCellVariants) => React.ReactNode;
   sorter: (a: T, b: T, ascending: boolean) => number;
-  renderDefault: (data: any, variants: HeaderVariants) => React.ReactNode;
-}
-
-// needed for type narrowing
-export function isCellDataOfType<T extends CellTypes>(
-  data: CellDataMap[keyof CellDataMap],
-  cellType: T,
-): data is CellData<T> {
-  if (!data) return false;
-  switch (cellType) {
-    case CellType.Number:
-      return (data as NumberCellData)?.value !== undefined;
-    case CellType.Text:
-      return (data as TextCellData)?.value !== undefined;
-    case CellType.Asset:
-      return (data as AssetCellData)?.symbol !== undefined;
-    case CellType.Label:
-      return (data as LabelCellData)?.value !== undefined;
-    default:
-      return false;
-  }
+  renderDefault: (data: any, variants: TableCellVariants) => React.ReactNode;
 }
 
 type TableCells = {
