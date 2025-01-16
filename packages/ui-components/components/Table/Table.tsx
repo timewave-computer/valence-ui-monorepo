@@ -140,6 +140,7 @@ export const Table = ({
       {!isLoading &&
         sortedData.map((row, rowIndex) => {
           const lastIndexOfData = sortedData.length - 1;
+
           return (
             <Fragment key={`tablerow-${tableId}-${rowIndex}`}>
               {headers.map((header) => {
@@ -157,7 +158,6 @@ export const Table = ({
                   });
                 } else {
                   const renderer = cellFunctions.renderer;
-
                   cell = renderer(rowData, {
                     variant,
                     align: header.align,
@@ -176,6 +176,7 @@ export const Table = ({
             </Fragment>
           );
         })}
+      {children}
     </div>
   );
 };

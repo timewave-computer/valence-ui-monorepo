@@ -62,7 +62,6 @@ export const TableCell = ({
     isLastRow,
     className,
   });
-
   if (isLoading)
     return (
       <div role="gridcell" className={cellClasses}>

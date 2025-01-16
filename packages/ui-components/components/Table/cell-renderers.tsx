@@ -9,7 +9,6 @@ import {
   type AssetCellData,
   type TextCellData,
   type LabelCellData,
-  isCellDataLinkable,
 } from "./cell-types";
 
 const createRenderer =
@@ -38,7 +37,12 @@ type TableCells = {
 
 export const TableCells: TableCells = {
   [CellType.Number]: {
-    renderer: createRenderer<CellType.Number>((data) => <>{data.value}</>),
+    renderer: createRenderer<CellType.Number>((data) => (
+      <>
+        {`${data.isUsd ? "$" : ""}`}
+        {data.value}
+      </>
+    )),
     sorter: (a: NumberCellData, b: NumberCellData, ascending) =>
       compareNumbers(a?.value, b?.value, ascending),
     renderDefault: createRenderer<CellType.Text>(() => <>0.00</>),

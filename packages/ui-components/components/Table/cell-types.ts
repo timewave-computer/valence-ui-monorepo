@@ -17,6 +17,7 @@ export type CellLink = {
 export interface NumberCellData {
   value: string;
   link?: CellLink;
+  isUsd?: boolean;
 }
 export interface TextCellData {
   value: string;

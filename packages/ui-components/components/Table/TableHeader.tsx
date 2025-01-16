@@ -60,7 +60,7 @@ type HeaderProps<T, K> = {
   /**
    * Whether or not sorter is ascending.
    */
-  ascending: boolean;
+  ascending?: boolean;
   /**
    * Set the current sorter.
    */
@@ -131,12 +131,14 @@ export const TableHeader = <T, K>({
         <span className={cn(headerTextVariants({ variant }))}>{label}</span>
       </WithIconAndTooltip>
 
-      <SortIcon
-        className={cn(
-          "w-4 h-4",
-          !isCurrentSortKey && "text-valence-mediumgray",
-        )}
-      />
+      {isSortable && (
+        <SortIcon
+          className={cn(
+            "w-4 h-4",
+            !isCurrentSortKey && "text-valence-mediumgray",
+          )}
+        />
+      )}
     </Comp>
   );
 };

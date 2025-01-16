@@ -6,7 +6,6 @@ export * from "./HistoricalGraphSection";
 export * from "./HistoricalRebalancerGraph";
 export * from "./ValueTooltip";
 export * from "./load-config-error";
-export * from "./copy";
 export * from "./useHistoricValues";
 export * from "./useHistoricalGraph";
 export * from "./useAccountConfigQuery";
