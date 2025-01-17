@@ -29,7 +29,7 @@ export default async function ProgramPage({ params: { programId } }) {
         <Heading level="h5"> {programId} </Heading>
       </div>
 
-      <div className="flex flex-row gap-4 w-full pt-8">
+      <div className="flex flex-row gap-4 w-full pt-4">
         <div className="flex flex-col w-3/5 flex-grow gap-2">
           <Heading level="h5">Subroutines</Heading>
           <Card className="overflow-x-scroll flex-grow p-0  border-0 ">
@@ -43,7 +43,7 @@ export default async function ProgramPage({ params: { programId } }) {
           </Card>
         </div>
       </div>
-      <div className="flex flex-row gap-4 w-full pt-8">
+      <div className="flex flex-row gap-4 w-full pt-4">
         <div className="flex flex-col w-2/5 flex-grow gap-2">
           <Heading level="h5">Processors</Heading>
           <Card className="overflow-x-scroll flex-grow p-0 ">
