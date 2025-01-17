@@ -80,7 +80,9 @@ function compareStrings<T extends string>(
 ) {
   const a = _a ?? "";
   const b = _b ?? "";
-  return ascending ? a?.localeCompare(b) : b?.localeCompare(a);
+  return ascending
+    ? String(a)?.localeCompare(String(b))
+    : String(b)?.localeCompare(String(a));
 }
 function compareNumbers<T extends number | string | undefined>(
   _a: T,

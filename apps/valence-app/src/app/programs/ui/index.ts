@@ -7,3 +7,4 @@ export * from "./ExecutionHistoryTable";
 export * from "./SubroutineDisplay";
 export * from "./ProcessorDisplay";
 export * from "./display";
+export * from "./ProgramViewer";
