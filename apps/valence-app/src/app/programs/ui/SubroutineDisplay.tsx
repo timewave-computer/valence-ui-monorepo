@@ -46,7 +46,7 @@ export const SubroutineDisplay = ({
               <Heading level="h6">FunctionName ({authorization.label})</Heading>
             </CollapsibleSectionHeader>
             <CollapsibleSectionContent>
-              <div className="flex flex-row gap-2">
+              <div className="flex flex-row gap-2 pt-2">
                 <Label>{displayAuthMode(authorization.mode)}</Label>
                 {<Label>{atomicSubroutine ? "atomic" : "nonatomic"}</Label>}
               </div>

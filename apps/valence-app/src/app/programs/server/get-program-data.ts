@@ -77,6 +77,7 @@ const _getProgramData = async ({
     queryConfig: completeQueryConfig,
     balances,
     ...program,
+    rawProgram,
   };
 };
 

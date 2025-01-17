@@ -8,7 +8,16 @@ import {
   ProcessorDisplay,
   SubroutineDisplay,
 } from "@/app/programs/ui";
-import { Card, Heading, LinkText } from "@valence-ui/ui-components";
+import {
+  Button,
+  Card,
+  Heading,
+  LinkText,
+  PrettyJson,
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@valence-ui/ui-components";
 import Link from "next/link";
 
 export default async function ProgramPage({ params: { programId } }) {
@@ -21,12 +30,23 @@ export default async function ProgramPage({ params: { programId } }) {
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">
-      <div className="flex flex-row gap-2">
-        <LinkText href="/programs" LinkComponent={Link} variant="breadcrumb">
-          Programs
-        </LinkText>
-        <Heading level="h5"> / </Heading>
-        <Heading level="h5"> {programId} </Heading>
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
+          <LinkText href="/programs" LinkComponent={Link} variant="breadcrumb">
+            Programs
+          </LinkText>
+          <Heading level="h5"> / </Heading>
+          <Heading level="h5"> {programId} </Heading>
+        </div>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="secondary">View Raw Config</Button>
+          </SheetTrigger>
+          <SheetContent side="right">
+            <Heading level="h5">Raw Program Config</Heading>
+            <PrettyJson data={data.rawProgram} />
+          </SheetContent>
+        </Sheet>
       </div>
 
       <div className="flex flex-row gap-4 w-full pt-4">
