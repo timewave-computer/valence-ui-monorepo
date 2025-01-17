@@ -1,6 +1,6 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { Fragment } from "react";
-import { cn } from "../../utils";
+import { cn } from "../utils";
 
 const dotVariants = cva("shrink-0 rounded-full bg-valence-gray", {
   variants: {

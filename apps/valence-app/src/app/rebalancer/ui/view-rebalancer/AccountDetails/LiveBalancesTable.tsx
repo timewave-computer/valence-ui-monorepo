@@ -1,25 +1,19 @@
 "use client";
 import {
   HoverContent,
-  LoadingSkeleton,
   TableHeader,
-  Asset,
-  Sorter,
+  Table,
+  TableColumnHeader,
+  CellType,
+  TableRow,
+  TableCell,
 } from "@valence-ui/ui-components";
-import {
-  Dispatch,
-  Fragment,
-  ReactNode,
-  SetStateAction,
-  useMemo,
-  useState,
-} from "react";
-import { cn, compareNumbers, compareStrings, displayNumber } from "@/utils";
+import { useMemo } from "react";
+import { displayNumber } from "@/utils";
 import {
   useAccountConfigQuery,
   useLivePortfolio,
   accountAtom,
-  LivePortfolioTooltipCopy,
   SymbolColors,
 } from "@/app/rebalancer/ui";
 import { useAtom } from "jotai";
@@ -34,15 +28,14 @@ export type LiveBalancesTableData = {
   auction: number;
   amountWithdrawable: number;
 };
+const LivePortfolioTooltipCopy = {
+  withdrawable: {
+    title: "Amount withdrawable",
+    text: `During each 24 hour cycle, a portion of funds are escrowed in auctions to be rebalanced that day. At the end of the cycle, when the auctions complete, funds are returned back to the account. At any given moment, the funds that a user can withdraw are their total holdings minus the funds escrowed for that auction cycle.`,
+  },
+};
 
 export const LiveBalancesTable: React.FC<{}> = ({}) => {
-  const [sorterKey, setSorter] = useState<string>(
-    LIVE_BALANCES_SORTER_KEYS.VALUE,
-  );
-  const [sortAscending, setSortAscending] = useState(true);
-  const sorter =
-    LIVE_BALANCES_SORTERS.find((s) => s.key === sorterKey) ??
-    LIVE_BALANCES_SORTERS[0];
   const [selectedAddress] = useAtom(accountAtom);
 
   const { data: config, isLoading: isConfigLoading } = useAccountConfigQuery({
@@ -53,346 +46,138 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
       accountAddress: selectedAddress,
     });
 
-  const unsortedTableData: LiveBalancesTableData[] = useMemo(() => {
-    if (!livePortfolio?.balances || !config?.targets) return [];
-    return livePortfolio?.balances
-      .reduce((acc, lineItem) => {
-        const target = config?.targets.find((t) => t.denom === lineItem.denom);
-        if (target) {
-          acc.push({
-            symbol: lineItem.symbol,
-            name: lineItem.name,
-            amount: lineItem.balance.total,
-            amountWithdrawable: lineItem.balance.account,
-            auction: lineItem.balance.auction,
-            price: lineItem.price,
-            distribution: lineItem.distribution,
-            target: target.percentage,
-          });
-        }
-        return acc;
-      }, [] as LiveBalancesTableData[])
-      .sort((a, b) => sorter.sort(a, b, sortAscending));
-  }, [livePortfolio?.balances, sorter, sortAscending, config?.targets]);
+  const data = livePortfolio?.balances?.reduce((acc, lineItem) => {
+    const target = config?.targets.find((t) => t.denom === lineItem.denom);
 
-  const tableData = useMemo(() => {
-    return unsortedTableData.sort((a, b) => sorter.sort(a, b, sortAscending));
-  }, [sorter, sortAscending, unsortedTableData]);
+    if (target) {
+      const value = calcValue({
+        amount: lineItem.balance.total,
+        price: lineItem.price,
+      });
+      acc.push({
+        ticker: {
+          symbol: lineItem.symbol,
+          color: SymbolColors.get(lineItem.symbol),
+        },
+        distribution: {
+          value:
+            displayNumber(lineItem.distribution * 100, {
+              precision: 2,
+            }) + "%",
+        },
+        target: {
+          value:
+            displayNumber(target?.percentage * 100, {
+              precision: 2,
+            }) + "%",
+        },
+        amountWithdrawable: {
+          value: displayNumber(lineItem.balance.account, { precision: 2 }),
+        },
+        totalHoldings: {
+          value: displayNumber(lineItem.balance.total, { precision: 2 }),
+        },
+        price: {
+          isUsd: true,
+          value: displayNumber(lineItem.price, { precision: 2 }),
+        },
+        usdValue: {
+          isUsd: true,
+          value: displayNumber(value, { precision: 2 }),
+        },
+      });
+    }
+    return acc;
+  }, [] as Array<TableRow>);
 
   const totalValue = useMemo(() => {
-    const total = tableData?.reduce((acc, holding) => {
-      return acc + calcValue(holding);
+    const total = livePortfolio.balances?.reduce((acc, holding) => {
+      return (
+        acc +
+        calcValue({
+          amount: holding.balance.total,
+          price: holding.price,
+        })
+      );
     }, 0);
     return total ?? 0;
-  }, [tableData]);
+  }, [data]);
 
   const isLoading = isBalancesLoading || isConfigLoading;
 
-  if (isLoading) {
-    return (
-      <LiveBalancesTableLayout
-        sorter={sorter}
-        sortAscending={sortAscending}
-        setSortAscending={setSortAscending}
-        setSorter={setSorter}
-      >
-        <LoadingRows />
-      </LiveBalancesTableLayout>
-    );
-  } else if (tableData.length === 0) {
-    return (
-      <LiveBalancesTableLayout
-        sorter={sorter}
-        sortAscending={sortAscending}
-        setSortAscending={setSortAscending}
-        setSorter={setSorter}
-      >
-        <EmptyRow />{" "}
-      </LiveBalancesTableLayout>
-    );
-  } else
-    return (
-      <LiveBalancesTableLayout
-        sorter={sorter}
-        sortAscending={sortAscending}
-        setSortAscending={setSortAscending}
-        setSorter={setSorter}
-      >
-        {tableData.map((holding, index) => {
-          return (
-            <Fragment key={index}>
-              <div
-                className={cn(
-                  index === 0 && "border-b border-t",
-                  "flex flex-row items-center justify-start gap-2 border-b border-valence-mediumgray px-0 py-4",
-                )}
-              >
-                <Asset
-                  asChild
-                  color={SymbolColors.get(holding.symbol)}
-                  symbol={holding.symbol}
-                />
-              </div>
-
-              <p
-                className={cn(
-                  index === 0 && "border-b border-t",
-                  "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
-                )}
-              >
-                {displayNumber(holding.distribution * 100, {
-                  precision: 2,
-                })}
-                %
-              </p>
-              <p
-                className={cn(
-                  index === 0 && "border-b border-t",
-                  "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 pr-0 text-right font-mono text-sm",
-                )}
-              >
-                {displayNumber(holding.target * 100, { precision: 2 })}%
-              </p>
-              <p
-                className={cn(
-                  index === 0 && "border-b border-t",
-                  "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
-                )}
-              >
-                {displayNumber(holding.amountWithdrawable, { precision: 2 })}
-              </p>
-              <p
-                className={cn(
-                  index === 0 && "border-b border-t",
-                  "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
-                )}
-              >
-                {displayNumber(holding.amount, { precision: 2 })}
-              </p>
-              <p
-                className={cn(
-                  index === 0 && "border-b border-t",
-                  "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
-                )}
-              >
-                ${displayNumber(holding.price, { precision: 2 })}
-              </p>
-              <p
-                className={cn(
-                  index === 0 && "border-b border-t",
-                  "flex flex-row items-center justify-end border-b border-valence-mediumgray py-4 text-right font-mono text-sm",
-                )}
-              >
-                ${displayNumber(calcValue(holding), { precision: 2 })}
-              </p>
-            </Fragment>
-          );
-        })}
-
-        <TotalValueRow total={totalValue} />
-      </LiveBalancesTableLayout>
-    );
-};
-
-const LiveBalancesTableLayout: React.FC<{
-  children: ReactNode;
-  sorter: Sorter<LiveBalancesTableData, LiveBalancesSorterKey>;
-  setSorter: Dispatch<SetStateAction<string>>;
-  sortAscending: boolean;
-  setSortAscending: Dispatch<SetStateAction<boolean>>;
-}> = ({ children, sortAscending, sorter, setSorter, setSortAscending }) => {
   return (
-    <>
-      <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto]">
-        <TableHeader
-          label="Ticker"
-          sorterKey={LIVE_BALANCES_SORTER_KEYS.TICKER}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          variant={"secondary"}
-          align={"left"}
-          className="pl-0"
-        />
+    <Table
+      variant="secondary"
+      headers={headers}
+      isLoading={isLoading}
+      data={data}
+    >
+      {[...Array(headers.length - 2)].map((_, i) => (
+        <TableCell key={`empty-total-row-${i}`} variant={"secondary"} />
+      ))}
 
-        <TableHeader
-          label="Distribution"
-          sorterKey={LIVE_BALANCES_SORTER_KEYS.DISTRIBUTION}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          variant={"secondary"}
-          align={"right"}
-        />
-        <TableHeader
-          label="Target"
-          sorterKey={LIVE_BALANCES_SORTER_KEYS.TARGET}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          variant={"secondary"}
-          align={"right"}
-        />
-        <TableHeader
-          label="Amount Withdrawable"
-          sorterKey={LIVE_BALANCES_SORTER_KEYS.WITHDRAWABLE}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          variant={"secondary"}
-          align={"right"}
-          hoverTooltip={
-            <HoverContent {...LivePortfolioTooltipCopy.withdrawable} />
-          }
-        />
-        <TableHeader
-          label="Total Holdings"
-          sorterKey={LIVE_BALANCES_SORTER_KEYS.HOLDINGS}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          variant={"secondary"}
-          align={"right"}
-        />
-        <TableHeader
-          label="Price"
-          sorterKey={LIVE_BALANCES_SORTER_KEYS.PRICE}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          variant={"secondary"}
-          align={"right"}
-        />
+      <TableHeader label="Total value" align="right" variant="secondary" />
 
-        <TableHeader
-          label="USD Value"
-          sorterKey={LIVE_BALANCES_SORTER_KEYS.VALUE}
-          currentSorter={sorter}
-          ascending={sortAscending}
-          setSorter={setSorter}
-          setSortAscending={setSortAscending}
-          variant={"secondary"}
-          align={"right"}
-        />
-        {children}
-      </div>
-    </>
+      <TableHeader
+        label={`$${displayNumber(totalValue, { precision: 2 })}`}
+        align="right"
+        variant="secondary"
+      />
+    </Table>
   );
 };
 
-function calcValue(holding: LiveBalancesTableData) {
-  return holding.amount * holding.price;
+function calcValue({ amount, price }: { amount: number; price: number }) {
+  return amount * price;
 }
 
-enum LIVE_BALANCES_SORTER_KEYS {
-  TICKER = "ticker",
-  HOLDINGS = "holdings",
-  PRICE = "price",
-  VALUE = "value",
-  WITHDRAWABLE = "withdrawable",
-  DISTRIBUTION = "distribution",
-  TARGET = "target",
-}
-type LiveBalancesSorterKey = `${LIVE_BALANCES_SORTER_KEYS}`;
-
-export const LIVE_BALANCES_SORTERS: Sorter<
-  LiveBalancesTableData,
-  LiveBalancesSorterKey
->[] = [
+const headers: TableColumnHeader[] = [
   {
-    key: LIVE_BALANCES_SORTER_KEYS.TICKER,
-    sort: (a, b, ascending) => compareStrings(a.symbol, b.symbol, ascending),
+    key: "ticker",
+    label: "Ticker",
+    cellType: CellType.Asset,
+    align: "left",
   },
   {
-    key: LIVE_BALANCES_SORTER_KEYS.WITHDRAWABLE,
-    sort: (a, b, ascending) =>
-      compareNumbers(a.amountWithdrawable, b.amountWithdrawable, ascending),
+    key: "distribution",
+    label: "Distribution",
+    cellType: CellType.Number,
+    align: "right",
   },
   {
-    key: LIVE_BALANCES_SORTER_KEYS.HOLDINGS,
-    sort: (a, b, ascending) => compareNumbers(a.amount, b.amount, ascending),
+    key: "target",
+    label: "Target",
+    cellType: CellType.Number,
+    align: "right",
   },
   {
-    key: LIVE_BALANCES_SORTER_KEYS.PRICE,
-
-    sort: (a, b, ascending) => compareNumbers(a.price, b.price, ascending),
+    key: "amountWithdrawable",
+    label: "Amount Withdrawable",
+    cellType: CellType.Number,
+    align: "right",
+    hoverTooltip: (
+      <HoverContent
+        className="max-w-md"
+        {...LivePortfolioTooltipCopy.withdrawable}
+      />
+    ),
   },
   {
-    key: LIVE_BALANCES_SORTER_KEYS.VALUE,
-
-    sort: (a, b, ascending) =>
-      compareNumbers(calcValue(a), calcValue(b), ascending),
+    key: "totalHoldings",
+    label: "Total Holdings",
+    cellType: CellType.Number,
+    align: "right",
   },
   {
-    key: LIVE_BALANCES_SORTER_KEYS.DISTRIBUTION,
-
-    sort: (a, b, ascending) =>
-      compareNumbers(a.distribution, b.distribution, ascending),
+    key: "price",
+    label: "Price",
+    cellType: CellType.Number,
+    align: "right",
   },
   {
-    key: LIVE_BALANCES_SORTER_KEYS.TARGET,
-    sort: (a, b, ascending) => compareNumbers(a.target, b.target, ascending),
+    key: "usdValue",
+    label: "USD Value",
+    cellType: CellType.Number,
+    align: "right",
   },
 ];
-
-const EmptyRow = () => (
-  <>
-    <div className="flex flex-row items-center justify-start gap-2 border-t border-valence-mediumgray p-4 pl-1">
-      <p className="text-center text-sm font-semibold">{"-"}</p>
-    </div>
-
-    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray px-0 text-right font-mono text-sm">
-      {"0%"}
-    </p>
-    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray px-0 pr-0 text-right font-mono text-sm">
-      {"0%"}
-    </p>
-    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray px-0 text-right font-mono text-sm">
-      {"0.00"}
-    </p>
-    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray px-0 text-right font-mono text-sm">
-      {"0.00"}
-    </p>
-
-    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray px-0 text-right font-mono text-sm">
-      {"$0.00"}
-    </p>
-
-    <p className="flex flex-row items-center justify-end border-t border-valence-mediumgray px-0 text-right font-mono text-sm">
-      {"$0.00"}
-    </p>
-  </>
-);
-
-const TotalValueRow: React.FC<{ total: number }> = ({ total }) => (
-  <>
-    <p className=" flex flex-row items-center border-valence-mediumgray px-0 text-right font-mono text-sm"></p>
-
-    <p className="flex flex-row items-center border-valence-mediumgray px-0 text-right font-mono text-sm"></p>
-
-    <p className="flex flex-row items-center border-valence-mediumgray px-0 text-right font-mono text-sm"></p>
-    <p className="flex flex-row items-center border-valence-mediumgray px-0 text-right font-mono text-sm"></p>
-
-    <p className="flex flex-row items-center border-valence-mediumgray px-4 text-right font-mono text-sm"></p>
-    <p className="flex flex-row items-center  justify-end border-valence-mediumgray px-0 py-0 text-xs font-semibold">
-      Total Value
-    </p>
-    <p className="flex flex-row items-center justify-end  border-valence-mediumgray px-0 py-4 text-right font-mono text-xs font-semibold">
-      ${displayNumber(total, { precision: 2 })}
-    </p>
-  </>
-);
-
-const LoadingRows = () => (
-  <div className="col-span-full flex flex-col gap-0.5">
-    <LoadingSkeleton className="min-h-12" />
-    <LoadingSkeleton className="min-h-12" />
-    <LoadingSkeleton className="min-h-12" />
-  </div>
-);

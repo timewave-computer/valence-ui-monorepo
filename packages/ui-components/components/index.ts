@@ -23,3 +23,4 @@ export * from "./Toaster";
 export * from "./LinkText";
 export * from "./HoverCard";
 export * from "./HoverContent";
+export * from "./Asset";

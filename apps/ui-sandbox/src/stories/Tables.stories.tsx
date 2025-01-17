@@ -78,7 +78,6 @@ const headers: TableColumnHeader[] = [
     hoverTooltip: (
       <HoverContent title="Tooltip title" text="Sample tooltip text." />
     ),
-    align: "left",
   },
   {
     key: "price",
@@ -90,7 +89,6 @@ const headers: TableColumnHeader[] = [
     key: "address",
     cellType: CellType.Text,
     label: "Address",
-    align: "center",
   },
   {
     key: "status",
@@ -126,6 +124,7 @@ const data: TableRow[] = [
     },
     price: {
       value: "0.00",
+      isUsd: true,
     },
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
@@ -145,6 +144,7 @@ const data: TableRow[] = [
     },
     price: {
       value: "4000.00",
+      isUsd: true,
     },
     address: {
       value: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",

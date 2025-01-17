@@ -1,4 +1,3 @@
-import { cn } from "../../utils";
 import { LoadingSkeleton } from "../LoadingSkeleton";
 import { cva, VariantProps } from "class-variance-authority";
 import { CellLink } from "./cell-types";
@@ -12,34 +11,36 @@ const tableCellVariants = cva(
         secondary: "px-2 min-h-9",
         input: "p-0 min-h-9",
       },
-      link: {
+      isLink: {
         true: "underline decoration-valence-lightgray decoration-[1px] underline-offset-4 hover:decoration-valence-gray",
       },
       align: {
-        left: "justify-start",
-        right: "justify-end",
-        center: "justify-center",
+        left: "!justify-start",
+        right: "!justify-end",
+        center: "!justify-center",
       },
       isError: {
         true: "!text-valence-red",
       },
+      isLastRow: {
+        true: "!border-b-0",
+      },
     },
     defaultVariants: {
       variant: "primary",
-      link: false,
+      align: "left",
     },
   },
 );
 
 export type TableCellVariants = VariantProps<typeof tableCellVariants>;
 
-interface TableCellProps extends React.ButtonHTMLAttributes<HTMLElement> {
+interface TableCellProps
+  extends React.ButtonHTMLAttributes<HTMLElement>,
+    VariantProps<typeof tableCellVariants> {
   children?: string | React.ReactNode;
   isLoading?: boolean;
-  variant?: TableCellVariants["variant"];
-  align?: TableCellVariants["align"];
   link?: CellLink;
-  isError?: boolean;
 }
 
 export const TableCell = ({
@@ -48,41 +49,41 @@ export const TableCell = ({
   isLoading,
   link,
   isError,
+  isLastRow,
   variant = "primary",
-  align = "center",
+  align,
 }: TableCellProps) => {
-  if (!link?.href)
+  const isLink = !!link;
+  const cellClasses = tableCellVariants({
+    variant,
+    align,
+    isLink,
+    isError,
+    isLastRow,
+    className,
+  });
+  if (isLoading)
     return (
-      <div
-        role="gridcell"
-        className={cn(
-          tableCellVariants({ variant, align, className, isError }),
-        )}
-      >
-        {isLoading ? (
-          <LoadingSkeleton className="h-full w-full" />
-        ) : (
-          <>{children}</>
-        )}
+      <div role="gridcell" className={cellClasses}>
+        <LoadingSkeleton className="h-full w-full" />
       </div>
     );
-
-  const Comp = link?.LinkComponent ?? "a";
-
-  return (
-    <Comp
-      role="gridcell"
-      href={link?.href}
-      {...(link?.blankTarget ? { target: "_blank" } : {})}
-      className={cn(
-        tableCellVariants({ variant, link: !!link, className, isError }),
-      )}
-    >
-      {isLoading ? (
-        <LoadingSkeleton className="h-full w-full" />
-      ) : (
+  else if (isLink) {
+    const Comp = link.LinkComponent ?? "a";
+    return (
+      <Comp
+        role="gridcell"
+        href={link.href}
+        target={link.blankTarget ?? true ? "_blank" : undefined} // nullish operator. If link.blankTarget is null or undefined, it will default to true
+        className={cellClasses}
+      >
         <>{children}</>
-      )}
-    </Comp>
-  );
+      </Comp>
+    );
+  } else
+    return (
+      <div role="gridcell" className={cellClasses}>
+        <>{children}</>
+      </div>
+    );
 };

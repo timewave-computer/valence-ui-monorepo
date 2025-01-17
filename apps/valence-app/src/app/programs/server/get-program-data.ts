@@ -3,7 +3,6 @@ import { mockRegistry } from "@/mock-data";
 import {
   ProgramParser,
   fetchAccountBalances,
-  NodeComposer,
   QueryConfig,
   ProgramParserResult,
   QueryConfigManager,
@@ -65,19 +64,18 @@ const _getProgramData = async ({
 
   const balances = await queryAccountBalances(accounts, completeQueryConfig);
 
-  const { edges, nodes } = NodeComposer.generate({
-    program: {
-      accounts,
-      libraries,
-      links,
-    },
-    accountBalances: balances,
-  });
+  // const { edges, nodes } = NodeComposer.generate({
+  //   program: {
+  //     accounts,
+  //     libraries,
+  //     links,
+  //   },
+  //   accountBalances: balances,
+  // });
 
   return {
-    nodes,
-    edges,
     queryConfig: completeQueryConfig,
+    balances,
     ...program,
   };
 };

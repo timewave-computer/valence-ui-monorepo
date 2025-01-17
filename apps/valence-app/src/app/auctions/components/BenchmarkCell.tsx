@@ -18,6 +18,7 @@ export const BenchmarkCell = ({
 
   return (
     <TableCell
+      align="center"
       variant={"primary"}
       isLoading={isLoading}
       className="gap-2 text-xs"

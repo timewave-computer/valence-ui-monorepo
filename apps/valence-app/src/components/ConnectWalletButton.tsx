@@ -1,6 +1,5 @@
 "use client";
 import { Button, ToastMessage, toast } from "@valence-ui/ui-components";
-
 import { useAlert, useIsServer, useWallet } from "@/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";

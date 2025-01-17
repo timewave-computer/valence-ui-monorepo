@@ -1,5 +1,5 @@
 import { ValenceProductBrand } from "@/components";
-import { Button } from "@valence-ui/ui-components";
+import { Button, Heading } from "@valence-ui/ui-components";
 import Image from "next/image";
 import Link from "next/link";
 import { HiMiniArrowRight } from "react-icons/hi2";
@@ -19,7 +19,7 @@ export function ProgramsHero() {
           />
         }
       >
-        <h1 className="text-h4 font-semibold">Programs (beta)</h1>
+        <Heading level="h4">Programs (beta)</Heading>
         <p className="w-full max-w-lg text-pretty pt-1">
           Programs enable crosschain automation.
         </p>

@@ -13,7 +13,7 @@ export const Card: React.FC<CardProps> = ({
   return (
     <div
       {...props}
-      className={cn(className, "p-4 border border-valence-black")}
+      className={cn("p-4 border border-valence-black", className)}
     >
       {children}
     </div>

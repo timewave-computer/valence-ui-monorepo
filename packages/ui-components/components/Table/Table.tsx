@@ -4,17 +4,18 @@ import { cn } from "../../utils";
 import { cva, VariantProps } from "class-variance-authority";
 import {
   CellDataMap,
+  CellLink,
   CellTypes,
   isCellDataOfType,
-  TableCells,
 } from "./cell-types";
 import { TableHeader } from "./TableHeader";
 import { TableCell } from "./TableCell";
+import { TableCells } from "./cell-renderers";
 
 const tableVariants = cva("grid", {
   variants: {
     variant: {
-      primary: "",
+      primary: "border-x border-b border-valence-black",
       secondary: "",
     },
   },
@@ -58,7 +59,7 @@ export const Table = ({
 }: TableProps) => {
   const tableId = useId(); // for unique key generation for multiple tables
   const [sortAscending, setSortAscending] = useState(false);
-  const [currentSortKey, setCurrentSortKey] = useState<string>(headers[0].key);
+  const [currentSortKey, setCurrentSortKey] = useState<string>(headers[0]?.key);
   const sorterCellType = headers.find(
     (header) => header.key === currentSortKey,
   )?.cellType;
@@ -138,6 +139,8 @@ export const Table = ({
 
       {!isLoading &&
         sortedData.map((row, rowIndex) => {
+          const lastIndexOfData = sortedData.length - 1;
+
           return (
             <Fragment key={`tablerow-${tableId}-${rowIndex}`}>
               {headers.map((header) => {
@@ -148,6 +151,7 @@ export const Table = ({
                 let cell: React.ReactNode;
                 if (!rowData || !isCellDataOfType(rowData, cellType)) {
                   const renderer = cellFunctions.renderDefault;
+                  // show empty
                   cell = renderer(undefined, {
                     variant,
                     align: header.align,
@@ -157,6 +161,7 @@ export const Table = ({
                   cell = renderer(rowData, {
                     variant,
                     align: header.align,
+                    isLastRow: rowIndex === lastIndexOfData,
                   });
                 }
 
@@ -171,6 +176,7 @@ export const Table = ({
             </Fragment>
           );
         })}
+      {children}
     </div>
   );
 };

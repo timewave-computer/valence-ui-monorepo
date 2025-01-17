@@ -8,6 +8,8 @@ const linkTextVariants = cva("text-valence-black hover:underline", {
       primary: "font-medium",
       secondary: "",
       highlighted: "text-valence-blue",
+      breadcrumb:
+        "text-h4 font-semibold underline  underline-offset-4 decoration-valence-lightgray hover:decoration-valence-black",
     },
   },
 });

@@ -3,8 +3,8 @@ import {
   AccountType,
 } from "@valence-ui/generated-types/dist/server/types/ProgramConfigManager.types";
 import { AccountBalances, ProgramParserResult } from "@/app/programs/server";
-import { AccountNode, LibraryNode } from "@/app/programs/ui";
 import { type Node } from "@xyflow/react";
+import { AccountNode, LibraryNode } from "@/app/programs/ui";
 
 type CommonNodeProps = {
   id: string;

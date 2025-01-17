@@ -8,10 +8,10 @@ import {
   Position,
 } from "@xyflow/react";
 import {
-  type LayoutAlgorithmOptions,
-  layoutAlgorithms,
   Direction,
-} from "@/app/programs/ui";
+  LayoutAlgorithmOptions,
+  layoutAlgorithms,
+} from "./layout-algorithms";
 
 export type DiagramLayoutAlgorithm = keyof typeof layoutAlgorithms;
 export type LayoutOptions = {

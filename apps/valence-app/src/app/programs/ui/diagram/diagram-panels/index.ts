@@ -1,3 +1,3 @@
 export * from "./RpcSettings";
 export * from "./ProgramInfo";
-export * from "./SubroutinesDisplay";
+export * from "./DEPRECATED_SubroutinesDisplay";

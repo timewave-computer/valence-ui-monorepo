@@ -38,6 +38,8 @@ import {
   TableCell,
   Sorter,
   Heading,
+  Table,
+  TableColumnHeader,
 } from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({
@@ -266,6 +268,7 @@ export function LiveAuctionsTable({
         <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] overflow-x-auto border-x border-b border-valence-black">
           {headers.map((header) => (
             <TableHeader
+              align="center"
               key={`live-auction-header-cell-${header.sorterKey}`}
               label={header.label}
               sorterKey={header.sorterKey ?? ""}
@@ -281,8 +284,8 @@ export function LiveAuctionsTable({
             const isFinished = row.status === LiveAuctionStatus.Finished;
             return (
               <Fragment key={"row-" + row.pair}>
-                <TableCell>{row.pair}</TableCell>
-                <TableCell className="flex items-center">
+                <TableCell align="center">{row.pair}</TableCell>
+                <TableCell align="center" className="flex items-center">
                   <span
                     className={cn(
                       isAuctionsDataFetching &&
@@ -306,10 +309,16 @@ export function LiveAuctionsTable({
                   isLoading={row.astroport.isLoading}
                   highlight={row.astroport.highlight}
                 />
-                <TableCell>{isClosed ? "-" : row.startPrice}</TableCell>
-                <TableCell>{isClosed ? "-" : row.endPrice}</TableCell>
-                <TableCell>{isClosed ? "-" : row.decreasePerBlock}</TableCell>
-                <TableCell>
+                <TableCell align="center">
+                  {isClosed ? "-" : row.startPrice}
+                </TableCell>
+                <TableCell align="center">
+                  {isClosed ? "-" : row.endPrice}
+                </TableCell>
+                <TableCell align="center">
+                  {isClosed ? "-" : row.decreasePerBlock}
+                </TableCell>
+                <TableCell align="center">
                   <Label
                     className="w-full"
                     variant={auctionStatusVariant[row.status]}
@@ -318,9 +327,14 @@ export function LiveAuctionsTable({
                   </Label>
                 </TableCell>
 
-                <TableCell>{isClosed ? "-" : row.amountRemaining}</TableCell>
-                <TableCell>{isClosed ? "-" : row.initialAmount}</TableCell>
+                <TableCell align="center">
+                  {isClosed ? "-" : row.amountRemaining}
+                </TableCell>
+                <TableCell align="center">
+                  {isClosed ? "-" : row.initialAmount}
+                </TableCell>
                 <TableCell
+                  align="center"
                   link={{
                     href: CelatoneUrl.block(row.startBlock),
                     blankTarget: true,
@@ -328,8 +342,9 @@ export function LiveAuctionsTable({
                 >
                   {row.startBlock.toString()}
                 </TableCell>
-                <TableCell>{row.endBlock.toString()}</TableCell>
+                <TableCell align="center">{row.endBlock.toString()}</TableCell>
                 <TableCell
+                  align="center"
                   link={{
                     href: CelatoneUrl.contract(row.auctionAddress),
                     blankTarget: true,

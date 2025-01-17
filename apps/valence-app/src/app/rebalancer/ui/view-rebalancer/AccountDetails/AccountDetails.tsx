@@ -142,11 +142,16 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
           </>
         )}
       </section>
-      <section className="flex w-full grow  flex-col gap-4 px-4">
-        <Heading className="pt-4" level="h6">
-          Live balances
-        </Heading>
-        <LiveBalancesTable />
+      <section className="flex w-full grow  flex-col pb-2 border-b border-valence-black ">
+        <div>
+          <Heading className="p-4 pb-2" level="h6">
+            Live balances
+          </Heading>
+        </div>
+
+        <div className="px-2">
+          <LiveBalancesTable />
+        </div>
       </section>
     </div>
   );

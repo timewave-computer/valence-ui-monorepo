@@ -123,7 +123,7 @@ export const ValueTooltip = ({
                     </TableRow>
                   );
                 })}
-          <TableRow className="border-t-[0.5px] border-valence-gray">
+          <TableRow className="border-t-[0.5px] border-valence-gray font-semibold">
             <AssetCell placeholderDot={true} symbol="Total" />
             <TooltipTableCell></TooltipTableCell>
             <TooltipTableCell></TooltipTableCell>
@@ -142,7 +142,7 @@ const AssetCell: React.FC<{ symbol: string; placeholderDot?: boolean }> = ({
 }) => {
   return (
     <TooltipTableCell
-      className="flex items-center  justify-start gap-1 text-xs"
+      className="flex items-center  justify-start gap-1 text-xs font-semibold"
       asHeading={true}
     >
       {placeholderDot ? (
@@ -159,7 +159,7 @@ const TableRow: React.FC<{ className?: string; children?: ReactNode }> = ({
   className,
   children,
 }) => {
-  return <tr className={cn("", className)}>{children}</tr>;
+  return <tr className={cn("font-base", className)}>{children}</tr>;
 };
 
 const HeaderCell: React.FC<{ className?: string; children?: ReactNode }> = ({
@@ -167,7 +167,10 @@ const HeaderCell: React.FC<{ className?: string; children?: ReactNode }> = ({
   children,
 }) => {
   return (
-    <th className={cn("px-3 py-0.5 text-xs", className)} scope="col">
+    <th
+      className={cn("px-3 py-0.5 text-xs font-semibold", className)}
+      scope="col"
+    >
       {children}
     </th>
   );
@@ -178,7 +181,7 @@ const TooltipTableCell: React.FC<{
   children?: ReactNode;
   asHeading?: boolean;
 }> = ({ className, children, asHeading }) => {
-  const style = cn("text-center py-0.5 text-sm px-3", className);
+  const style = cn("text-center py-0.5 text-sm px-3 font-base", className);
   if (asHeading)
     return (
       <th className={style} scope="col">
@@ -198,7 +201,10 @@ const NumberCell: React.FC<{
   children?: ReactNode;
   asHeading?: boolean;
 }> = ({ children, className, asHeading }) => {
-  const style = cn(" text-center font-mono py-0.5 text-xs px-3", className);
+  const style = cn(
+    " text-center font-mono py-0.5 text-xs px-3 font-base",
+    className,
+  );
   if (asHeading)
     return (
       <th className={style} scope="row">
