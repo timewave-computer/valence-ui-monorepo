@@ -3,7 +3,6 @@ import { mockRegistry } from "@/mock-data";
 import {
   ProgramParser,
   fetchAccountBalances,
-  NodeComposer,
   QueryConfig,
   ProgramParserResult,
   QueryConfigManager,
@@ -76,6 +75,7 @@ const _getProgramData = async ({
 
   return {
     queryConfig: completeQueryConfig,
+    balances,
     ...program,
   };
 };

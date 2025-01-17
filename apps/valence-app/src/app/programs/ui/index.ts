@@ -7,3 +7,6 @@ export * from "./useDisplayStore";
 export * from "./AccountTable";
 export * from "./ExecutionHistoryTable";
 export * from "./diagram";
+export * from "./SubroutineDisplay";
+export * from "./ProcessorDisplay";
+export * from "./display";

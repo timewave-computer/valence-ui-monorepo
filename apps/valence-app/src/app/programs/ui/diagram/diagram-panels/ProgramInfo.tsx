@@ -7,7 +7,7 @@ import {
 import { ProgramParserResult } from "@/app/programs/server";
 import React from "react";
 import { NAV_HEIGHT } from "@/components";
-import { SubroutinesDisplay } from "./SubroutinesDisplay";
+import { SubroutinesDisplay } from "./DEPRECATED_SubroutinesDisplay";
 
 export type ProgramInfoProps = Pick<
   ProgramParserResult,

@@ -59,7 +59,7 @@ export const Table = ({
 }: TableProps) => {
   const tableId = useId(); // for unique key generation for multiple tables
   const [sortAscending, setSortAscending] = useState(false);
-  const [currentSortKey, setCurrentSortKey] = useState<string>(headers[0].key);
+  const [currentSortKey, setCurrentSortKey] = useState<string>(headers[0]?.key);
   const sorterCellType = headers.find(
     (header) => header.key === currentSortKey,
   )?.cellType;
