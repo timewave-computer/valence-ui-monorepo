@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from "@valence-ui/ui-components";
 import { BsCheck2 } from "react-icons/bs";
 
 export type CheckboxProps = {

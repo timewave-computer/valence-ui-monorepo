@@ -23,6 +23,7 @@ import {
   baseDenomAtom,
   priceSourceAtom,
 } from "@/app/rebalancer/ui";
+import { cn } from "@valence-ui/ui-components";
 import { Label as ChartLabel, Line, ReferenceLine, Tooltip } from "recharts";
 import { USDC_DENOM } from "@/const/chain-data";
 import { createPortal } from "react-dom";
@@ -30,7 +31,6 @@ import { Overlay } from "@/components/Overlay";
 import { StatusBar } from "@/components/StatusBar";
 import { FiAlertTriangle } from "react-icons/fi";
 import { FeatureFlags, useFeatureFlag } from "@/utils";
-import { cn } from "@/utils";
 import { useAtom } from "jotai";
 import { useWallet } from "@/hooks";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";

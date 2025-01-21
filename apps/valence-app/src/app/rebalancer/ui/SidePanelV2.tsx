@@ -2,7 +2,7 @@
 import { ConnectWalletButton, ValenceProductBrand } from "@/components";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { useWallet } from "@/hooks";
-import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
+import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
 import {
   scaleAtom,
@@ -21,6 +21,7 @@ import {
   LinkText,
   InputLabel,
   Heading,
+  cn,
 } from "@valence-ui/ui-components";
 
 export const SidePanelV2: React.FC<{

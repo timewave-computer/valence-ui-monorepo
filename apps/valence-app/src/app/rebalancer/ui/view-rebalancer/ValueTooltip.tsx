@@ -1,6 +1,5 @@
 import { KeyTag, GraphKey, SymbolColors } from "@/app/rebalancer/ui/graph";
 import {
-  cn,
   displayNumber,
   displayLocalTimezone,
   displayUtcToLocal,
@@ -10,7 +9,7 @@ import {
   NameType,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
-
+import { cn } from "@valence-ui/ui-components";
 import { ColoredDot } from "@/components";
 import { ReactNode } from "react";
 

@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { cn } from "@/utils";
-import { BsCheck, BsCheck2 } from "react-icons/bs";
+import { cn } from "@valence-ui/ui-components";
+import { BsCheck2 } from "react-icons/bs";
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,

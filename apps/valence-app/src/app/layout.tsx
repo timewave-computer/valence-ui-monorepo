@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { cn } from "@/utils";
 import {
   ReactQueryProvider,
   FeatureFlagsProvider,
@@ -11,7 +10,7 @@ import { ABSOLUTE_URL, VALENCE_DESCRIPTION } from "@/const";
 import { getFeatureFlags } from "@/utils";
 import { ValenceAppNav } from "@/components";
 import React from "react";
-import { Toaster } from "@valence-ui/ui-components";
+import { Toaster, cn } from "@valence-ui/ui-components";
 import ReactQueryDevToolsWithProd from "@/components/react-query-devtools";
 import { Unica77, Unica77Mono } from "@valence-ui/fonts";
 import "@valence-ui/ui-components/styles/index.css";

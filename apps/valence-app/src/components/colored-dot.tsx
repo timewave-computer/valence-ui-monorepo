@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from "@valence-ui/ui-components";
 import { VariantProps, cva } from "class-variance-authority";
 import React from "react";
 

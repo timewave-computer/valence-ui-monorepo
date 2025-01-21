@@ -3,7 +3,6 @@ import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "~/components";
-import { VALENCE_APP_URL } from "~/const";
 
 const Hero = ({ className }: { className?: string }) => {
   return (

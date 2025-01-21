@@ -21,7 +21,6 @@ import {
   microToBase,
   useFeatureFlag,
   FeatureFlags,
-  cn,
 } from "@/utils";
 import { compareNumbers, compareStrings } from "@/utils/table-sorters";
 import { Fragment, useEffect, useMemo, useState } from "react";
@@ -38,8 +37,7 @@ import {
   TableCell,
   Sorter,
   Heading,
-  Table,
-  TableColumnHeader,
+  cn,
 } from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({

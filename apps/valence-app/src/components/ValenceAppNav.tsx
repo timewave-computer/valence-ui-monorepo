@@ -1,5 +1,5 @@
 "use client";
-import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
+import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
@@ -9,6 +9,7 @@ import {
   SheetTrigger,
   Button,
   Label,
+  cn,
 } from "@valence-ui/ui-components";
 import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
