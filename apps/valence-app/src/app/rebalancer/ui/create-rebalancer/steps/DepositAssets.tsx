@@ -4,7 +4,6 @@ import { UseFormReturn } from "react-hook-form";
 import { useWallet, useWalletBalances } from "@/hooks";
 import { displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
-import { Checkbox } from "@/components";
 import {
   FormField,
   HoverContent,
@@ -18,6 +17,7 @@ import {
   TableCell,
   CalloutBox,
   Heading,
+  Checkbox,
 } from "@valence-ui/ui-components";
 import { chainConfig } from "@/const/config";
 import {
