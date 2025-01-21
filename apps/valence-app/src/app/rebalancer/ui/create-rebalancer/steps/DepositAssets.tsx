@@ -2,7 +2,7 @@ import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { useWallet, useWalletBalances } from "@/hooks";
-import { cn, displayNumber, displayValue, microToBase } from "@/utils";
+import { displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import { Checkbox } from "@/components";
 import {
@@ -17,7 +17,6 @@ import {
   InfoText,
   TableCell,
   CalloutBox,
-  Table,
   Heading,
 } from "@valence-ui/ui-components";
 import { chainConfig } from "@/const/config";
