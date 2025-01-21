@@ -35,7 +35,7 @@ function labelImagePTags() {
  * inserts div.h1 border for styline
  * MUST be called after wrapHeadingsInDiv
  */
-function insertH2BorderDivs() {
+function insertH1BorderDivs() {
   //@ts-ignore
   return (tree) => {
     visit(tree, "element", (node, index, parent) => {
@@ -98,7 +98,7 @@ export const getPost = async (slug: string): Promise<Post> => {
     .use(rehypeRaw) // Parse the raw HTML inside the markdown
     .use(labelImagePTags) // Custom plugin to add class to <p> containing <img>
     .use(wrapHeadingsInDiv) // Custom plugin to wrap <h1> and <h2> in a <div>
-    .use(insertH2BorderDivs) // MUST run after wrapHeadingsInDiv
+    .use(insertH1BorderDivs) // MUST run after wrapHeadingsInDiv
     .use(rehypeStringify) // Stringify the rehype tree back to HTML
     .process(content);
 
