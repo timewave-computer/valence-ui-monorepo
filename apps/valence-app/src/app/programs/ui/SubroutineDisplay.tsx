@@ -80,7 +80,7 @@ export const SubroutineDisplay = ({
                             defaultValue={defaultMessage}
                           />
                         </div>
-                        <Button className="pt-1" variant="secondary">
+                        <Button size="sm" className="pt-1" variant="secondary">
                           Reset Message
                         </Button>
                       </CollapsibleSectionContent>

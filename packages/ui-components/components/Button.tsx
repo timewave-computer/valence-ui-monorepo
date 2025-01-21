@@ -4,7 +4,7 @@ import React, { ElementType } from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
 
 const buttonVariants = cva(
-  "text-center py-1.5 px-2 rounded-sm  min-h-9 min-w-20 w-fit  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border",
+  "text-center  rounded-sm  w-fit  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border",
   {
     variants: {
       variant: {
@@ -17,9 +17,14 @@ const buttonVariants = cva(
       disabled: {
         true: "!bg-valence-gray hover:!bg-valence-gray focus:!bg-valence-gray cursor-not-allowed  !border-valence-gray !text-valence-black",
       },
+      size: {
+        sm: "py-0.5 px-1.5 text-sm min-w-12 min-h-7",
+        base: " min-h-9 min-w-20  py-1.5 px-2",
+      },
     },
     defaultVariants: {
       variant: "primary",
+      size: "base",
     },
   },
 );
@@ -51,6 +56,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       PrefixIcon,
       SuffixIcon,
       link,
+      size,
       ...props
     },
     ref,
@@ -74,14 +80,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         // commented out for now to render disabled tooltip
         // disabled={disabled} // keep it here for accessibilty but style is handled in CVA
         className={cn(
-          buttonVariants({ disabled: _disabled, variant: _variant, className }),
+          buttonVariants({
+            disabled: _disabled,
+            variant: _variant,
+            size,
+            className,
+          }),
         )}
         // @ts-ignore because we sometimes use a button to render <a> tag, but dont accept rest of <a> tag args bedies href
         ref={ref}
         {...props}
       >
         {isLoading ? (
-          <LoadingIndicator variant="s" />
+          <LoadingIndicator variant="sm" />
         ) : (
           <div className="flex flex-row gap-2 items-center">
             {PrefixIcon && <PrefixIcon className="h-4 w-4" />}
