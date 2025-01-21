@@ -155,7 +155,7 @@ export const swapLp: CovenantFields = {
 
     return (
       <>
-        <h1 className="text-h5 font-bold">I. Summary</h1>
+        <h1 className="text-h2 font-bold">I. Summary</h1>
 
         <p>
           <AFieldRenderer>{aName}</AFieldRenderer> and{" "}
@@ -180,9 +180,9 @@ export const swapLp: CovenantFields = {
           This swap will happen entirely on-chain without any intermediaries.
         </p>
 
-        <h1 className="text-h5 font-bold">II. Swap Terms</h1>
+        <h1 className="text-h2 font-bold">II. Swap Terms</h1>
 
-        <h2 className="text-h6 font-semibold">
+        <h2 className="text-h3 font-semibold">
           A. <AFieldRenderer>{aName}</AFieldRenderer> Details
         </h2>
 
@@ -197,7 +197,7 @@ export const swapLp: CovenantFields = {
           <AFieldRenderer>{aSource}</AFieldRenderer>.
         </p>
 
-        <h2 className="text-h6 font-semibold">
+        <h2 className="text-h3 font-semibold">
           B. <BFieldRenderer>{bName}</BFieldRenderer> Details
         </h2>
 
@@ -212,7 +212,7 @@ export const swapLp: CovenantFields = {
           <BFieldRenderer>{bSource}</BFieldRenderer>.
         </p>
 
-        <h2 className="text-h6 font-semibold">C. Deposit Deadline</h2>
+        <h2 className="text-h3 font-semibold">C. Deposit Deadline</h2>
 
         {!both.depositDeadlineStrategy ||
         both.depositDeadlineStrategy === "none" ? (
@@ -236,7 +236,7 @@ export const swapLp: CovenantFields = {
           </p>
         )}
 
-        <h2 className="text-h6 font-semibold">D. Withdrawal</h2>
+        <h2 className="text-h3 font-semibold">D. Withdrawal</h2>
 
         <p>
           After one party sends its assets to the Covenant, that party may
@@ -248,7 +248,7 @@ export const swapLp: CovenantFields = {
           &apos;s assets is <BFieldRenderer>{b.neutronAddress}</BFieldRenderer>.
         </p>
 
-        <h1 className="text-h5 font-bold">III. Next Steps</h1>
+        <h1 className="text-h2 font-bold">III. Next Steps</h1>
 
         <p>
           This proposal was automatically generated at {VALENCE_DOMAIN}. Reach

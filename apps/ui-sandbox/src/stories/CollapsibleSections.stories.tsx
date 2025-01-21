@@ -11,7 +11,7 @@ const CollapsibleSections = () => (
     <Story>
       <CollapsibleSectionRoot variant="primary" defaultIsOpen={false}>
         <CollapsibleSectionHeader>
-          <Heading level="h6">Heading</Heading>
+          <Heading level="h3">Heading</Heading>
         </CollapsibleSectionHeader>
         <CollapsibleSectionContent>Content</CollapsibleSectionContent>
       </CollapsibleSectionRoot>
@@ -19,7 +19,7 @@ const CollapsibleSections = () => (
     <Story>
       <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
         <CollapsibleSectionHeader>
-          <Heading level="h6">Heading</Heading>
+          <Heading level="h3">Heading</Heading>
         </CollapsibleSectionHeader>
         <CollapsibleSectionContent>Content</CollapsibleSectionContent>
       </CollapsibleSectionRoot>

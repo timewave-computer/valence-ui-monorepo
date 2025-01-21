@@ -45,7 +45,7 @@ export const ProcessorDisplay = ({
               Tick
             </Button>
             <div className="flex flex-col gap-1 items-start">
-              <Heading level="h6">{domain}</Heading>
+              <Heading level="h3">{domain}</Heading>
               <LinkText
                 blankTarget
                 onClick={(e) => {

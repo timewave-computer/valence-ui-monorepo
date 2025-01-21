@@ -19,7 +19,7 @@ export function LiveAuctionsHero() {
           />
         }
       >
-        <Heading level="h4">Auctions (beta)</Heading>
+        <Heading level="h1">Auctions (beta)</Heading>
         <p className="w-full max-w-lg text-pretty pt-1">
           Dutch auctions which enable trades for accounts using the{" "}
           <Link

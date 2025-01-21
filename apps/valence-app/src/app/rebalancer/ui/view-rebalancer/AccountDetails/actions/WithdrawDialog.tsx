@@ -194,7 +194,7 @@ const WithdrawForm: React.FC<{
   return (
     <>
       <div className="flex flex-col gap-2">
-        <Heading level="h5">Withdraw Funds</Heading>
+        <Heading level="h2">Withdraw Funds</Heading>
 
         {isFundsInAuction && <UnavailableFundsWarning />}
       </div>

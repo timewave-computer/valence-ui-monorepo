@@ -29,7 +29,7 @@ export const CreateAccountCTA = () => {
 
   return (
     <div className="justify-left flex max-w-[640px] flex-col gap-4 border border-black bg-white p-8">
-      <Heading level="h5"> No accounts associated with this wallet</Heading>
+      <Heading level="h2"> No accounts associated with this wallet</Heading>
 
       <p className="text-sm">
         The Rebalancer currently supports {assetList}, with more assets coming
@@ -67,7 +67,7 @@ export const CreateAccountCTA = () => {
 
       <button
         onClick={() => router.push("/rebalancer/create")}
-        className="w-fit bg-valence-black px-4 py-2 text-h6 text-white"
+        className="w-fit bg-valence-black px-4 py-2 text-h3 text-white"
       >
         Start rebalancing funds
       </button>

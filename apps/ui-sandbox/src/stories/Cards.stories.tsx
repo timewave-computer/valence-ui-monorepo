@@ -3,7 +3,7 @@ import { Card, Heading } from "@valence-ui/ui-components";
 
 const Cards = () => (
   <Section className="w-full">
-    <Heading level="h4">Card Title</Heading>
+    <Heading level="h1">Card Title</Heading>
     <Story>
       <Card>
         Quis non ut incididunt ad irure officia duis voluptate. Reprehenderit

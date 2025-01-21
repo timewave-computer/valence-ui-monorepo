@@ -106,7 +106,7 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
             setIsConfigOpen(!isConfigOpen);
           }}
         >
-          <Heading level="h6">Configuration</Heading>
+          <Heading level="h3">Configuration</Heading>
 
           {isConfigOpen ? (
             <FaChevronDown className="h-4 w-4" />
@@ -144,7 +144,7 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
       </section>
       <section className="flex w-full grow  flex-col pb-2 border-b border-valence-black ">
         <div>
-          <Heading className="p-4 pb-2" level="h6">
+          <Heading className="p-4 pb-2" level="h3">
             Live balances
           </Heading>
         </div>
@@ -198,9 +198,9 @@ const AccountDetailsHeader: React.FC<{
       <div className="flex flex-col gap-1 ">
         <div className="flex flex-row items-center gap-1">
           {isOwnAccount ? (
-            <Heading level="h5">Your Rebalancer Account</Heading>
+            <Heading level="h2">Your Rebalancer Account</Heading>
           ) : (
-            <Heading level="h5">Rebalancer Account</Heading>
+            <Heading level="h2">Rebalancer Account</Heading>
           )}
 
           <div className="flex flex-row items-center gap-2">

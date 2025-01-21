@@ -14,13 +14,13 @@ const Typography = () => (
         <Heading level="h3">Heading 3</Heading>
       </Story>
       <Story>
-        <Heading level="h4">Heading 4</Heading>
+        <Heading level="h4">Heading 4 (also large input label)</Heading>
       </Story>
       <Story>
         <Heading level="h5">Heading 5</Heading>
       </Story>
       <Story>
-        <Heading level="h6">Heading 6</Heading>
+        <Heading level="h6">Heading 6 (also small input label)</Heading>
       </Story>
 
       <Story>
@@ -49,9 +49,9 @@ const Typography = () => (
           <LinkText variant="breadcrumb" href="#">
             Breadcrumb
           </LinkText>
-          <Heading level="h4">/</Heading>
+          <Heading level="h1">/</Heading>
 
-          <Heading level="h4">Current Page</Heading>
+          <Heading level="h1">Current Page</Heading>
         </div>
       </Story>
       <Story>

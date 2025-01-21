@@ -108,7 +108,7 @@ const CovenantPage = () => {
                 />
               }
             >
-              <Heading level="h4">Covenants (beta)</Heading>
+              <Heading level="h1">Covenants (beta)</Heading>
 
               <p className="pt-1">
                 Crypto-native agreements. Contact{" "}

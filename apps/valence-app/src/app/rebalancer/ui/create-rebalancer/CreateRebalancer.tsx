@@ -267,7 +267,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
           >
             <div className=" flex flex-col gap-4">
               <div className="flex items-center gap-4 ">
-                <Heading level="h5">{BetaDisclaimer.title}</Heading>
+                <Heading level="h2">{BetaDisclaimer.title}</Heading>
               </div>
               <div className="flex flex-col gap-2">
                 {BetaDisclaimer.text.map((t, i) => (
@@ -402,7 +402,7 @@ export const RebalancerFormHeader = ({
   return (
     <section className="flex w-full flex-col gap-2 p-4">
       <div className="flex flex-wrap items-center gap-1">
-        <Heading level="h5">{title}</Heading>
+        <Heading level="h2">{title}</Heading>
 
         {!!address.length && (
           <span className="font-mono text-xs font-medium">{`(wallet: ${address})`}</span>

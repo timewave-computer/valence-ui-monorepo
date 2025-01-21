@@ -242,7 +242,7 @@ export function LiveAuctionsTable({
   return (
     <>
       <div className="flex min-h-[72px] flex-col items-center">
-        <Heading level="h5">Live Auctions</Heading>
+        <Heading level="h2">Live Auctions</Heading>
 
         <div className="pt-1 font-mono text-xs">
           <p className="text-center" suppressHydrationWarning>

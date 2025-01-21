@@ -25,6 +25,7 @@ export default function ProgramsHomePage() {
       link: {
         href: `/programs/${program.id}`,
         LinkComponent: Link,
+        blankTarget: false,
       },
     },
     label: {
@@ -32,6 +33,7 @@ export default function ProgramsHomePage() {
       link: {
         href: `/programs/${program.id}`,
         LinkComponent: Link,
+        blankTarget: false,
       },
     },
     authorizationsAddress: {
@@ -52,7 +54,7 @@ export default function ProgramsHomePage() {
       <ProgramsHero />
 
       <div className="flex flex-col items-center gap-2 pt-8">
-        <Heading level="h5">Program Registry</Heading>
+        <Heading level="h2">Program Registry</Heading>
         <Table variant="primary" headers={headers} data={tableData} />
       </div>
     </main>

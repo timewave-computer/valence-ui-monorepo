@@ -18,7 +18,7 @@ export const HoverContent: React.FC<{
     >
       {(text || title) && (
         <div className="flex flex-col items-start justify-start gap-2">
-          {title && <Heading level="h6">{title}</Heading>}
+          {title && <Heading level="h3">{title}</Heading>}
           {text && (
             <p className="text-wrap  text-left text-sm font-normal">{text}</p>
           )}

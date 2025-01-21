@@ -7,7 +7,7 @@ import { X_HANDLE, X_URL } from "@valence-ui/socials";
 
 export const ComingSoonTooltipContent = () => (
   <div className=" max-w-56">
-    <Heading level="h5">Coming soon.</Heading>
+    <Heading level="h2">Coming soon.</Heading>
 
     <p className="text-balance pt-2">
       Contact{" "}

@@ -76,7 +76,7 @@ export const SidePanelV2: React.FC<{
             />
           }
         >
-          <Heading level="h4">Rebalancer (beta)</Heading>
+          <Heading level="h1">Rebalancer (beta)</Heading>
           <p className="text-pretty pt-1">
             Automated balance sheet and treasury management. Contact{" "}
             <LinkText variant="primary" blankTarget={true} href={X_URL}>

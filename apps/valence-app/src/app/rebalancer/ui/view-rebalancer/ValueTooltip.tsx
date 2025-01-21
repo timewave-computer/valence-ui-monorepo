@@ -52,7 +52,7 @@ export const ValueTooltip = ({
   return (
     <div className="flex  min-w-[300px] flex-col gap-3 border-[0.5px] border-valence-black bg-white  p-4">
       <div className="flex items-start justify-between px-2">
-        <div className="self-start text-h6 font-semibold">
+        <div className="self-start text-h3 font-semibold">
           {isProjection ? "Projected" : "Balances"}
         </div>
         <div className="flex flex-col items-end gap-0.5 text-xs font-light tracking-tight">

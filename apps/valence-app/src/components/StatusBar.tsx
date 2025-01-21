@@ -49,7 +49,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
         {variant === "loading" ? (
           <LoadingIndicator />
         ) : (
-          <span className="text-wrap text-center text-h5">{text}</span>
+          <span className="text-wrap text-center text-h2">{text}</span>
         )}
       </div>
     </Comp>

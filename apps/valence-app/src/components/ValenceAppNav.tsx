@@ -148,7 +148,7 @@ export const ValenceAppNav = () => {
           </SheetTrigger>
 
           <SheetContent>
-            <div className=" flex flex-col gap-8 p-4 text-h5">{links}</div>
+            <div className=" flex flex-col gap-8 p-4 text-h2">{links}</div>
           </SheetContent>
         </Sheet>
       </div>

@@ -63,7 +63,7 @@ export const AdvancedSettings: React.FC<{
   return (
     <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
       <CollapsibleSectionHeader>
-        <Heading level="h6">Advanced settings</Heading>
+        <Heading level="h3">Advanced settings</Heading>
       </CollapsibleSectionHeader>
       <CollapsibleSectionContent>
         <div className="flex flex-col gap-6">
