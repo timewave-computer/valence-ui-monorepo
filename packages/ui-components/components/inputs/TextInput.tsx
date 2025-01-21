@@ -12,7 +12,7 @@ const inputContainerVariants = cva(
         form: "bg-valence-lightgray outline-valence-blue focus-within:border-valence-blue ",
       },
       size: {
-        sm: "px-2 py-1.5 text-xs font-light",
+        sm: "px-2 py-1.5 text-xs ",
         base: "px-3 py-2 text-sm",
       },
       isError: {

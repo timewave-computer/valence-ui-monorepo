@@ -4,6 +4,7 @@ import {
   InputLabel,
   TextInput,
   TextInputProps,
+  TextAreaInput,
 } from "@valence-ui/ui-components";
 import { Fragment, useState } from "react";
 
@@ -59,7 +60,6 @@ const Inputs = () => {
                         suffix="%"
                       />
                     </Story>
-
                     <Story className="gap-0">
                       <InputLabel label={`Label`} size={size} />
 
@@ -77,6 +77,27 @@ const Inputs = () => {
                   </Fragment>
                 );
               })}
+            </Fragment>
+          );
+        })}
+        {sizes.map((size) => {
+          return (
+            <Fragment key={`textarea-${size}`}>
+              <Story className="gap-0 col-span-2">
+                <InputLabel label={`Label`} size={size} />
+
+                <TextAreaInput />
+              </Story>
+              <Story className="gap-0">
+                <InputLabel label={`Label`} size={size} />
+
+                <TextAreaInput isError={true} />
+              </Story>
+              <Story className="gap-0">
+                <InputLabel label={`Label`} size={size} />
+
+                <TextAreaInput isDisabled={true} />
+              </Story>
             </Fragment>
           );
         })}
