@@ -46,10 +46,12 @@ export default async function AuctionsPage() {
 async function LoaderWithSuspense() {
   const denomList = chainConfig.supportedRebalancerAssets.map((a) => a.denom);
   const [metadata, auctionsData] = await Promise.all([
-    fetchAssetMetadata({
-      denoms: denomList,
-      chainId: chainConfig.chain.chain_id,
-    }),
+    fetchAssetMetadata([
+      {
+        denoms: denomList,
+        chainId: chainConfig.chain.chain_id,
+      },
+    ]),
     fetchLiveAuctions(),
   ]);
 

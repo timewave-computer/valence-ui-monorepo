@@ -1,10 +1,24 @@
 "use server";
 import { OriginAsset } from "@/types/ibc";
-import { fetchOriginAssets } from ".";
+import { fetchOriginAssets } from "@/server/actions";
 
 export type FetchMetadataResponse = Record<string, OriginAsset>;
 
-export const fetchAssetMetadata = async ({
+export const fetchAssetMetadata = async (
+  chainList: Array<{
+    chainId: string;
+    denoms: string[];
+  }>,
+) => {
+  const promises = chainList.map(async (query) => {
+    return fetchMetadata(query);
+  });
+  const results = await Promise.all(promises);
+  // return key value obj, denom is key, metadata is value. to be used in cache
+  return combineDicts(results);
+};
+
+const fetchMetadata = async ({
   denoms,
   chainId,
 }: {
@@ -22,3 +36,9 @@ export const fetchAssetMetadata = async ({
   });
   return metadata;
 };
+
+function combineDicts<T>(arrayOfDicts: Record<string, T>[]): Record<string, T> {
+  return arrayOfDicts.reduce((acc, dict) => {
+    return { ...acc, ...dict };
+  }, {});
+}
