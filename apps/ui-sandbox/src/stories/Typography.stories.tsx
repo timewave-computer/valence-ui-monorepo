@@ -4,61 +4,40 @@ import { Heading, LinkText } from "@valence-ui/ui-components";
 const Typography = () => (
   <Section>
     <>
-      <Story>
+      <Story label="headings" className="flex flex-col gap-1">
         <Heading level="h1">Heading 1</Heading>
-      </Story>
-      <Story>
         <Heading level="h2">Heading 2</Heading>
-      </Story>
-      <Story>
         <Heading level="h3">Heading 3</Heading>
-      </Story>
-      <Story>
         <Heading level="h4">Heading 4 (also large input label)</Heading>
-      </Story>
-      <Story>
         <Heading level="h5">Heading 5</Heading>
-      </Story>
-      <Story>
         <Heading level="h6">Heading 6 (also small input label)</Heading>
       </Story>
 
-      <Story>
+      <Story label="text" className="flex flex-col gap-1 pt-2">
         <p>Paragraph</p>
-      </Story>
-      <Story>
         <p className="text-sm">Paragraph small</p>
+        <p className="font-mono">data</p>
+        <p className="font-mono text-sm">data small</p>
       </Story>
-      <Story>
-        <LinkText variant="primary" href="#">
-          Primary link
-        </LinkText>
-      </Story>
-      <Story>
-        <LinkText variant="secondary" href="#">
-          Secondary link
-        </LinkText>
-      </Story>
-      <Story>
-        <LinkText variant="highlighted" href="#">
-          Highlighted link
-        </LinkText>
-      </Story>
-      <Story>
+
+      <Story label="links" className="flex flex-col gap-1 pt-2">
         <div className="flex flex-row gap-2">
           <LinkText variant="breadcrumb" href="#">
-            Breadcrumb
+            H1 Breadcrumb
           </LinkText>
           <Heading level="h1">/</Heading>
 
           <Heading level="h1">Current Page</Heading>
         </div>
-      </Story>
-      <Story>
-        <p className="font-mono">data</p>
-      </Story>
-      <Story>
-        <p className="font-mono text-sm">data small</p>
+        <LinkText variant="primary" href="#">
+          Primary link
+        </LinkText>
+        <LinkText variant="secondary" href="#">
+          Secondary link
+        </LinkText>
+        <LinkText variant="highlighted" href="#">
+          Highlighted link
+        </LinkText>
       </Story>
     </>
   </Section>
