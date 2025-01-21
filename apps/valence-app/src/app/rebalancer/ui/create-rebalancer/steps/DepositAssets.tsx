@@ -2,9 +2,8 @@ import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { useWallet, useWalletBalances } from "@/hooks";
-import { cn, displayNumber, displayValue, microToBase } from "@/utils";
+import { displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
-import { Checkbox } from "@/components";
 import {
   FormField,
   HoverContent,
@@ -17,8 +16,8 @@ import {
   InfoText,
   TableCell,
   CalloutBox,
-  Table,
   Heading,
+  Checkbox,
 } from "@valence-ui/ui-components";
 import { chainConfig } from "@/const/config";
 import {
@@ -383,7 +382,7 @@ const DepositAssetsLayout: React.FC<{
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <Heading level="h6">
+        <Heading level="h3">
           {" "}
           {CreateRebalancerCopy.step_SelectAssets.title}
         </Heading>

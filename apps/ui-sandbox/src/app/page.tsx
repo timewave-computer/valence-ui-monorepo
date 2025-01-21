@@ -6,7 +6,7 @@ export default function Home() {
   const stories = getStories();
   return (
     <div className="flex flex-col gap-1">
-      <StoryLabel className="text-h5">All</StoryLabel>
+      <StoryLabel className="text-h2">All</StoryLabel>
 
       {stories.map((story: GetStories[number]) => {
         const StoryComponent = dynamic(

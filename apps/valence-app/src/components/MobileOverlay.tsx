@@ -19,7 +19,7 @@ export const MobileOverlay = ({ text }: { text: string }) => {
           height={80}
           className="mb-10 self-center"
         />
-        <Heading level="h4">{text}</Heading>
+        <Heading level="h1">{text}</Heading>
         <p className="pt-4 font-mono ">Please visit from a computer.</p>
         <button
           className="pt-12 font-mono text-valence-blue hover:underline"

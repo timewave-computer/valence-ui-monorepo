@@ -1,5 +1,5 @@
 "use client";
-import { cn, displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
+import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
@@ -9,6 +9,7 @@ import {
   SheetTrigger,
   Button,
   Label,
+  cn,
 } from "@valence-ui/ui-components";
 import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
@@ -148,7 +149,7 @@ export const ValenceAppNav = () => {
           </SheetTrigger>
 
           <SheetContent>
-            <div className=" flex flex-col gap-8 p-4 text-h5">{links}</div>
+            <div className=" flex flex-col gap-8 p-4 text-h2">{links}</div>
           </SheetContent>
         </Sheet>
       </div>

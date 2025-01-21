@@ -1,12 +1,7 @@
 "use client";
 import { UseFormReturn } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer/create-rebalancer";
-import {
-  Dropdown,
-  DropdownOption,
-  RadioGroup,
-  RadioGroupItem,
-} from "@/components";
+import { Dropdown, DropdownOption } from "@/components";
 import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
@@ -18,6 +13,8 @@ import {
   TextInput,
   LinkText,
   Heading,
+  RadioGroup,
+  RadioGroupItem,
 } from "@valence-ui/ui-components";
 import { TargetOverrideStrategy } from "@/types/rebalancer";
 import { useMemo, useState } from "react";
@@ -63,7 +60,7 @@ export const AdvancedSettings: React.FC<{
   return (
     <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
       <CollapsibleSectionHeader>
-        <Heading level="h6">Advanced settings</Heading>
+        <Heading level="h3">Advanced settings</Heading>
       </CollapsibleSectionHeader>
       <CollapsibleSectionContent>
         <div className="flex flex-col gap-6">

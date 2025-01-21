@@ -18,7 +18,7 @@ const HomePage = () => {
 
           <div className="flex flex-col gap-12 md:grid grid-cols-3 flex-wrap  items-center justify-center">
             <div className="flex flex-col gap-4 min-h-[300px] max-w-[360px] w-full justify-between border border-black p-4 ">
-              <h2 className="   text-h6 font-semibold">Covenants</h2>
+              <h2 className="   text-h3 font-semibold">Covenants</h2>
 
               <Image
                 src="/img/covenant.svg"
@@ -38,7 +38,7 @@ const HomePage = () => {
               </Link>
             </div>
             <div className=" flex flex-col gap-4 min-h-[300px] max-w-[360px] w-full justify-between border border-black p-4 ">
-              <h2 className="col-start-2 row-start-2   text-h6 font-semibold ">
+              <h2 className="col-start-2 row-start-2   text-h3 font-semibold ">
                 Rebalancer
               </h2>
               <Image
@@ -59,7 +59,7 @@ const HomePage = () => {
               </Link>
             </div>
             <div className=" flex flex-col gap-4 min-h-[300px] max-w-[360px] w-full justify-between border border-black p-4 ">
-              <h2 className="   text-h6 font-semibold ">Auctions</h2>
+              <h2 className="   text-h3 font-semibold ">Auctions</h2>
 
               <Image
                 src="/img/auctions.svg"

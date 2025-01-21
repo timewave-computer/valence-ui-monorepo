@@ -12,7 +12,7 @@ const infoTextVariants = cva("flex flex-row gap-2 items-center text-sm", {
     },
     size: {
       base: "text-sm",
-      lg: "text-h6 font-semibold",
+      lg: "text-h3 font-semibold",
     },
   },
   defaultVariants: {

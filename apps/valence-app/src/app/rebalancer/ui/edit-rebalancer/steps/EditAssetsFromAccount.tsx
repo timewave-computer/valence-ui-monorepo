@@ -3,7 +3,6 @@ import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
 import { displayNumber, displayValue } from "@/utils";
 import { produce } from "immer";
-import { Checkbox } from "@/components";
 import {
   NoFundsActionItems,
   SupportedAssets,
@@ -19,6 +18,7 @@ import {
   CalloutBox,
   TableCell,
   Heading,
+  Checkbox,
 } from "@valence-ui/ui-components";
 
 export const EditAssetsForAccount: React.FC<{
@@ -182,7 +182,7 @@ const DepositAssetsLayout: React.FC<{
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <Heading level="h6">
+        <Heading level="h3">
           {" "}
           {CreateRebalancerCopy.step_edit_SelectAssets.title}
         </Heading>

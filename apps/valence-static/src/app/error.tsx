@@ -33,7 +33,7 @@ export default function Error({
         height={140}
         className="mb-10 self-center"
       />
-      <h2 className="font-mono text-h4 text-valence-black ">
+      <h2 className="font-mono text-h1 text-valence-black ">
         Something went wrong.
       </h2>
     </ErrorSplash>

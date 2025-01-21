@@ -130,7 +130,7 @@ export const SetTargets: React.FC<{
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <Heading level="h6">
+        <Heading level="h3">
           {" "}
           {CreateRebalancerCopy.step_SelectTargets.title}
         </Heading>

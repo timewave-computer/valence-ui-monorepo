@@ -73,7 +73,7 @@ export const PreviewMessage: React.FC<{
   return (
     <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
       <CollapsibleSectionHeader>
-        <Heading level="h6">Preview transaction</Heading>
+        <Heading level="h3">Preview transaction</Heading>
       </CollapsibleSectionHeader>
       <CollapsibleSectionContent>
         <div className="flex w-full flex-col gap-6">

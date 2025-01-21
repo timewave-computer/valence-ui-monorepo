@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from "@valence-ui/ui-components";
 import { motion } from "framer-motion";
 import { ReactNode, forwardRef } from "react";
 

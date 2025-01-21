@@ -2,20 +2,19 @@ import { Button, cn } from "@valence-ui/ui-components";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import Link from "next/link";
-import { Footer } from "~/components";
 import { VALENCE_APP_URL } from "~/const";
 
 const Hero = ({ className }: { className?: string }) => {
   return (
     <>
-      <h2
+      <h1
         className={cn(
           "text-balance px-4 md:px-0  font-serif text-[2.5rem] leading-[0.9]  md:text-[4.7rem]",
           className,
         )}
       >
         Tools for long-term, permissionless collaboration
-      </h2>
+      </h1>
 
       <Image
         src="/img/hero.svg"
@@ -36,7 +35,7 @@ const InterchainGuild = ({ className }: { className?: string }) => {
         className,
       )}
     >
-      <h2 className="text-h6 font-semibold px-4 md:px-0">Interchain Guild</h2>
+      <h3 className="text-h3 font-semibold px-4 md:px-0">Interchain Guild</h3>
 
       <p className="mb-4 mt-2 px-4 md:px-0 ">
         Free and open source software is the foundation of crypto-native
@@ -66,9 +65,9 @@ const HomePage = () => {
         </div>
 
         <div className="flex flex-col gap-x-10  border-valence-black  border-t md:border-0   md:grid md:grid-cols-2">
-          <h2 className="col-start-1 row-start-1 px-4 md:px-0  text-h6 font-semibold  pt-4">
+          <h3 className="col-start-1 row-start-1 px-4 md:px-0  text-h3 font-semibold  pt-4">
             Covenants
-          </h2>
+          </h3>
           <p className="col-start-1 row-start-2 py-4 pt-2 px-4 md:px-0">
             Covenants enable trust-minimized agreements between crypto-native
             organizations. Use Covenants to lend protocol-owned assets to other
@@ -106,9 +105,9 @@ const HomePage = () => {
           />
           <div className=" col-start-1 row-start-5 mt-12 border-b border-black" />
 
-          <h2 className="col-start-2 row-start-1 px-4 md:px-0 border-valence-black   pt-4 text-h6 font-semibold ">
+          <h3 className="col-start-2 row-start-1 px-4 md:px-0 border-valence-black   pt-4 text-h3 font-semibold ">
             Rebalancer
-          </h2>
+          </h3>
           <p className="col-start-2 row-start-2 py-4 pt-2 px-4 md:px-0">
             The Rebalancer enables automated balance sheet and treasury
             management. Use the Rebalancer to efficiently convert tokens for

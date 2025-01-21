@@ -108,7 +108,7 @@ export const StaticAppNav = () => {
           </SheetTrigger>
 
           <SheetContent>
-            <div className=" flex flex-col gap-8 p-4 text-h5">
+            <div className=" flex flex-col gap-8 p-4 text-h2">
               {/* special case for mobile */}
               <NavLink href="/" label="Home" path={path} />
               {links}

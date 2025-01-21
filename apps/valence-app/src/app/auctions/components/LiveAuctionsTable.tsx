@@ -21,7 +21,6 @@ import {
   microToBase,
   useFeatureFlag,
   FeatureFlags,
-  cn,
 } from "@/utils";
 import { compareNumbers, compareStrings } from "@/utils/table-sorters";
 import { Fragment, useEffect, useMemo, useState } from "react";
@@ -38,8 +37,7 @@ import {
   TableCell,
   Sorter,
   Heading,
-  Table,
-  TableColumnHeader,
+  cn,
 } from "@valence-ui/ui-components";
 
 export function LiveAuctionsTable({
@@ -242,7 +240,7 @@ export function LiveAuctionsTable({
   return (
     <>
       <div className="flex min-h-[72px] flex-col items-center">
-        <Heading level="h5">Live Auctions</Heading>
+        <Heading level="h2">Live Auctions</Heading>
 
         <div className="pt-1 font-mono text-xs">
           <p className="text-center" suppressHydrationWarning>

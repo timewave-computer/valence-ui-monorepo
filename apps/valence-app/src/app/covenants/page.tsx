@@ -5,7 +5,7 @@ import {
   MobileOverlay,
   ValenceProductBrand,
 } from "@/components";
-import { FeatureFlags, cn, useFeatureFlag } from "@/utils";
+import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { useState } from "react";
 import Image from "next/image";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
@@ -20,7 +20,7 @@ import {
   ContractDisplayMode,
   POL_TYPE_PARTIES_OPTIONS,
 } from "@/app/covenants/const";
-import { Heading, InputLabel, LinkText } from "@valence-ui/ui-components";
+import { Heading, InputLabel, LinkText, cn } from "@valence-ui/ui-components";
 
 const CovenantPage = () => {
   const [covenantTypeSelection, setCovenantType] =
@@ -108,7 +108,7 @@ const CovenantPage = () => {
                 />
               }
             >
-              <Heading level="h4">Covenants (beta)</Heading>
+              <Heading level="h1">Covenants (beta)</Heading>
 
               <p className="pt-1">
                 Crypto-native agreements. Contact{" "}

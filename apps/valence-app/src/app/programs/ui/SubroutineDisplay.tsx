@@ -43,7 +43,7 @@ export const SubroutineDisplay = ({
             defaultIsOpen={false}
           >
             <CollapsibleSectionHeader>
-              <Heading level="h6">FunctionName ({authorization.label})</Heading>
+              <Heading level="h3">FunctionName ({authorization.label})</Heading>
             </CollapsibleSectionHeader>
             <CollapsibleSectionContent>
               <div className="flex flex-row gap-2 pt-2">
@@ -51,7 +51,7 @@ export const SubroutineDisplay = ({
                 {<Label>{atomicSubroutine ? "atomic" : "nonatomic"}</Label>}
               </div>
 
-              <Heading level="h7">Functions</Heading>
+              <Heading level="h1">Functions</Heading>
               <div>
                 {functions?.map((func, i) => {
                   return (
@@ -63,7 +63,7 @@ export const SubroutineDisplay = ({
                       key={`function-${func.contract_address}-${i}`}
                     >
                       <CollapsibleSectionHeader className="font-medium text-sm">
-                        <Heading level="h8"> Function Name</Heading>
+                        <Heading level="h2"> Function Name</Heading>
                       </CollapsibleSectionHeader>
                       <CollapsibleSectionContent>
                         <PrettyJson data={func.message_details} />

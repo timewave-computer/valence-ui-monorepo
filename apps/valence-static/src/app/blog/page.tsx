@@ -50,7 +50,7 @@ const BlogHome = async () => {
     return (
       <div className="min-h-1/2 flex grow flex-col items-start gap-12 pb-8">
         <div className="flex flex-col items-start gap-4 text-left">
-          <h2 className="pt-4 font-mono text-h4 text-valence-black ">
+          <h2 className="pt-4 font-mono text-h1 text-valence-black ">
             There was a problem loading the blog.
           </h2>
           <RouterButton
@@ -92,7 +92,7 @@ const BlogHome = async () => {
               width={400}
               height={300}
             />
-            <p className=" col-span-4  col-start-3  row-start-2 text-pretty text-h6 ">
+            <p className=" col-span-4  col-start-3  row-start-2 text-pretty text-h3 ">
               {trimContent(post.preview)}
             </p>
           </Link>

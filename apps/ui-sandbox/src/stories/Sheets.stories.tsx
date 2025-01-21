@@ -15,7 +15,7 @@ const Buttons = () => (
           <Button variant="secondary">Show Sheet</Button>
         </SheetTrigger>
         <SheetContent side="right">
-          <Heading level="h5">Sheet Title</Heading>
+          <Heading level="h2">Sheet Title</Heading>
           Sheet content.
         </SheetContent>
       </Sheet>

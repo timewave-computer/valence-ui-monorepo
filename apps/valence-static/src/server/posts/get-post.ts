@@ -98,7 +98,6 @@ export const getPost = async (slug: string): Promise<Post> => {
     .use(rehypeRaw) // Parse the raw HTML inside the markdown
     .use(labelImagePTags) // Custom plugin to add class to <p> containing <img>
     .use(wrapHeadingsInDiv) // Custom plugin to wrap <h1> and <h2> in a <div>
-
     .use(insertH1BorderDivs) // MUST run after wrapHeadingsInDiv
     .use(rehypeStringify) // Stringify the rehype tree back to HTML
     .process(content);

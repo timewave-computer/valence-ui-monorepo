@@ -53,7 +53,7 @@ export const ToastMessage: React.FC<ToastMessageProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-1.5 overflow-x-scroll">
-      <Heading className={cn(toastVariants({ variant, className }))} level="h4">
+      <Heading className={cn(toastVariants({ variant, className }))} level="h2">
         {title}
       </Heading>
       <div className="flex flex-col gap-1 ">{children}</div>

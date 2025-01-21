@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/utils";
+import { cn } from "@valence-ui/ui-components";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { BsCheck2, BsChevronDown } from "react-icons/bs";
 

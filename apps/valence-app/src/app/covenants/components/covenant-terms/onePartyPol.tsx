@@ -241,7 +241,7 @@ export const onePartyPol: CovenantFields = {
       a.chainId;
     return (
       <>
-        <h1 className="text-h5 font-bold">I. Summary</h1>
+        <h1 className="text-h2 font-bold">I. Summary</h1>
 
         <p>
           <AFieldRenderer>{aName}</AFieldRenderer> proposes to enter into a
@@ -268,9 +268,9 @@ export const onePartyPol: CovenantFields = {
           This swap will happen entirely on-chain without any intermediaries.
         </p>
 
-        <h1 className="text-h5 font-bold">II. Liquidity Provisioning Terms</h1>
+        <h1 className="text-h2 font-bold">II. Liquidity Provisioning Terms</h1>
 
-        <h2 className="text-h6 font-semibold">
+        <h2 className="text-h3 font-semibold">
           A. <AFieldRenderer>{aName}</AFieldRenderer> Details
         </h2>
 
@@ -286,7 +286,7 @@ export const onePartyPol: CovenantFields = {
           directed to <AFieldRenderer>{a.returnedAssetDest}</AFieldRenderer> on{" "}
           <AFieldRenderer>{aSource}</AFieldRenderer>.
         </p>
-        <h2 className="text-h6 font-semibold">C. Deposit Deadline</h2>
+        <h2 className="text-h3 font-semibold">C. Deposit Deadline</h2>
 
         {!both.depositDeadlineStrategy ||
         both.depositDeadlineStrategy === "none" ? (
@@ -309,7 +309,7 @@ export const onePartyPol: CovenantFields = {
           </p>
         )}
 
-        <h2 className="text-h6 font-semibold">D. Withdrawal</h2>
+        <h2 className="text-h3 font-semibold">D. Withdrawal</h2>
 
         <p>
           After one party sends its assets to the Covenant, that party may
@@ -323,7 +323,7 @@ export const onePartyPol: CovenantFields = {
           <AFieldRenderer>{a.neutronAddress}</AFieldRenderer>.
         </p>
 
-        <h2 className="text-h6 font-semibold">E. Destination</h2>
+        <h2 className="text-h3 font-semibold">E. Destination</h2>
 
         <p>
           Once both parties have sent their assets to the Covenant, the Covenant
@@ -338,14 +338,14 @@ export const onePartyPol: CovenantFields = {
           .
         </p>
 
-        <h2 className="text-h6 font-semibold">F. Duration</h2>
+        <h2 className="text-h3 font-semibold">F. Duration</h2>
 
         <p>
           The assets will remain in the LP position for{" "}
           <BothFieldRenderer>{both.lpHoldDays}</BothFieldRenderer> days.
         </p>
 
-        <h2 className="text-h6 font-semibold">G. Redemption</h2>
+        <h2 className="text-h3 font-semibold">G. Redemption</h2>
 
         {!both.completionTrigger || both.completionTrigger === "automatic" ? (
           <p>
@@ -393,7 +393,7 @@ export const onePartyPol: CovenantFields = {
           </p>
         ) : null}
 
-        <h2 className="text-h6 font-semibold">H. Early exit</h2>
+        <h2 className="text-h3 font-semibold">H. Early exit</h2>
 
         {both.ragequitAllowed ? (
           <p>
@@ -416,7 +416,7 @@ export const onePartyPol: CovenantFields = {
           </p>
         )}
 
-        <h2 className="text-h6 font-semibold">I. Slippage protection</h2>
+        <h2 className="text-h3 font-semibold">I. Slippage protection</h2>
 
         <p>
           The Covenant expects a ratio of 1{" "}
@@ -458,7 +458,7 @@ export const onePartyPol: CovenantFields = {
           assets to <AFieldRenderer>{aName}</AFieldRenderer>.
         </p>
 
-        <h2 className="text-h6 font-semibold">J. Fallback split</h2>
+        <h2 className="text-h3 font-semibold">J. Fallback split</h2>
 
         <p>
           Certain circumstances may lead to unforeseen assets accruing within
@@ -469,7 +469,7 @@ export const onePartyPol: CovenantFields = {
           will be directed to <AFieldRenderer>{aName}</AFieldRenderer>.
         </p>
 
-        <h2 className="text-h6 font-semibold">K. Emergency administrator</h2>
+        <h2 className="text-h3 font-semibold">K. Emergency administrator</h2>
 
         {both.emergencyAdminEnabled ? (
           <p>
@@ -480,7 +480,7 @@ export const onePartyPol: CovenantFields = {
           <p>This covenant does not have an emergency administrator.</p>
         )}
 
-        <h1 className="text-h5 font-bold">III. Next Steps</h1>
+        <h1 className="text-h2 font-bold">III. Next Steps</h1>
 
         <p>
           This proposal was automatically generated at {VALENCE_DOMAIN}. Reach
