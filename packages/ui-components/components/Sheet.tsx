@@ -25,14 +25,14 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  "fixed  z-40 gap-4 bg-valence-white border-valence-black p-6 shadow-lg transition ease-in-out text-valence-black ",
+  "fixed  z-40 flex flex-col gap-4 bg-valence-white border-valence-black p-6 shadow-md transition ease-in-out text-valence-black overflow-y-scroll overflow-x-scroll ",
   {
     variants: {
       side: {
         top: "inset-x-0 top-0 border-b ",
         bottom: "inset-x-0 bottom-0 border-t",
-        left: "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm",
-        right: "inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
+        left: "inset-y-0 left-0 h-full  w-1/3 border-r ",
+        right: "inset-y-0 right-0 h-full w-1/3 border-l",
       },
     },
     defaultVariants: {
@@ -53,7 +53,7 @@ const SheetContent = React.forwardRef<
     <SheetOverlay />
     <SheetPrimitive.Content
       ref={ref}
-      className={cn(sheetVariants({ side }), className)}
+      className={cn(sheetVariants({ side, className }))}
       {...props}
     >
       {children}

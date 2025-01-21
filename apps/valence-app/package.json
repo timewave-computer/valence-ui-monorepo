@@ -29,7 +29,6 @@
     "@valence-ui/socials": "*",
     "@valence-ui/fonts": "*",
     "@valence-ui/ui-components": "*",
-    "@xyflow/react": "^12.3.5",
     "chain-registry": "^1.63.89",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

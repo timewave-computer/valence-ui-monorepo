@@ -6,8 +6,10 @@ import {
   QueryConfig,
   ProgramParserResult,
   QueryConfigManager,
+  NormalizedAccounts,
 } from "@/app/programs/server";
 import { getDefaultMainChainConfig } from "@/app/programs/server";
+import { fetchAssetMetadata } from "@/server/actions";
 
 type GetProgramDataProps = {
   programId: string;
@@ -57,26 +59,28 @@ const _getProgramData = async ({
 
   const program = ProgramParser.extractData(rawProgram);
 
-  const { accounts, links, libraries } = program;
+  const { accounts } = program;
 
   queryConfigManager.setAllChainsConfigIfEmpty(accounts);
   const completeQueryConfig = queryConfigManager.getQueryConfig();
 
-  const balances = await queryAccountBalances(accounts, completeQueryConfig);
+  const accountBalances = await queryAccountBalances(
+    accounts,
+    completeQueryConfig,
+  );
 
-  // const { edges, nodes } = NodeComposer.generate({
-  //   program: {
-  //     accounts,
-  //     libraries,
-  //     links,
-  //   },
-  //   accountBalances: balances,
-  // });
+  const metadataToFetch = getDenomsAndChainIds({
+    balances: accountBalances,
+    accounts,
+  });
+  const metadata = await fetchAssetMetadata(metadataToFetch);
 
   return {
     queryConfig: completeQueryConfig,
-    balances,
+    balances: accountBalances,
     ...program,
+    rawProgram,
+    metadata,
   };
 };
 
@@ -121,3 +125,45 @@ const queryAccountBalances = async (
   });
   return Promise.all(requests);
 };
+
+type AccountBalancesReturnValue = Awaited<
+  ReturnType<typeof queryAccountBalances>
+>;
+
+function getDenomsAndChainIds({
+  balances,
+  accounts,
+}: {
+  balances: AccountBalancesReturnValue;
+  accounts: NormalizedAccounts;
+}) {
+  const unflattenedMetadataQueries = balances.map((account) => {
+    const acct = Object.values(accounts).find(
+      (a) => a.addr === account.address,
+    );
+    const chainId = acct?.chainId;
+    if (!chainId) {
+      throw new Error(`No chain ID found for account ${account.address}`);
+    }
+    const denoms = account.balances.map((balance) => balance.denom);
+    return {
+      chainId,
+      denoms,
+    };
+  });
+  // flatten denomList if same chainId
+  const metadataQueries = unflattenedMetadataQueries.reduce(
+    (acc, curr) => {
+      const existing = acc.find((a) => a.chainId === curr.chainId);
+      if (existing) {
+        existing.denoms = [...existing.denoms, ...curr.denoms];
+      } else {
+        acc.push(curr);
+      }
+      return acc;
+    },
+    [] as { chainId: string; denoms: string[] }[],
+  );
+
+  return metadataQueries;
+}
