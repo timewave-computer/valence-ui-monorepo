@@ -2,57 +2,51 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "../../utils";
 
-const inputContainerVariants = cva(
-  "flex w-full cursor-text flex-row items-center gap-2 font-mono border border-valence-mediumgray transition-all px-2 overflow-clip focus-within:outline outline-offset-0 outline-[0.4px]",
+const textareaVariants = cva(
+  "flex w-full cursor-text flex-row items-center gap-2 font-mono border border-valence-mediumgray transition-all px-2 overflow-y-scroll outline-none",
   {
     variants: {
-      variant: {
-        primary: "outline-none",
-        form: "bg-valence-lightgray outline-valence-blue focus-within:border-valence-blue ",
-      },
       size: {
-        sm: "px-2 py-1.5 text-xs font-light",
+        sm: "px-2 py-1.5 text-xs",
         base: "px-3 py-2 text-sm",
       },
       isError: {
-        true: "border-valence-red outline-valence-red focus-within:border-valence-red",
+        true: "border-valence-red  focus-within:border-valence-red",
       },
       isDisabled: {
         true: "!bg-valence-mediumgray !border-valence-gray cursor-not-allowed",
       },
     },
     defaultVariants: {
-      variant: "primary",
       size: "base",
     },
   },
 );
 
 interface TextAreaInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLTextAreaElement>, "size">,
-    VariantProps<typeof inputContainerVariants> {}
+  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "size">,
+    VariantProps<typeof textareaVariants> {}
 
 export const TextAreaInput = ({
   className,
-  variant,
   size,
   isError,
   isDisabled,
   value,
+  rows = 5,
   ...props
 }: TextAreaInputProps) => {
   return (
     <textarea
       className={cn(
-        inputContainerVariants({
-          variant,
+        textareaVariants({
           size,
           isError,
           className,
           isDisabled,
         }),
       )}
-      rows={5}
+      rows={rows}
       value={isDisabled ? "" : value}
       {...(isDisabled && { disabled: true })}
       onKeyDown={(e) => {

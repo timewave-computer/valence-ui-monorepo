@@ -78,6 +78,12 @@ export const mockProgram2 = {
                     {
                       must_be_included: ["process_function", "split"],
                     },
+                    {
+                      must_be_value: [
+                        ["process_function", "split", "ratio"],
+                        "0.5",
+                      ],
+                    },
                   ],
                 },
               },

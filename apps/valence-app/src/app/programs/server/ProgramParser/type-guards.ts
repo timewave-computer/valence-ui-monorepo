@@ -2,6 +2,7 @@ import {
   AtomicSubroutine,
   AuthorizationModeInfo,
   NonAtomicSubroutine,
+  ParamRestriction,
   PermissionTypeInfo,
   Subroutine,
 } from "@valence-ui/generated-types";
@@ -30,4 +31,18 @@ export function isNonAtomicSubroutine(obj: Subroutine): obj is {
   non_atomic: NonAtomicSubroutine;
 } {
   return typeof obj === "object" && obj !== null && "non_atomic" in obj;
+}
+
+export function isMustBeIncludedParamRestriction(
+  restriction: ParamRestriction,
+) {
+  return "must_be_included" in restriction;
+}
+export function isCannotBeIncludedParamRestriction(
+  restriction: ParamRestriction,
+) {
+  return "cannot_be_included" in restriction;
+}
+export function isMustBeValueParamRestriction(restriction: ParamRestriction) {
+  return "must_be_value" in restriction;
 }

@@ -48,7 +48,6 @@ const Inputs = () => {
                     </Story>
                     <Story className="gap-0">
                       <InputLabel label={`Label`} size={size} />
-
                       <TextInput
                         size={size}
                         variant={variant}

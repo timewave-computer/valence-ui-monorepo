@@ -5,5 +5,5 @@ export * from "./AccountTable";
 export * from "./ExecutionHistoryTable";
 export * from "./SubroutineDisplay";
 export * from "./ProcessorDisplay";
-export * from "./display";
 export * from "./ProgramViewer";
+export * from "./lib";

@@ -1,18 +1,24 @@
 import {
-  isAtomicSubroutine,
-  isNonAtomicSubroutine,
+  isPermissionless,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import {
+  Button,
   cn,
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
   Heading,
+  InputLabel,
   Label,
-  PrettyJson,
+  TextAreaInput,
 } from "@valence-ui/ui-components";
-import { displayAuthMode } from "@/app/programs/ui";
+import {
+  displayAuthMode,
+  displaySubroutineType,
+  generateMessageBody,
+  getSubroutine,
+} from "@/app/programs/ui";
 
 export const SubroutineDisplay = ({
   program,
@@ -22,16 +28,9 @@ export const SubroutineDisplay = ({
   return (
     <div>
       {program.authorizations.map((authorization, i) => {
-        const subroutine = authorization.subroutine;
-        const atomicSubroutine = isAtomicSubroutine(subroutine)
-          ? subroutine.atomic
-          : null;
-        const nonAtomicSubroutine = isNonAtomicSubroutine(subroutine)
-          ? subroutine.non_atomic
-          : null;
-
-        const functions =
-          atomicSubroutine?.functions ?? nonAtomicSubroutine?.functions;
+        const subroutine = getSubroutine(authorization.subroutine);
+        const functions = subroutine.functions;
+        const isAuthorized = isPermissionless(authorization.mode);
 
         return (
           <CollapsibleSectionRoot
@@ -48,12 +47,17 @@ export const SubroutineDisplay = ({
             <CollapsibleSectionContent>
               <div className="flex flex-row gap-2 pt-2">
                 <Label>{displayAuthMode(authorization.mode)}</Label>
-                {<Label>{atomicSubroutine ? "atomic" : "nonatomic"}</Label>}
+                {
+                  <Label>
+                    {displaySubroutineType(authorization.subroutine)}
+                  </Label>
+                }
               </div>
-
-              <Heading level="h1">Functions</Heading>
+              <Heading level="h4">Functions</Heading>
               <div>
                 {functions?.map((func, i) => {
+                  const messageBody = generateMessageBody(func.message_details);
+                  const defaultMessage = JSON.stringify(messageBody, null, 2);
                   return (
                     <CollapsibleSectionRoot
                       variant={"primary"}
@@ -63,10 +67,22 @@ export const SubroutineDisplay = ({
                       key={`function-${func.contract_address}-${i}`}
                     >
                       <CollapsibleSectionHeader className="font-medium text-sm">
-                        <Heading level="h2"> Function Name</Heading>
+                        <Heading level="h5"> Function Name</Heading>
                       </CollapsibleSectionHeader>
+
                       <CollapsibleSectionContent>
-                        <PrettyJson data={func.message_details} />
+                        <div>
+                          <InputLabel label="Message" size="sm" />
+                          <TextAreaInput
+                            size="sm"
+                            rows={Math.min(34, countJsonKeys(messageBody) + 4)}
+                            isDisabled={!isAuthorized}
+                            defaultValue={defaultMessage}
+                          />
+                        </div>
+                        <Button className="pt-1" variant="secondary">
+                          Reset Message
+                        </Button>
                       </CollapsibleSectionContent>
                     </CollapsibleSectionRoot>
                   );
@@ -79,3 +95,21 @@ export const SubroutineDisplay = ({
     </div>
   );
 };
+
+function countJsonKeys(obj: any): number {
+  let count = 0;
+
+  function countKeys(o: any) {
+    if (typeof o === "object" && o !== null) {
+      for (const key in o) {
+        if (o.hasOwnProperty(key)) {
+          count++;
+          countKeys(o[key]);
+        }
+      }
+    }
+  }
+
+  countKeys(obj);
+  return count;
+}
