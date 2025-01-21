@@ -32,27 +32,27 @@ function labelImagePTags() {
 }
 
 /***
- * inserts div.h2 border for styline
+ * inserts div.h1 border for styline
  * MUST be called after wrapHeadingsInDiv
  */
 function insertH2BorderDivs() {
   //@ts-ignore
   return (tree) => {
     visit(tree, "element", (node, index, parent) => {
-      if (node.properties?.className?.includes("h2-container")) {
+      if (node.properties?.className?.includes("h1-container")) {
         // Check if the previous sibling is already an h1-border div
         // avoids infinite loop
         if (
           parent &&
           typeof index === "number" &&
           parent.children[index - 1]?.properties?.className?.includes(
-            "h2-border",
+            "h1-border",
           )
         ) {
           return;
         }
         // Create a new div element to insert above the heading wrapper
-        const aboveDiv = h("div.h2-border", []);
+        const aboveDiv = h("div.h1-border", []);
 
         // Replace the original node with the wrapper div in the parent's children array
         if (parent && typeof index === "number") {
@@ -71,29 +71,14 @@ function insertH2BorderDivs() {
 function wrapHeadingsInDiv() {
   return (tree) => {
     visit(tree, ["element"], (node, index, parent) => {
-      if (node.tagName === "h2" || node.tagName === "h3") {
+      if (node.tagName === "h1" || node.tagName === "h2") {
         const selector =
-          node.tagName === "h2" ? "div.h2-container" : "div.h3-container";
+          node.tagName === "h1" ? "div.h1-container" : "div.h2-container";
         const wrapperDiv = h(selector, [node]); // wrap node in div with className  = h1-container or h2-container
         // Replace the original node with the wrapper div in the parent's children array
         if (parent && typeof index === "number") {
           parent.children.splice(index, 1, wrapperDiv);
         }
-      }
-    });
-  };
-}
-
-/***
- * transform h1 to h2 and h2 to h3
- */
-function transformHeadings() {
-  return (tree) => {
-    visit(tree, "element", (node) => {
-      if (node.tagName === "h1") {
-        node.tagName = "h2";
-      } else if (node.tagName === "h2") {
-        node.tagName = "h3";
       }
     });
   };
@@ -111,9 +96,8 @@ export const getPost = async (slug: string): Promise<Post> => {
     .use(remarkParse) // Parse the markdown content
     .use(remarkRehype, { allowDangerousHtml: true }) // Convert to rehype (HTML AST), allowing raw HTML
     .use(rehypeRaw) // Parse the raw HTML inside the markdown
-    .use(transformHeadings) // Custom plugin to transform h1 to h2 and h2 to h3
     .use(labelImagePTags) // Custom plugin to add class to <p> containing <img>
-    .use(wrapHeadingsInDiv) // Custom plugin to wrap <h2> and <h3> in a <div>
+    .use(wrapHeadingsInDiv) // Custom plugin to wrap <h1> and <h2> in a <div>
     .use(insertH2BorderDivs) // MUST run after wrapHeadingsInDiv
     .use(rehypeStringify) // Stringify the rehype tree back to HTML
     .process(content);
