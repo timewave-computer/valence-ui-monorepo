@@ -7,6 +7,7 @@ import {
   FormRoot,
   FormSubmit,
   Heading,
+  InfoText,
   InputLabel,
   PrettyJson,
   TextAreaInput,
@@ -16,6 +17,7 @@ import {
 import { generateMessageBody } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
 import { AtomicFunction, NonAtomicFunction } from "@valence-ui/generated-types";
+import { useEffect } from "react";
 
 interface SubroutineMessageFormValues {
   messages: string[];
@@ -27,16 +29,32 @@ export const ExecutableSubroutine = ({
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
 }) => {
-  const { watch, setValue, getValues, register, resetField } =
-    useForm<SubroutineMessageFormValues>({
-      defaultValues: {
-        messages: functions.map((subroutineFunction) => {
-          return jsonToIndentedText(
-            generateMessageBody(subroutineFunction.message_details),
-          );
-        }),
-      },
+  const {
+    watch,
+    getValues,
+    register,
+    resetField,
+    formState: { errors },
+    trigger,
+  } = useForm<SubroutineMessageFormValues>({
+    defaultValues: {
+      messages: functions.map((subroutineFunction) => {
+        return jsonToIndentedText(
+          generateMessageBody(subroutineFunction.message_details),
+        );
+      }),
+    },
+  });
+
+  useEffect(() => {
+    // to trigger rerender for validation errors
+    const subscription = watch((value, { name, type }) => {
+      if (name?.startsWith("messages")) {
+        trigger(name);
+      }
     });
+    return () => subscription.unsubscribe();
+  }, [watch, trigger]);
 
   const handleExecuteMessage = (values: SubroutineMessageFormValues) => {
     try {
@@ -50,21 +68,18 @@ export const ExecutableSubroutine = ({
       );
     } catch (e) {
       toast.error(
-        <ToastMessage variant="error" title="Failed to execute messages">
-          {" "}
-          {e.message}{" "}
+        <ToastMessage variant="error" title="Failed to execute">
+          {e.message}
         </ToastMessage>,
       );
       console.log("error", e);
     }
   };
-  const vals = watch();
 
   return (
     <div>
       <FormRoot
         onSubmit={(e) => {
-          console.log("in form submit");
           e.preventDefault();
           const vals = getValues();
           return handleExecuteMessage(vals);
@@ -74,7 +89,6 @@ export const ExecutableSubroutine = ({
           {functions?.map((func, i) => {
             const messageBody = generateMessageBody(func.message_details);
             const textAreaSize = Math.min(34, countJsonKeys(messageBody) + 4);
-            const textareaRef = register(`messages.${i}`, { required: true });
 
             return (
               <div
@@ -86,17 +100,30 @@ export const ExecutableSubroutine = ({
                 <FormField name={`messages.${i}`}>
                   <InputLabel label="Message" size="sm" />
                   <TextAreaInput
-                    placeholder="{/n}"
-                    value={vals.messages[i]}
-                    ref={textareaRef.ref}
-                    name={`messages.${i}`}
-                    onChange={(e) => {
-                      setValue(`messages.${i}`, e.target.value);
-                    }}
+                    placeholder="{...}"
+                    {...register(`messages.${i}`, {
+                      validate: {
+                        checkValidJson: (value) => {
+                          try {
+                            JSON.parse(value);
+                            return true;
+                          } catch (e) {
+                            return "Invalid JSON";
+                          }
+                        },
+                      },
+                    })}
                     size="sm"
                     rows={textAreaSize}
                     isDisabled={!isAuthorized}
                   />
+                  <div>
+                    {errors?.messages?.[i]?.type === "checkValidJson" && (
+                      <InfoText variant="error">
+                        {errors?.messages?.[i]?.message}
+                      </InfoText>
+                    )}
+                  </div>
                 </FormField>
                 <Button
                   onClick={(e) => {
@@ -116,7 +143,9 @@ export const ExecutableSubroutine = ({
           })}
         </div>
         <FormSubmit className="mt-4" asChild>
-          <Button disabled={!isAuthorized}>Execute</Button>
+          <Button disabled={!isAuthorized || !!errors.messages?.length}>
+            Execute
+          </Button>
         </FormSubmit>
       </FormRoot>
     </div>

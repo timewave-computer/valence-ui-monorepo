@@ -54,6 +54,33 @@ export const TextAreaInput = forwardRef<
         onKeyDown={(e) => {
           if (e.key === "Escape") {
             e.currentTarget.blur();
+          } else if (e.key === "Tab") {
+            e.preventDefault();
+            const textarea = e.currentTarget;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            if (e.shiftKey) {
+              // Handle Shift+Tab: remove spaces before the caret
+              const beforeCaret = textarea.value.substring(0, start);
+              const afterCaret = textarea.value.substring(end);
+              const match = beforeCaret.match(/(\s{1,2})$/);
+              if (match) {
+                const spacesToRemove = match[0].length;
+                textarea.value =
+                  beforeCaret.slice(0, -spacesToRemove) + afterCaret;
+                textarea.selectionStart = textarea.selectionEnd =
+                  start - spacesToRemove;
+              }
+            } else {
+              // Set textarea value to: text before caret + tab + text after caret
+              textarea.value =
+                textarea.value.substring(0, start) +
+                "  " +
+                textarea.value.substring(end);
+
+              // Put caret at right position again
+              textarea.selectionStart = textarea.selectionEnd = start + 2;
+            }
           }
         }}
         aria-invalid={!!isError}
