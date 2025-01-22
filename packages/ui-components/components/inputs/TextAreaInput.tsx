@@ -1,6 +1,7 @@
 "use client";
 import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "../../utils";
+import { forwardRef } from "react";
 
 const textareaVariants = cva(
   "flex w-full cursor-text flex-row items-center gap-2 font-mono border border-valence-mediumgray transition-all px-2 overflow-y-scroll outline-none",
@@ -27,40 +28,37 @@ interface TextAreaInputProps
   extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "size">,
     VariantProps<typeof textareaVariants> {}
 
-export const TextAreaInput = ({
-  className,
-  size,
-  isError,
-  isDisabled,
-  value,
-  rows = 5,
-  ...props
-}: TextAreaInputProps) => {
-  return (
-    <textarea
-      className={cn(
-        textareaVariants({
-          size,
-          isError,
-          className,
-          isDisabled,
-        }),
-      )}
-      rows={rows}
-      value={isDisabled ? "" : value}
-      {...(isDisabled && { disabled: true })}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          e.currentTarget.blur();
-        }
-        if (e.key === "Escape") {
-          e.currentTarget.blur();
-        }
-      }}
-      aria-invalid={!!isError}
-      aria-disabled={!!isDisabled}
-      {...props}
-    />
-  );
-};
+export const TextAreaInput = forwardRef<
+  HTMLTextAreaElement,
+  TextAreaInputProps
+>(
+  (
+    { className, size, isError, isDisabled, value, rows = 5, ...props },
+    ref,
+  ) => {
+    return (
+      <textarea
+        ref={ref}
+        {...props}
+        className={cn(
+          textareaVariants({
+            size,
+            isError,
+            className,
+            isDisabled,
+          }),
+        )}
+        rows={rows}
+        value={isDisabled ? "" : value}
+        {...(isDisabled && { disabled: true })}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            e.currentTarget.blur();
+          }
+        }}
+        aria-invalid={!!isError}
+        aria-disabled={!!isDisabled}
+      />
+    );
+  },
+);

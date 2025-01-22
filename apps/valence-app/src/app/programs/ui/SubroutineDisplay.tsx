@@ -1,22 +1,20 @@
+"use client";
 import {
   isPermissionless,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import {
-  Button,
   cn,
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
   Heading,
-  InputLabel,
   Label,
-  TextAreaInput,
 } from "@valence-ui/ui-components";
 import {
   displayAuthMode,
   displaySubroutineType,
-  generateMessageBody,
+  ExecutableSubroutine,
   getSubroutine,
 } from "@/app/programs/ui";
 
@@ -42,10 +40,10 @@ export const SubroutineDisplay = ({
             defaultIsOpen={false}
           >
             <CollapsibleSectionHeader>
-              <Heading level="h3">FunctionName ({authorization.label})</Heading>
+              <Heading level="h3">{authorization.label.toUpperCase()}</Heading>
             </CollapsibleSectionHeader>
             <CollapsibleSectionContent>
-              <div className="flex flex-row gap-2 pt-2">
+              <div className="flex flex-row gap-2 pb-4">
                 <Label>{displayAuthMode(authorization.mode)}</Label>
                 {
                   <Label>
@@ -53,41 +51,11 @@ export const SubroutineDisplay = ({
                   </Label>
                 }
               </div>
-              <Heading level="h4">Functions</Heading>
-              <div>
-                {functions?.map((func, i) => {
-                  const messageBody = generateMessageBody(func.message_details);
-                  const defaultMessage = JSON.stringify(messageBody, null, 2);
-                  return (
-                    <CollapsibleSectionRoot
-                      variant={"primary"}
-                      className={cn(
-                        i === 0 && functions.length > 1 && "border-b-0",
-                      )}
-                      key={`function-${func.contract_address}-${i}`}
-                    >
-                      <CollapsibleSectionHeader className="font-medium text-sm">
-                        <Heading level="h5"> Function Name</Heading>
-                      </CollapsibleSectionHeader>
-
-                      <CollapsibleSectionContent>
-                        <div>
-                          <InputLabel label="Message" size="sm" />
-                          <TextAreaInput
-                            size="sm"
-                            rows={Math.min(34, countJsonKeys(messageBody) + 4)}
-                            isDisabled={!isAuthorized}
-                            defaultValue={defaultMessage}
-                          />
-                        </div>
-                        <Button size="sm" className="pt-1" variant="secondary">
-                          Reset Message
-                        </Button>
-                      </CollapsibleSectionContent>
-                    </CollapsibleSectionRoot>
-                  );
-                })}
-              </div>
+              <ExecutableSubroutine
+                key={`subroutine-${authorization.label}-${i}`}
+                functions={functions}
+                isAuthorized={isAuthorized}
+              />
             </CollapsibleSectionContent>
           </CollapsibleSectionRoot>
         );
@@ -95,21 +63,3 @@ export const SubroutineDisplay = ({
     </div>
   );
 };
-
-function countJsonKeys(obj: any): number {
-  let count = 0;
-
-  function countKeys(o: any) {
-    if (typeof o === "object" && o !== null) {
-      for (const key in o) {
-        if (o.hasOwnProperty(key)) {
-          count++;
-          countKeys(o[key]);
-        }
-      }
-    }
-  }
-
-  countKeys(obj);
-  return count;
-}

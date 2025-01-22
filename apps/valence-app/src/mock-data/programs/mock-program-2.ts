@@ -100,7 +100,7 @@ export const mockProgram2 = {
                   name: "process_function",
                   params_restrictions: [
                     {
-                      must_be_included: ["process_function", "split"],
+                      must_be_included: ["process_function", "splitz"],
                     },
                   ],
                 },

@@ -7,3 +7,4 @@ export * from "./SubroutineDisplay";
 export * from "./ProcessorDisplay";
 export * from "./ProgramViewer";
 export * from "./lib";
+export * from "./ExecutableSubroutine";

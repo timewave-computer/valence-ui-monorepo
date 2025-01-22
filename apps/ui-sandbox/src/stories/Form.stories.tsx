@@ -7,7 +7,6 @@ import {
   TextInput,
   FormSubmit,
   Button,
-  Toaster,
   ToastMessage,
   toast,
   PrettyJson,
@@ -43,6 +42,7 @@ const Forms = () => {
           onSubmit={handleSubmit(handleSubmitForm)}
           className="flex flex-col gap-6 pt-4"
         >
+          {/* formfield required for handleSubmit from react-hook-form to work correctly */}
           <FormField name="name">
             <InputLabel label="Name" />
 

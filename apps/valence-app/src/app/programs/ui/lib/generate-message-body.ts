@@ -31,9 +31,7 @@ const generateCosmwasmMessageBody = (message: Message) => {
       // nothing to do, more relevant in validation
     } else if (isMustBeValueParamRestriction(restriction)) {
       const [keys, value] = restriction.must_be_value;
-      console.log("keys n value", keys, value);
       const nestedObject = constructNestedObject(keys, value);
-      console.log("nestedObj", nestedObject);
       Object.assign(contents, nestedObject);
     } else {
       console.warn(`Unsupported param restriction type. ${restriction}`);
