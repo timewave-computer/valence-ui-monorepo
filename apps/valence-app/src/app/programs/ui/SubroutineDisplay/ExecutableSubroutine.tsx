@@ -2,30 +2,20 @@
 import {
   Button,
   cn,
-  FormField,
   FormRoot,
   FormSubmit,
   Heading,
-  InfoText,
-  InputLabel,
   PrettyJson,
-  TextAreaInput,
   toast,
   ToastMessage,
 } from "@valence-ui/ui-components";
 import {
-  countJsonKeys,
+  FunctionMessageFormField,
   generateMessageBody,
   jsonToIndentedText,
-  validateJsonWithRestrictions,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
-import {
-  AtomicFunction,
-  NonAtomicFunction,
-  ParamRestriction,
-} from "@valence-ui/generated-types";
-import { useEffect, useState } from "react";
+import { AtomicFunction, NonAtomicFunction } from "@valence-ui/generated-types";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -37,15 +27,7 @@ export const ExecutableSubroutine = ({
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
 }) => {
-  const {
-    watch,
-    getValues,
-    register,
-    resetField,
-    formState: { errors },
-    setValue,
-  } = useForm<SubroutineMessageFormValues>({
-    criteriaMode: "all", // lets you add multiple errors per field
+  const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
       messages: functions.map((subroutineFunction) => {
         return jsonToIndentedText(
@@ -54,8 +36,7 @@ export const ExecutableSubroutine = ({
       }),
     },
   });
-
-  const [customErrors, setCustomErrors] = useState<CustomErrors>({});
+  const { getValues, resetField } = form;
 
   const handleExecuteMessage = (values: SubroutineMessageFormValues) => {
     try {
@@ -77,39 +58,6 @@ export const ExecutableSubroutine = ({
     }
   };
 
-  useEffect(() => {
-    const { unsubscribe } = watch((value) => {
-      console.log("watched", value);
-    });
-    return () => unsubscribe();
-  }, [watch]);
-
-  const handleValidateJson = ({
-    value,
-    restrictions,
-    index,
-  }: {
-    value: string;
-    restrictions: ParamRestriction[];
-    index: number;
-  }) => {
-    const validationErrors = validateJsonWithRestrictions(value, restrictions);
-
-    if (validationErrors.length > 0) {
-      setCustomErrors((prev) => ({
-        ...prev,
-        [`messages.${index}`]: {
-          types: validationErrors.reduce((acc, current) => {
-            acc[current] = current;
-            return acc;
-          }, {}),
-        },
-      }));
-    } else {
-      setCustomErrors((prev) => ({ ...prev, [`messages.${index}`]: {} }));
-    }
-  };
-
   return (
     <div>
       <FormRoot
@@ -121,58 +69,24 @@ export const ExecutableSubroutine = ({
       >
         <div className="flex flex-col gap-4">
           {functions?.map((func, i) => {
-            const messageBody = generateMessageBody(func.message_details);
-            const textAreaSize = Math.min(34, countJsonKeys(messageBody) + 4);
-
-            const fieldRef = register(`messages.${i}`, {});
-
             return (
               <div
                 className={cn(i === 0 && functions.length > 1 && "border-b-0")}
                 key={`function-${func.contract_address}-${i}`}
               >
                 <Heading level="h4"> Function Name</Heading>
+                {/* this is its own component to simplify custom error handling */}
+                <FunctionMessageFormField
+                  fieldName={`messages.${i}`}
+                  form={form}
+                  subroutineFunction={func}
+                  isAuthorized={isAuthorized}
+                />
 
-                <FormField name={`messages.${i}`}>
-                  <InputLabel label="Message" size="sm" />
-                  <TextAreaInput
-                    placeholder="{...}"
-                    onChange={(e) => {
-                      handleValidateJson({
-                        value: e.target.value,
-                        restrictions: func.param_restrictions,
-                        index: i,
-                      });
-                      setValue(`messages.${i}`, e.target.value);
-                    }}
-                    ref={fieldRef.ref}
-                    name={fieldRef.name}
-                    size="sm"
-                    rows={textAreaSize}
-                    isDisabled={!isAuthorized}
-                  />
-                  <div>
-                    {Object.keys(
-                      customErrors?.[`messages.${i}`]?.types || {},
-                    ).map((e, i) => (
-                      <InfoText
-                        key={`field error ${i}`}
-                        variant={"error"}
-                        className="mt-2"
-                      >
-                        {e}
-                      </InfoText>
-                    ))}
-                  </div>
-                </FormField>
                 <Button
                   onClick={(e) => {
                     e.preventDefault();
                     resetField(`messages.${i}`);
-                    setCustomErrors((prev) => ({
-                      ...prev,
-                      [`messages.${i}`]: {},
-                    }));
                   }}
                   size="sm"
                   className="mt-2"
@@ -185,21 +99,9 @@ export const ExecutableSubroutine = ({
           })}
         </div>
         <FormSubmit className="mt-4" asChild>
-          <Button disabled={!isAuthorized || !!errors.messages?.length}>
-            Execute
-          </Button>
+          <Button disabled={!isAuthorized}>Execute</Button>
         </FormSubmit>
       </FormRoot>
     </div>
   );
 };
-
-interface CustomErrorTypes {
-  [key: string]: string;
-}
-
-interface CustomErrors {
-  [key: string]: {
-    types?: CustomErrorTypes;
-  };
-}
