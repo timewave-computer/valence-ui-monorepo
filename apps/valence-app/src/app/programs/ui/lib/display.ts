@@ -16,3 +16,24 @@ export const displayAuthMode = (authMode: AuthorizationModeInfo) => {
 export const displaySubroutineType = (subroutine: Subroutine) => {
   return getSubroutineType(subroutine).toUpperCase();
 };
+
+export const jsonToIndentedText = (body: object): string => {
+  return JSON.stringify(body, null, 2);
+};
+export function countJsonKeys(obj: any): number {
+  let count = 0;
+
+  function countKeys(o: any) {
+    if (typeof o === "object" && o !== null) {
+      for (const key in o) {
+        if (o.hasOwnProperty(key)) {
+          count++;
+          countKeys(o[key]);
+        }
+      }
+    }
+  }
+
+  countKeys(obj);
+  return count;
+}

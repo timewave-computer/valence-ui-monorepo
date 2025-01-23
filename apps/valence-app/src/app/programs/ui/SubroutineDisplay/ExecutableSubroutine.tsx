@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Button,
   cn,
@@ -14,12 +13,21 @@ import {
   toast,
   ToastMessage,
 } from "@valence-ui/ui-components";
-import { generateMessageBody } from "@/app/programs/ui";
+import {
+  countJsonKeys,
+  generateMessageBody,
+  jsonToIndentedText,
+  validateJsonWithRestrictions,
+} from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
-import { AtomicFunction, NonAtomicFunction } from "@valence-ui/generated-types";
-import { useEffect } from "react";
+import {
+  AtomicFunction,
+  NonAtomicFunction,
+  ParamRestriction,
+} from "@valence-ui/generated-types";
+import { useEffect, useState } from "react";
 
-interface SubroutineMessageFormValues {
+export interface SubroutineMessageFormValues {
   messages: string[];
 }
 export const ExecutableSubroutine = ({
@@ -35,8 +43,9 @@ export const ExecutableSubroutine = ({
     register,
     resetField,
     formState: { errors },
-    trigger,
+    setValue,
   } = useForm<SubroutineMessageFormValues>({
+    criteriaMode: "all", // lets you add multiple errors per field
     defaultValues: {
       messages: functions.map((subroutineFunction) => {
         return jsonToIndentedText(
@@ -46,15 +55,7 @@ export const ExecutableSubroutine = ({
     },
   });
 
-  useEffect(() => {
-    // to trigger rerender for validation errors
-    const subscription = watch((value, { name, type }) => {
-      if (name?.startsWith("messages")) {
-        trigger(name);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, trigger]);
+  const [customErrors, setCustomErrors] = useState<CustomErrors>({});
 
   const handleExecuteMessage = (values: SubroutineMessageFormValues) => {
     try {
@@ -76,6 +77,39 @@ export const ExecutableSubroutine = ({
     }
   };
 
+  useEffect(() => {
+    const { unsubscribe } = watch((value) => {
+      console.log("watched", value);
+    });
+    return () => unsubscribe();
+  }, [watch]);
+
+  const handleValidateJson = ({
+    value,
+    restrictions,
+    index,
+  }: {
+    value: string;
+    restrictions: ParamRestriction[];
+    index: number;
+  }) => {
+    const validationErrors = validateJsonWithRestrictions(value, restrictions);
+
+    if (validationErrors.length > 0) {
+      setCustomErrors((prev) => ({
+        ...prev,
+        [`messages.${index}`]: {
+          types: validationErrors.reduce((acc, current) => {
+            acc[current] = current;
+            return acc;
+          }, {}),
+        },
+      }));
+    } else {
+      setCustomErrors((prev) => ({ ...prev, [`messages.${index}`]: {} }));
+    }
+  };
+
   return (
     <div>
       <FormRoot
@@ -90,6 +124,8 @@ export const ExecutableSubroutine = ({
             const messageBody = generateMessageBody(func.message_details);
             const textAreaSize = Math.min(34, countJsonKeys(messageBody) + 4);
 
+            const fieldRef = register(`messages.${i}`, {});
+
             return (
               <div
                 className={cn(i === 0 && functions.length > 1 && "border-b-0")}
@@ -101,36 +137,42 @@ export const ExecutableSubroutine = ({
                   <InputLabel label="Message" size="sm" />
                   <TextAreaInput
                     placeholder="{...}"
-                    {...register(`messages.${i}`, {
-                      validate: {
-                        checkValidJson: (value) => {
-                          try {
-                            JSON.parse(value);
-                            return true;
-                          } catch (e) {
-                            return "Invalid JSON";
-                          }
-                        },
-                      },
-                    })}
+                    onChange={(e) => {
+                      handleValidateJson({
+                        value: e.target.value,
+                        restrictions: func.param_restrictions,
+                        index: i,
+                      });
+                      setValue(`messages.${i}`, e.target.value);
+                    }}
+                    ref={fieldRef.ref}
+                    name={fieldRef.name}
                     size="sm"
                     rows={textAreaSize}
                     isDisabled={!isAuthorized}
                   />
                   <div>
-                    {errors?.messages?.[i]?.type === "checkValidJson" && (
-                      <InfoText variant="error">
-                        {errors?.messages?.[i]?.message}
+                    {Object.keys(
+                      customErrors?.[`messages.${i}`]?.types || {},
+                    ).map((e, i) => (
+                      <InfoText
+                        key={`field error ${i}`}
+                        variant={"error"}
+                        className="mt-2"
+                      >
+                        {e}
                       </InfoText>
-                    )}
+                    ))}
                   </div>
                 </FormField>
                 <Button
                   onClick={(e) => {
-                    console.log("resetting", i);
                     e.preventDefault();
-
                     resetField(`messages.${i}`);
+                    setCustomErrors((prev) => ({
+                      ...prev,
+                      [`messages.${i}`]: {},
+                    }));
                   }}
                   size="sm"
                   className="mt-2"
@@ -152,23 +194,12 @@ export const ExecutableSubroutine = ({
   );
 };
 
-const jsonToIndentedText = (body: object): string => {
-  return JSON.stringify(body, null, 2);
-};
-function countJsonKeys(obj: any): number {
-  let count = 0;
+interface CustomErrorTypes {
+  [key: string]: string;
+}
 
-  function countKeys(o: any) {
-    if (typeof o === "object" && o !== null) {
-      for (const key in o) {
-        if (o.hasOwnProperty(key)) {
-          count++;
-          countKeys(o[key]);
-        }
-      }
-    }
-  }
-
-  countKeys(obj);
-  return count;
+interface CustomErrors {
+  [key: string]: {
+    types?: CustomErrorTypes;
+  };
 }
