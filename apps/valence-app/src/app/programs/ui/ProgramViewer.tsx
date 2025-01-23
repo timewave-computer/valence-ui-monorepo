@@ -5,6 +5,7 @@ import {
   ExecutionHistoryTable,
   ProcessorDisplay,
   SubroutineDisplay,
+  useInitializeLibrarySchemaCache,
 } from "@/app/programs/ui";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
@@ -26,7 +27,9 @@ export function ProgramViewer({
   programId: string;
   data: GetProgramDataReturnValue;
 }) {
+  // page loads with initial server-fetched data. this inserts it into useQuery, so the access pattern is easy
   useInitializeMetadataCache(data.metadata);
+  useInitializeLibrarySchemaCache(data.librarySchemas);
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">

@@ -1,5 +1,5 @@
 "use server";
-import { mockRegistry } from "@/mock-data";
+import { mockLibrarySchemaRegistry, mockRegistry } from "@/mock-data";
 import {
   ProgramParser,
   fetchAccountBalances,
@@ -7,6 +7,7 @@ import {
   ProgramParserResult,
   QueryConfigManager,
   NormalizedAccounts,
+  NormalizedLibraries,
 } from "@/app/programs/server";
 import { getDefaultMainChainConfig } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
@@ -75,12 +76,15 @@ const _getProgramData = async ({
   });
   const metadata = await fetchAssetMetadata(metadataToFetch);
 
+  const librarySchemas = fetchLibrarySchemas(program.libraries);
+
   return {
     queryConfig: completeQueryConfig,
     balances: accountBalances,
     ...program,
     rawProgram,
     metadata,
+    librarySchemas: librarySchemas,
   };
 };
 
@@ -166,4 +170,22 @@ function getDenomsAndChainIds({
   );
 
   return metadataQueries;
+}
+
+function fetchLibrarySchemas(libraries: NormalizedLibraries) {
+  const librariesToFetch = Object.values(libraries).reduce((acc, lib) => {
+    if (lib.addr && lib.domain?.CosmosCosmwasm === "neutron")
+      return [...acc, lib.addr];
+    else return [...acc];
+  }, [] as string[]);
+
+  // todo: for each library, fetch codeId, and use codeId to fetch schema
+  const librarySchemas = librariesToFetch.reduce(
+    (acc, address) => {
+      acc[address] = mockLibrarySchemaRegistry[address];
+      return acc;
+    },
+    {} as Record<string, object>,
+  );
+  return librarySchemas;
 }
