@@ -4,26 +4,21 @@ import { cn } from "../../utils";
 import { forwardRef } from "react";
 
 const inputContainerVariants = cva(
-  "flex w-full cursor-text flex-row items-center gap-2 font-mono border border-valence-mediumgray transition-all px-2 overflow-clip focus-within:outline outline-offset-0 outline-[0.4px]",
+  "flex w-full cursor-text flex-row items-center gap-2 font-mono border border-valence-mediumgray transition-all px-2 overflow-clip  outline-none",
   {
     variants: {
-      variant: {
-        primary: "outline-none",
-        form: "bg-valence-lightgray outline-valence-blue focus-within:border-valence-blue ",
-      },
       size: {
-        sm: "px-2 py-1.5 text-xs font-light",
+        sm: "px-2 py-1.5 text-xs ",
         base: "px-3 py-2 text-sm",
       },
       isError: {
-        true: "border-valence-red outline-valence-red focus-within:border-valence-red",
+        true: "border-valence-red focus-within:border-valence-red",
       },
       isDisabled: {
         true: "!bg-valence-mediumgray !border-valence-gray cursor-not-allowed",
       },
     },
     defaultVariants: {
-      variant: "primary",
       size: "base",
     },
   },
@@ -36,10 +31,7 @@ export interface TextInputProps
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-  (
-    { className, suffix, variant, size, isError, isDisabled, value, ...props },
-    ref,
-  ) => {
+  ({ className, suffix, size, isError, isDisabled, value, ...props }, ref) => {
     return (
       <div
         onClick={() => {
@@ -49,7 +41,6 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         }}
         className={cn(
           inputContainerVariants({
-            variant,
             size,
             isError,
             className,

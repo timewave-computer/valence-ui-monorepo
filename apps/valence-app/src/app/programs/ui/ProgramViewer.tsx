@@ -49,28 +49,28 @@ export function ProgramViewer({
         </Sheet>
       </div>
 
-      <div className="flex flex-row gap-4 w-full pt-4">
-        <div className="flex flex-col w-3/5 flex-grow gap-2">
+      <div className="grid grid-cols-5 w-full gap-4 pt-4 pb-4">
+        <div className="flex flex-col col-span-3  gap-2">
           <Heading level="h2">Subroutines</Heading>
           <Card className="overflow-x-scroll flex-grow p-0  border-0 ">
             <SubroutineDisplay program={data} />
           </Card>
         </div>
-        <div className="w-2/5 flex flex-col  flex-grow gap-2">
+
+        <div className="col-span-2 flex flex-col  gap-2">
           <Heading level="h2">Account Balances</Heading>
           <Card className="overflow-x-scroll flex-grow   p-2">
             <AccountTable program={data} />
           </Card>
         </div>
-      </div>
-      <div className="flex flex-row gap-4 w-full pt-4">
-        <div className="flex flex-col w-2/5 flex-grow gap-2">
+
+        <div className="flex flex-col col-span-2  gap-2">
           <Heading level="h2">Processors</Heading>
           <Card className="overflow-x-scroll flex-grow p-0 ">
             <ProcessorDisplay program={data} />
           </Card>
         </div>
-        <div className="flex flex-col w-3/5 flex-grow gap-2">
+        <div className="flex flex-col col-span-3 flex-grow gap-2">
           <Heading level="h2">Execution History</Heading>
           <Card className="overflow-x-scroll flex-grow p-2  ">
             <ExecutionHistoryTable />

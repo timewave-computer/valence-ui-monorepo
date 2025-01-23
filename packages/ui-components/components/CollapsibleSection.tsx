@@ -25,7 +25,7 @@ const rootVariants = cva("flex flex-col gap-2 w-full", {
   },
 });
 
-const headerVariants = cva("flex flex-row items-center gap-2 ", {
+const headerVariants = cva("flex flex-row items-center gap-2 cursor-pointer ", {
   variants: {
     variant: {
       primary: "justify-between",
@@ -82,7 +82,7 @@ export const CollapsibleSectionHeader = ({
   const Icon = isOpen ? FaChevronDown : FaChevronLeft;
 
   return (
-    <button
+    <div
       onClick={() => {
         setIsOpen(!isOpen);
       }}
@@ -90,7 +90,7 @@ export const CollapsibleSectionHeader = ({
     >
       {children}
       <Icon className={cn("h-4 w-4")} />
-    </button>
+    </div>
   );
 };
 

@@ -7,7 +7,6 @@ import {
   TextInput,
   FormSubmit,
   Button,
-  Toaster,
   ToastMessage,
   toast,
   PrettyJson,

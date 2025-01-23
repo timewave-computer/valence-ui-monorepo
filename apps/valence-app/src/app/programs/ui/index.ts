@@ -1,10 +1,9 @@
-"use client";
 export * from "./ProgramsHero";
 export * from "./useProgramQuery";
 export * from "./useDisplayStore";
 export * from "./AccountTable";
 export * from "./ExecutionHistoryTable";
-export * from "./SubroutineDisplay";
 export * from "./ProcessorDisplay";
-export * from "./display";
 export * from "./ProgramViewer";
+export * from "./lib";
+export * from "./SubroutineDisplay";

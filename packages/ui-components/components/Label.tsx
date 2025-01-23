@@ -5,10 +5,12 @@ import { ReactNode } from "react";
 const labelVariants = cva("h-fit w-fit px-1.5 py-0.5 text-xs text-center", {
   variants: {
     variant: {
-      green: "bg-valence-green text-valence-white",
+      green: "bg-valence-green text-valence-black",
       yellow: "bg-valence-yellow text-valence-black",
       red: "bg-valence-red text-valence-white",
       gray: "bg-valence-mediumgray text-valence-black",
+      purple: "bg-graph-purple text-valence-white",
+      teal: "bg-graph-teal text-valence-white",
     },
   },
   defaultVariants: {

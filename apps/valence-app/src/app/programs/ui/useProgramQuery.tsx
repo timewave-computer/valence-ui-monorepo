@@ -1,3 +1,4 @@
+"use client";
 import { createStore, useStore } from "zustand";
 import { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
