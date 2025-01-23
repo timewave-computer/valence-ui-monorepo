@@ -32,7 +32,7 @@ export const SubroutineDisplay = ({
 
         return (
           <CollapsibleSectionRoot
-            key={`authorization-${authorization.label}`}
+            key={`authorization-${authorization.label}-${i}`}
             className={cn(
               i === 0 && program.authorizations.length > 1 && "border-b-0",
             )}

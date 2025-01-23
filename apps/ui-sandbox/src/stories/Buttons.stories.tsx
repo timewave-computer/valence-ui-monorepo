@@ -48,7 +48,7 @@ const Buttons = () => {
         </div>
       ))}
 
-      <p>Todo: icon buttons, CTA, no border</p>
+      <p>Todos: icon buttons, CTA button, ghost buttons (borderless)</p>
     </Section>
   );
 };

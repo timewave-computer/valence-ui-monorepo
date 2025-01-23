@@ -10,24 +10,23 @@ export const validateJsonWithRestrictions = (
   restrictions: ParamRestriction[],
 ): string[] => {
   const errors: string[] = [];
-  console.log("value", value, "restrictions", restrictions);
 
   try {
-    const parsed = JSON.parse(value);
+    const inputObject = JSON.parse(value);
     restrictions.forEach((restriction) => {
       if (isMustBeIncludedParamRestriction(restriction)) {
         const keys = restriction.must_be_included;
-        if (isNestedValueEqual(parsed, keys, undefined)) {
+        if (isNestedValueEqual(inputObject, keys, undefined)) {
           errors.push(`${keys.join(".")} must be included`);
         }
       } else if (isCannotBeIncludedParamRestriction(restriction)) {
         const keys = restriction.cannot_be_included;
-        if (!isNestedValueEqual(parsed, keys, undefined)) {
+        if (!isNestedValueEqual(inputObject, keys, undefined)) {
           errors.push(`${keys.join(".")} cannot be included`);
         }
       } else if (isMustBeValueParamRestriction(restriction)) {
         const [keys, value] = restriction.must_be_value;
-        if (!isNestedValueEqual(parsed, keys, value)) {
+        if (!isNestedValueEqual(inputObject, keys, value)) {
           errors.push(`${keys.join(".")} must equal  "${value}"`);
         }
       } else {

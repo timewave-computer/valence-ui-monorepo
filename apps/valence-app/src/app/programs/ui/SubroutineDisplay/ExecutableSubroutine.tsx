@@ -72,7 +72,7 @@ export const ExecutableSubroutine = ({
             return (
               <div
                 className={cn(i === 0 && functions.length > 1 && "border-b-0")}
-                key={`function-${func.contract_address}-${i}`}
+                key={`functionfield-${func.contract_address}-${i}`}
               >
                 <Heading level="h4"> Function Name</Heading>
                 <>
