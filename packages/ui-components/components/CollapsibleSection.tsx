@@ -100,5 +100,5 @@ export const CollapsibleSectionContent = ({
   children: ReactNode;
 }) => {
   const { isOpen } = useContext(CollapsibleSectionContext);
-  return isOpen ? <div className="overflow-x-scroll">{children}</div> : null;
+  return isOpen ? <>{children}</> : null;
 };
