@@ -40,18 +40,6 @@ export const validateJsonWithRestrictions = (
   return errors;
 };
 
-function checkNestedKeys(obj: any, keys: string[]): boolean {
-  let current = obj;
-  const [firstKey, ...restKeys] = keys;
-  if (current[firstKey] === undefined) {
-    return false;
-  }
-  if (restKeys.length === 0) {
-    return true;
-  }
-  return checkNestedKeys(current[firstKey], restKeys);
-}
-
 function getNestedValue(obj: any, keys: string[]): any {
   return keys.reduce(
     (current, key) =>
