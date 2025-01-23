@@ -139,6 +139,41 @@ export const mockProgram2 = {
       duration: "forever",
       max_concurrent_executions: null,
       subroutine: {
+        non_atomic: {
+          functions: [
+            {
+              retry_logic: null,
+              domain: "main",
+              message_details: {
+                message_type: "cosmwasm_execute_msg",
+                message: {
+                  name: "process_function",
+                  params_restrictions: [
+                    {
+                      must_be_included: ["process_function", "split"],
+                    },
+                  ],
+                },
+              },
+              contract_address: {
+                "|library_account_addr|":
+                  "neutron12e9sfu7jg28z4dg5qhzjkf50tj05d5la5uwj2auqpedx5ph2757qhe336u",
+              },
+            },
+          ],
+        },
+      },
+      priority: null,
+    },
+    {
+      label: "swap-3",
+      mode: "permissionless",
+      not_before: {
+        never: {},
+      },
+      duration: "forever",
+      max_concurrent_executions: null,
+      subroutine: {
         atomic: {
           functions: [
             {

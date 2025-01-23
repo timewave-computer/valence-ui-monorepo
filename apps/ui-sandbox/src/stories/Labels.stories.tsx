@@ -6,14 +6,21 @@ const Labels = () => (
     <Story>
       <Label>Sample Text</Label>
     </Story>
-    <Story>
-      <Label variant="red">Sample Text</Label>
-    </Story>
+
     <Story>
       <Label variant="yellow">Sample Text</Label>
     </Story>
     <Story>
       <Label variant="green">Sample Text</Label>
+    </Story>
+    <Story>
+      <Label variant="red">Sample Text</Label>
+    </Story>
+    <Story>
+      <Label variant="purple">Sample Text</Label>
+    </Story>
+    <Story>
+      <Label variant="teal">Sample Text</Label>
     </Story>
   </Section>
 );

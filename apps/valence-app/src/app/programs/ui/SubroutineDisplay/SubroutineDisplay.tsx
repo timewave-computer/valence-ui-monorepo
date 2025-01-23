@@ -34,7 +34,9 @@ export const SubroutineDisplay = ({
           <CollapsibleSectionRoot
             key={`authorization-${authorization.label}-${i}`}
             className={cn(
-              i === 0 && program.authorizations.length > 1 && "border-b-0",
+              program.authorizations.length > 1 &&
+                i !== program.authorizations.length - 1 &&
+                "border-b-0",
             )}
             variant="primary"
             defaultIsOpen={false}
@@ -44,12 +46,16 @@ export const SubroutineDisplay = ({
             </CollapsibleSectionHeader>
             <CollapsibleSectionContent>
               <div className="flex flex-row gap-2 pb-4">
+                <Label
+                  variant={
+                    displaySubroutineType(authorization.subroutine) === "ATOMIC"
+                      ? "teal"
+                      : "purple"
+                  }
+                >
+                  {displaySubroutineType(authorization.subroutine)}
+                </Label>
                 <Label>{displayAuthMode(authorization.mode)}</Label>
-                {
-                  <Label>
-                    {displaySubroutineType(authorization.subroutine)}
-                  </Label>
-                }
               </div>
               <ExecutableSubroutine
                 key={`subroutine-${authorization.label}-${i}`}

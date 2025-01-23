@@ -49,7 +49,7 @@ export function ProgramViewer({
         </Sheet>
       </div>
 
-      <div className="grid grid-cols-5 w-full gap-4 pt-4">
+      <div className="grid grid-cols-5 w-full gap-4 pt-4 pb-4">
         <div className="flex flex-col col-span-3  gap-2">
           <Heading level="h2">Subroutines</Heading>
           <Card className="overflow-x-scroll flex-grow p-0  border-0 ">
