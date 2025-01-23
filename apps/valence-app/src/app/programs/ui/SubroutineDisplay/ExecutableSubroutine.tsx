@@ -75,25 +75,27 @@ export const ExecutableSubroutine = ({
                 key={`function-${func.contract_address}-${i}`}
               >
                 <Heading level="h4"> Function Name</Heading>
-                {/* this is its own component to simplify custom error handling */}
-                <FunctionMessageFormField
-                  fieldName={`messages.${i}`}
-                  form={form}
-                  subroutineFunction={func}
-                  isAuthorized={isAuthorized}
-                />
+                <>
+                  {/* this is its own component to simplify custom error handling */}
+                  <FunctionMessageFormField
+                    fieldName={`messages.${i}`}
+                    form={form}
+                    subroutineFunction={func}
+                    isAuthorized={isAuthorized}
+                  />
 
-                <Button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    resetField(`messages.${i}`);
-                  }}
-                  size="sm"
-                  className="mt-2"
-                  variant="secondary"
-                >
-                  Reset
-                </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      resetField(`messages.${i}`);
+                    }}
+                    size="sm"
+                    className="mt-2"
+                    variant="secondary"
+                  >
+                    Reset
+                  </Button>
+                </>
               </div>
             );
           })}

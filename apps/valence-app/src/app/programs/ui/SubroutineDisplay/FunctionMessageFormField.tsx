@@ -62,7 +62,7 @@ export const FunctionMessageFormField = ({
   const fieldRef = form.register(fieldName, {});
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       <FormField name={fieldName}>
         <InputLabel label="Message" size="sm" />
         <TextAreaInput
@@ -77,7 +77,7 @@ export const FunctionMessageFormField = ({
           rows={textAreaSize}
           isDisabled={!isAuthorized}
         />
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col">
           {Object.keys(customErrors.types || {}).map((e, i) => (
             <InfoText key={`field error ${i}`} variant={"error"}>
               {e}

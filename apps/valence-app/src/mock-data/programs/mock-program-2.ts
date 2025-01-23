@@ -84,6 +84,13 @@ export const mockProgram2 = {
                         "0.5",
                       ],
                     },
+                    {
+                      cannot_be_included: [
+                        "process_function",
+                        "split",
+                        "ratiov2",
+                      ],
+                    },
                   ],
                 },
               },
@@ -100,7 +107,14 @@ export const mockProgram2 = {
                   name: "process_function",
                   params_restrictions: [
                     {
-                      must_be_included: ["process_function", "splitz"],
+                      must_be_included: ["process_function", "split"],
+                    },
+                    {
+                      cannot_be_included: [
+                        "process_function",
+                        "split",
+                        "ratiov2",
+                      ],
                     },
                   ],
                 },
