@@ -9,9 +9,9 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@valence-ui/ui-components";
-import { CgExternal } from "react-icons/cg";
 import Link from "next/link";
-import { VALENCE_APP_URL } from "~/const";
+import { APP_URL, DOCS_URL, VAULTS_URL } from "@valence-ui/socials";
+import { HiMiniArrowRight } from "react-icons/hi2";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -23,16 +23,19 @@ const NavLink = ({
   href,
   label,
   path,
+  blankTarget,
 }: {
   href: string;
   label: string;
   path: string;
+  blankTarget?: boolean;
 }) => {
   return (
     <a
+      target={blankTarget ? "_blank" : ""}
       key={`nav-${href}`}
       className={cn(
-        "relative top-[1px] flex flex-row items-center",
+        "relative top-[1px] flex flex-row items-center ",
         shouldHightlightItem(href, path) && "font-semibold",
         "transition-all focus:font-semibold", // mobile,
         "md:focus:font-normal",
@@ -45,10 +48,9 @@ const NavLink = ({
 };
 
 const LaunchButton = () => (
-  <Link target="_blank" href={VALENCE_APP_URL}>
-    <Button tabIndex={-1}>
-      Launch App
-      <CgExternal className="h-6 w-6 ml-1" />
+  <Link target="_blank" href={APP_URL + "/rebalancer"}>
+    <Button tabIndex={-1} SuffixIcon={HiMiniArrowRight}>
+      Apps
     </Button>
   </Link>
 );
@@ -58,34 +60,37 @@ export const StaticAppNav = () => {
   const links = (
     <>
       <NavLink href="/blog" label="Blog" path={path} />
+      <NavLink blankTarget href={DOCS_URL} label="Developers" path={path} />
+      <NavLink blankTarget href={VAULTS_URL} label="Vaults" path={path} />
     </>
   );
 
   return (
     <nav
       className={cn(
-        "flex  flex-row items-center justify-between  bg-valence-white  ",
+        "flex  flex-row items-center justify-between  bg-valence-white ",
       )}
     >
       {/* desktop */}
-      <div className="hidden md:flex flex-row max-w-5xl py-8 mx-auto w-full justify-between text-valence-black border-b border-valence-black  ">
+      <div className="hidden md:flex flex-row max-w-5xl py-8 mx-auto w-full justify-between text-valence-black border-b border-valence-black     ">
         <Link href="/" className="-ml-1">
           <Image
             priority={true}
-            src="/img/valence_vertical.svg"
+            src="/img/valence_horizontal.svg"
             alt="Logo"
             width={120}
             height={92}
           />
         </Link>
+        <div className="flex flex-row items-center gap-16">
+          {links}
 
-        <div className="flex items-center gap-2 md:gap-8">
           <LaunchButton />
         </div>
       </div>
 
       {/* mobile */}
-      <div className="flex flex-row justify-between w-full px-4 md:hidden border-b border-valence-black py-4">
+      <div className="flex flex-row justify-between w-full px-4 md:hidden border-b border-valence-black  py-4">
         <Link href="/">
           <Image
             priority={true}
@@ -107,7 +112,7 @@ export const StaticAppNav = () => {
             </Button>
           </SheetTrigger>
 
-          <SheetContent>
+          <SheetContent className=" w-1/2 ">
             <div className=" flex flex-col gap-8 p-4 text-h2">
               {/* special case for mobile */}
               <NavLink href="/" label="Home" path={path} />
