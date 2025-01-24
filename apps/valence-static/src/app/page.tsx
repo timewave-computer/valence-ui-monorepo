@@ -14,7 +14,6 @@ const HomePage = () => {
                 href: DOCS_URL,
                 blankTarget: true,
               }}
-              className="self-end mt-8"
               SuffixIcon={HiMiniArrowRight}
             >
               Get Started
@@ -50,7 +49,6 @@ const HomePage = () => {
                 href: VAULTS_URL,
                 blankTarget: true,
               }}
-              className="self-end mt-8"
               SuffixIcon={HiMiniArrowRight}
             >
               Try x-vaults
@@ -95,7 +93,6 @@ const HomePage = () => {
                 href: DOCS_URL,
                 blankTarget: true,
               }}
-              className="self-end mt-8"
               SuffixIcon={HiMiniArrowRight}
             >
               Learn more
@@ -149,7 +146,7 @@ const HomepageSection = ({
         <div className=" flex md:hidden flex-col w-full items-center justify-center p-8 md:p-16  ">
           {Img}
         </div>
-        {cta}
+        <div className="self-end px-8 md:px-0 md:pt-8 ">{cta}</div>
       </div>
 
       {!imgFirst && <ImageComponent />}
