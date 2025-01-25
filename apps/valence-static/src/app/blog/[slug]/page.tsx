@@ -53,8 +53,9 @@ export async function generateMetadata({
   };
 }
 
-const BackButton = () => (
+const BackButton = ({ className }: { className?: string }) => (
   <Button
+    className={className}
     variant="secondary"
     PrefixIcon={FaChevronLeft}
     link={{
@@ -124,7 +125,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
 
       <article dangerouslySetInnerHTML={{ __html: postData.content }} />
 
-      <BackButton />
+      <BackButton className="mb-4" />
     </div>
   );
 };
