@@ -60,7 +60,7 @@ const config: Config = {
         h1: ["1.425rem", { lineHeight: "1.75rem" }], // 22.8px / 28px
         h2: ["1.2663rem", { lineHeight: "1.625rem" }], // 20.26px / 26px
         h3: ["1.125rem", { lineHeight: "1.5rem" }], // 18px / 24px
-        base: ["1rem", { lineHeight: "1.75rem" }], // 16px / 22px
+        base: ["1rem", { lineHeight: "1.375rem" }], // 16px / 22px
         sm: ["0.9025rem", { lineHeight: "1.25rem" }], // 14.44px / 20px
         xs: ["0.8rem", { lineHeight: "1.125rem" }], // 12.8px / 18px
       },
