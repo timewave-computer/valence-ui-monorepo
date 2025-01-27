@@ -1,4 +1,5 @@
 import { UTCDate } from "@date-fns/utc";
+import { subSeconds } from "date-fns";
 
 export function getBlockDate({
   estimatedBlockTime,
@@ -11,6 +12,6 @@ export function getBlockDate({
 }) {
   const blockDifference = currentBlockNumber - blockNumber;
   const secondsDifference = blockDifference * estimatedBlockTime;
-  const date = new UTCDate(UTCDate.now() - secondsDifference * 1000);
-  return date;
+  const nowDate = new UTCDate(UTCDate.now());
+  return subSeconds(nowDate, secondsDifference);
 }
