@@ -1,19 +1,19 @@
 import { ErrorHandler } from "~/const/error";
 import { Post } from "~/types/blog";
-import { RouterButton } from "~/components";
+import { HomepageButton, RouterButton } from "~/components";
 import { UTCDate } from "@date-fns/utc";
 import { ABSOLUTE_URL } from "~/const";
 import { X_HANDLE } from "@valence-ui/socials";
 import { Metadata } from "next";
 import Image from "next/image";
 import { PostHeading } from "~/app/blog/ui-components";
-import "./article.css";
 import path from "path";
 import fs from "fs";
 import { getPost, POSTS_PATH } from "~/server/posts";
-import { Button } from "@valence-ui/ui-components";
-import { FaChevronLeft } from "react-icons/fa";
 import Link from "next/link";
+import { HiMiniArrowLeft } from "react-icons/hi2";
+
+import "./article.css";
 
 // statically render routes so blog posts not rendered dynamically
 export async function generateStaticParams() {
@@ -53,11 +53,10 @@ export async function generateMetadata({
   };
 }
 
-const BackButton = ({ className }: { className?: string }) => (
-  <Button
-    className={className}
+const BackButton = () => (
+  <HomepageButton
     variant="secondary"
-    PrefixIcon={FaChevronLeft}
+    PrefixIcon={HiMiniArrowLeft}
     link={{
       LinkComponent: Link,
       href: "/blog",
@@ -65,7 +64,7 @@ const BackButton = ({ className }: { className?: string }) => (
     }}
   >
     Back to blog
-  </Button>
+  </HomepageButton>
 );
 
 const BlogPost = async ({ params }: BlogPostProps) => {
@@ -105,8 +104,12 @@ const BlogPost = async ({ params }: BlogPostProps) => {
   return (
     <div className="min-h-1/2 flex grow flex-col pt-4 md:gap-2  ">
       <div className="">
-        <BackButton />
-        <div className=" py-2   ">
+        <div className="pb-5">
+          {" "}
+          <BackButton />
+        </div>
+
+        <div>
           <PostHeading> {postData.frontMatter.title}</PostHeading>
           <span className="col-span-1 col-start-1">
             {new UTCDate(postData.frontMatter.date).toLocaleDateString()}
@@ -124,8 +127,9 @@ const BlogPost = async ({ params }: BlogPostProps) => {
       </div>
 
       <article dangerouslySetInnerHTML={{ __html: postData.content }} />
-
-      <BackButton className="mb-4" />
+      <div className="py-4">
+        <BackButton />
+      </div>
     </div>
   );
 };

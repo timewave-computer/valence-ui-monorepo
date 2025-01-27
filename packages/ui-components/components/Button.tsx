@@ -19,7 +19,7 @@ const buttonVariants = cva(
       },
       size: {
         sm: "py-0.5 px-1.5 text-sm min-w-12 min-h-7",
-        base: " min-h-9 min-w-20  py-1.5 px-2",
+        base: " text-base min-h-9 min-w-20  py-1.5 px-2",
       },
     },
     defaultVariants: {
@@ -43,6 +43,7 @@ export interface ButtonProps
   };
   PrefixIcon?: React.ElementType;
   SuffixIcon?: React.ElementType;
+  iconStyle?: React.CSSProperties;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -57,6 +58,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       SuffixIcon,
       link,
       size,
+      iconStyle,
       ...props
     },
     ref,
@@ -94,14 +96,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {isLoading ? (
           <LoadingIndicator variant="sm" />
         ) : (
-          <div className="flex flex-row gap-2 items-center">
-            {PrefixIcon && <PrefixIcon className="h-4 w-4" />}
+          <div className="flex flex-row gap-1 items-center">
+            {PrefixIcon && <PrefixIcon className="h-4 w-4" style={iconStyle} />}
             {children}
-            {SuffixIcon && <SuffixIcon className="h-4 w-4" />}
+            {SuffixIcon && <SuffixIcon className="h-4 w-4" style={iconStyle} />}
           </div>
         )}
       </Comp>
     );
   },
 );
+
 Button.displayName = "Button";

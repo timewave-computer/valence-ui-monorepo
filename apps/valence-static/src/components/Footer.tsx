@@ -17,7 +17,7 @@ export const Footer = (
     >
       <Link href={"/"}>
         <Image
-          className="col-span-1   flex-col justify-between"
+          className="   flex-col justify-between"
           src="/img/valence_horizontal.svg"
           alt="Valence illustration"
           width={110}
@@ -25,7 +25,7 @@ export const Footer = (
         />
       </Link>
 
-      <div className="col-span-1 col-start-2 flex flex-col gap-2 ">
+      <div className=" flex flex-col gap-2 ">
         <a
           href={GITHUB_URL}
           target="_blank"
@@ -40,7 +40,7 @@ export const Footer = (
           rel="noreferrer"
           className="hover:underline"
         >
-          Documentation
+          Docs
         </a>
         <Link className="hover:underline" href="/blog">
           Blog
@@ -55,11 +55,13 @@ export const Footer = (
         </a>
       </div>
 
-      <div className="col-span-1 row-start-2 flex flex-col gap-4">
+      <div className="col-span-full pt-2"></div>
+
+      <div className="  flex flex-col gap-4">
         <p>{VALENCE_DESCRIPTION}</p>
       </div>
 
-      <div className=" col-span-1 col-start-2 row-start-2 self-start  md:self-end">
+      <div className="self-start  md:self-end">
         <p>© 2025 Timewave </p>
       </div>
     </footer>

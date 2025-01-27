@@ -5,7 +5,7 @@ export const PostHeading: React.FC<{
   slug?: string;
 }> = ({ children, slug }) => {
   const heading = (
-    <h1 className="text-balance text-h1 font-medium ">{children}</h1>
+    <h1 className="text-balance text-h1 font-medium font-mono ">{children}</h1>
   );
 
   if (!slug) {

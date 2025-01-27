@@ -29,6 +29,11 @@ export const Unica77 = localFont({
       weight: "400", // font-normal
     },
     {
+      path: "./public/fonts/Unica77/Unica77LLWeb-Italic.woff2",
+      weight: "400", // font-normal
+      style: "italic",
+    },
+    {
       path: "./public/fonts/Unica77/Unica77LLWeb-Medium.woff2",
       weight: "500", // font-medium
     },
