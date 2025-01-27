@@ -73,6 +73,19 @@ export const mockProgram2 = {
               message_details: {
                 message_type: "cosmwasm_execute_msg",
                 message: {
+                  name: "anything",
+                },
+              },
+              contract_address: {
+                "|library_account_addr|":
+                  "neutron15rldvafc5ufsf34fmjegyul32dm8uvjhg3xgk48j0qrrxqd8e0ssagamfj",
+              },
+            },
+            {
+              domain: "main",
+              message_details: {
+                message_type: "cosmwasm_execute_msg",
+                message: {
                   name: "process_function",
                   params_restrictions: [
                     {
