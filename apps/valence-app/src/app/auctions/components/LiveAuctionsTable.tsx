@@ -113,15 +113,19 @@ export function LiveAuctionsTable({
   });
 
   const { startTime, endTime } = useMemo(() => {
+    const mostRecentBlock = auctionsData.auctions?.sort((a, b) => {
+      // descending order
+      return b.auction.start_block - a.auction.start_block;
+    });
     return {
       startTime: getBlockDate({
         estimatedBlockTime: chainConfig.estBlockTime,
-        blockNumber: auctionsData.auctions[0]?.auction.start_block,
+        blockNumber: mostRecentBlock[0]?.auction.start_block,
         currentBlockNumber: auctionsData?.currentBlock,
       }),
       endTime: getBlockDate({
         estimatedBlockTime: chainConfig.estBlockTime,
-        blockNumber: auctionsData.auctions[0]?.auction.end_block,
+        blockNumber: mostRecentBlock[0]?.auction.end_block,
         currentBlockNumber: auctionsData?.currentBlock,
       }),
     };
@@ -220,6 +224,7 @@ export function LiveAuctionsTable({
   const now = new Date();
   const [localStartDate, setLocalStartDate] = useState<Date>(now);
   const [localEndDate, setLocalEndDate] = useState<Date>(now);
+
   useEffect(() => {
     // ensures time is local time and and server time
     setLocalStartDate(new Date(startTime));

@@ -90,7 +90,7 @@ const SupportedChainConfig: Record<SupportedChainId, SupportedChainConfig> = {
     },
     celatoneUrl: "https://neutron.celat.one/neutron-1",
     mintscanUrl: "https://www.mintscan.io/neutron",
-    estBlockTime: 2.42,
+    estBlockTime: 3.16,
   },
   "pion-1": {
     chain: NEUTRON_TESTNET_CHAIN,
