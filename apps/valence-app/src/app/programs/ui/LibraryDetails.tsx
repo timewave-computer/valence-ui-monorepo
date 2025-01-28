@@ -1,5 +1,14 @@
 "use client";
-import { Heading, LinkText } from "@valence-ui/ui-components";
+import {
+  Heading,
+  InfoText,
+  LinkText,
+  PrettyJson,
+  TabsContent,
+  TabsList,
+  TabsRoot,
+  TabsTrigger,
+} from "@valence-ui/ui-components";
 import {
   displayLibraryContractName,
   useLibrarySchema,
@@ -33,22 +42,61 @@ export const LibraryDetails = ({
         {libraryAddress}
       </LinkText>
 
-      <div className="pt-4">
-        {librarySchema?.typescript && (
-          <SyntaxHighlighter
-            language="typescript"
-            customStyle={{
-              fontSize: "0.8rem",
-              backgroundColor: "transparent",
-              fontFamily: "var(--font-unica-mono)",
-              padding: "0px",
-              margin: "0px",
-            }}
+      {librarySchema ? (
+        <>
+          <Heading level="h3" className="mt-6">
+            Message Schema
+          </Heading>
+
+          <TabsRoot
+            className=" mt-2"
+            defaultValue={
+              librarySchema?.typescript ? SchemaTabs.TypeScript : SchemaTabs.Raw
+            }
           >
-            {librarySchema?.typescript}
-          </SyntaxHighlighter>
-        )}
-      </div>
+            <TabsList>
+              <TabsTrigger value={SchemaTabs.TypeScript}>
+                {SchemaTabs.TypeScript}
+              </TabsTrigger>
+              <TabsTrigger value={SchemaTabs.Raw}>{SchemaTabs.Raw}</TabsTrigger>
+            </TabsList>
+            <TabsContent className=" scrollbar" value={SchemaTabs.TypeScript}>
+              {librarySchema.typescript ? (
+                <SyntaxHighlighter
+                  language="typescript"
+                  customStyle={{
+                    fontSize: "0.8rem",
+                    backgroundColor: "transparent",
+                    fontFamily: "var(--font-unica-mono)",
+                    padding: "0px",
+                    margin: "0px",
+                  }}
+                >
+                  {librarySchema.typescript}
+                </SyntaxHighlighter>
+              ) : (
+                <InfoText variant="error">
+                  {" "}
+                  TypeScript schema not available for this library.
+                </InfoText>
+              )}
+            </TabsContent>
+            <TabsContent value={SchemaTabs.Raw}>
+              <PrettyJson data={librarySchema.raw.execute} />
+            </TabsContent>
+          </TabsRoot>
+        </>
+      ) : (
+        <InfoText variant="info">
+          {" "}
+          Schema not available for this library.
+        </InfoText>
+      )}
     </div>
   );
 };
+
+enum SchemaTabs {
+  TypeScript = "TypeScript",
+  Raw = "Raw",
+}

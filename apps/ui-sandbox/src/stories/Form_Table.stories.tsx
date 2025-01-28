@@ -99,7 +99,11 @@ const Form_Table = () => {
             </TabsTrigger>
           ))}
         </TabsList>
-        <TabsContent className="flex flex-col gap-8" value={DisplayState.Data}>
+        <TabsContent
+          variant="secondary"
+          className="flex flex-col gap-8"
+          value={DisplayState.Data}
+        >
           <Story>
             <FormRoot onSubmit={handleSubmit(handleSubmitForm)}>
               <TableForm
@@ -118,6 +122,7 @@ const Form_Table = () => {
           </Story>
         </TabsContent>
         <TabsContent
+          variant="secondary"
           className="flex flex-col gap-8"
           value={DisplayState.Loading}
         >
@@ -138,7 +143,11 @@ const Form_Table = () => {
             </FormRoot>
           </Story>
         </TabsContent>
-        <TabsContent className="flex flex-col gap-8" value={DisplayState.Error}>
+        <TabsContent
+          variant="secondary"
+          className="flex flex-col gap-8"
+          value={DisplayState.Error}
+        >
           <Story>
             <FormRoot onSubmit={handleSubmit(handleSubmitForm)}>
               <TableForm

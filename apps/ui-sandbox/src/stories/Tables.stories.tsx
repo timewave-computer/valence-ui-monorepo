@@ -33,7 +33,11 @@ const Tables = () => {
             </TabsTrigger>
           ))}
         </TabsList>
-        <TabsContent className="flex flex-col gap-8" value={DisplayState.Data}>
+        <TabsContent
+          variant="secondary"
+          className=" flex flex-col gap-8"
+          value={DisplayState.Data}
+        >
           <Story>
             <Table headers={headers} data={data} />
           </Story>
@@ -42,7 +46,8 @@ const Tables = () => {
           </Story>
         </TabsContent>
         <TabsContent
-          className="flex flex-col gap-8"
+          variant="secondary"
+          className=" flex flex-col gap-8"
           value={DisplayState.Loading}
         >
           <Story>
@@ -57,7 +62,11 @@ const Tables = () => {
             />
           </Story>
         </TabsContent>
-        <TabsContent className="flex flex-col gap-8" value={DisplayState.Empty}>
+        <TabsContent
+          className=" flex flex-col gap-8"
+          variant="secondary"
+          value={DisplayState.Empty}
+        >
           <Story>
             <Table headers={headers} data={[]} />
           </Story>

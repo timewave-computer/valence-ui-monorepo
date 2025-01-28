@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "../utils";
+import { cva, VariantProps } from "class-variance-authority";
 
 const TabsRoot = TabsPrimitive.Root;
 
@@ -29,8 +30,8 @@ const TabsTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "inline-flex items-center justify-center  py-1.5 px-3 min-h-9 text-base transition-all border-r border-valence-black    ",
-      " focus-visible:bg-valence-black focus-visible:text-valence-white  disabled:bg-valence-mediumgray  ",
-      "  data-[state=active]:bg-valence-black data-[state=active]:text-valence-white ",
+      "focus-visible:bg-valence-black focus-visible:text-valence-white  disabled:bg-valence-mediumgray  ",
+      "data-[state=active]:bg-valence-black data-[state=active]:text-valence-white ",
 
       className,
     )}
@@ -39,13 +40,30 @@ const TabsTrigger = React.forwardRef<
 ));
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
+const tabContentVariants = cva(
+  "data-[state=inactive]:hidden mt-2  overflow-scroll",
+  {
+    variants: {
+      variant: {
+        primary:
+          " border-valence-black data-[state=active]:border border bg-valence-white p-4",
+        secondary: "border-0 p-0",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+    },
+  },
+);
+
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
+  VariantProps<typeof tabContentVariants> &
+    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
+>(({ className, variant, ...props }, ref) => (
   <TabsPrimitive.Content
     ref={ref}
-    className={cn("data-[state=active]:mt-4", className)}
+    className={cn(tabContentVariants({ variant, className }))}
     {...props}
   />
 ));
