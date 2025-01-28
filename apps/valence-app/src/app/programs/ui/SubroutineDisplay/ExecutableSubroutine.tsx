@@ -19,6 +19,7 @@ import {
   generateMessageBody,
   getFunctionLibraryAddress,
   jsonToIndentedText,
+  LibraryDetails,
   useLibrarySchema,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
@@ -28,7 +29,6 @@ import {
 } from "@valence-ui/generated-types";
 import { CelatoneUrl } from "@/const";
 import { displayAddress } from "@/utils";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -147,33 +147,7 @@ export const ExecutableSubroutine = ({
                     </SheetTrigger>
 
                     <SheetContent side="right" className="w-3/4">
-                      <div className="">
-                        <Heading level="h2">
-                          {displayLibraryContractName(
-                            librarySchema.raw.contract_name,
-                          )}
-                        </Heading>
-                        <LinkText
-                          blankTarget={true}
-                          className="font-mono text-xs"
-                          variant={"secondary"}
-                          href={CelatoneUrl.contract(libraryAddress)}
-                        >
-                          {libraryAddress}
-                        </LinkText>
-                      </div>
-                      <SyntaxHighlighter
-                        language="typescript"
-                        customStyle={{
-                          fontSize: "0.8rem",
-                          backgroundColor: "transparent",
-                          fontFamily: "var(--font-unica-mono)",
-                          padding: "0px",
-                          margin: "0px",
-                        }}
-                      >
-                        {librarySchema.typescript}
-                      </SyntaxHighlighter>
+                      <LibraryDetails libraryAddress={libraryAddress} />
                     </SheetContent>
                   </Sheet>
                 )}

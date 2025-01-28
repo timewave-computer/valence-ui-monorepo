@@ -3,9 +3,9 @@ import { QUERY_KEYS } from "@/const";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import {
   fetchLibrarySchema,
+  type FetchLibrarySchemaReturnValue,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
-import { LibraryJsonSchema } from "@/mock-data";
 import { useCallback } from "react";
 
 // hook can be instantated at root client level and used via useCache
@@ -32,7 +32,7 @@ export const useLibrarySchema = () => {
   // data is prefetched
   const getLibrarySchema = useCallback(
     (address: string) => {
-      return queryClient.getQueryData<LibraryJsonSchema>([
+      return queryClient.getQueryData<FetchLibrarySchemaReturnValue>([
         QUERY_KEYS.PROGRAMS_LIBRARY_SCHEMA,
         address,
       ]);

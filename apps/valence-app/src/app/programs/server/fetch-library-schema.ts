@@ -1,6 +1,9 @@
 "use server";
 import { mockLibrarySchemaRegistry } from "@/mock-data";
-import { compile } from "json-schema-to-typescript";
+import {
+  compile,
+  type JSONSchema as JSONSchemaInput,
+} from "json-schema-to-typescript";
 import $RefParser from "@apidevtools/json-schema-ref-parser";
 import { LibraryJsonSchema, LibraryZodSchema } from "@/app/programs/server";
 
@@ -19,14 +22,23 @@ export async function fetchLibrarySchema(address: string) {
   });
 }
 
+export type FetchLibrarySchemaReturnValue = Awaited<
+  ReturnType<typeof fetchLibrarySchema>
+>;
+
 export const jsonSchemaToTypescript = async (
   jsonSchema: LibraryJsonSchema["execute"],
 ): Promise<string | undefined> => {
   try {
     const dereferencedSchema = await $RefParser.dereference(jsonSchema);
-    const result = await compile(dereferencedSchema, "schema", {
-      bannerComment: "",
-    });
+    // need to define type explicitly, because there are clashes in the name 'JSONSchema'
+    const result = await compile(
+      dereferencedSchema as JSONSchemaInput,
+      "schema",
+      {
+        bannerComment: "",
+      },
+    );
     return result;
   } catch (error) {
     console.error("Error dereferencing schema :", error);
