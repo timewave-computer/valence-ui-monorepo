@@ -21,7 +21,10 @@ export function generateMessageBody(messageDetails: MessageDetails) {
 }
 
 const generateCosmwasmMessageBody = (message: Message) => {
-  const contents = {};
+  const contents = {
+    [message.name]: {},
+  };
+
   message.params_restrictions?.forEach((restriction) => {
     if (isMustBeIncludedParamRestriction(restriction)) {
       const keys = restriction.must_be_included;

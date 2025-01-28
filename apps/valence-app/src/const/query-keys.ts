@@ -24,4 +24,5 @@ export const QUERY_KEYS = {
   REBALANCER_FORM_MESSAGE_PREVIEW: "rebalancer-form-message-preview",
   PROGRAMS_FETCH_PROGRAM: "programs-fetch-program",
   PROGRAMS_LIBRARY_SCHEMA: "programs-library-schema",
+  PROGRAMS_PARSED_LIBRARY_SCHEMA: "programs-parsed-schema",
 };

@@ -1,14 +1,12 @@
 import { QUERY_KEYS } from "@/const";
 
 import { useQueries, useQueryClient } from "@tanstack/react-query";
-import { type GetProgramDataReturnValue } from "@/app/programs/server";
-import { LibrarySchema, mockLibrarySchemaRegistry } from "@/mock-data";
+import {
+  fetchLibrarySchema,
+  type GetProgramDataReturnValue,
+} from "@/app/programs/server";
+import { LibrarySchema } from "@/mock-data";
 import { useCallback } from "react";
-
-const librarySchemaQueryFn = (address: string) => {
-  // TODO fetch codeId + library schema from registry
-  return mockLibrarySchemaRegistry[address];
-};
 
 // hook can be instantated at root client level and used via useCache
 export const useInitializeLibrarySchemaCache = (
@@ -21,7 +19,7 @@ export const useInitializeLibrarySchemaCache = (
         queryKey: [QUERY_KEYS.PROGRAMS_LIBRARY_SCHEMA, address],
         initialData: initialData[address],
         queryFn: async () => {
-          return librarySchemaQueryFn(address);
+          return fetchLibrarySchema(address);
         },
       };
     }),

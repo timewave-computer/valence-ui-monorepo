@@ -39,6 +39,6 @@ export function countJsonKeys(obj: any): number {
 }
 
 export const displayLibraryContractName = (name?: string) => {
-  if (!name) return "Unregistered library".toUpperCase();
+  if (!name) return "Unregistered contract".toUpperCase();
   return name.toUpperCase();
 };
