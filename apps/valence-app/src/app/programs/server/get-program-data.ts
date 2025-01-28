@@ -3,12 +3,17 @@ import { mockRegistry } from "@/mock-data";
 import {
   ProgramParser,
   fetchAccountBalances,
-  QueryConfig,
-  ProgramParserResult,
+  type QueryConfig,
   QueryConfigManager,
-  NormalizedAccounts,
+  type ProgramParserResult,
+  type NormalizedAccounts,
+  type NormalizedLibraries,
+  type FetchLibrarySchemaReturnValue,
 } from "@/app/programs/server";
-import { getDefaultMainChainConfig } from "@/app/programs/server";
+import {
+  getDefaultMainChainConfig,
+  fetchLibrarySchema,
+} from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
 
 type GetProgramDataProps = {
@@ -75,12 +80,15 @@ const _getProgramData = async ({
   });
   const metadata = await fetchAssetMetadata(metadataToFetch);
 
+  const librarySchemas = await fetchLibrarySchemas(program.libraries);
+
   return {
     queryConfig: completeQueryConfig,
     balances: accountBalances,
     ...program,
     rawProgram,
     metadata,
+    librarySchemas: librarySchemas,
   };
 };
 
@@ -166,4 +174,30 @@ function getDenomsAndChainIds({
   );
 
   return metadataQueries;
+}
+
+async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
+  const librariesToFetch = Object.values(libraries).reduce((acc, lib) => {
+    if (lib.addr && lib.domain?.CosmosCosmwasm === "neutron")
+      return [...acc, lib.addr];
+    else return [...acc];
+  }, [] as string[]);
+
+  const requests = await Promise.all(
+    librariesToFetch.map(async (address) => {
+      return {
+        address,
+        schema: await fetchLibrarySchema(address),
+      };
+    }),
+  );
+  // todo: for each library, fetch codeId, and use codeId to fetch schema
+  const librarySchemas = requests.reduce(
+    (acc, { address, schema }) => {
+      acc[address] = schema;
+      return acc;
+    },
+    {} as Record<string, FetchLibrarySchemaReturnValue>,
+  );
+  return librarySchemas;
 }

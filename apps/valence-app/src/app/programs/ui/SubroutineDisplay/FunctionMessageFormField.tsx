@@ -19,7 +19,7 @@ import {
 import { useEffect, useState } from "react";
 
 /**
- * This is its own component to simplify custom error handling and reduce # rerender
+ * This is its own component to simplify custom error handling and reduce # rerenders
  */
 export const FunctionMessageFormField = ({
   subroutineFunction,

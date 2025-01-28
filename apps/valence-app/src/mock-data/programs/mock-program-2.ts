@@ -73,6 +73,19 @@ export const mockProgram2 = {
               message_details: {
                 message_type: "cosmwasm_execute_msg",
                 message: {
+                  name: "anything",
+                },
+              },
+              contract_address: {
+                "|library_account_addr|":
+                  "neutron15rldvafc5ufsf34fmjegyul32dm8uvjhg3xgk48j0qrrxqd8e0ssagamfj",
+              },
+            },
+            {
+              domain: "main",
+              message_details: {
+                message_type: "cosmwasm_execute_msg",
+                message: {
                   name: "process_function",
                   params_restrictions: [
                     {
@@ -141,6 +154,25 @@ export const mockProgram2 = {
       subroutine: {
         non_atomic: {
           functions: [
+            {
+              retry_logic: null,
+              domain: "main",
+              message_details: {
+                message_type: "cosmwasm_execute_msg",
+                message: {
+                  name: "process_function",
+                  params_restrictions: [
+                    {
+                      must_be_included: ["process_function", "split"],
+                    },
+                  ],
+                },
+              },
+              contract_address: {
+                "|library_account_addr|":
+                  "neutron12e9sfu7jg28z4dg5qhzjkf50tj05d5la5uwj2auqpedx5ph2757qhe336u",
+              },
+            },
             {
               retry_logic: null,
               domain: "main",

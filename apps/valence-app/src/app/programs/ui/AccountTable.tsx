@@ -7,7 +7,7 @@ import { type GetProgramDataReturnValue } from "@/app/programs/server";
 import { displayDomain } from "@/app/programs/ui";
 import { CelatoneUrl } from "@/const";
 import { useAssetMetadata } from "@/app/rebalancer/ui";
-import { microToBase } from "@/utils";
+import { displayNumberV2, microToBase } from "@/utils";
 
 export const AccountTable = ({
   program,
@@ -36,7 +36,13 @@ export const AccountTable = ({
               value: account?.domain ? displayDomain(account.domain) : "",
             },
             balances: {
-              value: microToBase(balance.amount, asset.decimals).toString(),
+              value: displayNumberV2(
+                microToBase(balance.amount, asset.decimals),
+                {
+                  maximumFractionDigits: 6,
+                  minimumFractionDigits: 2,
+                },
+              ),
             },
             symbol: {
               value: asset.symbol ?? "",
