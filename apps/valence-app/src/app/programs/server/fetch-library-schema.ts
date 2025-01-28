@@ -12,7 +12,6 @@ export async function fetchLibrarySchema(address: string) {
   const jsonSchema = mockLibrarySchemaRegistry[address];
   const validated = LibraryZodSchema.safeParse(jsonSchema);
   if (!validated.success) {
-    console.error("Error validating schema", validated.error);
     return Promise.resolve(undefined);
   }
   const types = await jsonSchemaToTypescript(validated.data.execute);
