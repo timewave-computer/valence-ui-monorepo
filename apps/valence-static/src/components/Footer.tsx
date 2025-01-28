@@ -11,7 +11,7 @@ export const Footer = (
   return (
     <footer
       className={cn(
-        "mx-auto border-t w-full border-valence-black max-w-5xl px-4 py-8  flex flex-col gap-x-14 gap-y-6 text-sm md:grid md:grid-cols-2 ",
+        "mx-auto border-t w-full border-valence-black max-w-5xl  py-8  flex flex-col gap-x-44 gap-y-6 text-sm md:grid md:grid-cols-2 ",
         className,
       )}
     >
