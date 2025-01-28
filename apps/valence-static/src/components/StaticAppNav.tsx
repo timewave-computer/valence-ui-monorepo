@@ -3,7 +3,6 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import {
-  Button,
   cn,
   Sheet,
   SheetContent,
@@ -12,6 +11,7 @@ import {
 import Link from "next/link";
 import { APP_URL, DOCS_URL, VAULTS_URL } from "@valence-ui/socials";
 import { HiMiniArrowRight } from "react-icons/hi2";
+import { HomepageButton } from "~/components";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -35,10 +35,10 @@ const NavLink = ({
       target={blankTarget ? "_blank" : ""}
       key={`nav-${href}`}
       className={cn(
-        "relative top-[1px] flex flex-row items-center ",
-        shouldHightlightItem(href, path) && "font-semibold",
-        "transition-all focus:font-semibold", // mobile,
-        "md:focus:font-normal",
+        "relative top-[1px] flex flex-row items-center font-medium decoration-valence-blue underline-offset-2 decoration-2 ",
+        shouldHightlightItem(href, path) && "underline md:no-underline  ",
+        "transition-all focus:underline ", // mobile,
+        "md:focus:no-underline", // desktop
       )}
       href={href}
     >
@@ -49,9 +49,9 @@ const NavLink = ({
 
 const LaunchButton = () => (
   <Link target="_blank" href={APP_URL + "/rebalancer"}>
-    <Button tabIndex={-1} SuffixIcon={HiMiniArrowRight}>
+    <HomepageButton tabIndex={-1} SuffixIcon={HiMiniArrowRight}>
       Apps
-    </Button>
+    </HomepageButton>
   </Link>
 );
 
@@ -103,13 +103,13 @@ export const StaticAppNav = () => {
 
         <Sheet>
           <SheetTrigger asChild className="outline-none">
-            <Button
+            <HomepageButton
               variant="secondary"
               className=" min-w-0 transform border-none  transition-transform active:scale-90
                "
             >
               <IoMdMenu className="h-6 w-6  " />
-            </Button>
+            </HomepageButton>
           </SheetTrigger>
 
           <SheetContent className=" w-1/2 ">

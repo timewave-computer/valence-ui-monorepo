@@ -1,7 +1,7 @@
-import { Button, cn } from "@valence-ui/ui-components";
 import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import { DOCS_URL, VAULTS_URL } from "@valence-ui/socials";
+import { HomepageButton, HomepageHeadline } from "~/components";
 
 const HomePage = () => {
   return (
@@ -9,7 +9,7 @@ const HomePage = () => {
       <div className="flex flex-col  gap-x-14   border-valence-black   md:grid md:grid-cols-2">
         <HomepageSection
           cta={
-            <Button
+            <HomepageButton
               link={{
                 href: DOCS_URL,
                 blankTarget: true,
@@ -17,9 +17,13 @@ const HomePage = () => {
               SuffixIcon={HiMiniArrowRight}
             >
               Get Started
-            </Button>
+            </HomepageButton>
           }
-          headline="The Universal DeFi Computer"
+          headline={
+            <>
+              The Universal <br /> DeFi Computer
+            </>
+          }
           Img={
             <Image
               priority
@@ -30,12 +34,13 @@ const HomePage = () => {
             />
           }
         >
-          <p className="text-balance">
-            Valence is a unified stack for building secure cross-chain DeFi
-            applications.
+          <p>
+            Valence is a unified stack for building <br /> secure cross-chain
+            DeFi applications.
           </p>
-          <p className="text-balance">
-            Simple, expressive developer experience. Write, test, and deploy
+          <p>
+            Simple, expressive developer <br /> experience. Write, test, and
+            deploy <br />
             your first program in 15 minutes.
           </p>
         </HomepageSection>
@@ -44,7 +49,7 @@ const HomePage = () => {
         <HomepageSection
           imgFirst
           cta={
-            <Button
+            <HomepageButton
               link={{
                 href: VAULTS_URL,
                 blankTarget: true,
@@ -52,7 +57,7 @@ const HomePage = () => {
               SuffixIcon={HiMiniArrowRight}
             >
               Try x-vaults
-            </Button>
+            </HomepageButton>
           }
           headline="x-vaults"
           Img={
@@ -65,12 +70,13 @@ const HomePage = () => {
             />
           }
         >
-          <p className="text-balance">
-            Onboard liquidity from any chain. Deploy liquidity to any ecosystem.
+          <p className="italic text-md">
+            Onboard liquidity from any chain. <br /> Deploy liquidity to any
+            ecosystem.
           </p>
-          <p className="text-balance">
-            x-vaults are a programmable interoperability primitive for building
-            secure cross-chain asset flows.
+          <p className="text-md">
+            x-vaults are a programmable <br /> interoperability primitive for{" "}
+            <br /> building secure cross-chain <br /> asset flows.
           </p>
         </HomepageSection>
 
@@ -88,7 +94,7 @@ const HomePage = () => {
             />
           }
           cta={
-            <Button
+            <HomepageButton
               link={{
                 href: DOCS_URL,
                 blankTarget: true,
@@ -96,16 +102,17 @@ const HomePage = () => {
               SuffixIcon={HiMiniArrowRight}
             >
               Learn more
-            </Button>
+            </HomepageButton>
           }
         >
-          <p className="text-balance">
-            Valence provides a unified development environment for writing
-            cross-chain programs.
+          <p>
+            Valence provides a unified <br /> development environment for <br />{" "}
+            writing cross-chain programs.
           </p>
-          <p className="text-balance">
-            Abstract over EVM, SVM, WASM, Move and compile programs to sovereign
-            ZK co-processors on any chain.
+          <p>
+            Abstract over EVM, SVM, WASM, <br />
+            Move and compile programs to <br /> sovereign ZK co-processors on{" "}
+            <br /> any chain.
           </p>
         </HomepageSection>
       </div>
@@ -123,7 +130,7 @@ const HomepageSection = ({
 }: {
   children: React.ReactNode;
   className?: string;
-  headline: string;
+  headline: string | React.ReactNode;
   cta: React.ReactNode;
   Img: React.ReactNode;
   imgFirst?: boolean;
@@ -138,34 +145,18 @@ const HomepageSection = ({
     <>
       {imgFirst && <ImageComponent />}
 
-      <div className="flex flex-col py-16 gap-4 p-8 md:p-16 justify-center">
-        <Headline className="">{headline}</Headline>
-
+      <div className="flex flex-col py-16  gap-6 md:gap-8 p-8 md:p-16 justify-center text-lg">
+        <HomepageHeadline className="">{headline}</HomepageHeadline>
         {children}
         {/* mobile Image */}
         <div className=" flex md:hidden flex-col w-full items-center justify-center p-8 md:p-16  ">
           {Img}
         </div>
-        <div className="self-end px-8 md:px-0 md:pt-8 ">{cta}</div>
+        <div className="self-end px-8 md:px-0 md:pt-4 ">{cta}</div>
       </div>
-
       {!imgFirst && <ImageComponent />}
     </>
   );
 };
-
-const Headline = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <h1
-    className={cn("text-[2.027rem] leading-[3.04rem] font-semibold", className)}
-  >
-    {children}
-  </h1>
-);
 
 export default HomePage;

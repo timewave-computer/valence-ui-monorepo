@@ -65,7 +65,7 @@ const BlogHome = async () => {
 
   return (
     // top padding is to avoid shifting layout for back button in desktop
-    <div className="flex flex-col items-start ">
+    <div className="flex flex-col items-start gap-2 md:gap-0 ">
       {posts.map((post, i) => (
         <Fragment key={`blog-post-${post.slug}`}>
           <div
@@ -76,7 +76,7 @@ const BlogHome = async () => {
           >
             <PostHeading slug={post.slug}>{post.title}</PostHeading>
 
-            <span className="col-span-1 col-start-1 row-start-1">
+            <span className="col-span-1 col-start-1 row-start-1 font-mono text-sm">
               {new UTCDate(post.date).toLocaleDateString()}
             </span>
           </div>
@@ -92,7 +92,7 @@ const BlogHome = async () => {
               width={400}
               height={300}
             />
-            <p className=" col-span-4  col-start-3  row-start-2 text-pretty text-h3 ">
+            <p className=" col-span-4  col-start-3  row-start-2 text-pretty text-h3 leading-8 ">
               {trimContent(post.preview)}
             </p>
           </Link>
