@@ -2,4 +2,3 @@ export * from "./Story";
 export * from "./Section";
 export * from "./SandboxNav";
 export * from "./StoryLabel";
-export * from "./TabButton";
