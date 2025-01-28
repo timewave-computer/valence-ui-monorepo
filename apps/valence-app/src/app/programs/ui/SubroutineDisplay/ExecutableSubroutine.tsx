@@ -6,7 +6,6 @@ import {
   FormSubmit,
   Heading,
   LinkText,
-  LoadingIndicator,
   PrettyJson,
   Sheet,
   SheetContent,
@@ -27,13 +26,9 @@ import {
   type AtomicFunction,
   type NonAtomicFunction,
 } from "@valence-ui/generated-types";
-import { parseJsonSchema } from "@/app/programs/server";
-import { CelatoneUrl, QUERY_KEYS } from "@/const";
+import { CelatoneUrl } from "@/const";
 import { displayAddress } from "@/utils";
-import { useQuery } from "@tanstack/react-query";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { m } from "framer-motion";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -110,7 +105,9 @@ export const ExecutableSubroutine = ({
             >
               <div className="flex flex-row gap-2 items-center">
                 <Heading level="h4">
-                  {displayLibraryContractName(librarySchema?.["contract_name"])}
+                  {displayLibraryContractName(
+                    librarySchema?.raw?.contract_name,
+                  )}
                 </Heading>
                 <LinkText
                   blankTarget={true}
@@ -145,12 +142,38 @@ export const ExecutableSubroutine = ({
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button size="sm" variant="secondary">
-                        View schema
+                        View details
                       </Button>
                     </SheetTrigger>
+
                     <SheetContent side="right" className="w-3/4">
-                      <Heading level="h2">Library Schema</Heading>
-                      <LibrarySchemaSheet libraryAddress={libraryAddress} />
+                      <div className="">
+                        <Heading level="h2">
+                          {displayLibraryContractName(
+                            librarySchema.raw.contract_name,
+                          )}
+                        </Heading>
+                        <LinkText
+                          blankTarget={true}
+                          className="font-mono text-xs"
+                          variant={"secondary"}
+                          href={CelatoneUrl.contract(libraryAddress)}
+                        >
+                          {libraryAddress}
+                        </LinkText>
+                      </div>
+                      <SyntaxHighlighter
+                        language="typescript"
+                        customStyle={{
+                          fontSize: "0.8rem",
+                          backgroundColor: "transparent",
+                          fontFamily: "var(--font-unica-mono)",
+                          padding: "0px",
+                          margin: "0px",
+                        }}
+                      >
+                        {librarySchema.typescript}
+                      </SyntaxHighlighter>
                     </SheetContent>
                   </Sheet>
                 )}
@@ -163,39 +186,5 @@ export const ExecutableSubroutine = ({
         <Button disabled={!isAuthorized}>Execute</Button>
       </FormSubmit>
     </FormRoot>
-  );
-};
-
-const LibrarySchemaSheet = ({ libraryAddress }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.PROGRAMS_PARSED_LIBRARY_SCHEMA, libraryAddress],
-    queryFn: async () => {
-      const result = await parseJsonSchema(libraryAddress);
-      console.log("parse result", result);
-      return result;
-    },
-  });
-
-  return (
-    <>
-      {isLoading ? (
-        <LoadingIndicator />
-      ) : (
-        <>
-          <SyntaxHighlighter
-            language="typescript"
-            customStyle={{
-              fontSize: "0.8rem",
-              backgroundColor: "transparent",
-              fontFamily: "var(--font-unica-mono)",
-              padding: "0px",
-              margin: "0px",
-            }}
-          >
-            {data?.ts}
-          </SyntaxHighlighter>
-        </>
-      )}
-    </>
   );
 };

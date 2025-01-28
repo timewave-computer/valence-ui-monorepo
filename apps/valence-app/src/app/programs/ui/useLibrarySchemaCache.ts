@@ -5,7 +5,7 @@ import {
   fetchLibrarySchema,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
-import { LibrarySchema } from "@/mock-data";
+import { LibraryJsonSchema } from "@/mock-data";
 import { useCallback } from "react";
 
 // hook can be instantated at root client level and used via useCache
@@ -32,13 +32,14 @@ export const useLibrarySchema = () => {
   // data is prefetched
   const getLibrarySchema = useCallback(
     (address: string) => {
-      return queryClient.getQueryData<LibrarySchema>([
+      return queryClient.getQueryData<LibraryJsonSchema>([
         QUERY_KEYS.PROGRAMS_LIBRARY_SCHEMA,
         address,
       ]);
     },
     [queryClient],
   );
+
   return {
     getLibrarySchema,
   };
