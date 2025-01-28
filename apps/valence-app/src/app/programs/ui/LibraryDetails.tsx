@@ -7,10 +7,6 @@ import {
 import { CelatoneUrl } from "@/const";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
-export interface SubroutineMessageFormValues {
-  messages: string[];
-}
-
 /**
  * This is itws own component because each subroutine should have its own useForm instantiatio
  */

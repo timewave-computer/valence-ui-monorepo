@@ -3,11 +3,12 @@ import { mockRegistry } from "@/mock-data";
 import {
   ProgramParser,
   fetchAccountBalances,
-  QueryConfig,
-  ProgramParserResult,
+  type QueryConfig,
   QueryConfigManager,
-  NormalizedAccounts,
-  NormalizedLibraries,
+  type ProgramParserResult,
+  type NormalizedAccounts,
+  type NormalizedLibraries,
+  type FetchLibrarySchemaReturnValue,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
@@ -196,7 +197,7 @@ async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
       acc[address] = schema;
       return acc;
     },
-    {} as Record<string, object>,
+    {} as Record<string, FetchLibrarySchemaReturnValue>,
   );
   return librarySchemas;
 }
