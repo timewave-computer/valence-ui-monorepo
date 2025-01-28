@@ -81,7 +81,6 @@ const _getProgramData = async ({
   const metadata = await fetchAssetMetadata(metadataToFetch);
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
-
   return {
     queryConfig: completeQueryConfig,
     balances: accountBalances,
@@ -177,6 +176,7 @@ function getDenomsAndChainIds({
 }
 
 async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
+  // TODO: maybe better to pull library addresses from the function data instead.
   const librariesToFetch = Object.values(libraries).reduce((acc, lib) => {
     if (lib.addr && lib.domain?.CosmosCosmwasm === "neutron")
       return [...acc, lib.addr];
@@ -191,6 +191,7 @@ async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
       };
     }),
   );
+
   // todo: for each library, fetch codeId, and use codeId to fetch schema
   const librarySchemas = requests.reduce(
     (acc, { address, schema }) => {

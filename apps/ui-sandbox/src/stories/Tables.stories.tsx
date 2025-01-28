@@ -1,5 +1,5 @@
 "use client";
-import { Section, Story, TabButton } from "~/components";
+import { Section, Story } from "~/components";
 import {
   HoverContent,
   Table,
@@ -9,6 +9,7 @@ import {
   TabsRoot,
   TabsList,
   TabsContent,
+  TabsTrigger,
 } from "@valence-ui/ui-components";
 import { useState } from "react";
 
@@ -21,17 +22,22 @@ const Tables = () => {
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as DisplayState)}
       >
-        <TabsList className="flex flex-row gap-2 py-2">
+        <TabsList>
           {Object.values(DisplayState).map((state) => (
-            <TabButton
+            <TabsTrigger
               key={`tab-button-${state}`}
               onClick={() => setActiveTab(state)}
-              isActive={activeTab === state}
-              state={state}
-            />
+              value={state}
+            >
+              {state}
+            </TabsTrigger>
           ))}
         </TabsList>
-        <TabsContent className="flex flex-col gap-8" value={DisplayState.Data}>
+        <TabsContent
+          variant="secondary"
+          className=" flex flex-col gap-8"
+          value={DisplayState.Data}
+        >
           <Story>
             <Table headers={headers} data={data} />
           </Story>
@@ -40,7 +46,8 @@ const Tables = () => {
           </Story>
         </TabsContent>
         <TabsContent
-          className="flex flex-col gap-8"
+          variant="secondary"
+          className=" flex flex-col gap-8"
           value={DisplayState.Loading}
         >
           <Story>
@@ -55,7 +62,11 @@ const Tables = () => {
             />
           </Story>
         </TabsContent>
-        <TabsContent className="flex flex-col gap-8" value={DisplayState.Empty}>
+        <TabsContent
+          className=" flex flex-col gap-8"
+          variant="secondary"
+          value={DisplayState.Empty}
+        >
           <Story>
             <Table headers={headers} data={[]} />
           </Story>

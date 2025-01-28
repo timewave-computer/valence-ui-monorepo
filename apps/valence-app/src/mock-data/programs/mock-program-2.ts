@@ -170,7 +170,7 @@ export const mockProgram2 = {
               },
               contract_address: {
                 "|library_account_addr|":
-                  "neutron12e9sfu7jg28z4dg5qhzjkf50tj05d5la5uwj2auqpedx5ph2757qhe336u",
+                  "thisisa98u7jg28z4dg5qhzjkf50tj05d5la5uwj2auqpedx5ph2757qheewrebad1",
               },
             },
             {

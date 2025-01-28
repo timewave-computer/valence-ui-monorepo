@@ -43,9 +43,7 @@ export function ProgramViewer({
         </div>
         <Sheet>
           <SheetTrigger asChild>
-            <Button size="sm" variant="secondary">
-              View program config
-            </Button>
+            <Button variant="secondary">View program config</Button>
           </SheetTrigger>
           <SheetContent className="w-1/2" side="right">
             <Heading level="h2">Raw Program Config</Heading>
