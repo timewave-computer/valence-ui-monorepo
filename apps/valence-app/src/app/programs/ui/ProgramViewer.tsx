@@ -6,7 +6,12 @@ import {
   ProcessorDisplay,
   RpcConfigForm,
   SubroutineDisplay,
+  useProgramQuery,
+  useQueryArgsStore,
   useInitializeLibrarySchemaCache,
+  QueryArgsStore,
+  createQueryArgsStore,
+  ProgramQueryArgsContext,
 } from "@/app/programs/ui";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
@@ -20,19 +25,18 @@ import {
   SheetTrigger,
 } from "@valence-ui/ui-components";
 import Link from "next/link";
+import { useRef } from "react";
 
-export function ProgramViewer({
-  programId,
-  data,
-}: {
+export type ProgramViewerProps = {
   programId: string;
   data: GetProgramDataReturnValue;
-}) {
+};
+function ProgramViewer({ programId, data: _data }: ProgramViewerProps) {
   // page loads with initial server-fetched data. this inserts it into useQuery, so the access pattern is easy
+  const { data } = useProgramQuery({ programId, initialQueryData: _data });
+
   useInitializeMetadataCache(data.metadata);
   useInitializeLibrarySchemaCache(data.librarySchemas);
-
-  console.log("all program", data);
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">
@@ -50,17 +54,17 @@ export function ProgramViewer({
               <Button variant="secondary">Raw Program</Button>
             </SheetTrigger>
             <SheetContent className="w-1/2" side="right">
-              <Heading level="h2">Raw Program Config</Heading>
+              <Heading level="h2">Raw Program</Heading>
               <PrettyJson data={data.rawProgram} />
             </SheetContent>
           </Sheet>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="secondary">RPC Config</Button>
+              <Button variant="secondary">RPC Settings</Button>
             </SheetTrigger>
             <SheetContent className="w-1/2" side="right">
-              <Heading level="h2">RPC Config</Heading>
-              <RpcConfigForm program={data.queryConfig} />
+              <Heading level="h2">RPC Settings</Heading>
+              <RpcConfigForm />
             </SheetContent>
           </Sheet>
         </div>
@@ -95,5 +99,20 @@ export function ProgramViewer({
         </div>
       </div>
     </div>
+  );
+}
+
+export function ProgramViewerWithProvider(props: ProgramViewerProps) {
+  const store = useRef<QueryArgsStore>();
+  if (!store.current) {
+    store.current = createQueryArgsStore({
+      queryConfig: props.data.queryConfig,
+    });
+  }
+
+  return (
+    <ProgramQueryArgsContext.Provider value={store.current}>
+      <ProgramViewer {...props} />
+    </ProgramQueryArgsContext.Provider>
   );
 }

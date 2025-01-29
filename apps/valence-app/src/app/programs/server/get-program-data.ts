@@ -57,7 +57,7 @@ const _getProgramData = async ({
   );
 
   // must default registry address and mainchain RPC if no config given
-  const rawProgram = await fetchProgram({
+  const rawProgram = await fetchProgramFromRegistry({
     programId,
     config: queryConfigManager.getMainChainConfig(),
   });
@@ -91,7 +91,7 @@ const _getProgramData = async ({
   };
 };
 
-const fetchProgram = async ({
+const fetchProgramFromRegistry = async ({
   programId,
   config,
 }: {
@@ -112,6 +112,7 @@ const queryAccountBalances = async (
       // should not happen, just to make typescript happy
       throw new Error(`Account ${id} does not have an address`);
     }
+    console.log("all chains", config.allChains);
 
     const rpcUrl = config.allChains.find(
       (chain) => chain.name === account.chainName,
