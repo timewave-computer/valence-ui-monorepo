@@ -4,6 +4,7 @@ import {
   AccountTable,
   ExecutionHistoryTable,
   ProcessorDisplay,
+  RpcConfigForm,
   SubroutineDisplay,
   useInitializeLibrarySchemaCache,
 } from "@/app/programs/ui";
@@ -59,7 +60,7 @@ export function ProgramViewer({
             </SheetTrigger>
             <SheetContent className="w-1/2" side="right">
               <Heading level="h2">RPC Config</Heading>
-              <PrettyJson data={data.rawProgram} />
+              <RpcConfigForm program={data.queryConfig} />
             </SheetContent>
           </Sheet>
         </div>

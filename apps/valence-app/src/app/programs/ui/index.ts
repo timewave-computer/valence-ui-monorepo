@@ -9,3 +9,4 @@ export * from "./lib";
 export * from "./SubroutineDisplay";
 export * from "./useLibrarySchemaCache";
 export * from "./LibraryDetails";
+export * from "./RpcConfigForm";
