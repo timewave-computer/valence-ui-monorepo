@@ -112,7 +112,6 @@ const queryAccountBalances = async (
       // should not happen, just to make typescript happy
       throw new Error(`Account ${id} does not have an address`);
     }
-    console.log("all chains", config.allChains);
 
     const rpcUrl = config.allChains.find(
       (chain) => chain.name === account.chainName,

@@ -52,7 +52,7 @@ export const useProgramQuery = ({
   initialQueryData,
 }: UseProgramQueryArgs) => {
   const { queryConfig } = useQueryArgsStore();
-  return useQuery<GetProgramDataReturnValue>({
+  return useQuery<GetProgramDataReturnValue | undefined>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
