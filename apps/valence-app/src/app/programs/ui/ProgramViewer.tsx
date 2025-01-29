@@ -31,6 +31,8 @@ export function ProgramViewer({
   useInitializeMetadataCache(data.metadata);
   useInitializeLibrarySchemaCache(data.librarySchemas);
 
+  console.log("all program", data);
+
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">
       <div className="flex flex-col gap-2">
@@ -41,15 +43,26 @@ export function ProgramViewer({
           <Heading level="h1"> / </Heading>
           <Heading level="h1"> {programId} </Heading>
         </div>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="secondary">View program config</Button>
-          </SheetTrigger>
-          <SheetContent className="w-1/2" side="right">
-            <Heading level="h2">Raw Program Config</Heading>
-            <PrettyJson data={data.rawProgram} />
-          </SheetContent>
-        </Sheet>
+        <div className="flex flex-row gap-2 items-center">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary">Raw Program</Button>
+            </SheetTrigger>
+            <SheetContent className="w-1/2" side="right">
+              <Heading level="h2">Raw Program Config</Heading>
+              <PrettyJson data={data.rawProgram} />
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary">RPC Config</Button>
+            </SheetTrigger>
+            <SheetContent className="w-1/2" side="right">
+              <Heading level="h2">RPC Config</Heading>
+              <PrettyJson data={data.rawProgram} />
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
 
       <div className="grid grid-cols-5 w-full gap-4 pt-4 pb-4">
