@@ -1,6 +1,5 @@
 export * from "./ProgramsHero";
 export * from "./useProgramQuery";
-export * from "./useDisplayStore";
 export * from "./AccountTable";
 export * from "./ExecutionHistoryTable";
 export * from "./ProcessorDisplay";

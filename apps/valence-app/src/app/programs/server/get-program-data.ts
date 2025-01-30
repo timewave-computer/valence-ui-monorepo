@@ -34,7 +34,7 @@ export const getProgramData = async (
     if (throwError) throw e;
     return {
       code: 400,
-      message: "Could not fetch program",
+      message: "Error fetching program",
       error: e.message + " " + JSON.stringify(e),
     };
   }

@@ -8,9 +8,7 @@ import {
   SubroutineDisplay,
   useProgramQuery,
   useInitializeLibrarySchemaCache,
-  QueryArgsStore,
-  createQueryArgsStore,
-  ProgramQueryArgsContext,
+  queryArgsAtom,
 } from "@/app/programs/ui";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
@@ -25,14 +23,15 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@valence-ui/ui-components";
+import { Provider as JotaiProvider } from "jotai";
+import { useHydrateAtoms } from "jotai/utils";
 import Link from "next/link";
-import { useRef } from "react";
 
 export type ProgramViewerProps = {
   programId: string;
   data: GetProgramDataReturnValue;
 };
-function ProgramViewer({ programId, data: _data }: ProgramViewerProps) {
+function _ProgramViewer({ programId, data: _data }: ProgramViewerProps) {
   // page loads with initial server-fetched data. this inserts it into useQuery, so the access pattern is easy
   const { data, isFetching, isError } = useProgramQuery({
     programId,
@@ -78,7 +77,7 @@ function ProgramViewer({ programId, data: _data }: ProgramViewerProps) {
         <CalloutBox
           variant="error"
           className="my-4 w-full"
-          title="Failed to load program"
+          title="Error fetching program"
         >
           Check RPC settings for each chain.
         </CalloutBox>
@@ -128,17 +127,18 @@ function ProgramViewer({ programId, data: _data }: ProgramViewerProps) {
   );
 }
 
-export function ProgramViewerWithProvider(props: ProgramViewerProps) {
-  const store = useRef<QueryArgsStore>();
-  if (!store.current) {
-    store.current = createQueryArgsStore({
-      queryConfig: props.data.queryConfig,
-    });
-  }
+const HydrateAtoms = ({ initialValues, children }) => {
+  // initialising on state with prop on render here
+  useHydrateAtoms(initialValues);
+  return children;
+};
 
+export function ProgramViewer(props: ProgramViewerProps) {
   return (
-    <ProgramQueryArgsContext.Provider value={store.current}>
-      <ProgramViewer {...props} />
-    </ProgramQueryArgsContext.Provider>
+    <JotaiProvider>
+      <HydrateAtoms initialValues={[[queryArgsAtom, props.data?.queryConfig]]}>
+        <_ProgramViewer {...props} />
+      </HydrateAtoms>
+    </JotaiProvider>
   );
 }

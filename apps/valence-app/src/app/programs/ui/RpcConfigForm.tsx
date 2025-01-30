@@ -7,7 +7,8 @@ import {
   TextInput,
 } from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
-import { useQueryArgsStore } from "./useProgramQuery";
+import { useQueryArgs } from "@/app/programs/ui";
+import { debounce } from "lodash";
 
 type RpcConfigFormValues = {
   main: {
@@ -20,7 +21,7 @@ type RpcConfigFormValues = {
   }>;
 };
 export const RpcConfigForm = ({}: {}) => {
-  const { queryConfig, setQueryConfig } = useQueryArgsStore();
+  const [queryConfig, setQueryConfig] = useQueryArgs();
 
   const mainChain = queryConfig.main;
   const restOfChains = queryConfig.allChains.filter(
@@ -41,9 +42,7 @@ export const RpcConfigForm = ({}: {}) => {
     },
   });
 
-  const handleSubmitForm = (values: RpcConfigFormValues) => {
-    console.log("submitting form", values);
-
+  const handleSubmitForm = debounce((values: RpcConfigFormValues) => {
     setQueryConfig({
       main: {
         registryAddress: mainChain.registryAddress,
@@ -66,7 +65,7 @@ export const RpcConfigForm = ({}: {}) => {
         })),
       ],
     });
-  };
+  }, 300);
 
   return (
     <div>

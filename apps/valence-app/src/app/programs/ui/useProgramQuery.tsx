@@ -1,6 +1,4 @@
 "use client";
-import { createStore, useStore } from "zustand";
-import { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
 import {
@@ -10,37 +8,21 @@ import {
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import { ToastMessage, toast } from "@valence-ui/ui-components";
+import { atom, useAtom } from "jotai";
 
-interface QueryConfigProps {
-  queryConfig: QueryConfig;
-}
-interface QueryConfigState extends QueryConfigProps {
-  setQueryConfig: (newQueryConfig: QueryConfig) => void;
-}
+// initialized with Provider on render
+export const queryArgsAtom = atom<QueryConfig>({
+  main: {
+    chainId: "",
+    rpc: "",
+    registryAddress: "",
+    name: "",
+  },
+  allChains: [],
+});
 
-export type QueryArgsStore = ReturnType<typeof createQueryArgsStore>;
-
-export const createQueryArgsStore = (initProps: {
-  queryConfig: QueryConfig;
-}) => {
-  return createStore<QueryConfigState>()((set, get) => ({
-    ...initProps,
-    setQueryConfig: (newQueryConfig: QueryConfig) =>
-      set({ queryConfig: newQueryConfig }),
-  }));
-};
-
-export const ProgramQueryArgsContext = createContext<QueryArgsStore | null>(
-  null,
-);
-
-export const useQueryArgsStore = () => {
-  const store = useContext(ProgramQueryArgsContext);
-  if (!store)
-    throw new Error(
-      "useQueryArgsStore must be used within a ProgramQueryArgsContext.Provider",
-    );
-  return useStore(store);
+export const useQueryArgs = () => {
+  return useAtom(queryArgsAtom);
 };
 
 type UseProgramQueryArgs = {
@@ -51,7 +33,7 @@ export const useProgramQuery = ({
   programId,
   initialQueryData,
 }: UseProgramQueryArgs) => {
-  const { queryConfig } = useQueryArgsStore();
+  const [queryConfig] = useAtom(queryArgsAtom);
   return useQuery<GetProgramDataReturnValue | undefined>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
