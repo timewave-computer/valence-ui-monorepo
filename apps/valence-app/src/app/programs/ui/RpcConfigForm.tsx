@@ -27,9 +27,8 @@ export const RpcConfigForm = ({}: {}) => {
   const [queryConfig, setQueryConfig] = useQueryArgs();
 
   const mainChain = queryConfig.main;
-  const restOfChains = queryConfig.allChains.filter(
-    (c) => c.chainId !== mainChain.chainId,
-  );
+  const externalChains = queryConfig.external;
+
   const { register, handleSubmit } = useForm<RpcConfigFormValues>({
     defaultValues: {
       main: {
@@ -38,7 +37,7 @@ export const RpcConfigForm = ({}: {}) => {
         registryAddress: mainChain.registryAddress,
         rpcUrl: mainChain.rpc,
       },
-      externalChains: restOfChains.map((c) => {
+      externalChains: externalChains.map((c) => {
         return {
           chainId: c.chainId,
           rpcUrl: c.rpc,
@@ -56,12 +55,8 @@ export const RpcConfigForm = ({}: {}) => {
         chainId: values.main.chainId,
         rpc: values.main.rpcUrl,
       },
-      allChains: [
-        {
-          chainId: values.main.chainId,
-          rpc: values.main.rpcUrl,
-          name: values.main.name,
-        },
+
+      external: [
         ...values.externalChains.map((chain) => ({
           chainId: chain.chainId,
           rpc: chain.rpcUrl,
@@ -104,7 +99,7 @@ export const RpcConfigForm = ({}: {}) => {
 
         <div className="flex flex-col gap-2">
           <Heading level="h3">External Chains</Heading>
-          {restOfChains.map((chain, index) => {
+          {externalChains.map((chain, index) => {
             return (
               <FormField
                 key={`chain-rpcurl-${chain.chainId}`}

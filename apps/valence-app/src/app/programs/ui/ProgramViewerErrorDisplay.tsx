@@ -16,7 +16,7 @@ export const ProgramViewerErrorDisplay = ({
             className=" w-full"
             title={error.title}
           >
-            {error.text}
+            {error.text && <>{error.text}</>}
             {error.message && <div>{error.message}</div>}
           </CalloutBox>
         );

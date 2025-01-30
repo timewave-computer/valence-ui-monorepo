@@ -9,7 +9,7 @@ export type QueryConfig = {
     rpc: string;
     name: string;
   };
-  allChains: Array<{
+  external: Array<{
     rpc: string;
     chainId: string;
     name: string;
@@ -17,20 +17,20 @@ export type QueryConfig = {
 };
 
 type RequiredMain = Required<Pick<QueryConfig, "main">>;
-type OptionalAllChain = Partial<Pick<QueryConfig, "allChains">>;
+type OptionalExternal = Partial<Pick<QueryConfig, "external">>;
 type WorkingQueryConfig = RequiredMain &
-  OptionalAllChain &
-  Omit<QueryConfig, "main" | "allChains">;
+  OptionalExternal &
+  Omit<QueryConfig, "main" | "external">;
 
 export class QueryConfigManager {
   // 'main' is requied but temp can be undefined
   private mainChainConfig: QueryConfig["main"];
-  private allChainConfig?: QueryConfig["allChains"];
+  private externalChainConfig?: QueryConfig["external"];
 
   constructor(workingConfig: WorkingQueryConfig) {
     this.mainChainConfig = workingConfig.main;
-    if (workingConfig.allChains) {
-      this.allChainConfig = workingConfig.allChains;
+    if (workingConfig.external) {
+      this.externalChainConfig = workingConfig.external;
     }
   }
 
@@ -40,16 +40,16 @@ export class QueryConfigManager {
 
   setAllChainsConfigIfEmpty(accounts: NormalizedAccounts) {
     // if query config already specified, we dont have to make it ourselves.
-    if (this.allChainConfig?.length) return;
+    if (this.externalChainConfig?.length) return;
     else
-      this.allChainConfig = QueryConfigManager.makeAllChainsConfig(
+      this.externalChainConfig = QueryConfigManager.makeExternalChainConfig(
         accounts,
         this.mainChainConfig.chainId,
       );
   }
 
   getQueryConfig(): QueryConfig {
-    if (!this.allChainConfig) {
+    if (!this.externalChainConfig) {
       // this is to catch errors during development.
       throw new Error(
         "All chains config not set. Please call setAllChainsConfigIfEmpty before calling getQueryConfig",
@@ -57,16 +57,16 @@ export class QueryConfigManager {
     }
     return {
       main: this.mainChainConfig,
-      allChains: this.allChainConfig,
+      external: this.externalChainConfig,
     };
   }
 
   // takes list of accounts and default rpcs and makes rpc config object
-  private static makeAllChainsConfig(
+  private static makeExternalChainConfig(
     accounts: NormalizedAccounts,
     mainChainId: string,
-  ): QueryConfig["allChains"] {
-    const rpcs: QueryConfig["allChains"] = [];
+  ): QueryConfig["external"] {
+    const rpcs: QueryConfig["external"] = [];
 
     for (const account of Object.values(accounts)) {
       // if already present, skip
@@ -93,11 +93,13 @@ export class QueryConfigManager {
         }
         rpcUrl = registeredEndpoint.address;
       }
-      rpcs.push({
-        rpc: rpcUrl,
-        chainId: account.chainId,
-        name: account.chainName,
-      });
+      if (account.chainId !== mainChainId) {
+        rpcs.push({
+          rpc: rpcUrl,
+          chainId: account.chainId,
+          name: account.chainName,
+        });
+      }
     }
     return rpcs;
   }

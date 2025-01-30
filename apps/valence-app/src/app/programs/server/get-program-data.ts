@@ -42,7 +42,7 @@ export const getProgramData = async ({
   let queryConfigManager = new QueryConfigManager(
     userSuppliedQueryConfig ?? {
       main: getDefaultMainChainConfig(),
-      allChains: undefined, // need to construct this from accounts
+      external: undefined, // need to construct this from accounts
     },
   );
   // must default registry address and mainchain RPC if no config given
@@ -128,9 +128,15 @@ const queryAccountBalances = async (
       throw new Error(`Account ${id} does not have an address`);
     }
 
-    const rpcUrl = config.allChains.find(
-      (chain) => chain.name === account.chainName,
-    )?.rpc;
+    let rpcUrl: string | undefined = undefined;
+    if (account.chainName === config.main.name) {
+      rpcUrl = config.main.rpc;
+    } else {
+      rpcUrl = config.external.find(
+        (chain) => chain.name === account.chainName,
+      )?.rpc;
+    }
+
     if (!rpcUrl) {
       throw new Error(`No RPC URL found for chain ID ${account.chainName}`);
     }
