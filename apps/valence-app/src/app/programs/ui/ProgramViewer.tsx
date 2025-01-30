@@ -34,16 +34,10 @@ export type ProgramViewerProps = {
 };
 function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   // page loads with initial server-fetched data. this inserts it into useQuery, so the access pattern is easy
-  const {
-    data: _data,
-    isFetching,
-    isError,
-  } = useProgramQuery({
+  const { data: data, isFetching } = useProgramQuery({
     programId,
     initialQueryData: initialData,
   });
-
-  const data = isError ? undefined : _data; // react query gives stale data with old query params if there is an error. bad UX
 
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
@@ -58,7 +52,7 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
           <Heading level="h1"> / </Heading>
           <Heading level="h1"> {programId} </Heading>
         </div>
-        <ProgramViewerErrorDisplay data={initialData} />
+        <ProgramViewerErrorDisplay errors={data?.errors} />
         <div className="flex flex-row gap-2 items-center pt-2">
           <Sheet>
             <SheetTrigger asChild>
@@ -82,16 +76,6 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
           )}
         </div>
       </div>
-
-      {isError && (
-        <CalloutBox
-          variant="error"
-          className="my-4 w-full"
-          title="Error fetching program"
-        >
-          Check RPC settings for each chain.
-        </CalloutBox>
-      )}
       <div className="grid grid-cols-5 w-full gap-4 pt-4 pb-4">
         <div className="flex flex-col col-span-3  gap-2">
           <Heading level="h2">Subroutines</Heading>

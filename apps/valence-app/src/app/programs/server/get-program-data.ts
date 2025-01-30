@@ -9,12 +9,13 @@ import {
   type NormalizedAccounts,
   type NormalizedLibraries,
   type FetchLibrarySchemaReturnValue,
+  ErrorCodes,
+  makeApiErrors,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
   fetchLibrarySchema,
-  GET_PROGRAM_ERROR_CODES,
-  GetProgramErrorCodes,
+  ProgramErrorCodes,
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
 
@@ -30,7 +31,7 @@ export type GetProgramDataReturnValue = {
   rawProgram?: string;
   metadata?: Record<string, any>;
   librarySchemas?: Record<string, FetchLibrarySchemaReturnValue>;
-  errors?: any;
+  errors?: ErrorCodes;
 };
 
 // defined separetely to isolate the return type
@@ -55,12 +56,7 @@ export const getProgramData = async ({
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
       queryConfig: queryConfigManager.getQueryConfig(),
-      errors: {
-        [GetProgramErrorCodes.REGISTRY]: {
-          ...GET_PROGRAM_ERROR_CODES[GetProgramErrorCodes.REGISTRY],
-          message: JSON.stringify(e),
-        },
-      },
+      errors: makeApiErrors([{ code: ProgramErrorCodes.REGISTRY }]),
     };
   }
 
@@ -71,15 +67,11 @@ export const getProgramData = async ({
     program = ProgramParser.extractData(rawProgram);
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
+    console.log("parse error", e);
     return {
       queryConfig: queryConfigManager.getQueryConfig(),
       rawProgram,
-      errors: {
-        [GetProgramErrorCodes.PARSE]: {
-          ...GET_PROGRAM_ERROR_CODES[GetProgramErrorCodes.PARSE],
-          message: JSON.stringify(e),
-        },
-      },
+      errors: makeApiErrors([{ code: ProgramErrorCodes.PARSE }]),
     };
   }
 
@@ -99,10 +91,7 @@ export const getProgramData = async ({
     });
     metadata = await fetchAssetMetadata(metadataToFetch);
   } catch (e) {
-    errors[GetProgramErrorCodes.BALANCES] = {
-      ...GET_PROGRAM_ERROR_CODES[GetProgramErrorCodes.BALANCES],
-      message: JSON.stringify(e),
-    };
+    errors = makeApiErrors([{ code: ProgramErrorCodes.BALANCES, message: e }]);
   }
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);

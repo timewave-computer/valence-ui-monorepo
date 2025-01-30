@@ -92,7 +92,7 @@ export const RpcConfigForm = ({}: {}) => {
             />
           </FormField>
           <FormField name="main.registryAddress">
-            <InputLabel size="sm" label="Program registry address" />
+            <InputLabel size="sm" label="Program registry" />
 
             <TextInput
               size="sm"

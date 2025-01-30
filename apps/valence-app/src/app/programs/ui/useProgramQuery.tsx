@@ -6,9 +6,10 @@ import {
   getProgramData,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
-import { ToastMessage, toast } from "@valence-ui/ui-components";
+import { LinkText, ToastMessage, toast } from "@valence-ui/ui-components";
 import { atom, useAtom } from "jotai";
 import { useCallback } from "react";
+import { X_URL } from "@valence-ui/socials";
 
 export const DEFAULT_QUERY_CONFIG: QueryConfig = {
   main: {
@@ -22,10 +23,6 @@ export const DEFAULT_QUERY_CONFIG: QueryConfig = {
 
 // initialized with Provider on render
 export const queryArgsAtom = atom<QueryConfig>(DEFAULT_QUERY_CONFIG);
-
-const isHasErrors = (data: GetProgramDataReturnValue | undefined) => {
-  return Object.keys(data?.errors ?? {}).length > 0;
-};
 
 export const useQueryArgs = () => {
   return useAtom(queryArgsAtom);
@@ -48,21 +45,20 @@ export const useProgramQuery = ({
         programId,
         queryConfig,
       });
-      const balanaceErrors = data.errors?.BALANCES;
-      const registryErrors = data.errors?.REGISTRY;
-      if (registryErrors || balanaceErrors) {
-        toast.error(
-          <ToastMessage title={"Failed RPC Request"} variant="error">
-            {registryErrors?.message}
-            {balanaceErrors?.message}
-          </ToastMessage>,
-        );
-      }
-      // still return the partial result
+      // return the partial result. it contains errors
       return data;
     } catch (e) {
+      // catch if it just totally fails
       console.log("Failed to fetch", e);
-      throw new Error("Failed to fetch");
+      toast(
+        <ToastMessage variant="error" title="Failed to fetch program">
+          Refresh the page and contanct{" "}
+          <LinkText href={X_URL} variant="primary">
+            @Valence.Zone
+          </LinkText>{" "}
+          if the problem persists.
+        </ToastMessage>,
+      );
     }
   }, [programId, queryConfig.main, queryConfig.allChains]);
   return useQuery<GetProgramDataReturnValue | undefined>({
