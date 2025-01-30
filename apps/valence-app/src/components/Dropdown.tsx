@@ -125,7 +125,7 @@ export const Dropdown = <T extends string>({
       )}
 
       {visible && (
-        <div className="absolute left-0 right-0 top-[calc(100%-1px)] z-10 flex flex-col border border-valence-mediumgray bg-gray-100 font-mono">
+        <div className="absolute left-0 right-0 top-[calc(100%-1px)] z-40 flex flex-col border border-valence-mediumgray bg-gray-100 font-mono">
           {dropdownOptions.map((option, index) => (
             <button
               key={option.value}

@@ -12,7 +12,6 @@ export type QueryConfig = {
   allChains: Array<{
     rpc: string;
     chainId: string;
-    crosschain: boolean;
     name: string;
   }>;
 };
@@ -97,7 +96,6 @@ export class QueryConfigManager {
       rpcs.push({
         rpc: rpcUrl,
         chainId: account.chainId,
-        crosschain: account.chainId !== mainChainId,
         name: account.chainName,
       });
     }

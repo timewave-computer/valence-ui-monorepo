@@ -2,8 +2,8 @@
 import {
   FormField,
   FormRoot,
+  Heading,
   InputLabel,
-  Label,
   TextInput,
 } from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
@@ -12,9 +12,12 @@ import { debounce } from "lodash";
 
 type RpcConfigFormValues = {
   main: {
+    registryAddress: string;
     rpcUrl: string;
+    name: string;
+    chainId: string;
   };
-  chains: Array<{
+  externalChains: Array<{
     chainId: string;
     rpcUrl: string;
     name: string;
@@ -30,9 +33,12 @@ export const RpcConfigForm = ({}: {}) => {
   const { register, handleSubmit } = useForm<RpcConfigFormValues>({
     defaultValues: {
       main: {
+        name: mainChain.name,
+        chainId: mainChain.chainId,
+        registryAddress: mainChain.registryAddress,
         rpcUrl: mainChain.rpc,
       },
-      chains: restOfChains.map((c) => {
+      externalChains: restOfChains.map((c) => {
         return {
           chainId: c.chainId,
           rpcUrl: c.rpc,
@@ -43,26 +49,23 @@ export const RpcConfigForm = ({}: {}) => {
   });
 
   const handleSubmitForm = debounce((values: RpcConfigFormValues) => {
-    console.log("submitting form", values);
     setQueryConfig({
       main: {
-        registryAddress: mainChain.registryAddress,
-        name: mainChain.name,
-        chainId: mainChain.chainId,
+        registryAddress: values.main.registryAddress,
+        name: values.main.name,
+        chainId: values.main.chainId,
         rpc: values.main.rpcUrl,
       },
       allChains: [
         {
-          chainId: mainChain.chainId,
+          chainId: values.main.chainId,
           rpc: values.main.rpcUrl,
-          name: mainChain.name,
-          crosschain: false,
+          name: values.main.name,
         },
-        ...values.chains.map((chain) => ({
+        ...values.externalChains.map((chain) => ({
           chainId: chain.chainId,
           rpc: chain.rpcUrl,
           name: chain.name,
-          crosschain: true,
         })),
       ],
     });
@@ -72,31 +75,54 @@ export const RpcConfigForm = ({}: {}) => {
     <div>
       <FormRoot
         onChange={handleSubmit(handleSubmitForm)}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-6"
       >
-        <FormField name="main chain rpc">
-          <div className="flex flex-row gap-2 items-center pb-2">
-            {" "}
-            <InputLabel noGap label={`${mainChain.chainId}`} />
-            <Label>Main Chain</Label>
-          </div>
-          <TextInput {...register("main.rpcUrl")} placeholder="https://" />
-        </FormField>
+        <div className="flex flex-col gap-2 ">
+          <Heading level="h3">Main Chain</Heading>
+          <FormField name="main.rpcUrl">
+            <InputLabel
+              size="sm"
+              label={`${mainChain.name} RPC URL (${mainChain.chainId})`}
+            />
 
-        {restOfChains.map((chain, index) => {
-          return (
-            <FormField
-              key={`chain-rpcurl-${chain.chainId}`}
-              name={`chains.${index}.rpcUrl`}
-            >
-              <InputLabel label={`${chain.chainId}`} />
-              <TextInput
-                {...register(`chains.${index}.rpcUrl`)}
-                placeholder="https://"
-              />
-            </FormField>
-          );
-        })}
+            <TextInput
+              size="sm"
+              {...register("main.rpcUrl")}
+              placeholder="https://"
+            />
+          </FormField>
+          <FormField name="main.registryAddress">
+            <InputLabel size="sm" label="Program registry address" />
+
+            <TextInput
+              size="sm"
+              {...register("main.registryAddress")}
+              placeholder="neutron1234..."
+            />
+          </FormField>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Heading level="h3">External Chains</Heading>
+          {restOfChains.map((chain, index) => {
+            return (
+              <FormField
+                key={`chain-rpcurl-${chain.chainId}`}
+                name={`chains.${index}.rpcUrl`}
+              >
+                <InputLabel
+                  size="sm"
+                  label={`${chain.name} RPC URL (${chain.chainId})`}
+                />
+                <TextInput
+                  size="sm"
+                  {...register(`externalChains.${index}.rpcUrl`)}
+                  placeholder="https://"
+                />
+              </FormField>
+            );
+          })}
+        </div>
       </FormRoot>
     </div>
   );

@@ -50,16 +50,11 @@ export const useProgramQuery = ({
       });
       const balanaceErrors = data.errors?.BALANCES;
       const registryErrors = data.errors?.REGISTRY;
-      if (registryErrors) {
+      if (registryErrors || balanaceErrors) {
         toast.error(
-          <ToastMessage title={registryErrors.title} variant="error">
-            {registryErrors.message}
-          </ToastMessage>,
-        );
-      } else if (balanaceErrors) {
-        toast.error(
-          <ToastMessage title={balanaceErrors.title} variant="error">
-            {balanaceErrors.message}
+          <ToastMessage title={"Failed RPC Request"} variant="error">
+            {registryErrors?.message}
+            {balanaceErrors?.message}
           </ToastMessage>,
         );
       }
@@ -77,7 +72,7 @@ export const useProgramQuery = ({
     queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM, queryConfig, programId],
     initialData: initialQueryData,
     refetchInterval: 0,
-    staleTime: 0,
+    staleTime: 0, // must be 0 in order for data to refetch if query params change (???)
     queryFn,
   });
 };
