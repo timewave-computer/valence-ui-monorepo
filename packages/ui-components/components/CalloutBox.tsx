@@ -40,7 +40,9 @@ export const CalloutBox = React.forwardRef<HTMLDivElement, CalloutBoxProps>(
             {title}
           </InfoText>
         </div>
-        <div className="flex flex-col gap-2 text-sm">{children}</div>
+        {children && (
+          <div className="flex flex-col gap-2 text-sm">{children}</div>
+        )}
       </div>
     );
   },

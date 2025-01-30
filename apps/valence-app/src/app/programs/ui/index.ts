@@ -10,3 +10,4 @@ export * from "./LibraryDetails";
 export * from "./RpcConfigForm";
 export * from "./useLibrarySchemaCache";
 export * from "./useProgramQuery";
+export * from "./ProgramViewerErrorDisplay";

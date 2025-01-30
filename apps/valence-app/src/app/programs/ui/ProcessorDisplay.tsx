@@ -1,5 +1,6 @@
 import {
   Button,
+  Card,
   CellType,
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
@@ -17,12 +18,19 @@ import { CelatoneUrl } from "@/const";
 export const ProcessorDisplay = ({
   program,
 }: {
-  program: GetProgramDataReturnValue;
+  program?: GetProgramDataReturnValue;
 }) => {
-  const processorAddresses = program.authorizationData?.processor_addrs;
+  const processorAddresses =
+    program?.parsedProgram?.authorizationData?.processor_addrs;
   let processors = Array<[string, string]>();
   if (processorAddresses) {
     processors = Object.entries(processorAddresses);
+  }
+
+  if (!processors.length) {
+    return (
+      <Card className="grow h-full border-0">No processors to display.</Card>
+    );
   }
 
   return processors.map(([domain, processorAddress]) => {

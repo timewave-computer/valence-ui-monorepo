@@ -43,6 +43,7 @@ export const RpcConfigForm = ({}: {}) => {
   });
 
   const handleSubmitForm = debounce((values: RpcConfigFormValues) => {
+    console.log("submitting form", values);
     setQueryConfig({
       main: {
         registryAddress: mainChain.registryAddress,

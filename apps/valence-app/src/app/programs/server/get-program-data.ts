@@ -13,6 +13,8 @@ import {
 import {
   getDefaultMainChainConfig,
   fetchLibrarySchema,
+  GET_PROGRAM_ERROR_CODES,
+  GetProgramErrorCodes,
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
 
@@ -20,74 +22,98 @@ type GetProgramDataProps = {
   programId: string;
   queryConfig?: QueryConfig;
 };
-// TODO: make a generic wrapper with input props and success return value is auto derived
-export const getProgramData = async (
-  props: GetProgramDataProps & {
-    throwError?: boolean;
-  },
-) => {
-  const { throwError, ...restOfProps } = props;
-  try {
-    return await _getProgramData(restOfProps);
-  } catch (e) {
-    // nextjs obscures the error message from failed server actions, so this is a rudimentary solution to get proper error messages in the client
-    if (throwError) throw e;
-    return {
-      code: 400,
-      message: "Error fetching program",
-      error: e.message + " " + JSON.stringify(e),
-    };
-  }
+
+export type GetProgramDataReturnValue = {
+  queryConfig: QueryConfig;
+  balances?: AccountBalancesReturnValue;
+  parsedProgram?: ProgramParserResult;
+  rawProgram?: string;
+  metadata?: Record<string, any>;
+  librarySchemas?: Record<string, FetchLibrarySchemaReturnValue>;
+  errors?: any;
 };
 
-export type GetProgramDataReturnValue = Awaited<
-  ReturnType<typeof _getProgramData>
->;
-
 // defined separetely to isolate the return type
-const _getProgramData = async ({
+export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
-}: GetProgramDataProps) => {
+}: GetProgramDataProps): Promise<GetProgramDataReturnValue> => {
   let queryConfigManager = new QueryConfigManager(
     userSuppliedQueryConfig ?? {
       main: getDefaultMainChainConfig(),
       allChains: undefined, // need to construct this from accounts
     },
   );
-
   // must default registry address and mainchain RPC if no config given
-  const rawProgram = await fetchProgramFromRegistry({
-    programId,
-    config: queryConfigManager.getMainChainConfig(),
-  });
+  let rawProgram = "";
+  try {
+    rawProgram = await fetchProgramFromRegistry({
+      programId,
+      config: queryConfigManager.getMainChainConfig(),
+    });
+  } catch (e) {
+    queryConfigManager.setAllChainsConfigIfEmpty({});
+    return {
+      queryConfig: queryConfigManager.getQueryConfig(),
+      errors: {
+        [GetProgramErrorCodes.REGISTRY]: {
+          ...GET_PROGRAM_ERROR_CODES[GetProgramErrorCodes.REGISTRY],
+          message: JSON.stringify(e),
+        },
+      },
+    };
+  }
 
-  const program = ProgramParser.extractData(rawProgram);
+  let program: ProgramParserResult;
+  queryConfigManager.setAllChainsConfigIfEmpty({});
+
+  try {
+    program = ProgramParser.extractData(rawProgram);
+  } catch (e) {
+    queryConfigManager.setAllChainsConfigIfEmpty({});
+    return {
+      queryConfig: queryConfigManager.getQueryConfig(),
+      rawProgram,
+      errors: {
+        [GetProgramErrorCodes.PARSE]: {
+          ...GET_PROGRAM_ERROR_CODES[GetProgramErrorCodes.PARSE],
+          message: JSON.stringify(e),
+        },
+      },
+    };
+  }
 
   const { accounts } = program;
-
   queryConfigManager.setAllChainsConfigIfEmpty(accounts);
   const completeQueryConfig = queryConfigManager.getQueryConfig();
 
-  const accountBalances = await queryAccountBalances(
-    accounts,
-    completeQueryConfig,
-  );
+  let accountBalances;
+  let metadata;
+  let errors = {};
+  try {
+    accountBalances = await queryAccountBalances(accounts, completeQueryConfig);
 
-  const metadataToFetch = getDenomsAndChainIds({
-    balances: accountBalances,
-    accounts,
-  });
-  const metadata = await fetchAssetMetadata(metadataToFetch);
+    const metadataToFetch = getDenomsAndChainIds({
+      balances: accountBalances,
+      accounts,
+    });
+    metadata = await fetchAssetMetadata(metadataToFetch);
+  } catch (e) {
+    errors[GetProgramErrorCodes.BALANCES] = {
+      ...GET_PROGRAM_ERROR_CODES[GetProgramErrorCodes.BALANCES],
+      message: JSON.stringify(e),
+    };
+  }
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
   return {
     queryConfig: completeQueryConfig,
     balances: accountBalances,
-    ...program,
+    parsedProgram: program,
     rawProgram,
     metadata,
     librarySchemas: librarySchemas,
+    errors: errors,
   };
 };
 

@@ -3,7 +3,10 @@ import {
   Table,
   type TableColumnHeader,
 } from "@valence-ui/ui-components";
-import { type GetProgramDataReturnValue } from "@/app/programs/server";
+import {
+  type ProgramParserResult,
+  type GetProgramDataReturnValue,
+} from "@/app/programs/server";
 import { displayDomain } from "@/app/programs/ui";
 import { CelatoneUrl } from "@/const";
 import { useAssetMetadata } from "@/app/rebalancer/ui";
@@ -12,13 +15,13 @@ import { displayNumberV2, microToBase } from "@/utils";
 export const AccountTable = ({
   program,
 }: {
-  program: GetProgramDataReturnValue;
+  program?: GetProgramDataReturnValue;
 }) => {
   const { getOriginAsset } = useAssetMetadata();
 
-  const data = program.balances
-    .map(({ address, balances }) => {
-      const account = getAccount(address, program.accounts);
+  const data = program?.balances
+    ?.map(({ address, balances }) => {
+      const account = getAccount(address, program?.parsedProgram?.accounts);
       return [
         ...balances.map((balance) => {
           const asset = getOriginAsset(balance.denom);
@@ -59,13 +62,16 @@ export const AccountTable = ({
     })
     .flat();
 
-  return <Table variant="secondary" headers={headers} data={data} />;
+  return <Table variant="secondary" headers={headers} data={data ?? []} />;
 };
 
 const getAccount = (
   address: string,
-  accounts: GetProgramDataReturnValue["accounts"],
+  accounts?: ProgramParserResult["accounts"],
 ) => {
+  if (!accounts) {
+    return undefined;
+  }
   const accts = Object.values(accounts);
   const account = accts.find((account) => account.addr === address);
   return account;

@@ -3,15 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
 import {
   type QueryConfig,
-  isErrorResponse,
   getProgramData,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import { ToastMessage, toast } from "@valence-ui/ui-components";
 import { atom, useAtom } from "jotai";
+import { useCallback } from "react";
 
-// initialized with Provider on render
-export const queryArgsAtom = atom<QueryConfig>({
+export const DEFAULT_QUERY_CONFIG: QueryConfig = {
   main: {
     chainId: "",
     rpc: "",
@@ -19,7 +18,14 @@ export const queryArgsAtom = atom<QueryConfig>({
     name: "",
   },
   allChains: [],
-});
+};
+
+// initialized with Provider on render
+export const queryArgsAtom = atom<QueryConfig>(DEFAULT_QUERY_CONFIG);
+
+const isHasErrors = (data: GetProgramDataReturnValue | undefined) => {
+  return Object.keys(data?.errors ?? {}).length > 0;
+};
 
 export const useQueryArgs = () => {
   return useAtom(queryArgsAtom);
@@ -34,31 +40,44 @@ export const useProgramQuery = ({
   initialQueryData,
 }: UseProgramQueryArgs) => {
   const [queryConfig] = useAtom(queryArgsAtom);
+
+  // must be defined in callback to detect input changes
+  const queryFn = useCallback(async () => {
+    try {
+      const data = await getProgramData({
+        programId,
+        queryConfig,
+      });
+      const balanaceErrors = data.errors?.BALANCES;
+      const registryErrors = data.errors?.REGISTRY;
+      if (registryErrors) {
+        toast.error(
+          <ToastMessage title={registryErrors.title} variant="error">
+            {registryErrors.message}
+          </ToastMessage>,
+        );
+      } else if (balanaceErrors) {
+        toast.error(
+          <ToastMessage title={balanaceErrors.title} variant="error">
+            {balanaceErrors.message}
+          </ToastMessage>,
+        );
+      }
+      // still return the partial result
+      return data;
+    } catch (e) {
+      console.log("Failed to fetch", e);
+      throw new Error("Failed to fetch");
+    }
+  }, [programId, queryConfig.main, queryConfig.allChains]);
   return useQuery<GetProgramDataReturnValue | undefined>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
     queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM, queryConfig, programId],
-    refetchInterval: 30 * 1000, // 30 seconds
     initialData: initialQueryData,
+    refetchInterval: 0,
     staleTime: 0,
-    queryFn: async () => {
-      const data = await getProgramData({
-        programId,
-        queryConfig,
-        throwError: false,
-      });
-      if (isErrorResponse(data)) {
-        toast.error(
-          <ToastMessage variant="error" title={data.message}>
-            {data.error}
-          </ToastMessage>,
-        );
-        throw new Error(data.message);
-      }
-
-      // this is a temporary solution. ideally it can be derived through a type guard
-      return data as GetProgramDataReturnValue;
-    },
+    queryFn,
   });
 };
