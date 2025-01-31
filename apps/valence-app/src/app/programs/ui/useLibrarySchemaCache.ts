@@ -1,5 +1,4 @@
 import { QUERY_KEYS } from "@/const";
-
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import {
   fetchLibrarySchema,
@@ -10,8 +9,10 @@ import { useCallback } from "react";
 
 // hook can be instantated at root client level and used via useCache
 export const useInitializeLibrarySchemaCache = (
-  initialData: GetProgramDataReturnValue["librarySchemas"],
+  _initialData: GetProgramDataReturnValue["librarySchemas"],
 ) => {
+  const initialData = _initialData ?? {};
+
   return useQueries({
     queries: Object.keys(initialData).map((address) => {
       return {

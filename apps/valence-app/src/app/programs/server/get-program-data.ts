@@ -15,7 +15,7 @@ import {
 import {
   getDefaultMainChainConfig,
   fetchLibrarySchema,
-  ProgramErrorCodes,
+  GetProgramErrorCodes,
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
 
@@ -34,7 +34,7 @@ export type GetProgramDataReturnValue = {
   errors?: ErrorCodes;
 };
 
-// defined separetely to isolate the return type
+// TODO: make a 'response' builder so error handling is cleaner / func more readable / testable
 export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
@@ -42,7 +42,7 @@ export const getProgramData = async ({
   let queryConfigManager = new QueryConfigManager(
     userSuppliedQueryConfig ?? {
       main: getDefaultMainChainConfig(),
-      external: undefined, // need to construct this from accounts
+      external: undefined, // needs to be derived from accounts in config
     },
   );
   // must default registry address and mainchain RPC if no config given
@@ -56,7 +56,7 @@ export const getProgramData = async ({
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
       queryConfig: queryConfigManager.getQueryConfig(),
-      errors: makeApiErrors([{ code: ProgramErrorCodes.REGISTRY }]),
+      errors: makeApiErrors([{ code: GetProgramErrorCodes.REGISTRY }]),
     };
   }
 
@@ -67,11 +67,10 @@ export const getProgramData = async ({
     program = ProgramParser.extractData(rawProgram);
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
-    console.log("parse error", e);
     return {
       queryConfig: queryConfigManager.getQueryConfig(),
       rawProgram,
-      errors: makeApiErrors([{ code: ProgramErrorCodes.PARSE }]),
+      errors: makeApiErrors([{ code: GetProgramErrorCodes.PARSE }]),
     };
   }
 
@@ -91,7 +90,9 @@ export const getProgramData = async ({
     });
     metadata = await fetchAssetMetadata(metadataToFetch);
   } catch (e) {
-    errors = makeApiErrors([{ code: ProgramErrorCodes.BALANCES, message: e }]);
+    errors = makeApiErrors([
+      { code: GetProgramErrorCodes.BALANCES, message: e },
+    ]);
   }
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);

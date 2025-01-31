@@ -12,10 +12,10 @@ import {
   DEFAULT_QUERY_CONFIG,
   ProgramViewerErrorDisplay,
 } from "@/app/programs/ui";
+import { HydrateAtoms } from "@/components";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
   Button,
-  CalloutBox,
   Card,
   Heading,
   LinkText,
@@ -25,7 +25,6 @@ import {
   SheetTrigger,
 } from "@valence-ui/ui-components";
 import { Provider as JotaiProvider } from "jotai";
-import { useHydrateAtoms } from "jotai/utils";
 import Link from "next/link";
 
 export type ProgramViewerProps = {
@@ -120,13 +119,9 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   );
 }
 
-const HydrateAtoms = ({ initialValues, children }) => {
-  // initialising on state with prop on render here
-  useHydrateAtoms(initialValues);
-  return children;
-};
-
-export function ProgramViewerWithProvider(props: ProgramViewerProps) {
+export function ProgramViewerWithStateProvider(
+  props: React.ComponentProps<typeof ProgramViewer>,
+) {
   return (
     <JotaiProvider>
       <HydrateAtoms

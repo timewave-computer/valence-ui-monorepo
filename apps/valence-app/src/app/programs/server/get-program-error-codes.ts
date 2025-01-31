@@ -1,4 +1,4 @@
-export enum ProgramErrorCodes {
+export enum GetProgramErrorCodes {
   REGISTRY = "REGISTRY",
   PARSE = "PARSE",
   BALANCES = "BALANCES",
@@ -12,21 +12,21 @@ type ErrorKey = {
 export type ErrorCodes = Record<string, ErrorKey>;
 
 const PROGRAM_ERROR_CONTENT: ErrorCodes = {
-  [ProgramErrorCodes.REGISTRY]: {
+  [GetProgramErrorCodes.REGISTRY]: {
     title: "Program ID not found",
     text: "Check registry address and program ID.",
   },
-  [ProgramErrorCodes.PARSE]: {
+  [GetProgramErrorCodes.PARSE]: {
     title: "Failed to parse program",
     text: "Configuration format not supported in the UI.",
   },
-  [ProgramErrorCodes.BALANCES]: {
+  [GetProgramErrorCodes.BALANCES]: {
     title: "Failed to fetch account balances",
   },
 };
 
 export const makeApiErrors = (
-  messagaes: Array<{ code: ProgramErrorCodes; message?: object }>,
+  messagaes: Array<{ code: GetProgramErrorCodes; message?: object }>,
 ): ErrorCodes => {
   return messagaes.reduce((acc, { code, message }) => {
     return {

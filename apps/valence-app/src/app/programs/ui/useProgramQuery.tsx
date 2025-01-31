@@ -18,7 +18,7 @@ export const DEFAULT_QUERY_CONFIG: QueryConfig = {
     registryAddress: "",
     name: "",
   },
-  allChains: [],
+  external: [],
 };
 
 // initialized with Provider on render
@@ -60,12 +60,17 @@ export const useProgramQuery = ({
         </ToastMessage>,
       );
     }
-  }, [programId, queryConfig.main, queryConfig.allChains]);
+  }, [programId, queryConfig.main, queryConfig.external]);
   return useQuery<GetProgramDataReturnValue | undefined>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
-    queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM, queryConfig, programId],
+    queryKey: [
+      QUERY_KEYS.PROGRAMS_FETCH_PROGRAM,
+      queryConfig.external,
+      queryConfig.main,
+      programId,
+    ],
     initialData: initialQueryData,
     refetchInterval: 0,
     staleTime: 0, // must be 0 in order for data to refetch if query params change (???)

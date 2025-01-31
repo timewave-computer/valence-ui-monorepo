@@ -5,4 +5,4 @@ export * from "./QueryConfigManager";
 export * from "./config";
 export * from "./get-program-data";
 export * from "./fetch-library-schema";
-export * from "./error-codes";
+export * from "./get-program-error-codes";

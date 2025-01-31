@@ -2,7 +2,7 @@ import {
   getProgramData,
   GetProgramDataReturnValue,
 } from "@/app/programs/server";
-import { ProgramViewerWithProvider } from "@/app/programs/ui";
+import { ProgramViewerWithStateProvider } from "@/app/programs/ui";
 
 export default async function ProgramPage({ params: { programId } }) {
   // on initial render, there is no query config supplied. it will be set from the UI
@@ -11,5 +11,7 @@ export default async function ProgramPage({ params: { programId } }) {
     programId,
   })) as GetProgramDataReturnValue;
 
-  return <ProgramViewerWithProvider programId={programId} initialData={data} />;
+  return (
+    <ProgramViewerWithStateProvider programId={programId} initialData={data} />
+  );
 }
