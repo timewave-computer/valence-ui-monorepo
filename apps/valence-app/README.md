@@ -2,6 +2,32 @@
 
 A UI for the various Valence services, built in Next.JS
 
+# Local dev against local-interchain
+
+## Prereqs
+
+- install [local interchain ](https://github.com/timewave-computer/valence-protocol/tree/main/local-interchaintest#installing-local-interchain)
+- install [ngrok](https://ngrok.com/) (to connect to chain from the UI)
+
+## Instructions
+
+- start docker desktop
+
+```bash
+local-ic start neutron
+local-ic start stargaze
+```
+
+- find available endpoint in docker desktop for chain. make sure process is _started_.
+- run ngrok for each chain, to expose port to browser
+
+```bash
+ ## port number just an example
+ngrok http http://localhost:4194
+```
+
+- set RPC URLs in `.env.local` or via the UI
+
 ## State management decisions
 
 - managing client/server specific state (reading, caching, mutations, optimistic updates):
