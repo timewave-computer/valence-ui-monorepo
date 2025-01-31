@@ -10,7 +10,7 @@ A UI for the various Valence services, built in Next.JS
   - `nuqs` for persisted page state (url params)
   - `useState` is default whenever possible (keep it simple until you need something more complex)
   - `jotai` for globals, when useState no longer 'ergonomic'
-  - `zustand` for 'state machines'. Use when necessary for more complex state manipulation or modifiyng data outside of react
+  - `zustand` can be used for 'state machines'. Use when necessary for more complex state manipulation or modifiyng data outside of react. Currently its not needed / not used.
 
 ## Preview Env & Feature Flags
 
