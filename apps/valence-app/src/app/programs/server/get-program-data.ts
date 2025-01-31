@@ -18,6 +18,7 @@ import {
   GetProgramErrorCodes,
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
+import { UTCDate } from "@date-fns/utc";
 
 type GetProgramDataProps = {
   programId: string;
@@ -32,6 +33,7 @@ export type GetProgramDataReturnValue = {
   metadata?: Record<string, any>;
   librarySchemas?: Record<string, FetchLibrarySchemaReturnValue>;
   errors?: ErrorCodes;
+  dataLastUpdatedAt: number; // for handling stale time in react-query
 };
 
 // TODO: make a 'response' builder so error handling is cleaner / func more readable / testable
@@ -55,6 +57,7 @@ export const getProgramData = async ({
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([{ code: GetProgramErrorCodes.REGISTRY }]),
     };
@@ -68,6 +71,7 @@ export const getProgramData = async ({
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       rawProgram,
       errors: makeApiErrors([{ code: GetProgramErrorCodes.PARSE }]),
@@ -97,6 +101,7 @@ export const getProgramData = async ({
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
   return {
+    dataLastUpdatedAt: getLastUpdatedTime(),
     queryConfig: completeQueryConfig,
     balances: accountBalances,
     parsedProgram: program,
@@ -224,3 +229,7 @@ async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
   );
   return librarySchemas;
 }
+
+const getLastUpdatedTime = () => {
+  return new UTCDate().getTime();
+};

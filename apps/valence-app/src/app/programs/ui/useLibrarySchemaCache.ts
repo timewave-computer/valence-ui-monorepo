@@ -12,7 +12,6 @@ export const useInitializeLibrarySchemaCache = (
   _initialData: GetProgramDataReturnValue["librarySchemas"],
 ) => {
   const initialData = _initialData ?? {};
-
   return useQueries({
     queries: Object.keys(initialData).map((address) => {
       return {
