@@ -33,6 +33,8 @@ export const metadata: Metadata = {
   },
 };
 
+const REACT_SCAN_ON = process.env.NEXT_PUBLIC_REACT_SCAN_ENABLED === "true";
+
 export default function RootLayout({
   children,
 }: {
@@ -44,6 +46,14 @@ export default function RootLayout({
       lang="en"
       className={`${Unica77.variable} ${Unica77Mono.variable} --font-sans`}
     >
+      <head>
+        {REACT_SCAN_ON && (
+          <script
+            src="https://unpkg.com/react-scan/dist/auto.global.js"
+            async
+          />
+        )}
+      </head>
       <body
         className={cn(
           "flex max-h-screen min-h-screen grow flex-col text-valence-black",

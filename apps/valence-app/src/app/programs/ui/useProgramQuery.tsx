@@ -1,46 +1,31 @@
 "use client";
-import { createStore, useStore } from "zustand";
-import { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
 import {
   type QueryConfig,
-  isErrorResponse,
   getProgramData,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
-import { ToastMessage, toast } from "@valence-ui/ui-components";
+import { LinkText, ToastMessage, toast } from "@valence-ui/ui-components";
+import { atom, useAtom } from "jotai";
+import { useCallback } from "react";
+import { X_HANDLE, X_URL } from "@valence-ui/socials";
+import { isEqual } from "lodash";
 
-interface QueryConfigProps {
-  queryConfig: QueryConfig;
-}
-interface QueryConfigState extends QueryConfigProps {
-  setQueryConfig: (newQueryConfig: QueryConfig) => void;
-}
-
-export type QueryArgsStore = ReturnType<typeof createQueryArgsStore>;
-
-export const createQueryArgsStore = (initProps: {
-  queryConfig: QueryConfig;
-}) => {
-  return createStore<QueryConfigState>()((set, get) => ({
-    ...initProps,
-    setQueryConfig: (newQueryConfig: QueryConfig) =>
-      set({ queryConfig: newQueryConfig }),
-  }));
+export const DEFAULT_QUERY_CONFIG: QueryConfig = {
+  main: {
+    chainId: "",
+    rpc: "",
+    registryAddress: "",
+    name: "",
+  },
+  external: [],
 };
 
-export const ProgramQueryArgsContext = createContext<QueryArgsStore | null>(
-  null,
-);
+export const queryArgsAtom = atom<QueryConfig>(DEFAULT_QUERY_CONFIG);
 
-export const useQueryArgsStore = () => {
-  const store = useContext(ProgramQueryArgsContext);
-  if (!store)
-    throw new Error(
-      "useQueryArgsStore must be used within a ProgramQueryArgsContext.Provider",
-    );
-  return useStore(store);
+export const useQueryArgs = () => {
+  return useAtom(queryArgsAtom);
 };
 
 type UseProgramQueryArgs = {
@@ -51,32 +36,52 @@ export const useProgramQuery = ({
   programId,
   initialQueryData,
 }: UseProgramQueryArgs) => {
-  const { queryConfig } = useQueryArgsStore();
-  return useQuery<GetProgramDataReturnValue>({
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    retry: false,
-    queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM, queryConfig, programId],
-    refetchInterval: 30 * 1000, // 30 seconds
-    initialData: initialQueryData,
-    staleTime: 0,
-    queryFn: async () => {
+  const [queryConfig] = useAtom(queryArgsAtom);
+
+  // must be defined in callback to detect input changes
+  const queryFn = useCallback(async () => {
+    // nullify initial data after first fetch, otherwise it will be used for every response
+    try {
       const data = await getProgramData({
         programId,
         queryConfig,
-        throwError: false,
       });
-      if (isErrorResponse(data)) {
-        toast.error(
-          <ToastMessage variant="error" title={data.message}>
-            {data.error}
-          </ToastMessage>,
-        );
-        throw new Error(data.message);
-      }
-
-      // this is a temporary solution. ideally it can be derived through a type guard
-      return data as GetProgramDataReturnValue;
-    },
+      // return the partial result. it contains errors
+      return data;
+    } catch (e) {
+      // catch if it just totally fails
+      console.log("Failed to fetch", e);
+      toast(
+        <ToastMessage variant="error" title="Failed to fetch program">
+          <div className="flex flex-row flex-wrap gap-0.5">
+            Refresh the page and contact{" "}
+            <LinkText href={X_URL} variant="primary">
+              {X_HANDLE}
+            </LinkText>
+            if the problem persists.
+          </div>
+        </ToastMessage>,
+      );
+    }
+  }, [programId, queryConfig.main, queryConfig.external]);
+  return useQuery<GetProgramDataReturnValue | undefined>({
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+    queryKey: [
+      QUERY_KEYS.PROGRAMS_FETCH_PROGRAM,
+      queryConfig.external,
+      queryConfig.main,
+      programId,
+    ],
+    // only supply initial data if the query config is the same
+    initialData: isEqual(queryConfig, initialQueryData?.queryConfig)
+      ? initialQueryData
+      : undefined,
+    refetchInterval: 30 * 1000,
+    staleTime: 60 * 1000, // 60s
+    queryFn,
+    // IMPORTANT, so react-query knows when to no longer use initialData and fetch instead
+    initialDataUpdatedAt: initialQueryData?.dataLastUpdatedAt,
   });
 };

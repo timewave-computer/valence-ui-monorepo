@@ -24,6 +24,10 @@ export interface InputLabelProps
   tooltipChildren?: React.ReactNode; // to give anything other than plaintext
 }
 
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function InputLabel({
   label,
   tooltipContent,
@@ -32,6 +36,8 @@ export function InputLabel({
   className,
   noGap,
 }: InputLabelProps) {
+  const capitalizedLabel = capitalizeFirstLetter(label);
+
   return (
     <div className={cn(labelVariants({ size, className, noGap }))}>
       <WithIconAndTooltip
@@ -47,7 +53,7 @@ export function InputLabel({
           ),
         })}
       >
-        {label}
+        {capitalizedLabel}
       </WithIconAndTooltip>
     </div>
   );

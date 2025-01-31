@@ -4,6 +4,7 @@ import {
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import {
+  Card,
   cn,
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
@@ -21,11 +22,14 @@ import {
 export const SubroutineDisplay = ({
   program,
 }: {
-  program: GetProgramDataReturnValue;
+  program?: GetProgramDataReturnValue;
 }) => {
+  const authorizations = program?.parsedProgram?.authorizations;
+  if (!authorizations)
+    return <Card className="grow h-full">No subroutines to display.</Card>;
   return (
     <div>
-      {program.authorizations.map((authorization, i) => {
+      {authorizations.map((authorization, i) => {
         const subroutine = getSubroutine(authorization.subroutine);
         const functions = subroutine.functions;
         const isAuthorized = isPermissionless(authorization.mode);
@@ -36,8 +40,8 @@ export const SubroutineDisplay = ({
           <CollapsibleSectionRoot
             key={`authorization-${authorization.label}-${i}`}
             className={cn(
-              program.authorizations.length > 1 &&
-                i !== program.authorizations.length - 1 &&
+              authorizations.length > 1 &&
+                i !== authorizations.length - 1 &&
                 "border-b-0",
             )}
             variant="primary"

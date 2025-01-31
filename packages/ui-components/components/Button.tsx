@@ -4,7 +4,7 @@ import React, { ElementType } from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
 
 const buttonVariants = cva(
-  "text-center  rounded-sm  w-fit  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border",
+  "text-center  rounded-sm  w-fit  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border outline-none",
   {
     variants: {
       variant: {

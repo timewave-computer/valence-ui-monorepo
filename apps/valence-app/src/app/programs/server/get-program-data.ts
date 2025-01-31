@@ -9,89 +9,110 @@ import {
   type NormalizedAccounts,
   type NormalizedLibraries,
   type FetchLibrarySchemaReturnValue,
+  ErrorCodes,
+  makeApiErrors,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
   fetchLibrarySchema,
+  GetProgramErrorCodes,
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
+import { UTCDate } from "@date-fns/utc";
 
 type GetProgramDataProps = {
   programId: string;
   queryConfig?: QueryConfig;
 };
-// TODO: make a generic wrapper with input props and success return value is auto derived
-export const getProgramData = async (
-  props: GetProgramDataProps & {
-    throwError?: boolean;
-  },
-) => {
-  const { throwError, ...restOfProps } = props;
-  try {
-    return await _getProgramData(restOfProps);
-  } catch (e) {
-    // nextjs obscures the error message from failed server actions, so this is a rudimentary solution to get proper error messages in the client
-    if (throwError) throw e;
-    return {
-      code: 400,
-      message: "Could not fetch program",
-      error: e.message + " " + JSON.stringify(e),
-    };
-  }
+
+export type GetProgramDataReturnValue = {
+  queryConfig: QueryConfig;
+  balances?: AccountBalancesReturnValue;
+  parsedProgram?: ProgramParserResult;
+  rawProgram?: string;
+  metadata?: Record<string, any>;
+  librarySchemas?: Record<string, FetchLibrarySchemaReturnValue>;
+  errors?: ErrorCodes;
+  dataLastUpdatedAt: number; // for handling stale time in react-query
 };
 
-export type GetProgramDataReturnValue = Awaited<
-  ReturnType<typeof _getProgramData>
->;
-
-// defined separetely to isolate the return type
-const _getProgramData = async ({
+// TODO: make a 'response' builder so error handling is cleaner / func more readable / testable
+export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
-}: GetProgramDataProps) => {
+}: GetProgramDataProps): Promise<GetProgramDataReturnValue> => {
   let queryConfigManager = new QueryConfigManager(
     userSuppliedQueryConfig ?? {
       main: getDefaultMainChainConfig(),
-      allChains: undefined, // need to construct this from accounts
+      external: undefined, // needs to be derived from accounts in config
     },
   );
-
   // must default registry address and mainchain RPC if no config given
-  const rawProgram = await fetchProgram({
-    programId,
-    config: queryConfigManager.getMainChainConfig(),
-  });
+  let rawProgram = "";
+  try {
+    rawProgram = await fetchProgramFromRegistry({
+      programId,
+      config: queryConfigManager.getMainChainConfig(),
+    });
+  } catch (e) {
+    queryConfigManager.setAllChainsConfigIfEmpty({});
+    return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
+      errors: makeApiErrors([{ code: GetProgramErrorCodes.REGISTRY }]),
+    };
+  }
 
-  const program = ProgramParser.extractData(rawProgram);
+  let program: ProgramParserResult;
+  queryConfigManager.setAllChainsConfigIfEmpty({});
+
+  try {
+    program = ProgramParser.extractData(rawProgram);
+  } catch (e) {
+    queryConfigManager.setAllChainsConfigIfEmpty({});
+    return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
+      rawProgram,
+      errors: makeApiErrors([{ code: GetProgramErrorCodes.PARSE }]),
+    };
+  }
 
   const { accounts } = program;
-
   queryConfigManager.setAllChainsConfigIfEmpty(accounts);
   const completeQueryConfig = queryConfigManager.getQueryConfig();
 
-  const accountBalances = await queryAccountBalances(
-    accounts,
-    completeQueryConfig,
-  );
+  let accountBalances;
+  let metadata;
+  let errors = {};
+  try {
+    accountBalances = await queryAccountBalances(accounts, completeQueryConfig);
 
-  const metadataToFetch = getDenomsAndChainIds({
-    balances: accountBalances,
-    accounts,
-  });
-  const metadata = await fetchAssetMetadata(metadataToFetch);
+    const metadataToFetch = getDenomsAndChainIds({
+      balances: accountBalances,
+      accounts,
+    });
+    metadata = await fetchAssetMetadata(metadataToFetch);
+  } catch (e) {
+    errors = makeApiErrors([
+      { code: GetProgramErrorCodes.BALANCES, message: e },
+    ]);
+  }
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
   return {
+    dataLastUpdatedAt: getLastUpdatedTime(),
     queryConfig: completeQueryConfig,
     balances: accountBalances,
-    ...program,
+    parsedProgram: program,
     rawProgram,
     metadata,
     librarySchemas: librarySchemas,
+    errors: errors,
   };
 };
 
-const fetchProgram = async ({
+const fetchProgramFromRegistry = async ({
   programId,
   config,
 }: {
@@ -113,9 +134,15 @@ const queryAccountBalances = async (
       throw new Error(`Account ${id} does not have an address`);
     }
 
-    const rpcUrl = config.allChains.find(
-      (chain) => chain.name === account.chainName,
-    )?.rpc;
+    let rpcUrl: string | undefined = undefined;
+    if (account.chainName === config.main.name) {
+      rpcUrl = config.main.rpc;
+    } else {
+      rpcUrl = config.external.find(
+        (chain) => chain.name === account.chainName,
+      )?.rpc;
+    }
+
     if (!rpcUrl) {
       throw new Error(`No RPC URL found for chain ID ${account.chainName}`);
     }
@@ -202,3 +229,7 @@ async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
   );
   return librarySchemas;
 }
+
+const getLastUpdatedTime = () => {
+  return new UTCDate().getTime();
+};

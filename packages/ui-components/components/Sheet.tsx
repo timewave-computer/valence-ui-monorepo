@@ -12,12 +12,16 @@ const SheetClose = SheetPrimitive.Close;
 
 const SheetPortal = SheetPrimitive.Portal;
 
+const SheetTitle = SheetPrimitive.Title;
+
+const SheetDescription = SheetPrimitive.Description;
+
 const SheetOverlay = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
-    className={cn("fixed inset-0 z-20 bg-black/30", className)}
+    className={cn("fixed inset-0 z-10 bg-black/30", className)}
     {...props}
     ref={ref}
   />
@@ -25,7 +29,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  "fixed  z-40 flex flex-col gap-4 bg-valence-white border-valence-black p-6 shadow-md transition ease-in-out text-valence-black overflow-y-scroll overflow-x-scroll ",
+  "fixed  z-20 flex flex-col gap-4 bg-valence-white border-valence-black p-6 shadow-md transition ease-in-out text-valence-black overflow-y-scroll overflow-x-scroll ",
   {
     variants: {
       side: {
@@ -48,7 +52,7 @@ interface SheetContentProps
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
+>(({ side = "right", className, children, title, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
     <SheetPrimitive.Content
@@ -56,6 +60,8 @@ const SheetContent = React.forwardRef<
       className={cn(sheetVariants({ side, className }))}
       {...props}
     >
+      <SheetTitle className="hidden">title</SheetTitle>
+      <SheetDescription className="hidden">description</SheetDescription>
       {children}
       <SheetPrimitive.Close className="absolute right-4 top-4 focus:outline-none">
         <RxCross2 className="h-6 w-6 focus:outline-none" />

@@ -25,8 +25,6 @@ export const Toaster = ({ ...props }: ToasterProps) => {
   );
 };
 
-export { toast };
-
 const toastVariants = cva(" overflow-x-scroll", {
   variants: {
     variant: {
@@ -56,7 +54,9 @@ export const ToastMessage: React.FC<ToastMessageProps> = ({
       <Heading className={cn(toastVariants({ variant, className }))} level="h2">
         {title}
       </Heading>
-      <div className="flex flex-col gap-1 ">{children}</div>
+      <div className="flex flex-col gap-1">{children}</div>
     </div>
   );
 };
+
+export { toast };
