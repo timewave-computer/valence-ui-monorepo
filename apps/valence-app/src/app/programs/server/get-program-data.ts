@@ -88,16 +88,13 @@ export const getProgramData = async ({
 
   try {
     accountBalances = await queryAccountBalances(accounts, completeQueryConfig);
-    console.log("FETCHED ACCOUNT BALANCES", JSON.stringify(accountBalances));
     const metadataToFetch = getDenomsAndChainIds({
       balances: accountBalances,
       accounts,
     });
-    console.log("FETCHING METADATA", JSON.stringify(metadataToFetch));
 
     metadata = await fetchAssetMetadata(metadataToFetch);
   } catch (e) {
-    console.log("there was an error", e);
     errors = makeApiErrors([
       { code: GetProgramErrorCodes.BALANCES, message: e?.message },
     ]);
