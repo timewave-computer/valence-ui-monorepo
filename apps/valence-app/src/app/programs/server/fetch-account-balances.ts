@@ -10,5 +10,6 @@ export const fetchAccountBalances = async ({
 }): Promise<readonly Coin[]> => {
   // TODO: try all rpcs until successful
   const client = await getStargateClient(rpcUrl);
-  return client.getAllBalances(accountAddress);
+  const results = await client.getAllBalances(accountAddress);
+  return results;
 };

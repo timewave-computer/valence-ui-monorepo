@@ -26,9 +26,9 @@ const PROGRAM_ERROR_CONTENT: ErrorCodes = {
 };
 
 export const makeApiErrors = (
-  messagaes: Array<{ code: GetProgramErrorCodes; message?: object }>,
+  messages: Array<{ code: GetProgramErrorCodes; message?: object }>,
 ): ErrorCodes => {
-  return messagaes.reduce((acc, { code, message }) => {
+  return messages.reduce((acc, { code, message }) => {
     return {
       ...acc,
       [code]: {

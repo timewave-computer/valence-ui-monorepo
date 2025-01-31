@@ -85,17 +85,18 @@ export const getProgramData = async ({
   let accountBalances;
   let metadata;
   let errors = {};
+
   try {
     accountBalances = await queryAccountBalances(accounts, completeQueryConfig);
-
     const metadataToFetch = getDenomsAndChainIds({
       balances: accountBalances,
       accounts,
     });
+
     metadata = await fetchAssetMetadata(metadataToFetch);
   } catch (e) {
     errors = makeApiErrors([
-      { code: GetProgramErrorCodes.BALANCES, message: e },
+      { code: GetProgramErrorCodes.BALANCES, message: e?.message },
     ]);
   }
 
@@ -151,12 +152,12 @@ const queryAccountBalances = async (
       accountAddress: account.addr,
       rpcUrl,
     });
-
     return {
       address: account.addr,
       balances,
     };
   });
+
   return Promise.all(requests);
 };
 

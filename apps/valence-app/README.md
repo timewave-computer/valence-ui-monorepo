@@ -2,6 +2,32 @@
 
 A UI for the various Valence services, built in Next.JS
 
+# Local dev against local-interchain
+
+## Prereqs
+
+- install [local interchain ](https://github.com/timewave-computer/valence-protocol/tree/main/local-interchaintest#installing-local-interchain)
+- install [ngrok](https://ngrok.com/) (to connect to chain from the UI)
+
+## Instructions
+
+- start docker desktop
+
+```bash
+local-ic start neutron
+local-ic start stargaze
+```
+
+- find available endpoint in docker desktop for chain. make sure process is _started_.
+- run ngrok for each chain, to expose port to browser
+
+```bash
+ ## port number just an example
+ngrok http http://localhost:4194
+```
+
+- set RPC URLs in `.env.local` or via the UI
+
 ## State management decisions
 
 - managing client/server specific state (reading, caching, mutations, optimistic updates):
@@ -10,7 +36,7 @@ A UI for the various Valence services, built in Next.JS
   - `nuqs` for persisted page state (url params)
   - `useState` is default whenever possible (keep it simple until you need something more complex)
   - `jotai` for globals, when useState no longer 'ergonomic'
-  - `zustand` for 'state machines'. Use when necessary for more complex state manipulation or modifiyng data outside of react
+  - `zustand` can be used for 'state machines'. Use when necessary for more complex state manipulation or modifiyng data outside of react. Currently its not needed / not used.
 
 ## Preview Env & Feature Flags
 
