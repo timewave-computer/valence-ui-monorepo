@@ -96,7 +96,7 @@ export const getProgramData = async ({
     metadata = await fetchAssetMetadata(metadataToFetch);
   } catch (e) {
     errors = makeApiErrors([
-      { code: GetProgramErrorCodes.BALANCES, message: e?.message },
+      { code: GetProgramErrorCodes.BALANCES, message: e?.cause },
     ]);
   }
 
