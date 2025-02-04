@@ -35,10 +35,9 @@ const NavLink = ({
       target={blankTarget ? "_blank" : ""}
       key={`nav-${href}`}
       className={cn(
-        "relative top-[1px] flex flex-row items-center font-medium decoration-valence-blue underline-offset-2 decoration-2 ",
-        shouldHightlightItem(href, path) && "underline md:no-underline  ",
+        "relative top-[1px] flex flex-row items-center font-medium decoration-valence-black underline-offset-2 decoration-2 ",
+        shouldHightlightItem(href, path) && "underline ",
         "transition-all focus:underline ", // mobile,
-        "md:focus:no-underline", // desktop
       )}
       href={href}
     >

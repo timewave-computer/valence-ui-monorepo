@@ -1,3 +1,4 @@
+import { Heading } from "@valence-ui/ui-components";
 import Link from "next/link";
 
 export const PostHeading: React.FC<{
@@ -5,7 +6,9 @@ export const PostHeading: React.FC<{
   slug?: string;
 }> = ({ children, slug }) => {
   const heading = (
-    <h1 className="text-balance text-h1 font-medium font-mono ">{children}</h1>
+    <Heading level="h1" className="text-balance">
+      {children}
+    </Heading>
   );
 
   if (!slug) {

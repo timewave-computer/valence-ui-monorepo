@@ -12,7 +12,7 @@ import { PostHeading } from "~/app/blog/ui-components";
 import { Fragment } from "react";
 import { cn } from "@valence-ui/ui-components";
 
-const previewLength = 260;
+const previewLength = 360;
 const trimContent = (content: string) => {
   if (content.length > previewLength) {
     return content.slice(0, previewLength) + "...";
@@ -63,39 +63,61 @@ const BlogHome = async () => {
       </div>
     );
 
+  const PostAndImage = ({
+    post,
+    className,
+  }: {
+    post: PostList[0];
+    className?: string;
+  }) => {
+    return (
+      <div className={cn("flex flex-col gap-2 items-center", className)}>
+        <span className="  font-mono text-base">
+          {new UTCDate(post.date)
+            .toLocaleDateString("en-GB", {
+              year: "2-digit",
+              month: "2-digit",
+              day: "2-digit",
+            })
+            .replace(/\//g, ".")}
+        </span>
+        <Link
+          className="flex flex-col gap-2    md:pb-16  "
+          href={`/blog/${post.slug}`}
+        >
+          <Image
+            className="  w-full self-center "
+            src={post.heroImagePath}
+            alt="Post Image"
+            width={400}
+            height={300}
+          />
+        </Link>
+      </div>
+    );
+  };
+
   return (
     // top padding is to avoid shifting layout for back button in desktop
-    <div className="flex flex-col items-start gap-2 md:gap-0 ">
+    <div className="flex flex-col md:grid grid-cols-2  items-start  gap-y-4 md:pt-4 md:gap-x-16 ">
       {posts.map((post, i) => (
         <Fragment key={`blog-post-${post.slug}`}>
-          <div
-            className={cn(
-              i !== 0 && "border-t border-valence-black",
-              "pb-2 w-full pt-4 ",
-            )}
-          >
+          <PostAndImage post={post} className="hidden md:flex" />{" "}
+          {/* desktop */}
+          <div className="flex flex-col gap-4  ">
             <PostHeading slug={post.slug}>{post.title}</PostHeading>
-
-            <span className="col-span-1 col-start-1 row-start-1 font-mono text-sm">
-              {new UTCDate(post.date).toLocaleDateString()}
-            </span>
-          </div>
-
-          <Link
-            className="flex grid-cols-5 flex-col gap-2 gap-x-8 pb-8  md:grid md:pb-16  "
-            href={`/blog/${post.slug}`}
-          >
-            <Image
-              className="col-span-2 row-start-2 hidden w-full self-center md:flex md:self-start"
-              src={post.heroImagePath}
-              alt="Post Image"
-              width={400}
-              height={300}
-            />
-            <p className=" col-span-4  col-start-3  row-start-2 text-pretty text-h3 leading-8 ">
+            <PostAndImage
+              post={post}
+              className="  md:hidden items-start"
+            />{" "}
+            {/* mobile */}
+            <p className="  text-pretty text-h3 leading-8 ">
               {trimContent(post.preview)}
             </p>
-          </Link>
+          </div>
+          {i !== posts.length - 1 && (
+            <div className="col-span-2 border-dotted border-t-[2px] border-valence-black py-4 mt-4 md:pt-0 md:py-8 w-full" />
+          )}
         </Fragment>
       ))}
     </div>
