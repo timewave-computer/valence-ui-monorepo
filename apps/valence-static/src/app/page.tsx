@@ -5,8 +5,8 @@ import { HomepageButton, HomepageHeadline } from "~/components";
 
 const HomePage = () => {
   return (
-    <main className="mx-auto flex max-w-5xl flex-col">
-      <div className="flex flex-col  gap-x-14   border-valence-black   md:grid md:grid-cols-2">
+    <main className="mx-auto flex max-w-5xl flex-col w-full">
+      <div className="flex flex-col w-full  gap-x-16 gap-y-16 pt-16     md:grid md:grid-cols-2">
         <HomepageSection
           cta={
             <HomepageButton
@@ -45,7 +45,7 @@ const HomePage = () => {
           </p>
         </HomepageSection>
 
-        <div className="col-span-full h-[1px] border-b border-valence-black "></div>
+        <div className="col-span-full h-[1px] border-b-[1.5px] border-valence-black "></div>
         <HomepageSection
           imgFirst
           cta={
@@ -136,7 +136,7 @@ const HomepageSection = ({
   imgFirst?: boolean;
 }) => {
   const ImageComponent = () => (
-    <div className="hidden md:flex flex-col w-full items-center justify-center p-8 md:p-16  ">
+    <div className="hidden md:flex flex-col w-full items-center justify-center p-8 px-16  ">
       {Img}
     </div>
   );
@@ -145,11 +145,11 @@ const HomepageSection = ({
     <>
       {imgFirst && <ImageComponent />}
 
-      <div className="flex flex-col py-16  gap-6 md:gap-8 p-8 md:p-16 justify-center text-lg">
+      <div className="flex flex-col  gap-6 p-8 px-16 justify-center text-lg">
         <HomepageHeadline className="">{headline}</HomepageHeadline>
         {children}
         {/* mobile Image */}
-        <div className=" flex md:hidden flex-col w-full items-center justify-center p-8 md:p-16  ">
+        <div className=" flex md:hidden flex-col w-full items-center justify-center p-8 px-16  ">
           {Img}
         </div>
         <div className="self-end px-8 md:px-0 md:pt-4 ">{cta}</div>
