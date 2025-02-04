@@ -6,7 +6,7 @@ import { HomepageButton, HomepageHeadline } from "~/components";
 const HomePage = () => {
   return (
     <main className="mx-auto flex max-w-5xl flex-col w-full">
-      <div className="flex flex-col w-full  gap-x-16 gap-y-16 pt-16     md:grid md:grid-cols-2">
+      <div className="flex flex-col w-full  gap-x-16  gap-y-8 md:gap-y-16 md:pt-16 pb-8 md:pb-16   md:grid md:grid-cols-2">
         <HomepageSection
           cta={
             <HomepageButton
@@ -136,7 +136,7 @@ const HomepageSection = ({
   imgFirst?: boolean;
 }) => {
   const ImageComponent = () => (
-    <div className="hidden md:flex flex-col w-full items-center justify-center p-8 px-16  ">
+    <div className="hidden md:flex flex-col w-full items-center justify-center p-4 md:p-8 md:px-16  ">
       {Img}
     </div>
   );
@@ -145,11 +145,11 @@ const HomepageSection = ({
     <>
       {imgFirst && <ImageComponent />}
 
-      <div className="flex flex-col  gap-6 p-8 px-16 justify-center text-lg">
+      <div className="flex flex-col gap-4 md:gap-6 p-8 md:px-16 justify-center text-lg">
         <HomepageHeadline className="">{headline}</HomepageHeadline>
         {children}
         {/* mobile Image */}
-        <div className=" flex md:hidden flex-col w-full items-center justify-center p-8 px-16  ">
+        <div className=" flex md:hidden flex-col w-full items-center justify-center p-4 md:p-8 md:px-16  ">
           {Img}
         </div>
         <div className="self-end px-8 md:px-0 md:pt-4 ">{cta}</div>
