@@ -1,6 +1,6 @@
 import { ErrorHandler } from "~/const/error";
 import { Post } from "~/types/blog";
-import { HomepageButton, PostLayout, RouterButton } from "~/components";
+import { PostLayout, RouterButton } from "~/components";
 import { ABSOLUTE_URL } from "~/const";
 import { X_HANDLE } from "@valence-ui/socials";
 import { Metadata } from "next";

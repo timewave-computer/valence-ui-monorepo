@@ -28,19 +28,23 @@ article > ol {
   @apply col-span-3 col-start-3 flex list-decimal flex-col gap-2 pl-4;
 }
 
-article > p > img {
+article > div > img {
   @apply mx-auto max-h-[360px];
+}
+
+article > p > em {
+  @apply italic;
 }
 
 article > p > a {
   @apply border-valence-blue text-valence-blue hover:border-b focus:border-b;
 }
 
-article > p > img {
+article > .image-container > img {
   @apply flex justify-center py-2 text-center;
 }
 
 /* image caption */
-article > p > em {
+article > .image-container > em {
   @apply flex justify-center  text-xs not-italic font-medium;
 }

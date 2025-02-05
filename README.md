@@ -33,7 +33,7 @@ To test production build
 turbo build
 ```
 
-## How to add an package
+## How to add a package
 
 - create a folder under packages with the following files, which import global project config (can copy from another package)
   - tsconfig.json
