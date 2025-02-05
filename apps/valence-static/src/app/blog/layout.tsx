@@ -13,7 +13,7 @@ export default function BlogLayout({
 }) {
   return (
     <main className="flex grow flex-col bg-white ">
-      <div className=" mx-auto flex max-w-5xl grow flex-col p-8">
+      <div className=" mx-auto flex max-w-5xl grow flex-col px-4 md:px-8  py-4 md:py-8">
         {children}
       </div>
     </main>

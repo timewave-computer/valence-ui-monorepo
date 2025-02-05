@@ -1,6 +1,6 @@
 import { ErrorHandler } from "~/const/error";
 import { Post } from "~/types/blog";
-import { HomepageButton, RouterButton } from "~/components";
+import { HomepageButton, PostLayout, RouterButton } from "~/components";
 import { UTCDate } from "@date-fns/utc";
 import { ABSOLUTE_URL } from "~/const";
 import { X_HANDLE } from "@valence-ui/socials";
@@ -102,34 +102,15 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     );
 
   return (
-    <div className="min-h-1/2 flex grow flex-col pt-4 md:gap-2  ">
-      <div className="">
-        <div className="pb-5">
-          {" "}
-          <BackButton />
-        </div>
-
-        <div>
-          <PostHeading> {postData.frontMatter.title}</PostHeading>
-          <span className="col-span-1 col-start-1">
-            {new UTCDate(postData.frontMatter.date).toLocaleDateString()}
-          </span>
-        </div>
-        <div className=" grid-cols-5 gap-x-8 md:grid">
-          <Image
-            className="col-span-3 col-start-3 row-start-2 w-full"
-            src={postData.frontMatter.heroImagePath}
-            alt="Post Image"
-            height={200}
-            width={400}
-          />
-        </div>
-      </div>
-
-      <article dangerouslySetInnerHTML={{ __html: postData.content }} />
-      <div className="py-4">
-        <BackButton />
-      </div>
+    <div className="min-h-1/2  ">
+      <PostLayout
+        title={postData.frontMatter.title}
+        date={postData.frontMatter.date}
+        slug={postData.slug}
+        imageUrl={postData.frontMatter.heroImagePath}
+      >
+        <article dangerouslySetInnerHTML={{ __html: postData.content }} />
+      </PostLayout>
     </div>
   );
 };
