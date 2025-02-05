@@ -1,32 +1,21 @@
 /* BLOG POSTS STYLING */
 article {
-  @apply flex max-w-5xl flex-col gap-2 md:grid md:grid-cols-5  md:gap-x-8 md:gap-y-4;
+  @apply flex max-w-5xl flex-col gap-2   md:gap-x-8 md:gap-y-4;
 }
 
-article > .h1-border {
-  @apply col-span-5 md:h-fit md:border-b border-valence-black pt-8;
-}
-article > .h1-container {
-  @apply col-span-2   border-valence-black border-b md:border-0  md:grid md:h-0 overflow-visible;
+article > h1 {
+  @apply text-h2  font-medium pt-4 md:pt-8;
 }
 
-article > .h1-container > h1 {
-  @apply col-span-2 col-start-1  text-balance  text-h2  font-mono font-medium;
-}
-article > .h2-container {
-  @apply col-span-3 col-start-3 h-fit w-fit pt-2 md:pt-0;
-}
-article > .h2-container > h2 {
-  @apply text-balance  font-mono text-h3   underline underline-offset-4 decoration-1;
+article > h2 {
+  @apply font-medium text-h3 pt-2 md:pt-4;
 }
 
-article > em {
-  @apply italic;
-}
 article > p {
-  @apply col-span-3 col-start-3 text-balance text-h3 leading-8;
+  @apply text-h3 leading-8;
 }
 
+/* bold text */
 article > p > strong {
   @apply font-semibold;
 }
@@ -39,22 +28,23 @@ article > ol {
   @apply col-span-3 col-start-3 flex list-decimal flex-col gap-2 pl-4;
 }
 
-.image-paragraph {
-  @apply col-span-3 col-start-3;
+article > div > img {
+  @apply mx-auto max-h-[360px];
 }
 
-article > p > img {
-  @apply mx-auto max-h-[360px] pt-3;
+article > p > em {
+  @apply italic;
 }
 
 article > p > a {
   @apply border-valence-blue text-valence-blue hover:border-b focus:border-b;
 }
 
-article > p > img {
+article > .image-container > img {
   @apply flex justify-center py-2 text-center;
 }
 
-article > p > em {
-  @apply flex justify-center pb-2 pt-1 text-center text-xs not-italic;
+/* image caption */
+article > .image-container > em {
+  @apply flex justify-center  text-xs not-italic font-medium;
 }

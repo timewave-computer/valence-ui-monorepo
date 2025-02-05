@@ -1,18 +1,15 @@
 import { ErrorHandler } from "~/const/error";
 import { Post } from "~/types/blog";
-import { HomepageButton, RouterButton } from "~/components";
-import { UTCDate } from "@date-fns/utc";
+import { PostLayout, RouterButton } from "~/components";
 import { ABSOLUTE_URL } from "~/const";
 import { X_HANDLE } from "@valence-ui/socials";
 import { Metadata } from "next";
-import Image from "next/image";
-import { PostHeading } from "~/app/blog/ui-components";
 import path from "path";
 import fs from "fs";
 import { getPost, POSTS_PATH } from "~/server/posts";
 import Link from "next/link";
-import { HiMiniArrowLeft } from "react-icons/hi2";
-
+import { MdOutlineSubdirectoryArrowLeft } from "react-icons/md";
+import { Button, cn } from "@valence-ui/ui-components";
 import "./article.css";
 
 // statically render routes so blog posts not rendered dynamically
@@ -53,18 +50,17 @@ export async function generateMetadata({
   };
 }
 
-const BackButton = () => (
-  <HomepageButton
-    variant="secondary"
-    PrefixIcon={HiMiniArrowLeft}
+const BackButton = ({ className }: { className?: string }) => (
+  <Button
+    variant="ghost"
     link={{
-      LinkComponent: Link,
       href: "/blog",
+      LinkComponent: Link,
       blankTarget: false,
     }}
-  >
-    Back to blog
-  </HomepageButton>
+    PrefixIcon={MdOutlineSubdirectoryArrowLeft}
+    className={cn("px-0 min-w-0", className)}
+  />
 );
 
 const BlogPost = async ({ params }: BlogPostProps) => {
@@ -102,34 +98,19 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     );
 
   return (
-    <div className="min-h-1/2 flex grow flex-col pt-4 md:gap-2  ">
-      <div className="">
-        <div className="pb-5">
-          {" "}
-          <BackButton />
-        </div>
+    <div className="min-h-1/2 relative  ">
+      <BackButton className="md:absolute md:top-7" />
 
-        <div>
-          <PostHeading> {postData.frontMatter.title}</PostHeading>
-          <span className="col-span-1 col-start-1">
-            {new UTCDate(postData.frontMatter.date).toLocaleDateString()}
-          </span>
-        </div>
-        <div className=" grid-cols-5 gap-x-8 md:grid">
-          <Image
-            className="col-span-3 col-start-3 row-start-2 w-full"
-            src={postData.frontMatter.heroImagePath}
-            alt="Post Image"
-            height={200}
-            width={400}
-          />
-        </div>
-      </div>
-
-      <article dangerouslySetInnerHTML={{ __html: postData.content }} />
-      <div className="py-4">
-        <BackButton />
-      </div>
+      <PostLayout
+        isLink={false}
+        title={postData.frontMatter.title}
+        date={postData.frontMatter.date}
+        slug={postData.slug}
+        imageUrl={postData.frontMatter.heroImagePath}
+      >
+        <article dangerouslySetInnerHTML={{ __html: postData.content }} />
+      </PostLayout>
+      <BackButton />
     </div>
   );
 };

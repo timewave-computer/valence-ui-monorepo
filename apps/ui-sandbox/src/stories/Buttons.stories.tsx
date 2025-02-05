@@ -17,6 +17,9 @@ const Buttons = () => {
             </Button>
           </Story>
           <Story>
+            <Button size={size} SuffixIcon={HiMiniArrowRight} />
+          </Story>
+          <Story>
             <Button size={size} variant="secondary">
               Test
             </Button>
@@ -30,6 +33,14 @@ const Buttons = () => {
               Go Back
             </Button>
           </Story>
+          <Story>
+            <Button
+              size={size}
+              variant="secondary"
+              PrefixIcon={HiMiniArrowLeft}
+            />
+          </Story>
+
           <Story>
             <Button size={size} disabled>
               Test
@@ -45,10 +56,19 @@ const Buttons = () => {
               Test
             </Button>
           </Story>
+
+          <Story>
+            <Button variant="ghost" size={size}>
+              Test
+            </Button>
+          </Story>
+          <Story>
+            <Button SuffixIcon={HiMiniArrowRight} variant="ghost" size={size} />
+          </Story>
         </div>
       ))}
 
-      <p>Todos: icon buttons, CTA button, ghost buttons (borderless)</p>
+      <p>Todos: CTA button</p>
     </Section>
   );
 };

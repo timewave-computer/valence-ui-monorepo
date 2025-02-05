@@ -3,3 +3,4 @@ export * from "./RouterButton";
 export * from "./StaticAppNav";
 export * from "./HomepageButton";
 export * from "./HomepageHeadline";
+export * from "./PostLayout";

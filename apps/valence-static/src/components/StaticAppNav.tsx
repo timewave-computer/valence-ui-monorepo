@@ -35,10 +35,9 @@ const NavLink = ({
       target={blankTarget ? "_blank" : ""}
       key={`nav-${href}`}
       className={cn(
-        "relative top-[1px] flex flex-row items-center font-medium decoration-valence-blue underline-offset-2 decoration-2 ",
-        shouldHightlightItem(href, path) && "underline md:no-underline  ",
+        "relative top-[1px] flex flex-row items-center font-medium decoration-valence-black underline-offset-2 decoration-2 ",
+        shouldHightlightItem(href, path) && "underline ",
         "transition-all focus:underline ", // mobile,
-        "md:focus:no-underline", // desktop
       )}
       href={href}
     >
@@ -72,17 +71,17 @@ export const StaticAppNav = () => {
       )}
     >
       {/* desktop */}
-      <div className="hidden md:flex flex-row max-w-5xl py-8 mx-auto w-full justify-between text-valence-black border-b border-valence-black     ">
+      <div className="hidden md:flex flex-row max-w-5xl p-8 mx-auto w-full justify-between text-valence-black border-b-[1px] border-valence-black     ">
         <Link href="/" className="-ml-1">
           <Image
             priority={true}
             src="/img/valence_horizontal.svg"
             alt="Logo"
-            width={120}
-            height={92}
+            width={124}
+            height={44}
           />
         </Link>
-        <div className="flex flex-row items-center gap-16">
+        <div className="flex flex-row items-center gap-20">
           {links}
 
           <LaunchButton />
@@ -97,7 +96,7 @@ export const StaticAppNav = () => {
             src="/img/valence_horizontal.svg"
             alt="Logo"
             width={110}
-            height={38}
+            height={44}
           />
         </Link>
 
