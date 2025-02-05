@@ -29,7 +29,7 @@ export const PostLayout = ({
       <DateAndImage
         date={date}
         imageUrl={imageUrl}
-        className="hidden md:flex col-span-1"
+        className="hidden md:flex col-span-1 pt-1"
       />{" "}
       {/* desktop */}
       <div className="flex flex-col gap-2 md:gap-4  col-span-2  ">

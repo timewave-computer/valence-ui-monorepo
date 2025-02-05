@@ -99,7 +99,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
 
   return (
     <div className="min-h-1/2 relative  ">
-      <BackButton className="md:absolute md:top-6" />
+      <BackButton className="md:absolute md:top-7" />
 
       <PostLayout
         isLink={false}
