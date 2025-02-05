@@ -3,7 +3,7 @@ title: "The Emergence of Automated POL Markets"
 date: 2024-08-20 12:28:00 -0400
 author: test
 description: Patterns and best practices are starting to emerge when it comes to automating POL markets. Before deploying any POL, it’s best to get clear on your protocol’s top objectives. Potential objectives include incentivizing an actively validated service (AVS) to purchase security from your protocol, increasing adoption of the liquid staking version of your protocol’s native token, deepening DEX liquidity for your native token, and/or stimulating the use of your protocol’s native token as collateral for borrowing.
-heroImagePath: /img/blog/emergence.png
+heroImagePath: /img/blog/emergence.svg
 ---
 
 So you are convinced that your protocol would benefit from deploying protocol-owned liquidity (POL) — perhaps after reading the last blog [post](https://www.valence.zone/blog/4-Ways-that-POL-Adds-Value-Across-the-Interchain) about its benefits — but you are unsure about how best to go about implementing a POL strategy. You have come to the right place because Valence has facilitated more POL deployments than any other protocol. It’s still early days, but patterns and best practices are starting to emerge. Continue reading to learn about the evolution of POL deployments and what to expect in the future.

@@ -2,7 +2,7 @@
 title: "4 Ways that Protocol-Owned Liquidity Adds Value Across the Interchain"
 date: 2024-07-29 13:39:00 -0400
 description: This blog post will build up the concept of “liquidity,” describe how it relates to protocol-owned liquidity (POL), and explain four ways your crypto-native community can benefit from POL today.
-heroImagePath: /img/blog/4-ways-POL.png
+heroImagePath: /img/blog/4_ways.svg
 ---
 
 This blog post will build up the concept of “liquidity,” describe how it relates to protocol-owned liquidity (POL), and explain four ways your crypto-native community can benefit from POL today.

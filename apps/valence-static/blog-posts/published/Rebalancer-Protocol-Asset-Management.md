@@ -2,7 +2,7 @@
 title: "Rebalancer: Protocol Asset Management"
 date: 2024-06-19 10:11:00 -0700
 description: Valence’s Rebalancer is a way for protocols — such as blockchains, dApps, rollups, and DAOs — to trustlessly manage their balance sheets. Audited by Oak Security, a beta version of the Rebalancer is live on mainnet and managing assets for early partners.
-heroImagePath: /img/blog/rebalancer2.png
+heroImagePath: /img/blog/rebalancer-more-whitespace.svg
 ---
 
 # Introducing the Rebalancer
