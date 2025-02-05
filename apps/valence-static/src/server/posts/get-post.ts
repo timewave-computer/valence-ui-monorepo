@@ -5,6 +5,8 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeStringify from "rehype-stringify";
+import { remark } from "remark";
+import html from "remark-html";
 import { Post } from "~/types/blog";
 import { h } from "hastscript";
 import { visit } from "unist-util-visit";
@@ -92,15 +94,17 @@ export const getPost = async (slug: string): Promise<Post> => {
   const postPath = path.join(postsDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(postPath, "utf8");
   const { frontMatter, content } = validatePost(fileContents);
-  const processedContent = await unified()
-    .use(remarkParse) // Parse the markdown content
-    .use(remarkRehype, { allowDangerousHtml: true }) // Convert to rehype (HTML AST), allowing raw HTML
-    .use(rehypeRaw) // Parse the raw HTML inside the markdown
-    // .use(labelImagePTags) // Custom plugin to add class to <p> containing <img>
-    // .use(wrapHeadingsInDiv) // Custom plugin to wrap <h1> and <h2> in a <div>
-    // .use(insertH1BorderDivs) // MUST run after wrapHeadingsInDiv
-    .use(rehypeStringify) // Stringify the rehype tree back to HTML
-    .process(content);
+  // const processedContent = await unified()
+  //   .use(remarkParse) // Parse the markdown content
+  //   .use(remarkRehype, { allowDangerousHtml: true }) // Convert to rehype (HTML AST), allowing raw HTML
+  //   .use(rehypeRaw) // Parse the raw HTML inside the markdown
+  //   .use(labelImagePTags) // Custom plugin to add class to <p> containing <img>
+  //   // .use(wrapHeadingsInDiv) // Custom plugin to wrap <h1> and <h2> in a <div>
+  //   // .use(insertH1BorderDivs) // MUST run after wrapHeadingsInDiv
+  //   .use(rehypeStringify) // Stringify the rehype tree back to HTML
+  //   .process(content);
+
+  const processedContent = await remark().use(html).process(content);
 
   return {
     slug,
