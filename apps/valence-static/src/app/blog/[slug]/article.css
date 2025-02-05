@@ -31,12 +31,8 @@ article > ol {
   @apply col-span-3 col-start-3 flex list-decimal flex-col gap-2 pl-4;
 }
 
-.image-paragraph {
-  @apply p-2 md:p-4;
-}
-
 article > p > img {
-  @apply mx-auto max-h-[360px] pt-3;
+  @apply mx-auto max-h-[360px];
 }
 
 article > p > a {
@@ -49,5 +45,5 @@ article > p > img {
 
 /* image caption */
 article > p > em {
-  @apply flex justify-center pb-2 pt-1 text-center text-xs not-italic font-medium;
+  @apply flex justify-center  text-xs not-italic font-medium;
 }

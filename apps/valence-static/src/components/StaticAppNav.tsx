@@ -78,7 +78,7 @@ export const StaticAppNav = () => {
             src="/img/valence_horizontal.svg"
             alt="Logo"
             width={124}
-            height={92}
+            height={44}
           />
         </Link>
         <div className="flex flex-row items-center gap-20">
@@ -96,7 +96,7 @@ export const StaticAppNav = () => {
             src="/img/valence_horizontal.svg"
             alt="Logo"
             width={110}
-            height={38}
+            height={44}
           />
         </Link>
 

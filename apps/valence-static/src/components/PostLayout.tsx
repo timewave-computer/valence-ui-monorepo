@@ -1,8 +1,7 @@
 import { UTCDate } from "@date-fns/utc";
 import Link from "next/link";
 import Image from "next/image";
-import { PostHeading } from "~/app/blog/ui-components";
-import { cn } from "@valence-ui/ui-components";
+import { cn, Heading } from "@valence-ui/ui-components";
 
 export const PostLayout = ({
   title,
@@ -10,32 +9,33 @@ export const PostLayout = ({
   slug,
   imageUrl,
   date,
+  isLink,
 }: {
   title: string;
   slug: string;
   date: string;
   imageUrl: string;
+  isLink?: boolean;
   children: React.ReactNode;
 }) => {
-  return (
+  const PostBody = (
     <div
+      {...(isLink ? { href: `/blog/${slug}` } : {})}
       className={cn(
-        "flex flex-col  items-start  ", // mobile
-        "md:grid md:grid-cols-3 md:gap-y-4    md:py-8 md:pb-10 md:gap-x-16", // desktop
+        "flex flex-col  items-start   ", // mobile
+        "md:grid md:grid-cols-3 md:gap-y-4  md:py-8 md:pb-10 md:gap-x-16", // desktop
       )}
     >
-      <PostAndImage
-        slug={slug}
+      <DateAndImage
         date={date}
         imageUrl={imageUrl}
         className="hidden md:flex col-span-1"
       />{" "}
       {/* desktop */}
-      <div className="flex flex-col gap-4  col-span-2  ">
-        <PostHeading slug={slug}>{title}</PostHeading>
+      <div className="flex flex-col gap-2 md:gap-4  col-span-2  ">
+        <Heading level="h1">{title}</Heading>
         {/* mobile */}
-        <PostAndImage
-          slug={slug}
+        <DateAndImage
           date={date}
           imageUrl={imageUrl}
           className="  md:hidden items-start"
@@ -44,16 +44,18 @@ export const PostLayout = ({
       </div>
     </div>
   );
+
+  if (isLink) {
+    return <Link href={`/blog/${slug}`}>{PostBody}</Link>;
+  } else return PostBody;
 };
-const PostAndImage = ({
-  slug,
+const DateAndImage = ({
   date,
   imageUrl,
   className,
 }: {
   imageUrl: string;
   date: string;
-  slug: string;
   className?: string;
 }) => {
   return (
@@ -67,15 +69,14 @@ const PostAndImage = ({
           })
           .replace(/\//g, ".")}
       </span>
-      <Link className="flex flex-col gap-2    " href={`/blog/${slug}`}>
-        <Image
-          className="w-full self-center "
-          src={imageUrl}
-          alt="Post Image"
-          width={300}
-          height={200}
-        />
-      </Link>
+
+      <Image
+        className="w-full self-center "
+        src={imageUrl}
+        alt="Post Image"
+        width={300}
+        height={200}
+      />
     </div>
   );
 };

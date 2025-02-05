@@ -1,18 +1,15 @@
 import { ErrorHandler } from "~/const/error";
 import { Post } from "~/types/blog";
 import { HomepageButton, PostLayout, RouterButton } from "~/components";
-import { UTCDate } from "@date-fns/utc";
 import { ABSOLUTE_URL } from "~/const";
 import { X_HANDLE } from "@valence-ui/socials";
 import { Metadata } from "next";
-import Image from "next/image";
-import { PostHeading } from "~/app/blog/ui-components";
 import path from "path";
 import fs from "fs";
 import { getPost, POSTS_PATH } from "~/server/posts";
 import Link from "next/link";
-import { HiMiniArrowLeft } from "react-icons/hi2";
-
+import { MdOutlineSubdirectoryArrowLeft } from "react-icons/md";
+import { Button, cn } from "@valence-ui/ui-components";
 import "./article.css";
 
 // statically render routes so blog posts not rendered dynamically
@@ -53,18 +50,17 @@ export async function generateMetadata({
   };
 }
 
-const BackButton = () => (
-  <HomepageButton
-    variant="secondary"
-    PrefixIcon={HiMiniArrowLeft}
+const BackButton = ({ className }: { className?: string }) => (
+  <Button
+    variant="ghost"
     link={{
-      LinkComponent: Link,
       href: "/blog",
+      LinkComponent: Link,
       blankTarget: false,
     }}
-  >
-    Back to blog
-  </HomepageButton>
+    PrefixIcon={MdOutlineSubdirectoryArrowLeft}
+    className={cn("px-0 min-w-0", className)}
+  />
 );
 
 const BlogPost = async ({ params }: BlogPostProps) => {
@@ -102,8 +98,11 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     );
 
   return (
-    <div className="min-h-1/2  ">
+    <div className="min-h-1/2 relative  ">
+      <BackButton className="md:absolute md:top-6" />
+
       <PostLayout
+        isLink={false}
         title={postData.frontMatter.title}
         date={postData.frontMatter.date}
         slug={postData.slug}
@@ -111,6 +110,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
       >
         <article dangerouslySetInnerHTML={{ __html: postData.content }} />
       </PostLayout>
+      <BackButton />
     </div>
   );
 };

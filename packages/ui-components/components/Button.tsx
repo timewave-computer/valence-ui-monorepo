@@ -4,15 +4,17 @@ import React, { ElementType } from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
 
 const buttonVariants = cva(
-  "text-center  rounded-sm  w-fit  transition-all text-nowrap flex flex-row items-center justify-center border-valence-black border outline-none",
+  "text-center  rounded-sm  w-fit  text-nowrap flex flex-row items-center justify-center border-valence-black border outline-none transition-all",
   {
     variants: {
       variant: {
         primary:
           "bg-valence-black text-valence-white  border-valence-black hover:bg-valence-white hover:text-valence-black focus:bg-valence-white focus:text-valence-black focus:border-valence-black",
         secondary:
-          "bg-valence-white text-valence-black  hover:bg-valence-black transition-all hover:text-valence-white  ",
+          "bg-valence-white text-valence-black  hover:bg-valence-black hover:text-valence-white  ",
         loading: "bg-valence-mediumgray ",
+        ghost:
+          "bg-transparent text-valence-black hover:border-valence-black  border-0",
       },
       disabled: {
         true: "!bg-valence-gray hover:!bg-valence-gray focus:!bg-valence-gray cursor-not-allowed  !border-valence-gray !text-valence-black",
@@ -35,7 +37,7 @@ export interface ButtonProps
   asChild?: boolean;
   disabled?: boolean;
   isLoading?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   link?: {
     href: string;
     blankTarget?: boolean;

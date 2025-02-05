@@ -64,6 +64,7 @@ const BlogHome = async () => {
       {posts.map((post, i) => (
         <Fragment key={`blog-post-${post.slug}`}>
           <PostLayout
+            isLink={true}
             title={post.title}
             date={post.date}
             slug={post.slug}
