@@ -1,8 +1,8 @@
 ---
 title: "Introducing Valence"
 date: 2024-06-12 11:32:00 -0400
-description: "Crypto is the medium through which society will produce the next generation of digital institutions. Valence's purpose is to maximize long-term, permissionless collaboration by empowering these new institutions."
-heroImagePath: /img/blog/intro_post_graphic.svg
+description: "Crypto is the medium through which society will produce the next generation of digital institutions. Valence's purpose is to maximize long-term, permissionless collaboration by empowering these new institutions. Digitization, by its nature, is a reduction of fidelity."
+heroImagePath: /img/blog/intro.svg
 ---
 
 # The Purpose of Valence

@@ -71,6 +71,7 @@ const DateAndImage = ({
       </span>
 
       <Image
+        priority={true}
         className="w-full self-center "
         src={imageUrl}
         alt="Post Image"

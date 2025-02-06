@@ -41,7 +41,7 @@ export default function RootLayout({
         >
           <body
             className={cn(
-              "flex max-h-screen min-h-screen md:px-16 flex-col text-valence-black bg-valence-white overflow-y-scroll",
+              "flex max-h-screen min-h-screen lg:px-16 flex-col text-valence-black bg-valence-white overflow-y-scroll",
             )}
           >
             <StaticAppNav />
