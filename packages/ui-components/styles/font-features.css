@@ -41,10 +41,10 @@
   ---ordn: "ordn" on;
 }
 .-tnum {
-  ---ordn: "tnum" on;
+  ---tnum: "tnum" on;
 }
 .-subs {
-  ---ordn: "subs" on;
+  ---subs: "subs" on;
 }
 .-sups {
   ---sups: "sups" on;
