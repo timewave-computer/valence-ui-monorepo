@@ -1,6 +1,7 @@
 import localFont from "@next/font/local";
 
 export const Unica77Mono = localFont({
+  variable: "--font-unica-mono",
   src: [
     {
       path: "./public/fonts/Unica77Mono/Unica77MonoLLWeb-Light.woff2",
@@ -15,10 +16,10 @@ export const Unica77Mono = localFont({
       weight: "700", // font-bold
     },
   ],
-  variable: "--font-unica-mono",
 });
 
 export const Unica77 = localFont({
+  variable: "--font-unica-sans",
   src: [
     {
       path: "./public/fonts/Unica77/Unica77LLWeb-Light.woff2",
@@ -46,5 +47,4 @@ export const Unica77 = localFont({
       weight: "700", // font-bold
     },
   ],
-  variable: "--font-unica-sans",
 });

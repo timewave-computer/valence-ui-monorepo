@@ -42,17 +42,21 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
-          "var(--font-unica-sans)",
-          "SF Pro",
-          ...defaultTheme.fontFamily.sans,
+          ["var(--font-unica-sans)", "SF Pro", ...defaultTheme.fontFamily.sans],
+          { fontFeatureSettings: '"liga", "zero", "ss02", "case"' },
         ],
-        sf: ["SF Pro", ...defaultTheme.fontFamily.sans],
         serif: ["Times", "Times New Roman", ...defaultTheme.fontFamily.serif],
         mono: [
-          "var(--font-unica-mono)",
-          "SF Mono",
-          "SFMono-Regular",
-          ...defaultTheme.fontFamily.mono,
+          [
+            "var(--font-unica-mono)",
+            "SF Mono",
+            "SFMono-Regular",
+            ...defaultTheme.fontFamily.mono,
+          ],
+          {
+            fontFeatureSettings:
+              '"liga", "ss02", "ss03", "ss04", "ss05", "zero", "case"',
+          },
         ],
       },
       fontSize: {
@@ -76,7 +80,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
 };
 
 export default config;

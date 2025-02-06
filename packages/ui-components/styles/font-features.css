@@ -1,0 +1,81 @@
+/**
+* Optional font features. Font family has some enabled by default
+ To add a new option, create class, and make sure to add CCS variable to last line in this file (font-feature-settings)
+*/
+
+/*
+* This should not need to be changed. All possible features are here. Without this, the font-feature-settings will not turn on.
+*/
+:root {
+  ---aalt: "aalt" off;
+  ---case: "case" off;
+  ---dnom: "dnom" off;
+  ---frac: "frac" off;
+  ---nalt: "nalt" off;
+  ---numr: "numr" off;
+  ---ordn: "ordn" off;
+  ---salt: "salt" off;
+  ---sinf: "sinf" off;
+  ---ss01: "ss01" off;
+  ---ss02: "ss02" off;
+  ---ss03: "ss03" off;
+  ---ss04: "ss04" off;
+  ---subs: "subs" off;
+  ---sups: "sups" off;
+  ---tnum: "tnum" off;
+  ---zero: "zero" off;
+  ---cpsp: "cpsp" off;
+}
+
+/***
+  * TODO: probably need to manually enable all default features in the optional features section
+  for example: 
+    .-frac {
+        ---frac: "frac" on, "zero" on;
+    }
+  */
+.-frac {
+  ---frac: "frac" on;
+}
+.-ordn {
+  ---ordn: "ordn" on;
+}
+.-tnum {
+  ---ordn: "tnum" on;
+}
+.-subs {
+  ---ordn: "subs" on;
+}
+.-sups {
+  ---sups: "sups" on;
+}
+.-numr {
+  ---numr: "numr" on;
+}
+.-zero {
+  ---zero: "zero" on;
+}
+
+.-aalt,
+.-case,
+.-dnom,
+.-frac,
+.-nalt,
+.-numr,
+.-ordn,
+.-salt,
+.-sinf,
+.-ss01,
+.-ss02,
+.-ss03,
+.-ss04,
+.-subs,
+.-sups,
+.-tnum,
+.-zero,
+.-cpsp {
+  font-feature-settings: var(---aalt), var(---case), var(---dnom), var(---frac),
+    var(---nalt), var(---numr), var(---ordn), var(---salt), var(---sinf),
+    var(---ss01), var(---ss02), var(---ss03), var(---ss04), var(---subs),
+    var(---sups), var(---tnum), var(---zero), var(---cpsp);
+}

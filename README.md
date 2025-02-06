@@ -25,6 +25,7 @@ turbo dev
 
 # to run only specific apps (recommended)
 turbo dev --filter @valence-ui/valence-app --filter @valence-ui/ui-sandbox
+turbo dev --filter @valence-ui/valence-static --filter @valence-ui/ui-sandbox
 ```
 
 To test production build
