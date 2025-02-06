@@ -1,7 +1,7 @@
 ---
 title: "Covenants: Protocol-to-Protocol Deals"
 date: 2024-06-20 11:32:00 -0400
-heroImagePath: /img/blog/covenant-more-whitespace.svg
+heroImagePath: /img/blog/covenants.svg
 description: Valence’s Covenant system is a way for protocols—such as blockchains, dApps, rollups, and DAOs—to transact with other protocols in a programmatic, trust-minimized way. This post will explore the roadblocks inhibiting protocol-to-protocol deals, how protocols can benefit from using the Covenant system, and the kinds of liquidity sharing deal structures that the Covenant system unlocks.
 ---
 

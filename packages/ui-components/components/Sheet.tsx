@@ -62,11 +62,12 @@ const SheetContent = React.forwardRef<
     >
       <SheetTitle className="hidden">title</SheetTitle>
       <SheetDescription className="hidden">description</SheetDescription>
-      {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 focus:outline-none">
+
+      <SheetPrimitive.Close className=" focus:outline-none absolute top-6 right-8">
         <RxCross2 className="h-6 w-6 focus:outline-none" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
+      {children}
     </SheetPrimitive.Content>
   </SheetPortal>
 ));

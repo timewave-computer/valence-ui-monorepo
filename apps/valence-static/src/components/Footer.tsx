@@ -1,9 +1,9 @@
 "use client";
 import { cn } from "@valence-ui/ui-components";
-import Image from "next/image";
 import Link from "next/link";
 import { X_URL, GITHUB_URL, DOCS_URL } from "@valence-ui/socials";
 import { VALENCE_DESCRIPTION } from "~/const";
+import { ValenceLogo } from "~/components";
 
 export const Footer = (
   { className }: { className?: string } = { className: "" },
@@ -11,18 +11,12 @@ export const Footer = (
   return (
     <footer
       className={cn(
-        "mx-auto border-t w-full border-valence-black max-w-5xl p-4 md:px-8 md:py-16    flex flex-col gap-x-16  gap-y-4 md:gap-y-6 text-sm md:grid md:grid-cols-2 ",
+        "mx-auto border-t w-full border-valence-black max-w-5xl p-4 md:px-8 md:py-8    flex flex-col gap-x-16  gap-y-4 md:gap-y-6 text-sm md:grid md:grid-cols-2 ",
         className,
       )}
     >
-      <Link href={"/"}>
-        <Image
-          className="   flex-col justify-between"
-          src="/img/valence_horizontal.svg"
-          alt="Valence illustration"
-          width={110}
-          height={38}
-        />
+      <Link href="/">
+        <ValenceLogo />
       </Link>
 
       <div className=" flex flex-col gap-2 ">

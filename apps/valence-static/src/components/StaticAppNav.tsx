@@ -1,6 +1,5 @@
 "use client";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import {
   cn,
@@ -11,7 +10,7 @@ import {
 import Link from "next/link";
 import { APP_URL, DOCS_URL, VAULTS_URL } from "@valence-ui/socials";
 import { HiMiniArrowRight } from "react-icons/hi2";
-import { HomepageButton } from "~/components";
+import { HomepageButton, ValenceLogo } from "~/components";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -71,16 +70,12 @@ export const StaticAppNav = () => {
       )}
     >
       {/* desktop */}
-      <div className="hidden md:flex flex-row max-w-5xl p-8 mx-auto w-full justify-between text-valence-black border-b-[1px] border-valence-black     ">
-        <Link href="/" className="-ml-1">
-          <Image
-            priority={true}
-            src="/img/valence_horizontal.svg"
-            alt="Logo"
-            width={124}
-            height={44}
-          />
+      <div className="hidden lg:flex flex-row max-w-5xl p-8 mx-auto w-full justify-between items-center text-valence-black border-b-[1px] border-valence-black     ">
+        <Link href="/">
+          {" "}
+          <ValenceLogo className="-ml-1" />
         </Link>
+
         <div className="flex flex-row items-center gap-20">
           {links}
 
@@ -89,29 +84,25 @@ export const StaticAppNav = () => {
       </div>
 
       {/* mobile */}
-      <div className="flex flex-row justify-between w-full px-4 md:hidden border-b border-valence-black  py-4">
+      <div className="flex flex-row gap-4 items-center justify-between w-full px-4 lg:hidden border-b border-valence-black  py-4">
         <Link href="/">
-          <Image
-            priority={true}
-            src="/img/valence_horizontal.svg"
-            alt="Logo"
-            width={110}
-            height={44}
-          />
+          {" "}
+          <ValenceLogo className="-ml-1" />
         </Link>
 
         <Sheet>
           <SheetTrigger asChild className="outline-none">
             <HomepageButton
               variant="secondary"
-              className=" min-w-0 transform border-none  transition-transform active:scale-90
+              className="min-w-0 transform border-none  transition-transform active:scale-90
+              focus:bg-valence-white hover:text-valence-black border-0 hover:bg-valence-white
                "
             >
               <IoMdMenu className="h-6 w-6  " />
             </HomepageButton>
           </SheetTrigger>
 
-          <SheetContent className=" w-1/2 ">
+          <SheetContent className=" w-3/4 px-8 py-6 ">
             <div className=" flex flex-col gap-8 p-4 text-h2">
               {/* special case for mobile */}
               <NavLink href="/" label="Home" path={path} />
