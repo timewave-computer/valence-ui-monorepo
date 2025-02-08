@@ -1,17 +1,16 @@
 import { cn } from "@valence-ui/ui-components";
-import { motion } from "framer-motion";
-import { ReactNode, forwardRef } from "react";
+import { type HTMLMotionProps, motion } from "framer-motion";
+import React from "react";
 
-type OverlayProps = {
+interface OverlayProps extends HTMLMotionProps<"div"> {
   position?: {
     top?: number;
     left?: number;
     height?: number;
   };
   className?: string;
-  children?: ReactNode;
-};
-export const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
+}
+export const Overlay = React.forwardRef<HTMLDivElement | null, OverlayProps>(
   (
     {
       position = {
