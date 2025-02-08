@@ -96,28 +96,29 @@ export const RpcConfigForm = ({}: {}) => {
             />
           </FormField>
         </div>
-
-        <div className="flex flex-col gap-2">
-          <Heading level="h3">External Chains</Heading>
-          {externalChains.map((chain, index) => {
-            return (
-              <FormField
-                key={`chain-rpcurl-${chain.chainId}`}
-                name={`chains.${index}.rpcUrl`}
-              >
-                <InputLabel
-                  size="sm"
-                  label={`${chain.name} RPC URL (${chain.chainId})`}
-                />
-                <TextInput
-                  size="sm"
-                  {...register(`externalChains.${index}.rpcUrl`)}
-                  placeholder="https://"
-                />
-              </FormField>
-            );
-          })}
-        </div>
+        {externalChains.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <Heading level="h3">External Chains</Heading>
+            {externalChains.map((chain, index) => {
+              return (
+                <FormField
+                  key={`chain-rpcurl-${chain.chainId}`}
+                  name={`chains.${index}.rpcUrl`}
+                >
+                  <InputLabel
+                    size="sm"
+                    label={`${chain.name} RPC URL (${chain.chainId})`}
+                  />
+                  <TextInput
+                    size="sm"
+                    {...register(`externalChains.${index}.rpcUrl`)}
+                    placeholder="https://"
+                  />
+                </FormField>
+              );
+            })}
+          </div>
+        )}
       </FormRoot>
     </div>
   );
