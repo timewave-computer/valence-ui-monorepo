@@ -23,13 +23,17 @@ export async function generateStaticParams() {
 }
 
 type BlogPostProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
-export async function generateMetadata({
-  params: { slug },
-}: BlogPostProps): Promise<Metadata> {
+export async function generateMetadata(
+  props: BlogPostProps,
+): Promise<Metadata> {
+  const params = await props.params;
+
+  const { slug } = params;
+
   const frontmatter = (await getPost(slug)).frontMatter;
 
   return {
@@ -63,7 +67,8 @@ const BackButton = ({ className }: { className?: string }) => (
   />
 );
 
-const BlogPost = async ({ params }: BlogPostProps) => {
+const BlogPost = async (props: BlogPostProps) => {
+  const params = await props.params;
   let postData: Post | null = null;
   let error: boolean | null = null;
 
