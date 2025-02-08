@@ -7,7 +7,6 @@ import {
   IndexerHistoricalTargetsResponseSchema,
 } from "@/types/rebalancer";
 import { hoursToSeconds } from "date-fns";
-export const fetchCache = "default-cache";
 
 export async function fetchHistoricalTargets({
   address,

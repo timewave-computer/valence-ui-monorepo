@@ -3,7 +3,6 @@ import { OriginAsset } from "@/types/ibc";
 import { fetchOriginAssets } from "@/server/actions";
 
 export type FetchMetadataResponse = Record<string, OriginAsset>;
-export const fetchCache = "default-cache";
 
 export const fetchAssetMetadata = async (
   chainList: Array<{

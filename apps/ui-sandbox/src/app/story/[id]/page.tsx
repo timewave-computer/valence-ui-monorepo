@@ -2,7 +2,6 @@ import { StoryLabel } from "~/components";
 import React from "react";
 import { getStories, GetStories } from "~/lib";
 import dynamic from "next/dynamic";
-import { SandboxConfig } from "~/config";
 
 export default async function StoryPage({
   params,

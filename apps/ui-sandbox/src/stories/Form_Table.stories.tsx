@@ -109,7 +109,9 @@ const Form_Table = () => {
               <TableForm
                 className="w-[30%]"
                 messages={[
-                  <InfoText variant="info">Here is some info</InfoText>,
+                  <InfoText key="info0" variant="info">
+                    Here is some info
+                  </InfoText>,
                 ]}
                 headers={headers}
               >
@@ -131,7 +133,9 @@ const Form_Table = () => {
               <TableForm
                 className="w-[30%]"
                 messages={[
-                  <InfoText variant="info">Here is some info</InfoText>,
+                  <InfoText key="info1" variant="info">
+                    Here is some info
+                  </InfoText>,
                 ]}
                 headers={headers}
               >
@@ -153,11 +157,13 @@ const Form_Table = () => {
               <TableForm
                 className="w-[30%]"
                 messages={[
-                  <InfoText variant="info">Here is some info</InfoText>,
-                  <InfoText variant="warn">
+                  <InfoText key="info2" variant="info">
+                    Here is some info
+                  </InfoText>,
+                  <InfoText key="info3" variant="warn">
                     Insufficient funds in wallet
                   </InfoText>,
-                  <InfoText variant="error">
+                  <InfoText key="info4" variant="error">
                     {" "}
                     Value cannot be less than 1.00
                   </InfoText>,

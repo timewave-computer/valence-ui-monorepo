@@ -4,7 +4,6 @@ import {
   Button,
   LinkText,
   ToastMessage,
-  Toaster,
   toast,
 } from "@valence-ui/ui-components";
 
