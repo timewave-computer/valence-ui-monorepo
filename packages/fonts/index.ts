@@ -1,4 +1,4 @@
-import localFont from "@next/font/local";
+import localFont from "next/font/local";
 
 export const Unica77Mono = localFont({
   variable: "--font-unica-mono",

@@ -25,6 +25,7 @@ import {
   prefetchAssetMetdata,
   prefetchLivePrices,
 } from "@/server/prefetch";
+import { JSX } from "react";
 
 export const metadata: Metadata = {
   title: "Edit Rebalancer",
@@ -44,14 +45,18 @@ export const metadata: Metadata = {
 };
 
 type EditRebalancerProps = {
-  params: {
+  params: Promise<{
     address: string;
-  };
+  }>;
 };
 
-export default async function CreateRebalancerPage({
-  params: { address },
-}: EditRebalancerProps) {
+export default async function CreateRebalancerPage(
+  props: EditRebalancerProps,
+): Promise<JSX.Element> {
+  const params = await props.params;
+
+  const { address } = params;
+
   if (!address) {
     redirect("/rebalancer");
   }

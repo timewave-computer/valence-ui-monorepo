@@ -6,7 +6,6 @@ import {
   isRejected,
   CACHE_KEYS,
 } from "@/server/utils";
-import { secondsToMinutes } from "date-fns";
 import { z } from "zod";
 
 export const getPrices = async (

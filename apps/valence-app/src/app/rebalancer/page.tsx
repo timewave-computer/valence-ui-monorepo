@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ABSOLUTE_URL, REBALANCER_DESCRIPTION } from "@/const";
 import { X_HANDLE } from "@valence-ui/socials";
-import { Suspense } from "react";
+import { JSX, Suspense } from "react";
 import {
   HistoricalGraph,
   AccountDetailsPanel,
@@ -38,13 +38,15 @@ function RebalancerMainSuspenseFallback() {
   );
 }
 
-export default async function RebalancerPage({
-  searchParams: { account },
-}: {
-  searchParams: {
+export default async function RebalancerPage(props: {
+  searchParams: Promise<{
     account: string;
-  };
-}) {
+  }>;
+}): Promise<JSX.Element> {
+  const searchParams = await props.searchParams;
+
+  const { account } = searchParams;
+
   return (
     // doing this instead of loading.tsx to provide search param as a key, to trigger loading state on account change
     <Suspense key={account} fallback={<RebalancerMainSuspenseFallback />}>

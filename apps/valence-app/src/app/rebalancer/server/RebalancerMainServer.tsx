@@ -11,6 +11,7 @@ import {
   prefetchLivePrices,
 } from "@/server/prefetch";
 import { getQueryClient } from "@/utils/get-query-client";
+import { JSX } from "react";
 
 /***
  * making own server component to prefetch data with a manual suspense boundary to provide search params as a key
@@ -21,7 +22,7 @@ export async function RebalancerMainServerComponent({
   searchParams: {
     account: string;
   };
-}) {
+}): Promise<JSX.Element> {
   const queryClient = getQueryClient();
 
   if (account && account.length > 0) {

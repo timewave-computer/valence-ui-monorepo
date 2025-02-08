@@ -6,6 +6,7 @@ import {
   CoinGeckoHistoricPrices,
   CoinGeckoHistoricPricesSchema,
 } from "@/types/coingecko";
+
 import { secondsToHours, secondsToMinutes } from "date-fns";
 
 enum TimeRange {
