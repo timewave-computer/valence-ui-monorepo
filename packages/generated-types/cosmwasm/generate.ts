@@ -21,6 +21,10 @@ codegen
         name: "Processor",
         dir: `${inputDir}/processor/schema`,
       },
+      {
+        name: "ProgramRegistry",
+        dir: `${inputDir}/program-registry/schema`,
+      },
     ],
     outPath: outputDir,
     // options are completely optional ;)

@@ -1,18 +1,22 @@
 import { type NormalizedAccounts } from "@/app/programs/server";
 import { chains } from "chain-registry";
 import { getPreferredRpcs } from "@/app/programs/server/config";
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { getCosmwasmClient } from "@/server/rpc";
 
 export type QueryConfig = {
   main: {
     registryAddress: string;
     chainId: string;
-    rpc: string;
+    rpcUrl: string;
     name: string;
+    cosmwasmClient?: CosmWasmClient;
   };
   external: Array<{
     rpc: string;
     chainId: string;
     name: string;
+    cosmwasmClient?: CosmWasmClient;
   }>;
 };
 
@@ -29,6 +33,7 @@ export class QueryConfigManager {
 
   constructor(workingConfig: WorkingQueryConfig) {
     this.mainChainConfig = workingConfig.main;
+
     if (workingConfig.external) {
       this.externalChainConfig = workingConfig.external;
     }
@@ -38,14 +43,15 @@ export class QueryConfigManager {
     return this.mainChainConfig;
   }
 
-  setAllChainsConfigIfEmpty(accounts: NormalizedAccounts) {
+  async setAllChainsConfigIfEmpty(accounts: NormalizedAccounts) {
     // if query config already specified, we dont have to make it ourselves.
     if (this.externalChainConfig?.length) return;
     else
-      this.externalChainConfig = QueryConfigManager.makeExternalChainConfig(
-        accounts,
-        this.mainChainConfig.chainId,
-      );
+      this.externalChainConfig =
+        await QueryConfigManager.makeExternalChainConfig(
+          accounts,
+          this.mainChainConfig.chainId,
+        );
   }
 
   getQueryConfig(): QueryConfig {
@@ -62,10 +68,10 @@ export class QueryConfigManager {
   }
 
   // takes list of accounts and default rpcs and makes rpc config object
-  private static makeExternalChainConfig(
+  private static async makeExternalChainConfig(
     accounts: NormalizedAccounts,
     mainChainId: string,
-  ): QueryConfig["external"] {
+  ): Promise<QueryConfig["external"]> {
     const rpcs: QueryConfig["external"] = [];
 
     for (const account of Object.values(accounts)) {
@@ -98,6 +104,7 @@ export class QueryConfigManager {
           rpc: rpcUrl,
           chainId: account.chainId,
           name: account.chainName,
+          cosmwasmClient: await getCosmwasmClient(rpcUrl),
         });
       }
     }

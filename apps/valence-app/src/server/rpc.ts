@@ -31,13 +31,22 @@ export const getStargateClient = async (rpc?: string) => {
   }
 };
 
-export const getCosmwasmClient = async (rpc?: string) => {
+export const getCosmwasmClient = async (
+  rpc?: string,
+  options: {
+    throwOnError?: boolean;
+  } = {
+    throwOnError: true,
+  },
+) => {
   try {
     const chainId = getChainId();
     const defaultRpc = getRpcUrl(chainId);
     const stargate = await CosmWasmClient.connect(rpc ?? defaultRpc);
     return stargate;
   } catch (e) {
-    throw ErrorHandler.makeError(ERROR_MESSAGES.STARGATE_CONNECT_FAIL, e);
+    if (options.throwOnError) {
+      throw ErrorHandler.makeError(ERROR_MESSAGES.STARGATE_CONNECT_FAIL, e);
+    }
   }
 };

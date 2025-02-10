@@ -19,6 +19,10 @@ import {
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
 import { UTCDate } from "@date-fns/utc";
+import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { get } from "lodash";
+import { getCosmwasmClient } from "@/server/rpc";
 
 type GetProgramDataProps = {
   programId: string;
@@ -43,13 +47,17 @@ export const getProgramData = async ({
 }: GetProgramDataProps): Promise<GetProgramDataReturnValue> => {
   let queryConfigManager = new QueryConfigManager(
     userSuppliedQueryConfig ?? {
-      main: getDefaultMainChainConfig(),
+      main: await getDefaultMainChainConfig(),
       external: undefined, // needs to be derived from accounts in config
     },
   );
   // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
+
   try {
+    const queryClient = await getCosmwasmClient(
+      queryConfigManager.getMainChainConfig().rpc,
+    );
     rawProgram = await fetchProgramFromRegistry({
       programId,
       config: queryConfigManager.getMainChainConfig(),
@@ -120,9 +128,26 @@ const fetchProgramFromRegistry = async ({
   programId: string;
   config: QueryConfig["main"];
 }) => {
-  if (!(programId in mockRegistry))
-    throw new Error(`Program ${programId} not found in registry`);
-  return Promise.resolve(mockRegistry[programId]);
+  try {
+    const queryClient = config.cosmwasmClient;
+    const programRegistryClient = new ProgramRegistryQueryClient(
+      queryClient,
+      config.registryAddress,
+    );
+    const response = await programRegistryClient.getConfig({
+      id: Number(programId),
+    });
+    const binaryString = response.program_config;
+    const decoder = new TextDecoder();
+    const binaryBuffer = Uint8Array.from(
+      binaryString.split("").map((char) => char.charCodeAt(0)),
+    );
+    return decoder.decode(binaryBuffer);
+  } catch (e) {
+    throw new Error(
+      `Unable to fetch ${programId} from registry ${config.registryAddress}. Error: ${e?.message}`,
+    );
+  }
 };
 
 const queryAccountBalances = async (
