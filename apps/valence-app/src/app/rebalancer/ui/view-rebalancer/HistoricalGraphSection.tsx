@@ -19,7 +19,6 @@ import {
   SymbolColors,
   GraphStyles,
   scaleAtom,
-  accountAtom,
   baseDenomAtom,
   priceSourceAtom,
 } from "@/app/rebalancer/ui";
@@ -50,12 +49,13 @@ export const HistoricalGraph: React.FC<{
     setScale(scaleUrlParam);
   }, [setScale, scaleUrlParam]);
 
-  const [account] = useAtom(accountAtom);
+  const [account] = useQueryState("account");
+
   const livePortfolioQuery = useLivePortfolio({
-    accountAddress: account,
+    accountAddress: account ?? "",
   });
   const accountConfigQuery = useAccountConfigQuery({
-    account: account,
+    account: account ?? "",
   });
 
   const targets = useMemo(
@@ -64,7 +64,7 @@ export const HistoricalGraph: React.FC<{
   );
 
   const historicValuesQuery = useHistoricValues({
-    accountAddress: account,
+    accountAddress: account ?? "",
     targets,
   });
 
@@ -76,7 +76,7 @@ export const HistoricalGraph: React.FC<{
     error: graphError,
   } = useHistoricalGraph({
     scale,
-    rebalancerAddress: account,
+    rebalancerAddress: account ?? "",
     livePortfolio: livePortfolioQuery,
     config: accountConfigQuery,
     historicalValues: historicValuesQuery,
@@ -195,7 +195,7 @@ export const HistoricalGraph: React.FC<{
         <div className="flex  flex-row items-center gap-8 overflow-clip pr-2">
           {scales.map((thisScale) => (
             <div
-              key={thisScale}
+              key={`graph-scale-${thisScale}`}
               className={cn(
                 "flex cursor-pointer flex-col items-center justify-center text-base",
                 isError || isLoading

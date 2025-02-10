@@ -6,7 +6,6 @@ import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
 import {
   scaleAtom,
-  accountAtom,
   useMultipleValenceAccounts,
   useValenceAccount,
 } from "@/app/rebalancer/ui";
@@ -41,10 +40,6 @@ export const SidePanelV2: React.FC<{
   const [accountUrlParam] = useQueryState("account", {
     defaultValue: "",
   });
-  const [_, setAccount] = useAtom(accountAtom);
-  useMemo(() => {
-    setAccount(accountUrlParam);
-  }, [setAccount, accountUrlParam]);
 
   // to track cursor when it moves
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -110,7 +105,7 @@ export const SidePanelV2: React.FC<{
 };
 
 const DiscoverPanel: React.FC<{}> = ({}) => {
-  const [account] = useAtom(accountAtom);
+  const [account] = useQueryState("account");
 
   const { address, isWalletConnected } = useWallet();
   const { data: valenceAddress } = useValenceAccount(address);
