@@ -53,17 +53,22 @@ export const getProgramData = async ({
   let rawProgram = "";
 
   try {
+    // TODO: split up the registry fetch and the program parsing
     rawProgram = await fetchProgramFromRegistry({
       programId,
       config: queryConfigManager.getMainChainConfig(),
     });
   } catch (e) {
-    console.log("error fetching program from registry", e);
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
-      errors: makeApiErrors([{ code: GetProgramErrorCodes.REGISTRY }]),
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.PROGRAM_ID_NOT_FOUND,
+          message: e?.message,
+        },
+      ]),
     };
   }
 
@@ -134,6 +139,7 @@ const fetchProgramFromRegistry = async ({
       cosmwasmClient,
       config.registryAddress,
     );
+    // TODO: there should be two errors, program not found, and contract is not a registry
     const response = await programRegistryClient.getConfig({
       id: Number(programId),
     });
@@ -145,7 +151,7 @@ const fetchProgramFromRegistry = async ({
     return decoder.decode(binaryBuffer);
   } catch (e) {
     throw new Error(
-      `Unable to fetch ${programId} from registry ${config.registryAddress}. Error: ${e?.message}`,
+      `Unable to fetch program ID ${programId} from registry ${config.registryAddress}. Error: ${e?.message}`,
     );
   }
 };

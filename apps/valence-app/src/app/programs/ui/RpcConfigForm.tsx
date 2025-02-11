@@ -35,7 +35,7 @@ export const RpcConfigForm = ({}: {}) => {
         name: mainChain.name,
         chainId: mainChain.chainId,
         registryAddress: mainChain.registryAddress,
-        rpcUrl: mainChain.rpc,
+        rpcUrl: mainChain.rpcUrl,
       },
       externalChains: externalChains.map((c) => {
         return {
@@ -53,7 +53,7 @@ export const RpcConfigForm = ({}: {}) => {
         registryAddress: values.main.registryAddress,
         name: values.main.name,
         chainId: values.main.chainId,
-        rpc: values.main.rpcUrl,
+        rpcUrl: values.main.rpcUrl,
       },
 
       external: [
@@ -87,7 +87,7 @@ export const RpcConfigForm = ({}: {}) => {
             />
           </FormField>
           <FormField name="main.registryAddress">
-            <InputLabel size="sm" label="Program registry" />
+            <InputLabel size="sm" label="Program registry address" />
 
             <TextInput
               size="sm"

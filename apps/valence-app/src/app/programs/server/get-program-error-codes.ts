@@ -1,5 +1,6 @@
 export enum GetProgramErrorCodes {
-  REGISTRY = "REGISTRY",
+  INVALID_REGISTRY = "INVALID_REGISTRY",
+  PROGRAM_ID_NOT_FOUND = "PROGRAM_ID_NOT_FOUND",
   PARSE = "PARSE",
   BALANCES = "BALANCES",
 }
@@ -12,9 +13,13 @@ type ErrorKey = {
 export type ErrorCodes = Record<string, ErrorKey>;
 
 const PROGRAM_ERROR_CONTENT: ErrorCodes = {
-  [GetProgramErrorCodes.REGISTRY]: {
+  [GetProgramErrorCodes.INVALID_REGISTRY]: {
+    title: "Invalid program registry",
+    text: "Verify registry address and RPC URL are correct in the RPC settings.",
+  },
+  [GetProgramErrorCodes.PROGRAM_ID_NOT_FOUND]: {
     title: "Program ID not found",
-    text: "Check registry address and program ID.",
+    text: "Verify registry address and RPC URL are correct in the RPC settings.",
   },
   [GetProgramErrorCodes.PARSE]: {
     title: "Failed to parse program",
