@@ -2,7 +2,6 @@ export const ERROR_MESSAGES = {
   SIGNER_CONNECTION_ERROR: "Error connecting to RPC",
   STARGATE_SIGNER_FAIL: "Error getting signing stargate client",
   COSMWASM_SIGNER_FAIL: "Error getting signing cosmwasm client",
-  SUBMIT_EMAIL_FAIL: "Failed to submit email",
   SUBMIT_WITHDRAW_FAIL: "Failed to submit withdraw",
   SUBMIT_DEPOSIT_FAIL: "Failed to submit deposit",
   SUBMIT_WITHDRAW_CACHE_FAIL: "Failed to fetch asset metadata during withdraw",

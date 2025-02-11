@@ -1,9 +1,7 @@
 import { getNeutronRpc } from "@/server/rpc";
 import { QueryConfig } from "@/app/programs/server";
 
-export const getDefaultMainChainConfig = async (): Promise<
-  QueryConfig["main"]
-> => {
+export const getDefaultMainChainConfig = (): QueryConfig["main"] => {
   const rpcUrl = getNeutronRpc();
   return {
     chainId: "neutron-1",

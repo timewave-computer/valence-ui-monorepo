@@ -19,8 +19,8 @@ import {
 import { fetchAssetMetadata } from "@/server/actions";
 import { UTCDate } from "@date-fns/utc";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
-import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { getCosmwasmClient } from "@/server/rpc";
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 
 type GetProgramDataProps = {
   programId: string;
@@ -45,18 +45,39 @@ export const getProgramData = async ({
 }: GetProgramDataProps): Promise<GetProgramDataReturnValue> => {
   let queryConfigManager = new QueryConfigManager(
     userSuppliedQueryConfig ?? {
-      main: await getDefaultMainChainConfig(),
+      main: getDefaultMainChainConfig(),
       external: undefined, // needs to be derived from accounts in config
     },
   );
   // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
+  const mainChainConfig = queryConfigManager.getMainChainConfig();
+  const mainChainCosmwasmClient = await getCosmwasmClient(
+    mainChainConfig.rpcUrl,
+    {
+      throwOnError: false,
+    },
+  );
+
+  if (!mainChainCosmwasmClient) {
+    return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.RPC_CONNECTION,
+          message: `Could not connect to RPC at ${mainChainConfig.rpcUrl}`,
+        },
+      ]),
+    };
+  }
 
   try {
     // TODO: split up the registry fetch and the program parsing
     rawProgram = await fetchProgramFromRegistry({
       programId,
-      config: queryConfigManager.getMainChainConfig(),
+      registryAddress: mainChainConfig.registryAddress,
+      cosmwasmClient: mainChainCosmwasmClient,
     });
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
@@ -124,20 +145,17 @@ export const getProgramData = async ({
 
 const fetchProgramFromRegistry = async ({
   programId,
-  config,
+  registryAddress,
+  cosmwasmClient,
 }: {
   programId: string;
-  config: QueryConfig["main"];
+  registryAddress: string;
+  cosmwasmClient: CosmWasmClient;
 }) => {
-  const cosmwasmClient = await getCosmwasmClient(config.rpcUrl);
-  if (!cosmwasmClient) {
-    throw new Error(`Could not connect to RPC.`);
-  }
-
   try {
     const programRegistryClient = new ProgramRegistryQueryClient(
       cosmwasmClient,
-      config.registryAddress,
+      registryAddress,
     );
     // TODO: there should be two errors, program not found, and contract is not a registry
     const response = await programRegistryClient.getConfig({
@@ -151,7 +169,7 @@ const fetchProgramFromRegistry = async ({
     return decoder.decode(binaryBuffer);
   } catch (e) {
     throw new Error(
-      `Unable to fetch program ID ${programId} from registry ${config.registryAddress}. Error: ${e?.message}`,
+      `Unable to fetch program ID ${programId} from registry ${registryAddress}. Error: ${e?.message}`,
     );
   }
 };

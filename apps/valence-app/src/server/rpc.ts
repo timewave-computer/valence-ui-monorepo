@@ -46,7 +46,7 @@ export const getCosmwasmClient = async (
     return stargate;
   } catch (e) {
     if (options.throwOnError) {
-      throw ErrorHandler.makeError(ERROR_MESSAGES.STARGATE_CONNECT_FAIL, e);
+      throw ErrorHandler.makeError(ERROR_MESSAGES.COSMWASM_CONNECT_FAIL, e);
     }
   }
 };
