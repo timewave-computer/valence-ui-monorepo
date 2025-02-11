@@ -1,5 +1,4 @@
 "use server";
-import { mockRegistry } from "@/mock-data";
 import {
   ProgramParser,
   fetchAccountBalances,
@@ -21,7 +20,6 @@ import { fetchAssetMetadata } from "@/server/actions";
 import { UTCDate } from "@date-fns/utc";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { get } from "lodash";
 import { getCosmwasmClient } from "@/server/rpc";
 
 type GetProgramDataProps = {
@@ -55,14 +53,12 @@ export const getProgramData = async ({
   let rawProgram = "";
 
   try {
-    const queryClient = await getCosmwasmClient(
-      queryConfigManager.getMainChainConfig().rpc,
-    );
     rawProgram = await fetchProgramFromRegistry({
       programId,
       config: queryConfigManager.getMainChainConfig(),
     });
   } catch (e) {
+    console.log("error fetching program from registry", e);
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
@@ -128,10 +124,14 @@ const fetchProgramFromRegistry = async ({
   programId: string;
   config: QueryConfig["main"];
 }) => {
+  const cosmwasmClient = await getCosmwasmClient(config.rpcUrl);
+  if (!cosmwasmClient) {
+    throw new Error(`Could not connect to RPC.`);
+  }
+
   try {
-    const queryClient = config.cosmwasmClient;
     const programRegistryClient = new ProgramRegistryQueryClient(
-      queryClient,
+      cosmwasmClient,
       config.registryAddress,
     );
     const response = await programRegistryClient.getConfig({
@@ -162,7 +162,7 @@ const queryAccountBalances = async (
 
     let rpcUrl: string | undefined = undefined;
     if (account.chainName === config.main.name) {
-      rpcUrl = config.main.rpc;
+      rpcUrl = config.main.rpcUrl;
     } else {
       rpcUrl = config.external.find(
         (chain) => chain.name === account.chainName,
