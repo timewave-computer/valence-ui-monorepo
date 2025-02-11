@@ -2,6 +2,7 @@ import { HiMiniArrowRight } from "react-icons/hi2";
 import Image from "next/image";
 import { DOCS_URL, VAULTS_URL } from "@valence-ui/socials";
 import { HomepageButton, HomepageHeadline } from "~/components";
+import { cn } from "@valence-ui/ui-components";
 
 const HomePage = () => {
   return (
@@ -24,13 +25,15 @@ const HomePage = () => {
               The Universal <br /> DeFi Computer
             </>
           }
+          imageClassName="md:p-0"
           Img={
             <Image
+              className="pt-8 md:pt-12"
               priority
               src="/img/valence_homepage_graphic.svg"
               alt={"Valence Graphic"}
-              width={300}
-              height={200}
+              width={360}
+              height={400}
             />
           }
         >
@@ -127,6 +130,7 @@ const HomepageSection = ({
   cta,
   imgFirst = false,
   Img,
+  imageClassName,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -134,9 +138,15 @@ const HomepageSection = ({
   cta: React.ReactNode;
   Img: React.ReactNode;
   imgFirst?: boolean;
+  imageClassName?: string;
 }) => {
   const ImageComponent = () => (
-    <div className="hidden md:flex flex-col w-full items-center justify-center p-4 md:p-8 md:px-16  ">
+    <div
+      className={cn(
+        "hidden md:flex flex-col w-full items-center justify-center p-4 md:p-8 md:px-16  ",
+        imageClassName,
+      )}
+    >
       {Img}
     </div>
   );
