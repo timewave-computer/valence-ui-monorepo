@@ -11,7 +11,6 @@ export const ERROR_MESSAGES = {
   IBC_TRACE_FAIL: "Failed to trace origin assets",
   COINGECKO_PRICE_FAIL: "Could not fetch prices",
   CACHED_QUERY_FAIL: "Failed to call API with snapper",
-  UNKNOWN_ERROR: "Unknown error",
   INDEXER_ACCT_CONFIG_ERROR: "Failed to fetch account config",
   INDEXER_ACCT_ADMIN_ERROR: "Failed to fetch account admin",
   INDEXER_FUNDS_IN_AUCTION_ERROR: "Failed to fetch funds in auction",

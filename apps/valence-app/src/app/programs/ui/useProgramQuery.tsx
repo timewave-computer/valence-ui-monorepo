@@ -15,7 +15,7 @@ import { isEqual } from "lodash";
 export const DEFAULT_QUERY_CONFIG: QueryConfig = {
   main: {
     chainId: "",
-    rpc: "",
+    rpcUrl: "",
     registryAddress: "",
     name: "",
   },
