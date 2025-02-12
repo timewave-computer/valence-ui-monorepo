@@ -21,6 +21,8 @@ import { UTCDate } from "@date-fns/utc";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { ProcessorQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.client";
+import { AuthorizationData } from "@valence-ui/generated-types";
 
 type GetProgramDataProps = {
   programId: string;
@@ -105,6 +107,7 @@ export const getProgramData = async ({
       errors: makeApiErrors([{ code: GetProgramErrorCodes.PARSE }]),
     };
   }
+  console.log("fetched program", program);
 
   const { accounts } = program;
   queryConfigManager.setAllChainsConfigIfEmpty(accounts);
@@ -129,6 +132,12 @@ export const getProgramData = async ({
   }
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
+
+  // TODO: make an object of all chain clients, with chain id and chain name
+  const processorData = await fetchProcessorsData({
+    processorAddresses: program.authorizationData?.processor_addrs,
+    queryConfig: completeQueryConfig,
+  });
   return {
     dataLastUpdatedAt: getLastUpdatedTime(),
     queryConfig: completeQueryConfig,
@@ -192,7 +201,6 @@ const queryAccountBalances = async (
     if (!rpcUrl) {
       throw new Error(`No RPC URL found for chain ID ${account.chainName}`);
     }
-
     const balances = await fetchAccountBalances({
       accountAddress: account.addr,
       rpcUrl,
@@ -246,6 +254,47 @@ function getDenomsAndChainIds({
   );
 
   return metadataQueries;
+}
+
+async function fetchProcessorsData({
+  processorAddresses,
+  queryConfig,
+}: {
+  processorAddresses?: AuthorizationData["processor_addrs"];
+  queryConfig: QueryConfig;
+}) {
+  if (!processorAddresses) return;
+
+  const requests = Object.entries(processorAddresses).map(
+    async ([domainChainName, processorAddress]) => {
+      const [domain, chainName] = domainChainName.split(":");
+      if (domain !== "CosmosCosmwasm") {
+        // todo: display some unsupported error
+        return;
+      }
+      const rpcUrl =
+        queryConfig.main.name === chainName
+          ? queryConfig.main.rpcUrl
+          : queryConfig.external.find((chain) => chain.name === chainName)?.rpc;
+
+      const processorClient = new ProcessorQueryClient(
+        await getCosmwasmClient(rpcUrl),
+        processorAddress,
+      );
+
+      const results = await Promise.all([
+        processorClient.getQueue({ priority: "high" }),
+        processorClient.getQueue({ priority: "medium" }),
+      ]);
+
+      console.log("results for", chainName, results);
+      return results.flat();
+    },
+  );
+
+  const awaitedResults = await Promise.all(requests);
+
+  console.log("awaitedResults", awaitedResults.flat());
 }
 
 async function fetchLibrarySchemas(libraries: NormalizedLibraries) {

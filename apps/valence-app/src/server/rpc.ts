@@ -35,8 +35,8 @@ export const getCosmwasmClient = async (rpc?: string) => {
   try {
     const chainId = getChainId();
     const defaultRpc = getRpcUrl(chainId);
-    const stargate = await CosmWasmClient.connect(rpc ?? defaultRpc);
-    return stargate;
+    const cosmwasn = await CosmWasmClient.connect(rpc ?? defaultRpc);
+    return cosmwasn;
   } catch (e) {
     throw ErrorHandler.makeError(ERROR_MESSAGES.COSMWASM_CONNECT_FAIL, e);
   }
