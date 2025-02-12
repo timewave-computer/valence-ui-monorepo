@@ -14,6 +14,8 @@ import * as _6 from "./Auction.types";
 import * as _7 from "./Auction.client";
 import * as _8 from "./Processor.types";
 import * as _9 from "./Processor.client";
+import * as _10 from "./ProgramRegistry.types";
+import * as _11 from "./ProgramRegistry.client";
 export namespace contracts {
   export const Account = {
     ..._0,
@@ -34,5 +36,9 @@ export namespace contracts {
   export const Processor = {
     ..._8,
     ..._9,
+  };
+  export const ProgramRegistry = {
+    ..._10,
+    ..._11,
   };
 }

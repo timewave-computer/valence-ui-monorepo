@@ -1,5 +1,7 @@
 export enum GetProgramErrorCodes {
-  REGISTRY = "REGISTRY",
+  RPC_CONNECTION = "RPC_CONNECTION",
+  INVALID_REGISTRY = "INVALID_REGISTRY",
+  PROGRAM_ID_NOT_FOUND = "PROGRAM_ID_NOT_FOUND",
   PARSE = "PARSE",
   BALANCES = "BALANCES",
 }
@@ -12,9 +14,18 @@ type ErrorKey = {
 export type ErrorCodes = Record<string, ErrorKey>;
 
 const PROGRAM_ERROR_CONTENT: ErrorCodes = {
-  [GetProgramErrorCodes.REGISTRY]: {
+  [GetProgramErrorCodes.RPC_CONNECTION]: {
+    title: "Could not connect to RPC",
+    text: "Verify RPC URL in the RPC settings.",
+  },
+  [GetProgramErrorCodes.INVALID_REGISTRY]: {
+    // not used currently
+    title: "Invalid program registry",
+    text: "Verify registry address and RPC URL are correct in the RPC settings.",
+  },
+  [GetProgramErrorCodes.PROGRAM_ID_NOT_FOUND]: {
     title: "Program ID not found",
-    text: "Check registry address and program ID.",
+    text: "Verify registry address and RPC URL are correct in the RPC settings.",
   },
   [GetProgramErrorCodes.PARSE]: {
     title: "Failed to parse program",
@@ -26,7 +37,7 @@ const PROGRAM_ERROR_CONTENT: ErrorCodes = {
 };
 
 export const makeApiErrors = (
-  messages: Array<{ code: GetProgramErrorCodes; message?: object }>,
+  messages: Array<{ code: GetProgramErrorCodes; message?: object | string }>,
 ): ErrorCodes => {
   return messages.reduce((acc, { code, message }) => {
     return {
@@ -41,6 +52,9 @@ export const makeApiErrors = (
   }, {} as ErrorCodes);
 };
 
-const isObjectEmpty = (obj: object) => {
+const isObjectEmpty = (obj: object | string) => {
+  if (typeof obj === "string") {
+    return obj.length === 0;
+  }
   return Object.keys(obj).length === 0;
 };

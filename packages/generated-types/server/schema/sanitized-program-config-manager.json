@@ -164,8 +164,10 @@
         },
         "processor_bridge_addrs": {
           "description": "List of processor bridge addresses by domain All addresses are on nuetron, mapping to what domain this bridge account is for Key: domain name | Value: processor bridge address on that domain",
-          "type": "object",
-          "additionalProperties": false
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "additionalProperties": false

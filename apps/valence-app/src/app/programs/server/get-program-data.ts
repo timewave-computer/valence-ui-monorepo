@@ -1,5 +1,4 @@
 "use server";
-import { mockRegistry } from "@/mock-data";
 import {
   ProgramParser,
   fetchAccountBalances,
@@ -19,6 +18,9 @@ import {
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
 import { UTCDate } from "@date-fns/utc";
+import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
+import { getCosmwasmClient } from "@/server/rpc";
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 
 type GetProgramDataProps = {
   programId: string;
@@ -49,17 +51,42 @@ export const getProgramData = async ({
   );
   // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
+  const mainChainConfig = queryConfigManager.getMainChainConfig();
+
+  let mainChainCosmwasmClient: CosmWasmClient;
   try {
+    mainChainCosmwasmClient = await getCosmwasmClient(mainChainConfig.rpcUrl);
+  } catch (e) {
+    return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.RPC_CONNECTION,
+          message: `Could not connect to RPC at ${mainChainConfig.rpcUrl}`,
+        },
+      ]),
+    };
+  }
+
+  try {
+    // TODO: split up the registry fetch and the program parsing
     rawProgram = await fetchProgramFromRegistry({
       programId,
-      config: queryConfigManager.getMainChainConfig(),
+      registryAddress: mainChainConfig.registryAddress,
+      cosmwasmClient: mainChainCosmwasmClient,
     });
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
-      errors: makeApiErrors([{ code: GetProgramErrorCodes.REGISTRY }]),
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.PROGRAM_ID_NOT_FOUND,
+          message: e?.message,
+        },
+      ]),
     };
   }
 
@@ -70,6 +97,7 @@ export const getProgramData = async ({
     program = ProgramParser.extractData(rawProgram);
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
+    console.log(`Program ID ${programId} parse error: ${e} `);
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
@@ -115,14 +143,31 @@ export const getProgramData = async ({
 
 const fetchProgramFromRegistry = async ({
   programId,
-  config,
+  registryAddress,
+  cosmwasmClient,
 }: {
   programId: string;
-  config: QueryConfig["main"];
+  registryAddress: string;
+  cosmwasmClient: CosmWasmClient;
 }) => {
-  if (!(programId in mockRegistry))
-    throw new Error(`Program ${programId} not found in registry`);
-  return Promise.resolve(mockRegistry[programId]);
+  try {
+    const programRegistryClient = new ProgramRegistryQueryClient(
+      cosmwasmClient,
+      registryAddress,
+    );
+    // TODO: there should be two errors, program not found, and contract is not a registry
+    const response = await programRegistryClient.getConfig({
+      id: Number(programId),
+    });
+    const binaryString = response.program_config;
+    const decodedString = atob(binaryString);
+    const programConfig = JSON.parse(decodedString);
+    return programConfig;
+  } catch (e) {
+    throw new Error(
+      `Unable to fetch program ID ${programId} from registry ${registryAddress}. Error: ${e?.message}`,
+    );
+  }
 };
 
 const queryAccountBalances = async (
@@ -137,7 +182,7 @@ const queryAccountBalances = async (
 
     let rpcUrl: string | undefined = undefined;
     if (account.chainName === config.main.name) {
-      rpcUrl = config.main.rpc;
+      rpcUrl = config.main.rpcUrl;
     } else {
       rpcUrl = config.external.find(
         (chain) => chain.name === account.chainName,

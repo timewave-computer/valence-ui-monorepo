@@ -6,7 +6,7 @@ export type QueryConfig = {
   main: {
     registryAddress: string;
     chainId: string;
-    rpc: string;
+    rpcUrl: string;
     name: string;
   };
   external: Array<{
@@ -29,6 +29,7 @@ export class QueryConfigManager {
 
   constructor(workingConfig: WorkingQueryConfig) {
     this.mainChainConfig = workingConfig.main;
+
     if (workingConfig.external) {
       this.externalChainConfig = workingConfig.external;
     }

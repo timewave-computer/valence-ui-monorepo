@@ -62,7 +62,7 @@ export const SubroutineDisplay = ({
                 isAtomic={isAtomic}
                 key={`subroutine-${authorization.label}-${i}`}
                 functions={functions}
-                isAuthorized={isAuthorized}
+                isAuthorized={true}
               />
             </CollapsibleSectionContent>
           </CollapsibleSectionRoot>

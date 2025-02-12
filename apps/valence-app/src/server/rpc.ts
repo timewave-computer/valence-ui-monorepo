@@ -38,6 +38,6 @@ export const getCosmwasmClient = async (rpc?: string) => {
     const stargate = await CosmWasmClient.connect(rpc ?? defaultRpc);
     return stargate;
   } catch (e) {
-    throw ErrorHandler.makeError(ERROR_MESSAGES.STARGATE_CONNECT_FAIL, e);
+    throw ErrorHandler.makeError(ERROR_MESSAGES.COSMWASM_CONNECT_FAIL, e);
   }
 };
