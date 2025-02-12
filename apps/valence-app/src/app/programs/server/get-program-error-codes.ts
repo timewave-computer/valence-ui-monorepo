@@ -19,6 +19,7 @@ const PROGRAM_ERROR_CONTENT: ErrorCodes = {
     text: "Verify RPC URL in the RPC settings.",
   },
   [GetProgramErrorCodes.INVALID_REGISTRY]: {
+    // not used currently
     title: "Invalid program registry",
     text: "Verify registry address and RPC URL are correct in the RPC settings.",
   },

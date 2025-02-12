@@ -52,7 +52,6 @@ export const getProgramData = async ({
   // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
   const mainChainConfig = queryConfigManager.getMainChainConfig();
-
   const mainChainCosmwasmClient = await getCosmwasmClient(
     mainChainConfig.rpcUrl,
     {

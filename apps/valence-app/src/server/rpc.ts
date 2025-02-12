@@ -47,6 +47,8 @@ export const getCosmwasmClient = async (
   } catch (e) {
     if (options.throwOnError) {
       throw ErrorHandler.makeError(ERROR_MESSAGES.COSMWASM_CONNECT_FAIL, e);
+    } else {
+      ErrorHandler.warn(ERROR_MESSAGES.COSMWASM_CONNECT_FAIL, e);
     }
   }
 };
