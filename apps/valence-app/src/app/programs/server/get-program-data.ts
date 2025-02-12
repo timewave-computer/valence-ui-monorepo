@@ -52,14 +52,11 @@ export const getProgramData = async ({
   // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
   const mainChainConfig = queryConfigManager.getMainChainConfig();
-  const mainChainCosmwasmClient = await getCosmwasmClient(
-    mainChainConfig.rpcUrl,
-    {
-      throwOnError: false,
-    },
-  );
 
-  if (!mainChainCosmwasmClient) {
+  let mainChainCosmwasmClient: CosmWasmClient;
+  try {
+    mainChainCosmwasmClient = await getCosmwasmClient(mainChainConfig.rpcUrl);
+  } catch (e) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
