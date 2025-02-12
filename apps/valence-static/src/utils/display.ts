@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES, ErrorHandler } from "~/const/error";
+import { ErrorHandler } from "~/const/error";
 import { format } from "date-fns";
 
 export const displayPid = (pid: { p: number; i: number; d: number }) => {
@@ -29,7 +29,7 @@ export const displayLocalTimezone = (date: Date) => {
     );
     return tz;
   } catch (e) {
-    ErrorHandler.warn(ERROR_MESSAGES.DISPLAY_UTC_TIME_FAIL, e);
+    ErrorHandler.warn("Failed to display local timezone", e);
   }
 };
 
@@ -38,7 +38,7 @@ export const displayUtcToLocal = (date: Date) => {
     const time = format(date, "HH:mm");
     return time;
   } catch (e) {
-    ErrorHandler.warn(ERROR_MESSAGES.DISPLAY_UTC_TIME_FAIL, e);
+    ErrorHandler.warn("Failed to format UTC to local time", e);
   }
 };
 

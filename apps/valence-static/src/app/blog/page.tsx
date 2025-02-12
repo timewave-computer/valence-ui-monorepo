@@ -1,7 +1,6 @@
 import { ErrorHandler } from "~/const/error";
 import { getSortedPosts } from "~/server/posts";
 import { PostList } from "~/types/blog";
-
 import { PostLayout, RouterButton } from "~/components";
 import { Metadata } from "next";
 import { X_HANDLE } from "@valence-ui/socials";
