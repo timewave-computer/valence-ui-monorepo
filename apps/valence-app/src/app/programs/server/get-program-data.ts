@@ -52,6 +52,7 @@ export const getProgramData = async ({
   // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
   const mainChainConfig = queryConfigManager.getMainChainConfig();
+
   const mainChainCosmwasmClient = await getCosmwasmClient(
     mainChainConfig.rpcUrl,
     {
@@ -100,6 +101,7 @@ export const getProgramData = async ({
     program = ProgramParser.extractData(rawProgram);
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
+    console.log(`Program ID ${programId} parse error: ${e} `);
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
@@ -162,11 +164,9 @@ const fetchProgramFromRegistry = async ({
       id: Number(programId),
     });
     const binaryString = response.program_config;
-    const decoder = new TextDecoder();
-    const binaryBuffer = Uint8Array.from(
-      binaryString.split("").map((char) => char.charCodeAt(0)),
-    );
-    return decoder.decode(binaryBuffer);
+    const decodedString = atob(binaryString);
+    const programConfig = JSON.parse(decodedString);
+    return programConfig;
   } catch (e) {
     throw new Error(
       `Unable to fetch program ID ${programId} from registry ${registryAddress}. Error: ${e?.message}`,

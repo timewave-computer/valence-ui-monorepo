@@ -344,7 +344,7 @@ export interface AuthorizationData {
   /**
    * List of processor bridge addresses by domain All addresses are on nuetron, mapping to what domain this bridge account is for Key: domain name | Value: processor bridge address on that domain
    */
-  processor_bridge_addrs: {};
+  processor_bridge_addrs: string[];
 }
 export interface AuthorizationInfo {
   duration: AuthorizationDuration;

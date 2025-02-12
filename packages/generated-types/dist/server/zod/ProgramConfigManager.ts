@@ -137,7 +137,7 @@ export const authorizationDataSchema = z.object({
   authorization_addr: z.string(),
   authorization_bridge_addrs: z.object({}),
   processor_addrs: z.record(addrSchema),
-  processor_bridge_addrs: z.object({}),
+  processor_bridge_addrs: z.array(z.string()),
 });
 
 export const accountInfoSchema = z.object({
