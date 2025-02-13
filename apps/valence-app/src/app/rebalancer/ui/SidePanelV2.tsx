@@ -1,5 +1,5 @@
 "use client";
-import { ConnectWalletButton, ValenceProductBrand } from "@/components";
+import { ValenceProductBrand } from "@/components";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { useWallet } from "@/hooks";
 import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
@@ -86,12 +86,6 @@ export const SidePanelV2: React.FC<{
             for support.
           </p>
         </ValenceProductBrand>
-        <ConnectWalletButton
-          rerouteOnConnect={rerouteOnConnect}
-          connectCta="Connect your wallet to start rebalancing funds."
-          debouncedMouseEnter={debouncedMouseEnter}
-          debouncedMouseLeave={debouncedMouseLeave}
-        />
 
         <div className="flex flex-col ">
           <InputLabel label="Search by address" />

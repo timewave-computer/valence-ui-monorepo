@@ -5,5 +5,5 @@ export * from "./RouterButton";
 export * from "./Dropdown";
 export * from "./colored-dot";
 export * from "./ValenceProductBrand";
-export * from "./ConnectWalletButton";
 export * from "./HydrateAtoms";
+export * from "./ConnectWalletButton";

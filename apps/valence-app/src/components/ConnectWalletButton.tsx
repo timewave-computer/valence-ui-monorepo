@@ -1,24 +1,17 @@
 "use client";
-import { Button, ToastMessage, toast } from "@valence-ui/ui-components";
-import { useAlert, useIsServer, useWallet } from "@/hooks";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useFetchValenceAccount, useValenceAccount } from "@/app/rebalancer/ui";
+import {
+  Button,
+  Label,
+  ToastMessage,
+  cn,
+  toast,
+} from "@valence-ui/ui-components";
+import { useAlert, useChainContext, useIsServer, useWallet } from "@/hooks";
+import * as Popover from "@radix-ui/react-popover";
 import { WalletStatus } from "@cosmos-kit/core";
+import { displayAddress } from "@/utils";
 
-export const ConnectWalletButton: React.FC<{
-  disabled?: boolean;
-  debouncedMouseEnter?: () => void;
-  debouncedMouseLeave?: () => void;
-  connectCta: string;
-  rerouteOnConnect?: boolean;
-}> = ({
-  disabled = false,
-  debouncedMouseEnter,
-  debouncedMouseLeave,
-  connectCta,
-  rerouteOnConnect = false,
-}) => {
+export const ConnectWalletButton: React.FC<{}> = ({}) => {
   const isServer = useIsServer();
   const {
     isWalletConnected,
@@ -26,16 +19,17 @@ export const ConnectWalletButton: React.FC<{
     connect,
     address,
     walletStatus,
+    walletInfo,
+    disconnect,
   } = useWallet();
-  const { isLoading: isValenceAccountLoading } = useValenceAccount(address);
-  const router = useRouter();
 
-  const { fetchValenceAccount } = useFetchValenceAccount();
+  const { chain } = useChainContext();
 
   useAlert(
     walletStatus === WalletStatus.Error ||
       walletStatus === WalletStatus.Rejected,
     () => {
+      // TODO: prevent from spamming
       toast.error(
         <ToastMessage variant="error" title="Error connecting wallet.">
           Please try again.
@@ -52,72 +46,71 @@ export const ConnectWalletButton: React.FC<{
     );
   });
 
-  // for calling effect only when connect wallet is clicked
-  const [connectWalletClicked, setConnectWalletClicked] = useState(false);
-
-  const [isExecutedOnce, setIsExecutedOnce] = useState(false);
-
-  // redirect to rebalancer page after wallet is connected and data is fetched
-  useEffect(() => {
-    if (isExecutedOnce) return;
-    if (!rerouteOnConnect) return;
-    if (!connectWalletClicked) return;
-
-    (async () => {
-      const account = await fetchValenceAccount(address ?? "");
-      if (account) {
-        router.push(`/rebalancer?account=${account}`);
-      } else router.push(`/rebalancer/`);
-      setIsExecutedOnce(true);
-    })();
-  }, [
-    fetchValenceAccount,
-    rerouteOnConnect,
-    connectWalletClicked,
-    address,
-    router,
-    isExecutedOnce,
-    setIsExecutedOnce,
-  ]);
-
   if (isServer)
     return (
-      <Button disabled={true} className="w-full" variant="primary">
+      <Button disabled={true} variant="primary">
         Connect Wallet
       </Button>
     );
 
-  const button = disabled ? (
-    <Button className="w-full" disabled={true} variant="primary">
-      Connect Wallet
-    </Button>
-  ) : (
-    <Button
-      className="w-full"
-      isLoading={isWalletConnecting || isValenceAccountLoading}
-      onClick={async () => {
-        if (disabled) return;
-        await connect();
-        setConnectWalletClicked(true);
-      }}
-      variant="primary"
-    >
-      {" "}
-      Connect Wallet
-    </Button>
-  );
-
-  if (!isWalletConnected)
+  if (!isWalletConnected) {
     return (
-      <div
-        onMouseMove={debouncedMouseEnter}
-        onMouseEnter={debouncedMouseEnter}
-        onMouseLeave={debouncedMouseLeave}
-        className="flex flex-col gap-2"
+      <Button
+        className="hidden md:flex"
+        disabled={isWalletConnecting}
+        onClick={async () => {
+          await connect();
+        }}
+        variant="primary"
       >
-        {button}
-        <p className="text-center text-sm">{connectCta}</p>
-      </div>
+        {isWalletConnecting ? "Connecting..." : "Connect Wallet"}
+      </Button>
     );
-  else return null;
+  }
+
+  return (
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button
+          className={cn(
+            "font-mono text-xs py-1 min-h-0",
+            "hidden md:flex", // hide on mobile
+          )}
+          variant="secondary"
+        >
+          {displayAddress(address ?? "")}
+        </Button>
+      </Popover.Trigger>
+
+      <Popover.Content
+        side="bottom"
+        sideOffset={11}
+        className="items-left z-50 flex flex-col gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all mr-4"
+      >
+        <div className="items-left flex flex-col gap-3">
+          <div className="flex flex-row justify-between items-start">
+            <h1 className="text-base font-semibold">Wallet connected</h1>
+
+            <div
+              className="h-6 w-6 bg-contain bg-center bg-no-repeat "
+              style={{
+                backgroundImage: `url(${walletInfo?.logo})`,
+              }}
+            />
+          </div>
+
+          <div>
+            <Label> {chain.pretty_name}</Label>
+            <div className="max-w-48 text-balance break-words text-left font-mono text-xs">
+              {address}
+            </div>
+          </div>
+        </div>
+
+        <Button onClick={() => disconnect()} variant="secondary">
+          Disconnect
+        </Button>
+      </Popover.Content>
+    </Popover.Root>
+  );
 };

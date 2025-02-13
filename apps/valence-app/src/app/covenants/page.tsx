@@ -118,12 +118,6 @@ const CovenantPage = () => {
                 if your organization wants early access to Covenants.
               </p>
             </ValenceProductBrand>
-            <ConnectWalletButton
-              connectCta="            Connect your wallet create a covenant."
-              debouncedMouseEnter={debouncedMouseEnter}
-              debouncedMouseLeave={debouncedMouseLeave}
-              disabled={true}
-            />
 
             <div className="flex flex-col">
               <InputLabel label={"Covenant type"} />
