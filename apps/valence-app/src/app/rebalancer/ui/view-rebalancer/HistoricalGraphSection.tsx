@@ -130,7 +130,7 @@ export const HistoricalGraph: React.FC<{
         ) {
           return <CreateAccountCTA />;
         }
-        return <StatusBar variant="primary" text="Please enter an account" />;
+        return <StatusBar variant="primary" text="Select your account" />;
       }
     } else if (
       isWalletConnecting ||
