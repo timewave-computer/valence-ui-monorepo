@@ -25,15 +25,14 @@ import { baseToMicro, displayNumberV2, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
 import { Coin, DeliverTxResponse } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
-import { useAtom } from "jotai";
 import {
-  accountAtom,
   BalanceReturnValue,
   useAssetMetadata,
   SupportedAssets,
 } from "@/app/rebalancer/ui";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
 import { CelatoneUrl } from "@/const";
+import { useQueryState } from "nuqs";
 
 type DepositInputForm = {
   amounts: Coin[];
@@ -41,7 +40,9 @@ type DepositInputForm = {
 export const DepositDialog: React.FC<{}> = ({}) => {
   const queryClient = useQueryClient();
   const { address: walletAddress, getSigningStargateClient } = useWallet();
-  const [accountAddress] = useAtom(accountAtom);
+  const [accountAddress] = useQueryState("account", {
+    defaultValue: "",
+  });
   const getOriginAsset = useAssetMetadata().getOriginAsset;
 
   const deposit = async (amounts: DepositInputForm["amounts"]) => {

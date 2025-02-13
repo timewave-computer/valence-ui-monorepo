@@ -35,9 +35,8 @@ import { Coin } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
-import { useAtom } from "jotai";
-import { accountAtom } from "@/app/rebalancer/ui";
 import { CelatoneUrl } from "@/const";
+import { useQueryState } from "nuqs";
 
 type WithdrawInputForm = {
   amounts: Coin[];
@@ -46,8 +45,9 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
   const queryClient = useQueryClient();
   const { getOriginAsset } = useAssetMetadata();
   const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
-  const [accountAddress] = useAtom(accountAtom);
-  const { data: config } = useAccountConfigQuery({ account: accountAddress });
+  const [accountAddress] = useQueryState("account", {
+    defaultValue: "",
+  });
   const livePortfolioQuery = useLivePortfolio({
     accountAddress: accountAddress,
   });

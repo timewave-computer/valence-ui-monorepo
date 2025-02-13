@@ -13,10 +13,10 @@ import { displayNumber } from "@/utils";
 import {
   useAccountConfigQuery,
   useLivePortfolio,
-  accountAtom,
   SymbolColors,
 } from "@/app/rebalancer/ui";
 import { useAtom } from "jotai";
+import { useQueryState } from "nuqs";
 
 export type LiveBalancesTableData = {
   symbol: string;
@@ -36,7 +36,9 @@ const LivePortfolioTooltipCopy = {
 };
 
 export const LiveBalancesTable: React.FC<{}> = ({}) => {
-  const [selectedAddress] = useAtom(accountAtom);
+  const [selectedAddress] = useQueryState("account", {
+    defaultValue: "",
+  });
 
   const { data: config, isLoading: isConfigLoading } = useAccountConfigQuery({
     account: selectedAddress,

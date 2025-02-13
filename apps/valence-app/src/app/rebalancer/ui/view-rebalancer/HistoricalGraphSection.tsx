@@ -19,7 +19,6 @@ import {
   SymbolColors,
   GraphStyles,
   scaleAtom,
-  accountAtom,
   baseDenomAtom,
   priceSourceAtom,
 } from "@/app/rebalancer/ui";
@@ -50,7 +49,10 @@ export const HistoricalGraph: React.FC<{
     setScale(scaleUrlParam);
   }, [setScale, scaleUrlParam]);
 
-  const [account] = useAtom(accountAtom);
+  const [account] = useQueryState("account", {
+    defaultValue: "",
+  });
+
   const livePortfolioQuery = useLivePortfolio({
     accountAddress: account,
   });

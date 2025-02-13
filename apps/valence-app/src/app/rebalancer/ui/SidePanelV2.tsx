@@ -6,11 +6,9 @@ import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
 import {
   scaleAtom,
-  accountAtom,
   useMultipleValenceAccounts,
   useValenceAccount,
 } from "@/app/rebalancer/ui";
-import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useAtom } from "jotai";
@@ -32,19 +30,10 @@ export const SidePanelV2: React.FC<{
   setCursorPosition?: React.Dispatch<
     React.SetStateAction<{ x: number; y: number }>
   >;
-}> = ({
-  debouncedMouseEnter,
-  debouncedMouseLeave,
-  setCursorPosition,
-  rerouteOnConnect = true,
-}) => {
-  const [accountUrlParam] = useQueryState("account", {
+}> = ({ setCursorPosition }) => {
+  const [accountUrlParam, setAccount] = useQueryState("account", {
     defaultValue: "",
   });
-  const [_, setAccount] = useAtom(accountAtom);
-  useMemo(() => {
-    setAccount(accountUrlParam);
-  }, [setAccount, accountUrlParam]);
 
   // to track cursor when it moves
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -104,7 +93,9 @@ export const SidePanelV2: React.FC<{
 };
 
 const DiscoverPanel: React.FC<{}> = ({}) => {
-  const [account] = useAtom(accountAtom);
+  const [account] = useQueryState("account", {
+    defaultValue: "",
+  });
 
   const { address, isWalletConnected } = useWallet();
   const { data: valenceAddress, isLoading: isValenceAccountLoading } =

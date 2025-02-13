@@ -70,7 +70,7 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
 
   return (
     <Popover.Root>
-      <Popover.Trigger>
+      <Popover.Trigger asChild>
         <Button
           className={cn(
             "font-mono text-xs py-1 min-h-0",
