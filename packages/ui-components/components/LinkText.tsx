@@ -19,7 +19,7 @@ export interface LinkTextProps
     VariantProps<typeof linkTextVariants> {
   blankTarget?: boolean;
   LinkComponent?: ElementType<any>;
-  href: string; // make required
+  href?: string;
 }
 
 export const LinkText = ({

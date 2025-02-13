@@ -10,6 +10,7 @@ import {
   TabsList,
   TabsContent,
   TabsTrigger,
+  Heading,
 } from "@valence-ui/ui-components";
 import { useState } from "react";
 
@@ -106,6 +107,11 @@ const headers: TableColumnHeader[] = [
     cellType: CellType.Label,
     label: "Status",
   },
+  {
+    key: "actions",
+    cellType: CellType.Sheet,
+    label: "Actions",
+  },
 ];
 
 const data: TableRow[] = [
@@ -127,6 +133,15 @@ const data: TableRow[] = [
       value: "active",
       color: "green",
     },
+    actions: {
+      link: "See more",
+      body: (
+        <div className="flex flex-col gap-2">
+          <Heading level="h2">Sheet Title</Heading>
+          <p>Sheet content</p>
+        </div>
+      ),
+    },
   },
   {
     asset: {
@@ -147,6 +162,15 @@ const data: TableRow[] = [
       value: "inactive",
       color: "red",
     },
+    actions: {
+      link: "See more",
+      body: (
+        <div className="flex flex-col gap-2">
+          <Heading level="h2">Sheet Title</Heading>
+          <p>Sheet content</p>
+        </div>
+      ),
+    },
   },
   {
     asset: {
@@ -166,6 +190,15 @@ const data: TableRow[] = [
     status: {
       value: "inactive",
       color: "gray",
+    },
+    actions: {
+      link: "See more",
+      body: (
+        <div className="flex flex-col gap-2">
+          <Heading level="h2">Sheet Title</Heading>
+          <p>Sheet content</p>
+        </div>
+      ),
     },
   },
 ];
