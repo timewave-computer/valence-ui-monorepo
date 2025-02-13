@@ -1,4 +1,4 @@
-import { ElementType } from "react";
+import { ElementType, ReactNode } from "react";
 import { LabelProps } from "../Label";
 
 export enum CellType {
@@ -6,6 +6,7 @@ export enum CellType {
   Text = "text",
   Asset = "asset",
   Label = "label",
+  Sheet = "sheet",
 }
 export type CellTypes = `${CellType}`;
 
@@ -31,12 +32,17 @@ export interface LabelCellData {
   value: string;
   color: LabelProps["variant"];
 }
+export interface SheetCellData {
+  link: string;
+  body: ReactNode;
+}
 
 export type CellDataMap = {
   [CellType.Number]: NumberCellData;
   [CellType.Text]: TextCellData;
   [CellType.Asset]: AssetCellData;
   [CellType.Label]: LabelCellData;
+  [CellType.Sheet]: SheetCellData;
 };
 
 export type CellData<T extends CellTypes> = T extends keyof CellDataMap
@@ -58,6 +64,8 @@ export function isCellDataOfType<T extends CellTypes>(
       return (data as AssetCellData)?.symbol !== undefined;
     case CellType.Label:
       return (data as LabelCellData)?.value !== undefined;
+    case CellType.Sheet:
+      return (data as SheetCellData)?.link !== undefined;
     default:
       return false;
   }

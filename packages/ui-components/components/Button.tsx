@@ -46,6 +46,7 @@ export interface ButtonProps
   PrefixIcon?: React.ElementType;
   SuffixIcon?: React.ElementType;
   iconStyle?: React.CSSProperties;
+  iconClassName?: string;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -61,6 +62,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       link,
       size,
       iconStyle,
+      iconClassName,
       ...props
     },
     ref,
@@ -99,9 +101,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <LoadingIndicator variant="sm" />
         ) : (
           <div className="flex flex-row gap-1 items-center">
-            {PrefixIcon && <PrefixIcon className="h-4 w-4" style={iconStyle} />}
+            {PrefixIcon && (
+              <PrefixIcon
+                className={cn("h-4 w-4", iconClassName)}
+                style={iconStyle}
+              />
+            )}
             {children}
-            {SuffixIcon && <SuffixIcon className="h-4 w-4" style={iconStyle} />}
+            {SuffixIcon && (
+              <SuffixIcon
+                className={cn("h-4 w-4", iconClassName)}
+                style={iconStyle}
+              />
+            )}
           </div>
         )}
       </Comp>

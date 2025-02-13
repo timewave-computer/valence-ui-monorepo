@@ -21,6 +21,9 @@ import { UTCDate } from "@date-fns/utc";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { ProcessorQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.client";
+import { AuthorizationData } from "@valence-ui/generated-types";
+import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
 
 type GetProgramDataProps = {
   programId: string;
@@ -36,6 +39,7 @@ export type GetProgramDataReturnValue = {
   librarySchemas?: Record<string, FetchLibrarySchemaReturnValue>;
   errors?: ErrorCodes;
   dataLastUpdatedAt: number; // for handling stale time in react-query
+  processorQueues?: FetchProcessorQueuesReturnType;
 };
 
 // TODO: make a 'response' builder so error handling is cleaner / func more readable / testable
@@ -129,6 +133,13 @@ export const getProgramData = async ({
   }
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
+
+  // TODO: make an object of all chain clients, with chain id and chain name
+  const processorQueues = await fetchProcessorQueues({
+    processorAddresses: program.authorizationData?.processor_addrs,
+    queryConfig: completeQueryConfig,
+  });
+
   return {
     dataLastUpdatedAt: getLastUpdatedTime(),
     queryConfig: completeQueryConfig,
@@ -138,6 +149,7 @@ export const getProgramData = async ({
     metadata,
     librarySchemas: librarySchemas,
     errors: errors,
+    processorQueues: processorQueues,
   };
 };
 
@@ -192,7 +204,6 @@ const queryAccountBalances = async (
     if (!rpcUrl) {
       throw new Error(`No RPC URL found for chain ID ${account.chainName}`);
     }
-
     const balances = await fetchAccountBalances({
       accountAddress: account.addr,
       rpcUrl,
@@ -246,6 +257,110 @@ function getDenomsAndChainIds({
   );
 
   return metadataQueries;
+}
+
+type FetchProcessorQueuesReturnType = Array<{
+  chainName: string;
+  processorAddress: string;
+  queue?: ArrayOfMessageBatch;
+}>;
+async function fetchProcessorQueues({
+  processorAddresses,
+  queryConfig,
+}: {
+  processorAddresses?: AuthorizationData["processor_addrs"];
+  queryConfig: QueryConfig;
+}): Promise<FetchProcessorQueuesReturnType> {
+  if (!processorAddresses) return [];
+  const requests = Object.entries(processorAddresses).map(
+    async ([domainChainName, processorAddress]) => {
+      const [domain, chainName] = domainChainName.split(":");
+
+      const rpcUrl =
+        queryConfig.main.name === chainName
+          ? queryConfig.main.rpcUrl
+          : queryConfig.external.find((chain) => chain.name === chainName)?.rpc;
+
+      const processorMetadata = {
+        chainName,
+        processorAddress,
+      };
+
+      let queue: ArrayOfMessageBatch | undefined = undefined;
+      if (domain == "CosmosCosmwasm") {
+        // todo: display some unsupported error
+        queue = rpcUrl
+          ? await getProcessorQueue({
+              rpcUrl,
+              processorAddress,
+            })
+          : undefined;
+      }
+
+      return {
+        ...processorMetadata,
+        queue,
+      };
+    },
+  );
+
+  const awaitedResults = (await Promise.all(requests)).flat();
+  return awaitedResults;
+}
+
+async function getProcessorQueue({
+  rpcUrl,
+  processorAddress,
+}: {
+  rpcUrl: string;
+  processorAddress: string;
+}): Promise<ArrayOfMessageBatch> {
+  const processorClient = new ProcessorQueryClient(
+    await getCosmwasmClient(rpcUrl),
+    processorAddress,
+  );
+
+  // const results = await Promise.all([
+  //   processorClient.getQueue({ priority: "high" }),
+  //   processorClient.getQueue({ priority: "medium" }),
+  // ])
+  // return results.flat()
+
+  // return temporary placeholder
+  return [
+    {
+      id: 1,
+      msgs: [],
+      priority: "high",
+      retry: {
+        retry_amounts: 1,
+        retry_cooldown: {
+          never: {},
+        },
+      },
+      subroutine: {
+        atomic: {
+          functions: [],
+        },
+      },
+    },
+    {
+      id: 2,
+      msgs: [],
+      priority: "medium",
+      retry: {
+        retry_amounts: 1,
+        retry_cooldown: {
+          never: {},
+        },
+      },
+      subroutine: {
+        atomic: {
+          functions: [],
+        },
+      },
+    },
+  ];
 }
 
 async function fetchLibrarySchemas(libraries: NormalizedLibraries) {

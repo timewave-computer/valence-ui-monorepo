@@ -17,6 +17,7 @@ import { useInitializeMetadataCache } from "@/hooks";
 import {
   Button,
   Card,
+  cn,
   Heading,
   LinkText,
   PrettyJson,
@@ -26,6 +27,7 @@ import {
 } from "@valence-ui/ui-components";
 import { Provider as JotaiProvider } from "jotai";
 import Link from "next/link";
+import { BiRefresh } from "react-icons/bi";
 
 export type ProgramViewerProps = {
   programId: string;
@@ -33,7 +35,12 @@ export type ProgramViewerProps = {
 };
 function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   // page loads with initial server-fetched data. this inserts it into useQuery, so the access pattern is easy
-  const { data: data, isLoading } = useProgramQuery({
+  const {
+    data: data,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useProgramQuery({
     programId,
     initialQueryData: initialData,
   });
@@ -53,6 +60,13 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         </div>
         <ProgramViewerErrorDisplay errors={data?.errors} />
         <div className="flex flex-row gap-2 items-center pt-2">
+          <Button
+            variant={"secondary"}
+            onClick={() => refetch()}
+            disabled={isFetching}
+            iconClassName={cn(isFetching && "animate-spin")}
+            SuffixIcon={BiRefresh}
+          ></Button>
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="secondary">RPC Settings</Button>
@@ -90,7 +104,7 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
           <Heading level="h2">Account Balances</Heading>
           <Card
             isLoading={isLoading}
-            className="overflow-x-scroll flex-grow   p-2"
+            className="overflow-x-scroll flex-grow p-2"
           >
             <AccountTable program={data} />
           </Card>

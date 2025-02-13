@@ -7,6 +7,7 @@ import {
   CollapsibleSectionRoot,
   Heading,
   LinkText,
+  PrettyJson,
   Table,
   type TableColumnHeader,
 } from "@valence-ui/ui-components";
@@ -34,6 +35,52 @@ export const ProcessorDisplay = ({
   }
 
   return processors.map(([domain, processorAddress]) => {
+    const processorData = program?.processorQueues?.find(
+      (q) => q.processorAddress === processorAddress,
+    );
+    const queue = processorData?.queue;
+
+    const data =
+      queue?.map((messageBatch) => {
+        const { id, priority, retry, msgs, subroutine } = messageBatch;
+        return {
+          [ProcessorTableKeys.executionId]: { value: id.toString() },
+          // [ProcessorTableKeys.subroutineLabel]: subroutine,
+          [ProcessorTableKeys.priority]: {
+            value: priority,
+            color:
+              priority === "high"
+                ? "red"
+                : priority === "medium"
+                  ? "yellow"
+                  : "gray",
+          },
+          [ProcessorTableKeys.retryCounts]: {
+            value: retry?.retry_amounts.toString() ?? "-",
+          },
+          [ProcessorTableKeys.retryCooldown]: {
+            value: JSON.stringify(retry?.retry_cooldown),
+          },
+          [ProcessorTableKeys.messages]: {
+            link: "View",
+            body: (
+              <>
+                <Heading level="h2">Messages</Heading>
+                <PrettyJson data={msgs} />
+              </>
+            ),
+          },
+          [ProcessorTableKeys.subroutine]: {
+            link: "View",
+            body: (
+              <>
+                <Heading level="h2">Subroutine</Heading>
+                <PrettyJson data={subroutine} />
+              </>
+            ),
+          },
+        };
+      }) ?? [];
     return (
       <CollapsibleSectionRoot
         className=""
@@ -53,7 +100,7 @@ export const ProcessorDisplay = ({
               Tick
             </Button>
             <div className="flex flex-col gap-1 items-start">
-              <Heading level="h3">{domain}</Heading>
+              <Heading level="h3">{processorData?.chainName ?? domain}</Heading>
               <LinkText
                 blankTarget
                 onClick={(e) => {
@@ -68,12 +115,16 @@ export const ProcessorDisplay = ({
           </div>
         </CollapsibleSectionHeader>
         <CollapsibleSectionContent>
-          <Table
-            className="p-2"
-            variant="secondary"
-            headers={headers}
-            data={[]}
-          />
+          {!queue ? (
+            <p>Queue not found</p>
+          ) : (
+            <Table
+              className="p-2"
+              variant="secondary"
+              headers={headers}
+              data={data}
+            />
+          )}
         </CollapsibleSectionContent>
       </CollapsibleSectionRoot>
     );
@@ -82,11 +133,12 @@ export const ProcessorDisplay = ({
 
 enum ProcessorTableKeys {
   executionId = "executionId",
-  subroutineLabel = "subroutineLabel",
+  // subroutineLabel = "subroutineLabel",
   priority = "priority",
   retryCounts = "retryCounts",
   retryCooldown = "retryCooldown",
   messages = "messages",
+  subroutine = "subroutine",
 }
 
 const headers: TableColumnHeader[] = [
@@ -94,12 +146,13 @@ const headers: TableColumnHeader[] = [
     key: ProcessorTableKeys.executionId,
     label: "Execution ID",
     cellType: CellType.Text,
+    align: "left",
   },
-  {
-    key: ProcessorTableKeys.subroutineLabel,
-    label: "Subroutine Label",
-    cellType: CellType.Text,
-  },
+  // {
+  //   key: ProcessorTableKeys.subroutineLabel,
+  //   label: "Subroutine Label",
+  //   cellType: CellType.Text,
+  // },
   {
     key: ProcessorTableKeys.priority,
     label: "Priority",
@@ -118,6 +171,11 @@ const headers: TableColumnHeader[] = [
   {
     key: ProcessorTableKeys.messages,
     label: "Messages",
-    cellType: CellType.Label,
+    cellType: CellType.Sheet,
+  },
+  {
+    key: ProcessorTableKeys.subroutine,
+    label: "Subroutine",
+    cellType: CellType.Sheet,
   },
 ];

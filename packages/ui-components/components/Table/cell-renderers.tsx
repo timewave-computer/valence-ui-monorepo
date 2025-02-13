@@ -9,7 +9,10 @@ import {
   type AssetCellData,
   type TextCellData,
   type LabelCellData,
+  SheetCellData,
 } from "./cell-types";
+import { LinkText } from "../LinkText";
+import { Sheet, SheetContent, SheetTrigger } from "../Sheet";
 
 const createRenderer =
   <K extends CellTypes>(
@@ -69,6 +72,19 @@ export const TableCells: TableCells = {
     )),
     sorter: (a: LabelCellData, b: LabelCellData, ascending) =>
       compareStrings(a?.value, b?.value, ascending),
+    renderDefault: createRenderer<CellType.Text>(() => <>-</>),
+  },
+  [CellType.Sheet]: {
+    renderer: createRenderer<CellType.Sheet>((data) => (
+      <Sheet>
+        <SheetTrigger>
+          <LinkText LinkComponent="div">{data.link}</LinkText>
+        </SheetTrigger>
+        <SheetContent>{data.body}</SheetContent>
+      </Sheet>
+    )),
+    sorter: (a: SheetCellData, b: SheetCellData, ascending) =>
+      compareStrings(a?.link, b?.link, ascending),
     renderDefault: createRenderer<CellType.Text>(() => <>-</>),
   },
 };
