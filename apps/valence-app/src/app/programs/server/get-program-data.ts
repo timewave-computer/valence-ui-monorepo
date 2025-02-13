@@ -39,7 +39,7 @@ export type GetProgramDataReturnValue = {
   librarySchemas?: Record<string, FetchLibrarySchemaReturnValue>;
   errors?: ErrorCodes;
   dataLastUpdatedAt: number; // for handling stale time in react-query
-  processorData?: Awaited<ReturnType<typeof fetchProcessorsData>>;
+  processorQueues?: FetchProcessorQueuesReturnType;
 };
 
 // TODO: make a 'response' builder so error handling is cleaner / func more readable / testable
@@ -135,7 +135,7 @@ export const getProgramData = async ({
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
 
   // TODO: make an object of all chain clients, with chain id and chain name
-  const processorData = await fetchProcessorsData({
+  const processorQueues = await fetchProcessorQueues({
     processorAddresses: program.authorizationData?.processor_addrs,
     queryConfig: completeQueryConfig,
   });
@@ -149,7 +149,7 @@ export const getProgramData = async ({
     metadata,
     librarySchemas: librarySchemas,
     errors: errors,
-    processorData: processorData,
+    processorQueues: processorQueues,
   };
 };
 
@@ -259,14 +259,20 @@ function getDenomsAndChainIds({
   return metadataQueries;
 }
 
-async function fetchProcessorsData({
+type FetchProcessorQueuesReturnType = Array<{
+  chainName: string;
+  processorAddress: string;
+  rpcUrl?: string;
+  queue?: ArrayOfMessageBatch;
+}>;
+async function fetchProcessorQueues({
   processorAddresses,
   queryConfig,
 }: {
   processorAddresses?: AuthorizationData["processor_addrs"];
   queryConfig: QueryConfig;
-}) {
-  if (!processorAddresses) return;
+}): Promise<FetchProcessorQueuesReturnType> {
+  if (!processorAddresses) return [];
   const requests = Object.entries(processorAddresses).map(
     async ([domainChainName, processorAddress]) => {
       const [domain, chainName] = domainChainName.split(":");

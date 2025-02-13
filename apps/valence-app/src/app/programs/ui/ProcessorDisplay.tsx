@@ -34,6 +34,34 @@ export const ProcessorDisplay = ({
   }
 
   return processors.map(([domain, processorAddress]) => {
+    const queue = program?.processorQueues?.find(
+      (q) => q.processorAddress === processorAddress,
+    )?.queue;
+
+    const data =
+      queue?.map((messageBatch) => {
+        const { id, priority, retry, msgs } = messageBatch;
+        return {
+          [ProcessorTableKeys.executionId]: { value: id.toString() },
+          // [ProcessorTableKeys.subroutineLabel]: subroutine,
+          [ProcessorTableKeys.priority]: {
+            value: priority,
+            color:
+              priority === "high"
+                ? "red"
+                : priority === "medium"
+                  ? "yellow"
+                  : "gray",
+          },
+          [ProcessorTableKeys.retryCounts]: {
+            value: retry?.retry_amounts ?? "-",
+          },
+          [ProcessorTableKeys.retryCooldown]: {
+            value: JSON.stringify(retry?.retry_cooldown),
+          },
+          [ProcessorTableKeys.messages]: { value: JSON.stringify(msgs) },
+        };
+      }) ?? [];
     return (
       <CollapsibleSectionRoot
         className=""
@@ -72,7 +100,7 @@ export const ProcessorDisplay = ({
             className="p-2"
             variant="secondary"
             headers={headers}
-            data={[]}
+            data={data}
           />
         </CollapsibleSectionContent>
       </CollapsibleSectionRoot>
@@ -94,12 +122,13 @@ const headers: TableColumnHeader[] = [
     key: ProcessorTableKeys.executionId,
     label: "Execution ID",
     cellType: CellType.Text,
+    align: "left",
   },
-  {
-    key: ProcessorTableKeys.subroutineLabel,
-    label: "Subroutine Label",
-    cellType: CellType.Text,
-  },
+  // {
+  //   key: ProcessorTableKeys.subroutineLabel,
+  //   label: "Subroutine Label",
+  //   cellType: CellType.Text,
+  // },
   {
     key: ProcessorTableKeys.priority,
     label: "Priority",
@@ -118,6 +147,6 @@ const headers: TableColumnHeader[] = [
   {
     key: ProcessorTableKeys.messages,
     label: "Messages",
-    cellType: CellType.Label,
+    cellType: CellType.Text,
   },
 ];
