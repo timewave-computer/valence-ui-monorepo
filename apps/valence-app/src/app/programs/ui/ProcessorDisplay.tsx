@@ -34,9 +34,10 @@ export const ProcessorDisplay = ({
   }
 
   return processors.map(([domain, processorAddress]) => {
-    const queue = program?.processorQueues?.find(
+    const processorData = program?.processorQueues?.find(
       (q) => q.processorAddress === processorAddress,
-    )?.queue;
+    );
+    const queue = processorData?.queue;
 
     const data =
       queue?.map((messageBatch) => {
@@ -81,7 +82,7 @@ export const ProcessorDisplay = ({
               Tick
             </Button>
             <div className="flex flex-col gap-1 items-start">
-              <Heading level="h3">{domain}</Heading>
+              <Heading level="h3">{processorData?.chainName ?? domain}</Heading>
               <LinkText
                 blankTarget
                 onClick={(e) => {
@@ -96,12 +97,16 @@ export const ProcessorDisplay = ({
           </div>
         </CollapsibleSectionHeader>
         <CollapsibleSectionContent>
-          <Table
-            className="p-2"
-            variant="secondary"
-            headers={headers}
-            data={data}
-          />
+          {!queue ? (
+            <p>Queue not found</p>
+          ) : (
+            <Table
+              className="p-2"
+              variant="secondary"
+              headers={headers}
+              data={data}
+            />
+          )}
         </CollapsibleSectionContent>
       </CollapsibleSectionRoot>
     );

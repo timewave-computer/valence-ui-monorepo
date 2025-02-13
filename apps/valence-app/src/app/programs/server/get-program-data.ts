@@ -262,7 +262,6 @@ function getDenomsAndChainIds({
 type FetchProcessorQueuesReturnType = Array<{
   chainName: string;
   processorAddress: string;
-  rpcUrl?: string;
   queue?: ArrayOfMessageBatch;
 }>;
 async function fetchProcessorQueues({
@@ -285,7 +284,6 @@ async function fetchProcessorQueues({
       const processorMetadata = {
         chainName,
         processorAddress,
-        rpcUrl,
       };
 
       let queue: ArrayOfMessageBatch | undefined = undefined;
