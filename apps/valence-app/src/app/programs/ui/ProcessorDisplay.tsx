@@ -7,6 +7,7 @@ import {
   CollapsibleSectionRoot,
   Heading,
   LinkText,
+  PrettyJson,
   Table,
   type TableColumnHeader,
 } from "@valence-ui/ui-components";
@@ -41,7 +42,7 @@ export const ProcessorDisplay = ({
 
     const data =
       queue?.map((messageBatch) => {
-        const { id, priority, retry, msgs } = messageBatch;
+        const { id, priority, retry, msgs, subroutine } = messageBatch;
         return {
           [ProcessorTableKeys.executionId]: { value: id.toString() },
           // [ProcessorTableKeys.subroutineLabel]: subroutine,
@@ -55,12 +56,29 @@ export const ProcessorDisplay = ({
                   : "gray",
           },
           [ProcessorTableKeys.retryCounts]: {
-            value: retry?.retry_amounts ?? "-",
+            value: retry?.retry_amounts.toString() ?? "-",
           },
           [ProcessorTableKeys.retryCooldown]: {
             value: JSON.stringify(retry?.retry_cooldown),
           },
-          [ProcessorTableKeys.messages]: { value: JSON.stringify(msgs) },
+          [ProcessorTableKeys.messages]: {
+            link: "View",
+            body: (
+              <>
+                <Heading level="h2">Messages</Heading>
+                <PrettyJson data={msgs} />
+              </>
+            ),
+          },
+          [ProcessorTableKeys.subroutine]: {
+            link: "View",
+            body: (
+              <>
+                <Heading level="h2">Subroutine</Heading>
+                <PrettyJson data={subroutine} />
+              </>
+            ),
+          },
         };
       }) ?? [];
     return (
@@ -115,11 +133,12 @@ export const ProcessorDisplay = ({
 
 enum ProcessorTableKeys {
   executionId = "executionId",
-  subroutineLabel = "subroutineLabel",
+  // subroutineLabel = "subroutineLabel",
   priority = "priority",
   retryCounts = "retryCounts",
   retryCooldown = "retryCooldown",
   messages = "messages",
+  subroutine = "subroutine",
 }
 
 const headers: TableColumnHeader[] = [
@@ -152,6 +171,11 @@ const headers: TableColumnHeader[] = [
   {
     key: ProcessorTableKeys.messages,
     label: "Messages",
-    cellType: CellType.Text,
+    cellType: CellType.Sheet,
+  },
+  {
+    key: ProcessorTableKeys.subroutine,
+    label: "Subroutine",
+    cellType: CellType.Sheet,
   },
 ];
