@@ -98,7 +98,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <LoadingIndicator variant="sm" />
+          <LoadingIndicator size="sm" />
         ) : (
           <div className="flex flex-row gap-1 items-center">
             {PrefixIcon && (

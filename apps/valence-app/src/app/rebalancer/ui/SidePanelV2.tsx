@@ -107,7 +107,8 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
   const [account] = useAtom(accountAtom);
 
   const { address, isWalletConnected } = useWallet();
-  const { data: valenceAddress } = useValenceAccount(address);
+  const { data: valenceAddress, isLoading: isValenceAccountLoading } =
+    useValenceAccount(address);
   const { data: allValenceAccounts } = useMultipleValenceAccounts(address);
   let featuredAccounts = chainConfig.featuredAccounts;
 
@@ -151,6 +152,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
             <button
               key={`discover-${valenceAddress}`}
               onClick={() => {
+                if (isValenceAccountLoading) return;
                 if (valenceAddress)
                   router.push(
                     `/rebalancer?account=${valenceAddress}&scale=${scale}`,
@@ -158,17 +160,23 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
                 else router.push(`/rebalancer/`);
               }}
               className={cn(
-                "w-full border-l border-r border-t border-valence-gray transition-all",
+                "w-full border-l border-r border-t border-valence-gray transition-all bg-valence-white",
+                "flex flex-col gap-0.5   px-3 py-3",
+                isValenceAccountLoading &&
+                  "animate-pulse  bg-valence-mediumgray cursor-not-allowed",
 
-                "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
-                (account === valenceAddress || (!account && !valenceAddress)) &&
-                  "bg-valence-black text-valence-white",
+                account === valenceAddress &&
+                  "bg-valence-black text-valence-white hover:bg-valence-black hover:text-valence-white",
                 account !== valenceAddress &&
                   "hover:bg-valence-lightgray hover:text-valence-black",
               )}
             >
               <span className="flex flex-row justify-between gap-2 ">
-                <span className="text-left">Your account</span>
+                <span className="text-left  animate-none">
+                  {isValenceAccountLoading
+                    ? "Fetching your account"
+                    : "Your account"}
+                </span>
               </span>
             </button>
           ))}

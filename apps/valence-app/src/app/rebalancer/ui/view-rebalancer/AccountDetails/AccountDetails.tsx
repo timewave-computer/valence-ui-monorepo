@@ -160,13 +160,9 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
 const AccountDetailsHeader: React.FC<{
   selectedAddress: string;
 }> = ({ selectedAddress }) => {
-  const {
-    isWalletConnected,
-    isWalletConnecting,
-    address: walletAddress,
-  } = useWallet();
+  const { isWalletConnected, address: walletAddress } = useWallet();
 
-  const { data: allValenceAccounts, isLoading: isLoadingAllValenceAccounts } =
+  const { data: allValenceAccounts } =
     useMultipleValenceAccounts(walletAddress);
 
   const isOwnAccount =
@@ -184,14 +180,6 @@ const AccountDetailsHeader: React.FC<{
     useRebalanceStatusQuery({
       accountAddress: selectedAddress,
     });
-
-  if (isWalletConnecting || isLoadingAllValenceAccounts) {
-    return (
-      <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
-        <LoadingSkeleton className="min-h-[43px] w-full" />
-      </section>
-    );
-  }
 
   return (
     <section className="flex flex-wrap items-center justify-between gap-4  border-y border-valence-black p-4">
