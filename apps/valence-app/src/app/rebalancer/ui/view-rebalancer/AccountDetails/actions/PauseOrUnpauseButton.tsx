@@ -1,7 +1,6 @@
 "use client";
 import { useAtom } from "jotai";
 import { useAccountConfigQuery } from "@/app/rebalancer/ui";
-import { accountAtom } from "@/app/rebalancer/ui";
 import {
   Button,
   LinkText,
@@ -14,11 +13,14 @@ import { useWallet } from "@/hooks";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { CelatoneUrl } from "@/const";
+import { useQueryState } from "nuqs";
 
 export const PauseOrUnpauseButton: React.FC<{}> = () => {
   const queryClient = useQueryClient();
   const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
-  const [selectedAccountAddress] = useAtom(accountAtom);
+  const [selectedAccountAddress] = useQueryState("account", {
+    defaultValue: "",
+  });
   const { data: config } = useAccountConfigQuery({
     account: selectedAccountAddress,
   });

@@ -1,16 +1,14 @@
 "use client";
-import { ConnectWalletButton, ValenceProductBrand } from "@/components";
+import { ValenceProductBrand } from "@/components";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { useWallet } from "@/hooks";
 import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
 import {
   scaleAtom,
-  accountAtom,
   useMultipleValenceAccounts,
   useValenceAccount,
 } from "@/app/rebalancer/ui";
-import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useAtom } from "jotai";
@@ -32,19 +30,10 @@ export const SidePanelV2: React.FC<{
   setCursorPosition?: React.Dispatch<
     React.SetStateAction<{ x: number; y: number }>
   >;
-}> = ({
-  debouncedMouseEnter,
-  debouncedMouseLeave,
-  setCursorPosition,
-  rerouteOnConnect = true,
-}) => {
-  const [accountUrlParam] = useQueryState("account", {
+}> = ({ setCursorPosition }) => {
+  const [accountUrlParam, setAccount] = useQueryState("account", {
     defaultValue: "",
   });
-  const [_, setAccount] = useAtom(accountAtom);
-  useMemo(() => {
-    setAccount(accountUrlParam);
-  }, [setAccount, accountUrlParam]);
 
   // to track cursor when it moves
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -86,12 +75,6 @@ export const SidePanelV2: React.FC<{
             for support.
           </p>
         </ValenceProductBrand>
-        <ConnectWalletButton
-          rerouteOnConnect={rerouteOnConnect}
-          connectCta="Connect your wallet to start rebalancing funds."
-          debouncedMouseEnter={debouncedMouseEnter}
-          debouncedMouseLeave={debouncedMouseLeave}
-        />
 
         <div className="flex flex-col ">
           <InputLabel label="Search by address" />
@@ -110,10 +93,13 @@ export const SidePanelV2: React.FC<{
 };
 
 const DiscoverPanel: React.FC<{}> = ({}) => {
-  const [account] = useAtom(accountAtom);
+  const [account] = useQueryState("account", {
+    defaultValue: "",
+  });
 
   const { address, isWalletConnected } = useWallet();
-  const { data: valenceAddress } = useValenceAccount(address);
+  const { data: valenceAddress, isLoading: isValenceAccountLoading } =
+    useValenceAccount(address);
   const { data: allValenceAccounts } = useMultipleValenceAccounts(address);
   let featuredAccounts = chainConfig.featuredAccounts;
 
@@ -157,6 +143,7 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
             <button
               key={`discover-${valenceAddress}`}
               onClick={() => {
+                if (isValenceAccountLoading) return;
                 if (valenceAddress)
                   router.push(
                     `/rebalancer?account=${valenceAddress}&scale=${scale}`,
@@ -164,17 +151,23 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
                 else router.push(`/rebalancer/`);
               }}
               className={cn(
-                "w-full border-l border-r border-t border-valence-gray transition-all",
+                "w-full border-l border-r border-t border-valence-gray transition-all bg-valence-white",
+                "flex flex-col gap-0.5   px-3 py-3",
+                isValenceAccountLoading &&
+                  "animate-pulse  bg-valence-mediumgray cursor-not-allowed",
 
-                "flex flex-col gap-0.5  bg-valence-white px-3 py-3",
-                (account === valenceAddress || (!account && !valenceAddress)) &&
-                  "bg-valence-black text-valence-white",
+                account === valenceAddress &&
+                  "bg-valence-black text-valence-white hover:bg-valence-black hover:text-valence-white",
                 account !== valenceAddress &&
                   "hover:bg-valence-lightgray hover:text-valence-black",
               )}
             >
               <span className="flex flex-row justify-between gap-2 ">
-                <span className="text-left">Your account</span>
+                <span className="text-left  animate-none">
+                  {isValenceAccountLoading
+                    ? "Fetching your account"
+                    : "Your account"}
+                </span>
               </span>
             </button>
           ))}

@@ -9,6 +9,9 @@ export type DropdownOption<T extends string> = {
   value: T;
 };
 
+/***
+ * TODO: this should move to ui-components package, and be refactored to use radix
+ */
 export type DropdownProps<T extends string> = {
   /**
    * The dropdown options.

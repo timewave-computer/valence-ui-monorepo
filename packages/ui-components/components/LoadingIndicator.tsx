@@ -1,9 +1,9 @@
 import "./LoadingIndicator.css";
 
 export const LoadingIndicator: React.FC<{
-  variant?: "base" | "sm";
-}> = ({ variant = "base" }) => {
-  switch (variant) {
+  size?: "base" | "sm";
+}> = ({ size = "base" }) => {
+  switch (size) {
     case "sm":
       return <div className="loader-small"></div>;
     default:

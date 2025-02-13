@@ -19,7 +19,6 @@ import {
   SymbolColors,
   GraphStyles,
   scaleAtom,
-  accountAtom,
   baseDenomAtom,
   priceSourceAtom,
 } from "@/app/rebalancer/ui";
@@ -50,7 +49,10 @@ export const HistoricalGraph: React.FC<{
     setScale(scaleUrlParam);
   }, [setScale, scaleUrlParam]);
 
-  const [account] = useAtom(accountAtom);
+  const [account] = useQueryState("account", {
+    defaultValue: "",
+  });
+
   const livePortfolioQuery = useLivePortfolio({
     accountAddress: account,
   });
@@ -120,7 +122,7 @@ export const HistoricalGraph: React.FC<{
   const GraphMessages = () => {
     if (!isHasAccountInput) {
       if (!isWalletConnected) {
-        return <StatusBar variant="primary" text="Please enter an account" />;
+        return <StatusBar variant="primary" text="Enter an account address" />;
       } else {
         // if no valence account
         if (
@@ -130,7 +132,12 @@ export const HistoricalGraph: React.FC<{
         ) {
           return <CreateAccountCTA />;
         }
-        return <StatusBar variant="primary" text="Please enter an account" />;
+        return (
+          <StatusBar
+            variant="primary"
+            text="Select your account or enter an account address"
+          />
+        );
       }
     } else if (
       isWalletConnecting ||
