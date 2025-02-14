@@ -1,7 +1,7 @@
 "use client";
 import { GetProgramDataReturnValue } from "@/app/programs/server";
 import {
-  AccountTable,
+  AccountsTable,
   ExecutionHistoryTable,
   ProcessorDisplay,
   RpcConfigForm,
@@ -122,7 +122,7 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-2"
           >
-            <AccountTable program={data} />
+            <AccountsTable program={data} />
           </Card>
         </div>
 

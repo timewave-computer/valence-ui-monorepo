@@ -13,9 +13,17 @@ export const fetchAssetMetadata = async (
   const promises = chainList.map(async (query) => {
     return fetchMetadata(query);
   });
-  const results = await Promise.all(promises);
+  const results = await Promise.allSettled(promises);
   // return key value obj, denom is key, metadata is value. to be used in cache
-  return combineDicts(results);
+
+  const successfulResults = results
+    .filter((result) => result.status === "fulfilled")
+    .map(
+      (result) =>
+        (result as PromiseFulfilledResult<FetchMetadataResponse>).value,
+    );
+
+  return combineDicts(successfulResults);
 };
 
 const fetchMetadata = async ({

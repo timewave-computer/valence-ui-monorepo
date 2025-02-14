@@ -15,7 +15,7 @@ import { CelatoneUrl } from "@/const";
 import { useAssetMetadata } from "@/app/rebalancer/ui";
 import { displayAddress, displayNumberV2, microToBase } from "@/utils";
 
-export const AccountTable = ({
+export const AccountsTable = ({
   program,
 }: {
   program?: GetProgramDataReturnValue;
@@ -23,43 +23,50 @@ export const AccountTable = ({
   const { getOriginAsset } = useAssetMetadata();
 
   const accounts = Object.values(program?.parsedProgram?.accounts ?? {});
-  console.log("accts", program?.parsedProgram?.accounts);
 
   return (
-    <div className="p-2 flex flex-col gap-4">
+    <div className="p-2 flex flex-col gap-6">
       {accounts?.map((account) => {
         const balances = program?.balances?.filter(
           ({ address: balanceAddress }) => {
-            balanceAddress === account.addr;
+            return balanceAddress === account.addr;
           },
         );
         const data = balances
-          ?.map(({ address, balances }) => {
-            const account = getAccount(
-              address,
-              program?.parsedProgram?.accounts,
-            );
+          ?.map(({ balances }) => {
             return [
               ...balances.map((balance) => {
                 const asset = getOriginAsset(balance.denom);
-                if (!asset) {
-                  throw new Error(
-                    `Asset not found: ${balance.denom} on ${account?.chainId}`,
+
+                let symbol: string | undefined = undefined,
+                  amount: string;
+                if (asset) {
+                  symbol = asset.symbol ?? "";
+                  amount = displayNumberV2(
+                    microToBase(balance.amount, asset.decimals),
+                    {
+                      maximumFractionDigits: 6,
+                      minimumFractionDigits: 2,
+                    },
                   );
+                } else {
+                  symbol = "-";
+                  amount = `${displayNumberV2(parseFloat(balance.amount), {
+                    maximumFractionDigits: 6,
+                    minimumFractionDigits: 2,
+                  })}u`;
                 }
 
                 return {
+                  denom: {
+                    value: balance.denom,
+                  },
+
                   balances: {
-                    value: displayNumberV2(
-                      microToBase(balance.amount, asset.decimals),
-                      {
-                        maximumFractionDigits: 6,
-                        minimumFractionDigits: 2,
-                      },
-                    ),
+                    value: amount,
                   },
                   symbol: {
-                    value: asset.symbol ?? "",
+                    value: symbol,
                   },
                 };
               }),
@@ -113,15 +120,16 @@ const getAccount = (
 
 const headers: TableColumnHeader[] = [
   {
-    key: "denom",
-    label: "Denom",
-    cellType: CellType.Text,
-  },
-  {
     key: "symbol",
     label: "Symbol",
     cellType: CellType.Text,
   },
+  {
+    key: "denom",
+    label: "Denom",
+    cellType: CellType.Text,
+  },
+
   {
     key: "balances",
     label: "Balance",

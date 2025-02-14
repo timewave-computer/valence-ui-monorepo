@@ -89,7 +89,7 @@ export const ProcessorDisplay = ({
         <CollapsibleSectionHeader className="flex flex-row items-center gap-2 w-full  justify-between p-4 pb-0">
           <div className="flex flex-row gap-2 items-center">
             <Button
-              SuffixIcon={BsClockFill}
+              PrefixIcon={BsClockFill}
               variant="secondary"
               onClick={(e) => {
                 // prevent the parent collapsible section from toggling
@@ -99,7 +99,7 @@ export const ProcessorDisplay = ({
             >
               Tick
             </Button>
-            <div className="flex flex-col gap-1 items-start">
+            <div className="flex flex-col  items-start">
               <Heading level="h3">{processorData?.chainName ?? domain}</Heading>
               <LinkText
                 blankTarget
