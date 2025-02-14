@@ -320,47 +320,47 @@ async function getProcessorQueue({
     processorAddress,
   );
 
-  // const results = await Promise.all([
-  //   processorClient.getQueue({ priority: "high" }),
-  //   processorClient.getQueue({ priority: "medium" }),
-  // ])
-  // return results.flat()
+  const results = await Promise.all([
+    processorClient.getQueue({ priority: "high" }),
+    processorClient.getQueue({ priority: "medium" }),
+  ]);
+  return results.flat();
 
   // return temporary placeholder
-  return [
-    {
-      id: 1,
-      msgs: [],
-      priority: "high",
-      retry: {
-        retry_amounts: 1,
-        retry_cooldown: {
-          never: {},
-        },
-      },
-      subroutine: {
-        atomic: {
-          functions: [],
-        },
-      },
-    },
-    {
-      id: 2,
-      msgs: [],
-      priority: "medium",
-      retry: {
-        retry_amounts: 1,
-        retry_cooldown: {
-          never: {},
-        },
-      },
-      subroutine: {
-        atomic: {
-          functions: [],
-        },
-      },
-    },
-  ];
+  // return [
+  //   {
+  //     id: 1,
+  //     msgs: [],
+  //     priority: "high",
+  //     retry: {
+  //       retry_amounts: 1,
+  //       retry_cooldown: {
+  //         never: {},
+  //       },
+  //     },
+  //     subroutine: {
+  //       atomic: {
+  //         functions: [],
+  //       },
+  //     },
+  //   },
+  //   {
+  //     id: 2,
+  //     msgs: [],
+  //     priority: "medium",
+  //     retry: {
+  //       retry_amounts: 1,
+  //       retry_cooldown: {
+  //         never: {},
+  //       },
+  //     },
+  //     subroutine: {
+  //       atomic: {
+  //         functions: [],
+  //       },
+  //     },
+  //   },
+  // ];
 }
 
 async function fetchLibrarySchemas(libraries: NormalizedLibraries) {

@@ -87,7 +87,7 @@ export const ProcessorDisplay = ({
         key={`processor-${processorAddresses}`}
       >
         <CollapsibleSectionHeader className="flex flex-row items-center gap-2 w-full  justify-between p-4 pb-0">
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 items-center">
             <Button
               SuffixIcon={BsClockFill}
               variant="secondary"

@@ -1,22 +1,4 @@
 import { ErrorHandler } from "~/const/error";
-import { format } from "date-fns";
-
-export const displayPid = (pid: { p: number; i: number; d: number }) => {
-  const { p, i, d } = pid;
-
-  if (i === 0 && d === 0) {
-    switch (p) {
-      case 0.05:
-        return "Slow (5%)";
-      case 0.1:
-        return "Medium (10%)";
-      case 0.2:
-        return "Fast (20%)";
-      default:
-        return `Custom (${p * 100}%)`;
-    }
-  } else return `Custom (${p * 100}%, ${i * 100}%, ${d * 100}%)`;
-};
 
 export const displayLocalTimezone = (date: Date) => {
   try {
@@ -30,86 +12,5 @@ export const displayLocalTimezone = (date: Date) => {
     return tz;
   } catch (e) {
     ErrorHandler.warn("Failed to display local timezone", e);
-  }
-};
-
-export const displayUtcToLocal = (date: Date) => {
-  try {
-    const time = format(date, "HH:mm");
-    return time;
-  } catch (e) {
-    ErrorHandler.warn("Failed to format UTC to local time", e);
-  }
-};
-
-// handles formatting with commas. Need to check that all situations in V1 are covered before removing old function
-export const displayNumberV2 = (
-  number: number,
-  options: Intl.NumberFormatOptions = {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  },
-) => {
-  if (number === 0) return "0.00";
-  const isVerySmallNumber = Math.abs(number) < 0.1;
-  const adjustedOptions = isVerySmallNumber
-    ? { ...options, maximumSignificantDigits: 2, minimumSignificantDigits: 2 }
-    : options;
-  return new Intl.NumberFormat("en-US", adjustedOptions).format(number);
-};
-
-export const displayNumber = (
-  _value: number,
-  { precision }: { precision: number | null },
-): string => {
-  const value = isNaN(_value) ? 0 : _value;
-  if (!precision) {
-    const decimalPart = value % 1;
-    if (decimalPart === 0) {
-      return value.toFixed(2);
-    } else {
-      return value.toPrecision();
-    }
-  }
-  if (value === 0) {
-    // pad with zeros to amount of precision
-    return value.toFixed(precision);
-  }
-  if (Math.abs(value) >= 0.1) {
-    // If the value is greater than or equal to 0.1, format it with two decimal points
-    return value.toFixed(precision);
-  } else {
-    // If the value is less than 0.1, format it with two significant figures
-    return value.toPrecision(precision);
-  }
-};
-
-export const displayAddress = (address: string) => {
-  if (!address.length) {
-    return "";
-  } else return `${address.slice(0, 10)}...${address.slice(-4)}`;
-};
-
-export const displayValue = ({
-  value,
-  symbol,
-  options,
-}: {
-  value: number;
-  symbol: string;
-  options?: {
-    omitDollarSignForUsdc?: boolean;
-    precision?: number | null;
-  };
-}) => {
-  const _value = isNaN(value) ? 0 : value;
-  const displayString = displayNumber(_value, {
-    precision: options?.precision ?? 2,
-  });
-
-  if (!options?.omitDollarSignForUsdc && symbol === "USDC") {
-    return `$${displayString}`;
-  } else {
-    return `${displayString} ${symbol}`;
   }
 };

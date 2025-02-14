@@ -105,8 +105,8 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-5 w-full gap-4 pt-4 pb-4">
-        <div className="flex flex-col col-span-3  gap-2">
+      <div className="grid grid-cols-4 w-full gap-4 pt-4 pb-4">
+        <div className="flex flex-col col-span-2  gap-2">
           <Heading level="h2">Subroutines</Heading>
           <Card
             isLoading={isLoading}
@@ -117,7 +117,7 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         </div>
 
         <div className="col-span-2 flex flex-col  gap-2">
-          <Heading level="h2">Account Balances</Heading>
+          <Heading level="h2">Accounts</Heading>
           <Card
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-2"
@@ -135,7 +135,7 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             <ProcessorDisplay program={data} />
           </Card>
         </div>
-        <div className="flex flex-col col-span-3 flex-grow gap-2">
+        <div className="flex flex-col col-span-2 flex-grow gap-2">
           <Heading level="h2">Execution History</Heading>
           <Card
             isLoading={isLoading}

@@ -1,16 +1,19 @@
 import {
   CellType,
+  Heading,
   Table,
   type TableColumnHeader,
+  Label,
+  LinkText,
 } from "@valence-ui/ui-components";
 import {
   type ProgramParserResult,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
-import { displayDomain } from "@/app/programs/ui";
+import { displayAccountName, displayDomain } from "@/app/programs/ui";
 import { CelatoneUrl } from "@/const";
 import { useAssetMetadata } from "@/app/rebalancer/ui";
-import { displayNumberV2, microToBase } from "@/utils";
+import { displayAddress, displayNumberV2, microToBase } from "@/utils";
 
 export const AccountTable = ({
   program,
@@ -19,50 +22,81 @@ export const AccountTable = ({
 }) => {
   const { getOriginAsset } = useAssetMetadata();
 
-  const data = program?.balances
-    ?.map(({ address, balances }) => {
-      const account = getAccount(address, program?.parsedProgram?.accounts);
-      return [
-        ...balances.map((balance) => {
-          const asset = getOriginAsset(balance.denom);
-          if (!asset) {
-            throw new Error(
-              `Asset not found: ${balance.denom} on ${account?.chainId}`,
+  const accounts = Object.values(program?.parsedProgram?.accounts ?? {});
+  console.log("accts", program?.parsedProgram?.accounts);
+
+  return (
+    <div className="p-2 flex flex-col gap-4">
+      {accounts?.map((account) => {
+        const balances = program?.balances?.filter(
+          ({ address: balanceAddress }) => {
+            balanceAddress === account.addr;
+          },
+        );
+        const data = balances
+          ?.map(({ address, balances }) => {
+            const account = getAccount(
+              address,
+              program?.parsedProgram?.accounts,
             );
-          }
+            return [
+              ...balances.map((balance) => {
+                const asset = getOriginAsset(balance.denom);
+                if (!asset) {
+                  throw new Error(
+                    `Asset not found: ${balance.denom} on ${account?.chainId}`,
+                  );
+                }
 
-          return {
-            label: {
-              value: account?.name ?? "",
-            },
-            domain: {
-              value: account?.domain ? displayDomain(account.domain) : "",
-            },
-            balances: {
-              value: displayNumberV2(
-                microToBase(balance.amount, asset.decimals),
-                {
-                  maximumFractionDigits: 6,
-                  minimumFractionDigits: 2,
-                },
-              ),
-            },
-            symbol: {
-              value: asset.symbol ?? "",
-            },
-            address: {
-              value: address,
-              link: {
-                href: CelatoneUrl.contract(address),
-              },
-            },
-          };
-        }),
-      ];
-    })
-    .flat();
+                return {
+                  balances: {
+                    value: displayNumberV2(
+                      microToBase(balance.amount, asset.decimals),
+                      {
+                        maximumFractionDigits: 6,
+                        minimumFractionDigits: 2,
+                      },
+                    ),
+                  },
+                  symbol: {
+                    value: asset.symbol ?? "",
+                  },
+                };
+              }),
+            ];
+          })
+          .flat();
+        return (
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row items-center justify-between gap-2">
+              <div className="flex flex-row items-center gap-2">
+                <Heading level="h4">{displayAccountName(account.name)}</Heading>
+                {account.addr && (
+                  <LinkText
+                    blankTarget={true}
+                    className="font-mono text-xs"
+                    variant={"secondary"}
+                    href={CelatoneUrl.contract(account.addr)}
+                  >
+                    {displayAddress(account.addr)}
+                  </LinkText>
+                )}
+              </div>
 
-  return <Table variant="secondary" headers={headers} data={data ?? []} />;
+              <Label>{displayDomain(account.domain)}</Label>
+            </div>
+
+            <Table
+              variant="secondary"
+              className="-m-2"
+              headers={headers}
+              data={data ?? []}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 const getAccount = (
@@ -79,6 +113,11 @@ const getAccount = (
 
 const headers: TableColumnHeader[] = [
   {
+    key: "denom",
+    label: "Denom",
+    cellType: CellType.Text,
+  },
+  {
     key: "symbol",
     label: "Symbol",
     cellType: CellType.Text,
@@ -88,21 +127,5 @@ const headers: TableColumnHeader[] = [
     label: "Balance",
     cellType: CellType.Number,
     align: "right",
-  },
-
-  {
-    key: "label",
-    label: "Account",
-    cellType: CellType.Text,
-  },
-  {
-    key: "domain",
-    label: "Domain",
-    cellType: CellType.Text,
-  },
-  {
-    key: "address",
-    label: "Account Address",
-    cellType: CellType.Text,
   },
 ];
