@@ -14,6 +14,7 @@ import {
 } from "@/app/programs/ui";
 import { HydrateAtoms } from "@/components";
 import { useInitializeMetadataCache } from "@/hooks";
+import { LOCAL_DEV_DOC_URL } from "@valence-ui/socials";
 import {
   Button,
   Card,
@@ -61,10 +62,11 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         <ProgramViewerErrorDisplay errors={data?.errors} />
         <div className="flex flex-row gap-2 items-center pt-2">
           <Button
+            className="min-w-0"
             variant={"secondary"}
             onClick={() => refetch()}
             disabled={isFetching}
-            iconClassName={cn(isFetching && "animate-spin")}
+            iconClassName={cn("w-5 h-5", isFetching && "animate-spin")}
             SuffixIcon={BiRefresh}
           ></Button>
           <Sheet>
@@ -73,6 +75,20 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             </SheetTrigger>
             <SheetContent title="RPC Settings" className="w-1/2" side="right">
               <Heading level="h2">RPC Settings</Heading>
+              <div>
+                <p className="text-sm">
+                  The programs UI can connect to any public RPC endpoint.
+                </p>
+                <LinkText
+                  blankTarget={true}
+                  href={LOCAL_DEV_DOC_URL}
+                  className="text-sm"
+                  variant="highlighted"
+                >
+                  Learn how to use this UI with local development.
+                </LinkText>
+              </div>
+
               <RpcConfigForm />
             </SheetContent>
           </Sheet>
