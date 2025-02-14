@@ -1,5 +1,6 @@
 "use client";
 import {
+  Button,
   FormField,
   FormRoot,
   Heading,
@@ -9,6 +10,8 @@ import {
 import { useForm } from "react-hook-form";
 import { useQueryArgs } from "@/app/programs/ui";
 import { debounce } from "lodash";
+import { ChainInfo } from "@keplr-wallet/types";
+import { SigningStargateClient } from "@cosmjs/stargate";
 
 type RpcConfigFormValues = {
   main: {
@@ -28,6 +31,40 @@ export const RpcConfigForm = ({}: {}) => {
 
   const mainChain = queryConfig.main;
   const externalChains = queryConfig.external;
+
+  //@ts-ignore
+  const { keplr } = window;
+
+  const testChainInfo = getTestnetChainInfo({
+    chainId: "neutron-1-test-2",
+    chainName: "Neutron Local 2",
+    rpcUrl: queryConfig.main.rpcUrl,
+  });
+  console.log("test chain info", testChainInfo);
+
+  const connectWithSigner = async () => {
+    await keplr.experimentalSuggestChain(testChainInfo);
+    await keplr.enable("neutron-1-test-2");
+
+    //@ts-ignore
+    const offlineSigner = window.getOfflineSigner!("neutron-1-test-2");
+    console.log("offline signer", offlineSigner);
+
+    const creator = (await offlineSigner.getAccounts())[0].address;
+    console.log("creator", creator);
+
+    try {
+      // const res = await fetch(testChainInfo.rpc)
+      // console.log('FETCH RES',res)
+      const signingClient = await SigningStargateClient.connectWithSigner(
+        testChainInfo.rpc,
+        offlineSigner,
+      );
+      console.log("signing client ", signingClient);
+    } catch (e) {
+      console.log("error connecting with signer", e);
+    }
+  };
 
   const { register, handleSubmit } = useForm<RpcConfigFormValues>({
     defaultValues: {
@@ -68,6 +105,7 @@ export const RpcConfigForm = ({}: {}) => {
 
   return (
     <div>
+      <Button onClick={connectWithSigner}>Connect with Signer</Button>
       <FormRoot
         onChange={handleSubmit(handleSubmitForm)}
         className="flex flex-col gap-6"
@@ -122,4 +160,62 @@ export const RpcConfigForm = ({}: {}) => {
       </FormRoot>
     </div>
   );
+};
+
+const getTestnetChainInfo = ({
+  chainId,
+  chainName,
+  rpcUrl,
+}: {
+  chainId: string;
+  chainName: string;
+  rpcUrl: string;
+}): ChainInfo => {
+  return {
+    chainId: `${chainId}`,
+    chainName: `${chainName}`,
+    // rpc: '127.0.0.1:60652',
+    // rpc:'http://localhost:60652',
+    rpc: "https://8661-2601-8c-4982-6aa0-9159-995b-b8ce-3426.ngrok-free.app",
+    rest: "https://ebb6-2601-8c-4982-6aa0-9159-995b-b8ce-3426.ngrok-free.app",
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: {
+      bech32PrefixAccAddr: "neutron",
+      bech32PrefixAccPub: "neutron" + "pub",
+      bech32PrefixValAddr: "neutron" + "valoper",
+      bech32PrefixValPub: "neutron" + "valoperpub",
+      bech32PrefixConsAddr: "neutron" + "valcons",
+      bech32PrefixConsPub: "neutron" + "valconspub",
+    },
+    currencies: [
+      {
+        coinDenom: "NTRN",
+        coinMinimalDenom: "untrn",
+        coinDecimals: 6,
+        coinGeckoId: "neutron-3",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "NTRN",
+        coinMinimalDenom: "untrn",
+        coinDecimals: 6,
+        coinGeckoId: "neutron-3",
+        gasPriceStep: {
+          low: 1,
+          average: 1,
+          high: 1,
+        },
+      },
+    ],
+    stakeCurrency: {
+      coinDenom: "NTRN",
+      coinMinimalDenom: "untrn",
+      coinDecimals: 6,
+      coinGeckoId: "neutron-3",
+    },
+    features: ["ibc-transfer"],
+  };
 };

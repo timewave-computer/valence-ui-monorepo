@@ -18,12 +18,31 @@ local-ic start neutron
 local-ic start stargaze
 ```
 
-- find available endpoint in docker desktop for chain. make sure process is _started_.
+- find available rpc and rest endpoints for each chain. make sure processes are _started_.
+- create ngrok account, get auth token and create API key in their ui
+- create ngrok config file
+
+```yaml
+version: 3
+agent:
+  api_key: <your api key>
+  authtoken: <your auth token>
+  web_allow_hosts:
+   - localhost
+tunnels:
+  neutron-rest:
+    addr: <chain rest endpoint port>
+    proto: http
+  neutron-rpc:
+    addr: <chain rpc endpoint port>
+    proto: http
+~
+```
+
 - run ngrok for each chain, to expose port to browser
 
 ```bash
- ## port number just an example
-ngrok http http://localhost:4194
+ngrok start --all --config ./ngrok.yml
 ```
 
 - set RPC URLs in `.env.local` or via the UI

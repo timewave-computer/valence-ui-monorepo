@@ -135,7 +135,7 @@ export const ExecutableSubroutine = ({
                   size="sm"
                   variant="secondary"
                 >
-                  Reset
+                  Reset body
                 </Button>
 
                 {librarySchema && (
