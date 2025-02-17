@@ -1,7 +1,7 @@
 "use client";
 import { GetProgramDataReturnValue } from "@/app/programs/server";
 import {
-  AccountTable,
+  AccountsTable,
   ExecutionHistoryTable,
   ProcessorDisplay,
   RpcConfigForm,
@@ -14,6 +14,7 @@ import {
 } from "@/app/programs/ui";
 import { HydrateAtoms } from "@/components";
 import { useInitializeMetadataCache } from "@/hooks";
+import { LOCAL_DEV_DOC_URL } from "@valence-ui/socials";
 import {
   Button,
   Card,
@@ -61,10 +62,11 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         <ProgramViewerErrorDisplay errors={data?.errors} />
         <div className="flex flex-row gap-2 items-center pt-2">
           <Button
+            className="min-w-0"
             variant={"secondary"}
             onClick={() => refetch()}
             disabled={isFetching}
-            iconClassName={cn(isFetching && "animate-spin")}
+            iconClassName={cn("w-5 h-5", isFetching && "animate-spin")}
             SuffixIcon={BiRefresh}
           ></Button>
           <Sheet>
@@ -73,6 +75,20 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             </SheetTrigger>
             <SheetContent title="RPC Settings" className="w-1/2" side="right">
               <Heading level="h2">RPC Settings</Heading>
+              <div>
+                <p className="text-sm">
+                  The programs UI can connect to any public RPC endpoint.
+                </p>
+                <LinkText
+                  blankTarget={true}
+                  href={LOCAL_DEV_DOC_URL}
+                  className="text-sm"
+                  variant="highlighted"
+                >
+                  Learn how to use this UI with local development.
+                </LinkText>
+              </div>
+
               <RpcConfigForm />
             </SheetContent>
           </Sheet>
@@ -89,8 +105,8 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-5 w-full gap-4 pt-4 pb-4">
-        <div className="flex flex-col col-span-3  gap-2">
+      <div className="grid grid-cols-4 w-full gap-4 pt-4 pb-4">
+        <div className="flex flex-col col-span-2  gap-2">
           <Heading level="h2">Subroutines</Heading>
           <Card
             isLoading={isLoading}
@@ -101,12 +117,12 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         </div>
 
         <div className="col-span-2 flex flex-col  gap-2">
-          <Heading level="h2">Account Balances</Heading>
+          <Heading level="h2">Accounts</Heading>
           <Card
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-2"
           >
-            <AccountTable program={data} />
+            <AccountsTable program={data} />
           </Card>
         </div>
 
@@ -119,7 +135,7 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             <ProcessorDisplay program={data} />
           </Card>
         </div>
-        <div className="flex flex-col col-span-3 flex-grow gap-2">
+        <div className="flex flex-col col-span-2 flex-grow gap-2">
           <Heading level="h2">Execution History</Heading>
           <Card
             isLoading={isLoading}

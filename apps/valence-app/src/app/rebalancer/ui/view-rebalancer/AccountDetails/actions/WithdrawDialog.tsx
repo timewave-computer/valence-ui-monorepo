@@ -24,7 +24,6 @@ import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/A
 import { Fragment, useState } from "react";
 import {
   BalanceReturnValue,
-  useAccountConfigQuery,
   useAssetMetadata,
   useLivePortfolio,
   UseLivePortfolioReturnValue,

@@ -74,7 +74,6 @@ export const getProgramData = async ({
   }
 
   try {
-    // TODO: split up the registry fetch and the program parsing
     rawProgram = await fetchProgramFromRegistry({
       programId,
       registryAddress: mainChainConfig.registryAddress,
@@ -120,17 +119,18 @@ export const getProgramData = async ({
 
   try {
     accountBalances = await queryAccountBalances(accounts, completeQueryConfig);
-    const metadataToFetch = getDenomsAndChainIds({
-      balances: accountBalances,
-      accounts,
-    });
-
-    metadata = await fetchAssetMetadata(metadataToFetch);
   } catch (e) {
     errors = makeApiErrors([
       { code: GetProgramErrorCodes.BALANCES, message: e?.message },
     ]);
   }
+
+  const metadataToFetch = getDenomsAndChainIds({
+    balances: accountBalances,
+    accounts,
+  });
+
+  metadata = await fetchAssetMetadata(metadataToFetch);
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
 
@@ -320,47 +320,11 @@ async function getProcessorQueue({
     processorAddress,
   );
 
-  // const results = await Promise.all([
-  //   processorClient.getQueue({ priority: "high" }),
-  //   processorClient.getQueue({ priority: "medium" }),
-  // ])
-  // return results.flat()
-
-  // return temporary placeholder
-  return [
-    {
-      id: 1,
-      msgs: [],
-      priority: "high",
-      retry: {
-        retry_amounts: 1,
-        retry_cooldown: {
-          never: {},
-        },
-      },
-      subroutine: {
-        atomic: {
-          functions: [],
-        },
-      },
-    },
-    {
-      id: 2,
-      msgs: [],
-      priority: "medium",
-      retry: {
-        retry_amounts: 1,
-        retry_cooldown: {
-          never: {},
-        },
-      },
-      subroutine: {
-        atomic: {
-          functions: [],
-        },
-      },
-    },
-  ];
+  const results = await Promise.all([
+    processorClient.getQueue({ priority: "high" }),
+    processorClient.getQueue({ priority: "medium" }),
+  ]);
+  return results.flat();
 }
 
 async function fetchLibrarySchemas(libraries: NormalizedLibraries) {

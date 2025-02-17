@@ -100,7 +100,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {isLoading ? (
           <LoadingIndicator size="sm" />
         ) : (
-          <div className="flex flex-row gap-1 items-center">
+          <div className="flex flex-row gap-2 items-center">
             {PrefixIcon && (
               <PrefixIcon
                 className={cn("h-4 w-4", iconClassName)}

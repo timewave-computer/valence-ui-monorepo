@@ -1,10 +1,5 @@
 "use client";
-import {
-  ConnectWalletButton,
-  Dropdown,
-  MobileOverlay,
-  ValenceProductBrand,
-} from "@/components";
+import { Dropdown, MobileOverlay, ValenceProductBrand } from "@/components";
 import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { useState } from "react";
 import Image from "next/image";
