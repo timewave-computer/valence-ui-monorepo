@@ -74,7 +74,10 @@ export const AccountsTable = ({
           })
           .flat();
         return (
-          <div className="flex flex-col gap-2">
+          <div
+            key={`account-balances-${account.addr}`}
+            className="flex flex-col gap-2"
+          >
             <div className="flex flex-row items-center justify-between gap-2">
               <div className="flex flex-row items-center gap-2">
                 <Heading level="h4">{displayAccountName(account.name)}</Heading>
