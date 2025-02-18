@@ -47,7 +47,7 @@ export type Expiration =
       never: {};
     };
 export type Timestamp = Uint64;
-export type Uint64 = string;
+export type Uint64 = number;
 export type QueryMsg =
   | {
       get_config: {
@@ -58,9 +58,19 @@ export type QueryMsg =
       get_config_backup: {
         id: number;
       };
+    }
+  | {
+      get_all_configs: {
+        end?: number | null;
+        limit?: number | null;
+        start?: number | null;
+      };
+    }
+  | {
+      get_last_id: {};
     };
+export type NullableProgramResponse = ProgramResponse | null;
 export interface ProgramResponse {
   id: number;
   program_config: Binary;
 }
-export type NullableProgramResponse = ProgramResponse | null;

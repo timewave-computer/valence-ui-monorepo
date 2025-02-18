@@ -4,6 +4,7 @@ export enum GetProgramErrorCodes {
   PROGRAM_ID_NOT_FOUND = "PROGRAM_ID_NOT_FOUND",
   PARSE = "PARSE",
   BALANCES = "BALANCES",
+  DECODE_BINARY = "DECODE_BINARY",
 }
 
 type ErrorKey = {
@@ -33,6 +34,9 @@ const PROGRAM_ERROR_CONTENT: ErrorCodes = {
   },
   [GetProgramErrorCodes.BALANCES]: {
     title: "Failed to fetch account balances",
+  },
+  [GetProgramErrorCodes.DECODE_BINARY]: {
+    title: "Failed to decode program",
   },
 };
 

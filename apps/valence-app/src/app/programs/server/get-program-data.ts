@@ -10,6 +10,7 @@ import {
   type FetchLibrarySchemaReturnValue,
   ErrorCodes,
   makeApiErrors,
+  getLastUpdatedTime,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
@@ -17,7 +18,6 @@ import {
   GetProgramErrorCodes,
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
-import { UTCDate } from "@date-fns/utc";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
@@ -141,7 +141,7 @@ export const getProgramData = async ({
   });
 
   return {
-    dataLastUpdatedAt: getLastUpdatedTime(),
+    dataLastUpdatedAt: getLastUpdatedTime(), // for handling stale time in react-query
     queryConfig: completeQueryConfig,
     balances: accountBalances,
     parsedProgram: program,
@@ -174,6 +174,7 @@ const fetchProgramFromRegistry = async ({
     const binaryString = response.program_config;
     const decodedString = atob(binaryString);
     const programConfig = JSON.parse(decodedString);
+
     return programConfig;
   } catch (e) {
     throw new Error(
@@ -354,7 +355,3 @@ async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
   );
   return librarySchemas;
 }
-
-const getLastUpdatedTime = () => {
-  return new UTCDate().getTime();
-};

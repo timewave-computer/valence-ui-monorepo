@@ -6,3 +6,5 @@ export * from "./config";
 export * from "./get-program-data";
 export * from "./fetch-library-schema";
 export * from "./get-program-error-codes";
+export * from "./utils";
+export * from "./get-all-programs-from-registry";
