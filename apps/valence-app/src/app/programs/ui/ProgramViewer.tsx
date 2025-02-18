@@ -10,8 +10,8 @@ import {
   ProgramViewerErrorDisplay,
   ProgramRpcSettings,
   RefetchButton,
+  useQueryArgs,
 } from "@/app/programs/ui";
-import { HydrateAtoms } from "@/components";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
   Button,
@@ -42,6 +42,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     initialQueryData: initialData,
   });
 
+  const { queryConfig } = useQueryArgs();
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
 
@@ -49,11 +50,21 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     <div className="w-screen h-screen flex flex-col items-start p-4 ">
       <div className="flex flex-col  w-full">
         <div className="flex flex-row gap-2">
-          <LinkText href="/programs" LinkComponent={Link} variant="breadcrumb">
+          <LinkText
+            href={`/programs?queryConfig=${JSON.stringify(queryConfig)}`}
+            LinkComponent={Link}
+            variant="breadcrumb"
+          >
             Programs
           </LinkText>
           <Heading level="h1"> / </Heading>
-          <Heading level="h1"> {programId} </Heading>
+          <LinkText
+            href={`/programs/${programId}`}
+            LinkComponent={Link}
+            variant="breadcrumb"
+          >
+            {programId}
+          </LinkText>
         </div>
         <ProgramViewerErrorDisplay errors={data?.errors} />
         <div className="flex flex-row gap-2 items-center pt-2">

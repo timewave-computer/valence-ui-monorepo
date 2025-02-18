@@ -9,7 +9,7 @@ import { parseAsJson, createLoader } from "nuqs/server";
 
 export type QueryConfig = {
   main: {
-    registryAddress: string;
+    registryAddress?: string;
     chainId: string;
     rpcUrl: string;
     name: string;
@@ -23,7 +23,7 @@ export type QueryConfig = {
 
 export const queryConfigSchema = z.object({
   main: z.object({
-    registryAddress: z.string(),
+    registryAddress: z.string().optional(),
     chainId: z.string(),
     rpcUrl: z.string(),
     name: z.string(),

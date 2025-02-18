@@ -2,6 +2,7 @@
 import {
   CellType,
   Heading,
+  LinkText,
   PrettyJson,
   Table,
   TableColumnHeader,
@@ -11,13 +12,12 @@ import {
   ProgramViewerErrorDisplay,
   RefetchButton,
   useGetAllProgramsQuery,
+  useQueryArgs,
 } from "@/app/programs/ui";
 import { displayAddress } from "@/utils";
 import { CelatoneUrl } from "@/const";
 import Link from "next/link";
 import { type GetAllProgramsReturnValue } from "@/app/programs/server";
-import { Provider as JotaiProvider } from "jotai";
-import { HydrateAtoms } from "@/components";
 
 export const ProgramRegistryViewer = ({
   data: initialData,
@@ -27,6 +27,7 @@ export const ProgramRegistryViewer = ({
   const { data, isLoading, refetch, isFetching } = useGetAllProgramsQuery({
     initialQueryData: initialData,
   });
+  const { queryConfig } = useQueryArgs();
 
   const tableData = Object.entries(data?.parsedPrograms ?? {}).map(
     ([id, program]) => {
@@ -37,7 +38,7 @@ export const ProgramRegistryViewer = ({
         id: {
           value: id.toString(),
           link: {
-            href: `/programs/${id}`,
+            href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfig)}`,
             LinkComponent: Link,
             blankTarget: false,
           },
@@ -67,7 +68,10 @@ export const ProgramRegistryViewer = ({
   );
   return (
     <main className="flex grow flex-col bg-valence-white p-4">
-      <Heading level="h1">Program Registry</Heading>
+      <LinkText href={`/programs`} LinkComponent={Link} variant="breadcrumb">
+        Programs
+      </LinkText>
+
       <ProgramViewerErrorDisplay errors={data?.errors} />
 
       <div className="flex flex-row gap-2 items-center pt-2">

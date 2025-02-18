@@ -1,4 +1,3 @@
-export * from "./ProgramsHero";
 export * from "./AccountsTable";
 export * from "./ExecutionHistoryTable";
 export * from "./ProcessorDisplay";

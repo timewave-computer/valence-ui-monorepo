@@ -33,7 +33,7 @@ export const useProgramQuery = ({
       return data;
     } catch (e) {
       // catch if it just totally fails
-      console.log("Failed to fetch", e);
+      console.log("Failed to fetch program", e);
       toast(
         <ToastMessage variant="error" title="Failed to fetch program">
           <div className="flex flex-row flex-wrap gap-0.5">

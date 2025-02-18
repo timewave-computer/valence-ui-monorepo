@@ -28,7 +28,7 @@ export const RpcConfigForm = ({}: {}) => {
   const mainChain = queryConfig.main;
   const externalChains = queryConfig.external;
 
-  const { register, handleSubmit } = useForm<RpcConfigFormValues>({
+  const { register, handleSubmit, setValue } = useForm<RpcConfigFormValues>({
     defaultValues: {
       main: {
         name: mainChain.name,
@@ -63,7 +63,7 @@ export const RpcConfigForm = ({}: {}) => {
         })),
       ],
     });
-  }, 800);
+  }, 1200);
 
   return (
     <div>

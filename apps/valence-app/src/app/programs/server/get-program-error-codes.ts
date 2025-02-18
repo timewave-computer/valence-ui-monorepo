@@ -1,5 +1,6 @@
 export enum GetProgramErrorCodes {
   RPC_CONNECTION = "RPC_CONNECTION",
+  NO_REGISTRY = "NO_REGISTRY",
   INVALID_REGISTRY = "INVALID_REGISTRY",
   PROGRAM_ID_NOT_FOUND = "PROGRAM_ID_NOT_FOUND",
   PARSE = "PARSE",
@@ -18,6 +19,10 @@ const PROGRAM_ERROR_CONTENT: ErrorCodes = {
   [GetProgramErrorCodes.RPC_CONNECTION]: {
     title: "Could not connect to RPC",
     text: "Verify RPC URL in the RPC settings.",
+  },
+  [GetProgramErrorCodes.NO_REGISTRY]: {
+    title: "Program registry not set",
+    text: "Input registry address into RPC settings.",
   },
   [GetProgramErrorCodes.INVALID_REGISTRY]: {
     // not used currently

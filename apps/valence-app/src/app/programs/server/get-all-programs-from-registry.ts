@@ -54,6 +54,17 @@ export const getAllProgramsFromRegistry = async ({
   }
 
   const registryAddress = mainChainConfig.registryAddress;
+  if (!registryAddress) {
+    return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.NO_REGISTRY,
+        },
+      ]),
+    };
+  }
 
   let rawPrograms: NullableProgramResponse;
   let errors = {};
