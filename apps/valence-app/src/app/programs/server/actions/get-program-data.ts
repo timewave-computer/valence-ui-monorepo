@@ -73,6 +73,18 @@ export const getProgramData = async ({
     };
   }
 
+  if (!mainChainConfig.registryAddress) {
+    return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.NO_REGISTRY,
+        },
+      ]),
+    };
+  }
+
   try {
     rawProgram = await fetchProgramFromRegistry({
       programId,

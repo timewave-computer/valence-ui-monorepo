@@ -27,7 +27,10 @@ export const useProgramQuery = ({
     try {
       const data = await getProgramData({
         programId,
-        queryConfig,
+        queryConfig: {
+          main: queryConfig.main,
+          external: queryConfig.external,
+        },
       });
       // return the partial result. it contains errors
       return data;

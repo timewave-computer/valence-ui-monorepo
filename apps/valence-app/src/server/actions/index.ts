@@ -27,7 +27,10 @@ export {
   type FetchAuctionReturnValue,
 } from "./fetch-auction-statuses";
 export { fetchAuctionLimits } from "./fetch-auction-limits";
-export { fetchLiveAuctions } from "./fetch-live-auctions";
+export {
+  fetchLiveAuctions,
+  type FetchLiveAuctionsReturnType,
+} from "./fetch-live-auctions";
 export {
   fetchAstroportRates,
   fetchAstroportRate,
