@@ -55,7 +55,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             LinkComponent={Link}
             variant="breadcrumb"
           >
-            Programs
+            Programs (beta)
           </LinkText>
           <Heading level="h1"> / </Heading>
           <LinkText

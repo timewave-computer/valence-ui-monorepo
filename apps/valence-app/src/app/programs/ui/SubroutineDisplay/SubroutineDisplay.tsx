@@ -17,6 +17,7 @@ import {
   displaySubroutineType,
   ExecutableSubroutine,
   getSubroutine,
+  PermissionsDisplay,
 } from "@/app/programs/ui";
 
 export const SubroutineDisplay = ({
@@ -25,6 +26,8 @@ export const SubroutineDisplay = ({
   program?: GetProgramDataReturnValue;
 }) => {
   const authorizations = program?.parsedProgram?.authorizations;
+  const authorizationsAddress =
+    program?.parsedProgram?.authorizationData?.authorization_addr ?? "";
   if (!authorizations)
     return <Card className="grow h-full">No subroutines to display.</Card>;
   return (
@@ -51,13 +54,22 @@ export const SubroutineDisplay = ({
               <Heading level="h3">{authorization.label.toUpperCase()}</Heading>
             </CollapsibleSectionHeader>
             <CollapsibleSectionContent>
-              <div className="flex flex-row gap-2 pb-4">
+              <div className="flex flex-row gap-2 pb-2">
                 <Label variant={isAtomic ? "teal" : "purple"}>
                   {displaySubroutineType(authorization.subroutine)}
                 </Label>
                 <Label>{displayAuthMode(authorization.mode)}</Label>
               </div>
-              {/* separate component because each subroutine should have its own useForm instantiation */}
+
+              <div className="pb-2">
+                {" "}
+                <PermissionsDisplay
+                  authorizationsAddress={authorizationsAddress}
+                  authorization={authorization}
+                />
+              </div>
+
+              {/* it's a separate component because each subroutine should have its own useForm instantiation */}
               <ExecutableSubroutine
                 isAtomic={isAtomic}
                 key={`subroutine-${authorization.label}-${i}`}

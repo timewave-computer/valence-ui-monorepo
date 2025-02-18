@@ -326,7 +326,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
               <LoadingIndicator />
             </div>
           ) : (
-            <HoverCardRoot openDelay={0}>
+            <HoverCardRoot>
               <HoverCardTrigger>
                 <Button
                   disabled={!isSubmitEnabled}

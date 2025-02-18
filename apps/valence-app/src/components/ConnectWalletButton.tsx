@@ -48,7 +48,7 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
 
   if (isServer)
     return (
-      <Button disabled={true} variant="primary">
+      <Button disabled={true} variant="primary" size="sm">
         Connect Wallet
       </Button>
     );
@@ -56,6 +56,7 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
   if (!isWalletConnected) {
     return (
       <Button
+        size="sm"
         className="hidden md:flex"
         disabled={isWalletConnecting}
         onClick={async () => {
@@ -72,8 +73,9 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
     <Popover.Root>
       <Popover.Trigger asChild>
         <Button
+          size="sm"
           className={cn(
-            "font-mono text-xs py-1 min-h-0",
+            "font-mono text-xs",
             "hidden md:flex", // hide on mobile
           )}
           variant="secondary"
@@ -107,7 +109,7 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
           </div>
         </div>
 
-        <Button onClick={() => disconnect()} variant="secondary">
+        <Button size="sm" onClick={() => disconnect()} variant="secondary">
           Disconnect
         </Button>
       </Popover.Content>

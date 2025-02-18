@@ -39,10 +39,20 @@ export function countJsonKeys(obj: any): number {
 }
 
 export const displayLibraryContractName = (name?: string) => {
-  if (!name) return "Valence Library".toUpperCase();
+  if (!name) return "Library"; // todo, should be uppercase 'unregistered contract', once we have library registry
   return name.toUpperCase();
 };
 
 export const displayAccountName = (name: string) => {
   return name.toUpperCase();
+};
+
+export const permissionFactoryDenom = ({
+  authorizationsAddress,
+  authorizationLabel,
+}: {
+  authorizationsAddress: string;
+  authorizationLabel: string;
+}) => {
+  return `factory/${authorizationsAddress}/${authorizationLabel}`;
 };
