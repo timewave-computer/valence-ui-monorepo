@@ -5,6 +5,7 @@ import {
   ParamRestriction,
   PermissionTypeInfo,
   Subroutine,
+  Uint128,
 } from "@valence-ui/generated-types";
 
 // Type guard for "permissionless"
@@ -19,6 +20,16 @@ export function isPermissioned(
   obj: AuthorizationModeInfo,
 ): obj is { permissioned: PermissionTypeInfo } {
   return typeof obj === "object" && obj !== null && "permissioned" in obj;
+}
+export function isPermissionWithoutLimit(
+  obj: PermissionTypeInfo,
+): obj is { without_call_limit: string[] } {
+  return typeof obj === "object" && obj !== null && "without_call_limit" in obj;
+}
+export function isPermissionWithLimit(obj: PermissionTypeInfo): obj is {
+  with_call_limit: [string, Uint128][];
+} {
+  return typeof obj === "object" && obj !== null && "with_call_limit" in obj;
 }
 
 export function isAtomicSubroutine(obj: Subroutine): obj is {

@@ -103,12 +103,13 @@ export const ExecutableSubroutine = ({
               )}
               key={`functionfield-${func.contract_address}-${i}`}
             >
-              <div className="flex flex-row gap-2 items-center">
+              <div className="flex flex-row gap-1 items-center">
                 <Heading level="h4">
                   {displayLibraryContractName(
                     librarySchema?.raw?.contract_name,
                   )}
                 </Heading>
+
                 <LinkText
                   blankTarget={true}
                   className="font-mono text-xs"
