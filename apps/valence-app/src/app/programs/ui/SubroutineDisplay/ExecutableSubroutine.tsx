@@ -5,6 +5,9 @@ import {
   FormRoot,
   FormSubmit,
   Heading,
+  HoverCardContent,
+  HoverCardRoot,
+  HoverCardTrigger,
   LinkText,
   PrettyJson,
   Sheet,
@@ -14,6 +17,7 @@ import {
   ToastMessage,
 } from "@valence-ui/ui-components";
 import {
+  ComingSoonHoverContent,
   displayLibraryContractName,
   FunctionMessageFormField,
   generateMessageBody,
@@ -29,6 +33,7 @@ import {
 } from "@valence-ui/generated-types";
 import { CelatoneUrl } from "@/const";
 import { displayAddress } from "@/utils";
+import { X_HANDLE, X_URL } from "@valence-ui/socials";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -157,9 +162,17 @@ export const ExecutableSubroutine = ({
           );
         })}
       </div>
-      <FormSubmit className="mt-4" asChild>
-        <Button disabled={!isAuthorized}>Execute</Button>
-      </FormSubmit>
+
+      <HoverCardRoot>
+        <HoverCardTrigger asChild>
+          <FormSubmit className="mt-4" asChild>
+            <Button disabled={true}>Execute</Button>
+          </FormSubmit>
+        </HoverCardTrigger>
+        <HoverCardContent side="right" sideOffset={10} className="w-64">
+          <ComingSoonHoverContent />
+        </HoverCardContent>
+      </HoverCardRoot>
     </FormRoot>
   );
 };

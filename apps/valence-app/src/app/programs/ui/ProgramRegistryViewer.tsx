@@ -66,7 +66,7 @@ export const ProgramRegistryViewer = ({
   return (
     <main className="flex grow flex-col bg-valence-white p-4">
       <LinkText href={`/programs`} LinkComponent={Link} variant="breadcrumb">
-        Programs
+        Programs (beta)
       </LinkText>
 
       <ProgramViewerErrorDisplay errors={data?.errors} />

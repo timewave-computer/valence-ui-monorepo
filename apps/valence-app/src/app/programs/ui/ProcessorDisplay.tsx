@@ -6,6 +6,9 @@ import {
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
   Heading,
+  HoverCardContent,
+  HoverCardRoot,
+  HoverCardTrigger,
   LinkText,
   PrettyJson,
   Table,
@@ -15,6 +18,7 @@ import { GetProgramDataReturnValue } from "@/app/programs/server";
 import { BsClockFill } from "react-icons/bs";
 import { displayAddress } from "@/utils";
 import { CelatoneUrl } from "@/const";
+import { ComingSoonHoverContent } from "@/app/programs/ui";
 
 export const ProcessorDisplay = ({
   program,
@@ -88,17 +92,25 @@ export const ProcessorDisplay = ({
       >
         <CollapsibleSectionHeader className="flex flex-row items-center gap-2 w-full  justify-between p-4 pb-0">
           <div className="flex flex-row gap-2 items-center">
-            <Button
-              PrefixIcon={BsClockFill}
-              variant="secondary"
-              onClick={(e) => {
-                // prevent the parent collapsible section from toggling
-                e.stopPropagation();
-                alert("got eem");
-              }}
-            >
-              Tick
-            </Button>
+            <HoverCardRoot>
+              <HoverCardTrigger asChild>
+                <Button
+                  disabled={true}
+                  PrefixIcon={BsClockFill}
+                  variant="secondary"
+                  onClick={(e) => {
+                    // prevent the parent collapsible section from toggling
+                    e.stopPropagation();
+                  }}
+                >
+                  Tick
+                </Button>
+              </HoverCardTrigger>
+              <HoverCardContent side="right" sideOffset={10} className="w-64">
+                <ComingSoonHoverContent />
+              </HoverCardContent>
+            </HoverCardRoot>
+
             <div className="flex flex-col  items-start">
               <Heading level="h3">{processorData?.chainName ?? domain}</Heading>
               <LinkText
