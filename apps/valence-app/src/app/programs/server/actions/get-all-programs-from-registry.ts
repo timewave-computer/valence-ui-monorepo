@@ -43,7 +43,6 @@ export const getAllProgramsFromRegistry = async ({
   } catch (e) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.RPC_CONNECTION,
@@ -57,7 +56,6 @@ export const getAllProgramsFromRegistry = async ({
   if (!registryAddress) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.NO_REGISTRY,
@@ -78,7 +76,6 @@ export const getAllProgramsFromRegistry = async ({
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.INVALID_REGISTRY,
