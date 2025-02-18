@@ -1,18 +1,12 @@
-import { QueryConfig } from "@/app/programs/server";
-import { atom, useAtom } from "jotai";
-
-export const DEFAULT_QUERY_CONFIG: QueryConfig = {
-  main: {
-    chainId: "",
-    rpcUrl: "",
-    registryAddress: "",
-    name: "",
-  },
-  external: [],
-};
-
-export const queryArgsAtom = atom<QueryConfig>(DEFAULT_QUERY_CONFIG);
+"use client";
+import { defaultQueryConfig, queryConfigSchema } from "@/app/programs/server";
+import { parseAsJson, useQueryState } from "nuqs";
 
 export const useQueryArgs = () => {
-  return useAtom(queryArgsAtom);
+  const [queryConfig, setQueryConfig] = useQueryState(
+    "queryConfig",
+    parseAsJson(queryConfigSchema.parse).withDefault(defaultQueryConfig),
+  );
+
+  return { queryConfig, setQueryConfig };
 };

@@ -1,6 +1,11 @@
 import { type NormalizedAccounts } from "@/app/programs/server";
 import { chains } from "chain-registry";
-import { getPreferredRpcs } from "@/app/programs/server/config";
+import {
+  getDefaultMainChainConfig,
+  getPreferredRpcs,
+} from "@/app/programs/server/config";
+import { z } from "zod";
+import { parseAsJson, createLoader } from "nuqs/server";
 
 export type QueryConfig = {
   main: {
@@ -15,6 +20,34 @@ export type QueryConfig = {
     name: string;
   }>;
 };
+
+export const queryConfigSchema = z.object({
+  main: z.object({
+    registryAddress: z.string(),
+    chainId: z.string(),
+    rpcUrl: z.string(),
+    name: z.string(),
+  }),
+  external: z.array(
+    z.object({
+      rpc: z.string(),
+      chainId: z.string(),
+      name: z.string(),
+    }),
+  ),
+});
+
+export const defaultQueryConfig = {
+  main: getDefaultMainChainConfig(),
+  external: [], // needs to be derived from accounts in config
+};
+
+export const queryConfigSearchParams = {
+  queryConfig: parseAsJson(queryConfigSchema.parse).withDefault(
+    defaultQueryConfig,
+  ),
+};
+export const loadSearchParams = createLoader(queryConfigSearchParams);
 
 type RequiredMain = Required<Pick<QueryConfig, "main">>;
 type OptionalExternal = Partial<Pick<QueryConfig, "external">>;

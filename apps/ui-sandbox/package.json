@@ -12,7 +12,7 @@
     "@valence-ui/config": "*",
     "@valence-ui/ui-components": "*",
     "@valence-ui/fonts": "*",
-    "next": "14.0.4",
+    "next": "^14.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.51.3",

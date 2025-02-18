@@ -1,18 +1,18 @@
-import { ProgramRegistryViewerWithStateProvider } from "@/app/programs/ui";
-import { mockRegistry } from "@/mock-data";
-import { getAllProgramsFromRegistry } from "@/app/programs/server";
+import { ProgramRegistryViewer } from "@/app/programs/ui";
+import {
+  getAllProgramsFromRegistry,
+  loadSearchParams,
+} from "@/app/programs/server";
+import { type SearchParams } from "nuqs/server";
 
-// mock data
-const registryContents = Object.entries(mockRegistry).map(([id, program]) => ({
-  id,
-  label: "Program " + id,
-  authorizationsAddress: program.authorization_data.authorization_addr,
-  adminAddress: program.owner,
-}));
-export default async function ProgramsHomePage() {
-  // mock data
+export default async function ProgramRegistryPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const { queryConfig } = await loadSearchParams(searchParams);
 
-  const data = await getAllProgramsFromRegistry({});
+  const data = await getAllProgramsFromRegistry({ queryConfig });
 
-  return <ProgramRegistryViewerWithStateProvider data={data} />;
+  return <ProgramRegistryViewer data={data} />;
 }

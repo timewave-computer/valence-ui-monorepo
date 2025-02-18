@@ -7,7 +7,6 @@ import {
   SheetTrigger,
   SheetContent,
   LinkText,
-  PrettyJson,
 } from "@valence-ui/ui-components";
 import { RpcConfigForm } from "./RpcConfigForm";
 

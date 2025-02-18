@@ -1,17 +1,19 @@
 import {
   getProgramData,
   GetProgramDataReturnValue,
+  loadSearchParams,
 } from "@/app/programs/server";
-import { ProgramViewerWithStateProvider } from "@/app/programs/ui";
+import { ProgramViewer } from "@/app/programs/ui";
 
-export default async function ProgramPage({ params: { programId } }) {
-  // on initial render, there is no query config supplied. it will be set from the UI
-  // TODO: read query config from url search params
+export default async function ProgramPage({
+  params: { programId },
+  searchParams,
+}) {
+  const { queryConfig } = await loadSearchParams(searchParams);
   const data = (await getProgramData({
     programId,
+    queryConfig,
   })) as GetProgramDataReturnValue;
 
-  return (
-    <ProgramViewerWithStateProvider programId={programId} initialData={data} />
-  );
+  return <ProgramViewer programId={programId} initialData={data} />;
 }

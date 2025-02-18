@@ -6,11 +6,10 @@ import {
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import { LinkText, ToastMessage, toast } from "@valence-ui/ui-components";
-import { useAtom } from "jotai";
 import { useCallback } from "react";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { isEqual } from "lodash";
-import { queryArgsAtom } from "@/app/programs/ui";
+import { useQueryArgs } from "@/app/programs/ui";
 
 type UseProgramQueryArgs = {
   programId: string;
@@ -20,7 +19,7 @@ export const useProgramQuery = ({
   programId,
   initialQueryData,
 }: UseProgramQueryArgs) => {
-  const [queryConfig] = useAtom(queryArgsAtom);
+  const { queryConfig } = useQueryArgs();
 
   // must be defined in callback to detect input changes
   const queryFn = useCallback(async () => {

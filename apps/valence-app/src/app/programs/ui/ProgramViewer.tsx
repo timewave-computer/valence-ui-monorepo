@@ -7,8 +7,6 @@ import {
   SubroutineDisplay,
   useProgramQuery,
   useInitializeLibrarySchemaCache,
-  queryArgsAtom,
-  DEFAULT_QUERY_CONFIG,
   ProgramViewerErrorDisplay,
   ProgramRpcSettings,
   RefetchButton,
@@ -26,15 +24,13 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@valence-ui/ui-components";
-import { Provider as JotaiProvider } from "jotai";
 import Link from "next/link";
-import { BiRefresh } from "react-icons/bi";
 
 export type ProgramViewerProps = {
   programId: string;
   initialData: GetProgramDataReturnValue;
 };
-function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
+export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   // page loads with initial server-fetched data. this inserts it into useQuery, so the access pattern is easy
   const {
     data: data,
@@ -118,24 +114,5 @@ function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         </div>
       </div>
     </div>
-  );
-}
-
-export function ProgramViewerWithStateProvider(
-  props: React.ComponentProps<typeof ProgramViewer>,
-) {
-  return (
-    <JotaiProvider>
-      <HydrateAtoms
-        initialValues={[
-          [
-            queryArgsAtom,
-            props.initialData?.queryConfig ?? DEFAULT_QUERY_CONFIG,
-          ],
-        ]}
-      >
-        <ProgramViewer {...props} />
-      </HydrateAtoms>
-    </JotaiProvider>
   );
 }

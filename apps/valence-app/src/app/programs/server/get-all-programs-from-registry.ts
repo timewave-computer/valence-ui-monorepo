@@ -20,14 +20,13 @@ export type GetAllProgramsReturnValue = {
   dataLastUpdatedAt: number;
   queryConfig: QueryConfig;
   errors: ErrorCodes;
-  rawPrograms?: NullableProgramResponse;
   parsedPrograms?: Record<number, ProgramParserResult | undefined>;
 };
 
 export const getAllProgramsFromRegistry = async ({
   queryConfig: userSuppliedQueryConfig,
 }: {
-  queryConfig?: QueryConfig;
+  queryConfig: QueryConfig | null;
 }): Promise<GetAllProgramsReturnValue> => {
   let queryConfigManager = new QueryConfigManager(
     userSuppliedQueryConfig ?? {
@@ -116,7 +115,6 @@ export const getAllProgramsFromRegistry = async ({
     dataLastUpdatedAt: getLastUpdatedTime(),
     queryConfig: queryConfigManager.getQueryConfig(),
     errors: {},
-    rawPrograms: decodedPrograms ?? rawPrograms,
     parsedPrograms: parsedPrograms,
   };
 };

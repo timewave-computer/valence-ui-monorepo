@@ -1,20 +1,14 @@
 "use client";
 import {
-  Button,
   CellType,
   Heading,
   PrettyJson,
-  Sheet,
-  SheetContent,
-  SheetTrigger,
   Table,
   TableColumnHeader,
 } from "@valence-ui/ui-components";
 import {
-  DEFAULT_QUERY_CONFIG,
   ProgramRpcSettings,
   ProgramViewerErrorDisplay,
-  queryArgsAtom,
   RefetchButton,
   useGetAllProgramsQuery,
 } from "@/app/programs/ui";
@@ -25,7 +19,7 @@ import { type GetAllProgramsReturnValue } from "@/app/programs/server";
 import { Provider as JotaiProvider } from "jotai";
 import { HydrateAtoms } from "@/components";
 
-const ProgramRegistryViewer = ({
+export const ProgramRegistryViewer = ({
   data: initialData,
 }: {
   data: GetAllProgramsReturnValue;
@@ -34,7 +28,6 @@ const ProgramRegistryViewer = ({
     initialQueryData: initialData,
   });
 
-  console.log("data", data);
   const tableData = Object.entries(data?.parsedPrograms ?? {}).map(
     ([id, program]) => {
       const authorizationsAddress =
@@ -43,7 +36,6 @@ const ProgramRegistryViewer = ({
       return {
         id: {
           value: id.toString(),
-
           link: {
             href: `/programs/${id}`,
             LinkComponent: Link,
@@ -51,7 +43,7 @@ const ProgramRegistryViewer = ({
           },
         },
         config: {
-          link: "View",
+          link: "View config",
           body: (
             <>
               <Heading level="h2">Config</Heading>
@@ -81,17 +73,6 @@ const ProgramRegistryViewer = ({
       <div className="flex flex-row gap-2 items-center pt-2">
         <RefetchButton isFetching={isFetching} refetch={refetch} />
         <ProgramRpcSettings />
-        {data?.rawPrograms && (
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="secondary">Raw Response</Button>
-            </SheetTrigger>
-            <SheetContent title="Raw Program" className="w-1/2" side="right">
-              <Heading level="h2">Raw Response</Heading>
-              <PrettyJson data={data?.rawPrograms} />
-            </SheetContent>
-          </Sheet>
-        )}
       </div>
       <div className="flex flex-col  gap-2 pt-8">
         <Table
@@ -122,19 +103,3 @@ const headers: TableColumnHeader[] = [
     cellType: CellType.Text,
   },
 ];
-
-export function ProgramRegistryViewerWithStateProvider(
-  props: React.ComponentProps<typeof ProgramRegistryViewer>,
-) {
-  return (
-    <JotaiProvider>
-      <HydrateAtoms
-        initialValues={[
-          [queryArgsAtom, props?.data?.queryConfig ?? DEFAULT_QUERY_CONFIG],
-        ]}
-      >
-        <ProgramRegistryViewer {...props} />
-      </HydrateAtoms>
-    </JotaiProvider>
-  );
-}
