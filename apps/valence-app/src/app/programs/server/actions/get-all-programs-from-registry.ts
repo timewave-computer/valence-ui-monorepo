@@ -19,6 +19,7 @@ import { ArrayOfProgramResponse } from "@valence-ui/generated-types/dist/cosmwas
 type ParsedPrograms = Array<{ id: number; config: ProgramParserResult }>;
 export type GetAllProgramsReturnValue = {
   dataLastUpdatedAt: number;
+  queryConfig: QueryConfig;
   errors: ErrorCodes;
   parsedPrograms?: ParsedPrograms;
 };
@@ -43,6 +44,7 @@ export const getAllProgramsFromRegistry = async ({
   } catch (e) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.RPC_CONNECTION,
@@ -56,6 +58,7 @@ export const getAllProgramsFromRegistry = async ({
   if (!registryAddress) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.NO_REGISTRY,
@@ -76,6 +79,7 @@ export const getAllProgramsFromRegistry = async ({
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.INVALID_REGISTRY,
@@ -126,6 +130,7 @@ export const getAllProgramsFromRegistry = async ({
 
   return {
     dataLastUpdatedAt: getLastUpdatedTime(),
+    queryConfig: queryConfigManager.getQueryConfig(), // needed to decide if refetch needed in useQuery
     errors: {},
     parsedPrograms: parsedPrograms,
   };
