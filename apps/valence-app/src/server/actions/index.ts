@@ -1,18 +1,40 @@
-export * from "./fetch-rebalancer-account-config";
-export * from "./fetch-rebalancer-account-balances";
-export * from "./fetch-historical-prices";
-export * from "./fetch-historical-balances";
-export * from "./fetch-historical-targets";
-export * from "./fetch-supported-balances";
-export * from "./fetch-prices";
-export * from "./fetch-origin-assets";
-export * from "./fetch-valence-accounts";
-export * from "./fetch-auction-balances";
-export * from "./fetch-rebalancer-whitelist";
-export * from "./fetch-auction-statuses";
-export * from "./fetch-auction-limits";
-export * from "./fetch-live-auctions";
-export * from "./fetch-astroport-rate";
-export * from "./fetch-osmosis-rate";
-export * from "./fetch-oracle-prices";
-export * from "./fetch-asset-metadata";
+export {
+  fetchRebalancerAccountConfiguration,
+  type AccountTarget,
+  type FetchAccountConfigReturnValue,
+} from "./fetch-rebalancer-account-config";
+export { fetchRebalancerAccountBalances } from "./fetch-rebalancer-account-balances";
+export {
+  fetchHistoricalPricesV2,
+  type FetchHistoricalValuesReturnValue,
+} from "./fetch-historical-prices";
+export { fetchHistoricalBalances } from "./fetch-historical-balances";
+export { fetchHistoricalTargets } from "./fetch-historical-targets";
+export {
+  fetchSupportedBalances,
+  type FetchSupportedBalancesReturnValue,
+} from "./fetch-supported-balances";
+export { getPrices } from "./fetch-prices";
+export { fetchOriginAssets } from "./fetch-origin-assets";
+export { fetchValenceAccounts } from "./fetch-valence-accounts";
+export {
+  type FetchAuctionBalances,
+  fetchAuctionBalances,
+} from "./fetch-auction-balances";
+export { fetchRebalancerWhitelist } from "./fetch-rebalancer-whitelist";
+export {
+  fetchAuctionStatuses,
+  type FetchAuctionReturnValue,
+} from "./fetch-auction-statuses";
+export { fetchAuctionLimits } from "./fetch-auction-limits";
+export { fetchLiveAuctions } from "./fetch-live-auctions";
+export {
+  fetchAstroportRates,
+  fetchAstroportRate,
+} from "./fetch-astroport-rate";
+export { fetchOsmosisRate } from "./fetch-osmosis-rate";
+export { fetchOraclePrices } from "./fetch-oracle-prices";
+export {
+  type FetchMetadataResponse,
+  fetchAssetMetadata,
+} from "./fetch-asset-metadata";

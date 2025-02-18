@@ -1,10 +1,8 @@
 export * from "./ProgramParser";
-export * from "./fetch-account-balances";
+export { fetchAccountBalances } from "./fetch-account-balances";
 export * from "./types";
 export * from "./QueryConfigManager";
 export * from "./config";
-export * from "./get-program-data";
-export * from "./fetch-library-schema";
-export * from "./get-program-error-codes";
+export * from "./program-error-codes";
 export * from "./utils";
-export * from "./get-all-programs-from-registry";
+export * from "./actions";

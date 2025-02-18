@@ -19,8 +19,9 @@ import {
   Timestamp,
   Uint64,
   QueryMsg,
-  NullableProgramResponse,
+  ArrayOfProgramResponse,
   ProgramResponse,
+  NullableProgramResponse,
 } from "./ProgramRegistry.types";
 export interface ProgramRegistryReadOnlyInterface {
   contractAddress: string;
@@ -34,7 +35,7 @@ export interface ProgramRegistryReadOnlyInterface {
     end?: number;
     limit?: number;
     start?: number;
-  }) => Promise<NullableProgramResponse>;
+  }) => Promise<ArrayOfProgramResponse>;
   getLastId: () => Promise<Uint64>;
 }
 export class ProgramRegistryQueryClient
@@ -76,7 +77,7 @@ export class ProgramRegistryQueryClient
     end?: number;
     limit?: number;
     start?: number;
-  }): Promise<NullableProgramResponse> => {
+  }): Promise<ArrayOfProgramResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
       get_all_configs: {
         end,

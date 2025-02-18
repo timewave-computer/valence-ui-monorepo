@@ -29,43 +29,40 @@ export const ProgramRegistryViewer = ({
   });
   const { queryConfig } = useQueryArgs();
 
-  const tableData = Object.entries(data?.parsedPrograms ?? {}).map(
-    ([id, program]) => {
-      const authorizationsAddress =
-        program?.authorizationData?.authorization_addr;
+  const tableData = data?.parsedPrograms?.map(({ id, config }) => {
+    const authorizationsAddress = config.authorizationData?.authorization_addr;
 
-      return {
-        id: {
-          value: id.toString(),
-          link: {
-            href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfig)}`,
-            LinkComponent: Link,
-            blankTarget: false,
-          },
+    return {
+      id: {
+        value: id.toString(),
+        link: {
+          href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfig)}`,
+          LinkComponent: Link,
+          blankTarget: false,
         },
-        config: {
-          link: "View config",
-          body: (
-            <>
-              <Heading level="h2">Config</Heading>
-              <PrettyJson data={program} />
-            </>
-          ),
-        },
-        authorizationsAddress: {
-          value: authorizationsAddress
-            ? displayAddress(authorizationsAddress)
-            : "-",
+      },
+      config: {
+        link: "View config",
+        body: (
+          <>
+            <Heading level="h2">Config</Heading>
+            <PrettyJson data={config} />
+          </>
+        ),
+      },
+      authorizationsAddress: {
+        value: authorizationsAddress
+          ? displayAddress(authorizationsAddress)
+          : "-",
 
-          link: {
-            href: authorizationsAddress
-              ? CelatoneUrl.contract(authorizationsAddress)
-              : "",
-          },
+        link: {
+          href: authorizationsAddress
+            ? CelatoneUrl.contract(authorizationsAddress)
+            : "",
         },
-      };
-    },
-  );
+      },
+    };
+  });
   return (
     <main className="flex grow flex-col bg-valence-white p-4">
       <LinkText href={`/programs`} LinkComponent={Link} variant="breadcrumb">

@@ -69,8 +69,9 @@ export type QueryMsg =
   | {
       get_last_id: {};
     };
-export type NullableProgramResponse = ProgramResponse | null;
+export type ArrayOfProgramResponse = ProgramResponse[];
 export interface ProgramResponse {
   id: number;
   program_config: Binary;
 }
+export type NullableProgramResponse = ProgramResponse | null;

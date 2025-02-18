@@ -14,13 +14,14 @@ import {
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
-import { type NullableProgramResponse } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.types";
+import { ArrayOfProgramResponse } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.types";
 
+type ParsedPrograms = Array<{ id: number; config: ProgramParserResult }>;
 export type GetAllProgramsReturnValue = {
   dataLastUpdatedAt: number;
   queryConfig: QueryConfig;
   errors: ErrorCodes;
-  parsedPrograms?: Record<number, ProgramParserResult | undefined>;
+  parsedPrograms?: ParsedPrograms;
 };
 
 export const getAllProgramsFromRegistry = async ({
@@ -66,7 +67,7 @@ export const getAllProgramsFromRegistry = async ({
     };
   }
 
-  let rawPrograms: NullableProgramResponse;
+  let rawPrograms: ArrayOfProgramResponse;
   let errors = {};
 
   try {
@@ -88,11 +89,11 @@ export const getAllProgramsFromRegistry = async ({
     };
   }
 
-  const decodedPrograms = rawPrograms?.map(([id, binaryString]) => {
+  const decodedPrograms = rawPrograms.map(({ id, program_config }) => {
     try {
-      const decodedString = atob(binaryString);
-      const decodedConfig = JSON.parse(decodedString);
-      return [id, decodedConfig];
+      const decodedBinaryString = atob(program_config);
+      const decodedConfig = JSON.parse(decodedBinaryString);
+      return { id, decodedConfig };
     } catch (e) {
       errors = makeApiErrors([
         {
@@ -100,14 +101,19 @@ export const getAllProgramsFromRegistry = async ({
           message: e?.message,
         },
       ]);
+      return { id, decodedConfig: {} };
     }
   });
 
   const parsedPrograms = decodedPrograms.reduce(
-    (acc, [id, config]) => {
+    (acc, { id, decodedConfig }) => {
       try {
-        const validated = ProgramParser.extractData(config);
-        acc[id] = validated;
+        const validated = ProgramParser.extractData(decodedConfig);
+
+        acc.push({
+          id,
+          config: validated,
+        });
       } catch (e) {
         errors = makeApiErrors([
           {
@@ -119,7 +125,7 @@ export const getAllProgramsFromRegistry = async ({
 
       return acc;
     },
-    {} as Array<[number, ProgramParserResult | undefined]>,
+    [] as ParsedPrograms,
   );
 
   return {
@@ -143,6 +149,7 @@ const fetchAllProgramsFromRegistry = async ({
       registryAddress,
     );
 
+    // return type on function is incorrect
     return programRegistryClient.getAllConfigs({
       limit: 20,
     });
