@@ -2,21 +2,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
 import {
-  getProgramData,
-  type GetProgramDataReturnValue,
+  type GetAllProgramsReturnValue,
+  getAllProgramsFromRegistry,
 } from "@/app/programs/server";
 import { LinkText, ToastMessage, toast } from "@valence-ui/ui-components";
 import { useCallback } from "react";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { isEqual } from "lodash";
-import { useQueryArgs } from "@/app/programs/ui";
+import { useQueryArgs } from "./common-query-config";
 
 type UseProgramQueryArgs = {
-  programId: string;
-  initialQueryData: GetProgramDataReturnValue;
+  initialQueryData: GetAllProgramsReturnValue;
 };
-export const useProgramQuery = ({
-  programId,
+export const useGetAllProgramsQuery = ({
   initialQueryData,
 }: UseProgramQueryArgs) => {
   const { queryConfig } = useQueryArgs();
@@ -25,18 +23,14 @@ export const useProgramQuery = ({
   const queryFn = useCallback(async () => {
     // nullify initial data after first fetch, otherwise it will be used for every response
     try {
-      const data = await getProgramData({
-        programId,
-        queryConfig: {
-          main: queryConfig.main,
-          external: queryConfig.external,
-        },
+      const data = await getAllProgramsFromRegistry({
+        queryConfig,
       });
       // return the partial result. it contains errors
       return data;
     } catch (e) {
       // catch if it just totally fails
-      console.log("Failed to fetch program", e);
+      console.log("Failed to fetch programs", e);
       toast(
         <ToastMessage variant="error" title="Failed to fetch program">
           <div className="flex flex-row flex-wrap gap-0.5">
@@ -49,16 +43,15 @@ export const useProgramQuery = ({
         </ToastMessage>,
       );
     }
-  }, [programId, queryConfig.main, queryConfig.external]);
-  return useQuery<GetProgramDataReturnValue | undefined>({
+  }, [queryConfig.main, queryConfig.external]);
+  return useQuery<GetAllProgramsReturnValue | undefined>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
     queryKey: [
-      QUERY_KEYS.PROGRAMS_FETCH_PROGRAM,
+      QUERY_KEYS.PROGRAMS_REGISTRY_ALL_PROGRAMS,
       queryConfig.external,
       queryConfig.main,
-      programId,
     ],
     // only supply initial data if the query config is the same
     initialData: isEqual(queryConfig, initialQueryData?.queryConfig)

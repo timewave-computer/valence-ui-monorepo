@@ -10,6 +10,7 @@ import {
   type FetchLibrarySchemaReturnValue,
   ErrorCodes,
   makeApiErrors,
+  getLastUpdatedTime,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
@@ -17,7 +18,6 @@ import {
   GetProgramErrorCodes,
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
-import { UTCDate } from "@date-fns/utc";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
@@ -68,6 +68,18 @@ export const getProgramData = async ({
         {
           code: GetProgramErrorCodes.RPC_CONNECTION,
           message: `Could not connect to RPC at ${mainChainConfig.rpcUrl}`,
+        },
+      ]),
+    };
+  }
+
+  if (!mainChainConfig.registryAddress) {
+    return {
+      dataLastUpdatedAt: getLastUpdatedTime(),
+      queryConfig: queryConfigManager.getQueryConfig(),
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.NO_REGISTRY,
         },
       ]),
     };
@@ -141,8 +153,8 @@ export const getProgramData = async ({
   });
 
   return {
-    dataLastUpdatedAt: getLastUpdatedTime(),
-    queryConfig: completeQueryConfig,
+    dataLastUpdatedAt: getLastUpdatedTime(), // for handling stale time in react-query
+    queryConfig: completeQueryConfig, // needed to decide if refetch needed in useQuery
     balances: accountBalances,
     parsedProgram: program,
     rawProgram,
@@ -174,6 +186,7 @@ const fetchProgramFromRegistry = async ({
     const binaryString = response.program_config;
     const decodedString = atob(binaryString);
     const programConfig = JSON.parse(decodedString);
+
     return programConfig;
   } catch (e) {
     throw new Error(
@@ -354,7 +367,3 @@ async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
   );
   return librarySchemas;
 }
-
-const getLastUpdatedTime = () => {
-  return new UTCDate().getTime();
-};

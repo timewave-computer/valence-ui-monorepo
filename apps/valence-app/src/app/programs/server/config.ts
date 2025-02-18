@@ -1,11 +1,10 @@
-import { getNeutronRpc } from "@/server/rpc";
 import { QueryConfig } from "@/app/programs/server";
 
 export const getDefaultMainChainConfig = (): QueryConfig["main"] => {
-  const rpcUrl = getNeutronRpc();
+  const rpcUrl = defaultNeutronRpc;
   return {
     chainId: "neutron-1",
-    registryAddress: "neutron1hj5fveer5cjtn4wd6wstzugjfdxzl0xpznmsky",
+    registryAddress: undefined,
     rpcUrl,
     name: "neutron",
   };
@@ -13,6 +12,8 @@ export const getDefaultMainChainConfig = (): QueryConfig["main"] => {
 
 export const getPreferredRpcs = () => {
   return {
-    "neutron-1": getNeutronRpc(),
+    "neutron-1": defaultNeutronRpc,
   };
 };
+
+const defaultNeutronRpc = "https://rpc-voidara.neutron-1.neutron.org";

@@ -19,6 +19,7 @@ import {
   Timestamp,
   Uint64,
   QueryMsg,
+  ArrayOfProgramResponse,
   ProgramResponse,
   NullableProgramResponse,
 } from "./ProgramRegistry.types";
@@ -26,6 +27,16 @@ export interface ProgramRegistryReadOnlyInterface {
   contractAddress: string;
   getConfig: ({ id }: { id: number }) => Promise<ProgramResponse>;
   getConfigBackup: ({ id }: { id: number }) => Promise<NullableProgramResponse>;
+  getAllConfigs: ({
+    end,
+    limit,
+    start,
+  }: {
+    end?: number;
+    limit?: number;
+    start?: number;
+  }) => Promise<ArrayOfProgramResponse>;
+  getLastId: () => Promise<Uint64>;
 }
 export class ProgramRegistryQueryClient
   implements ProgramRegistryReadOnlyInterface
@@ -37,6 +48,8 @@ export class ProgramRegistryQueryClient
     this.contractAddress = contractAddress;
     this.getConfig = this.getConfig.bind(this);
     this.getConfigBackup = this.getConfigBackup.bind(this);
+    this.getAllConfigs = this.getAllConfigs.bind(this);
+    this.getLastId = this.getLastId.bind(this);
   }
   getConfig = async ({ id }: { id: number }): Promise<ProgramResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -54,6 +67,28 @@ export class ProgramRegistryQueryClient
       get_config_backup: {
         id,
       },
+    });
+  };
+  getAllConfigs = async ({
+    end,
+    limit,
+    start,
+  }: {
+    end?: number;
+    limit?: number;
+    start?: number;
+  }): Promise<ArrayOfProgramResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_all_configs: {
+        end,
+        limit,
+        start,
+      },
+    });
+  };
+  getLastId = async (): Promise<Uint64> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_last_id: {},
     });
   };
 }

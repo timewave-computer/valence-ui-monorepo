@@ -6,10 +6,7 @@ import {
   Label,
   LinkText,
 } from "@valence-ui/ui-components";
-import {
-  type ProgramParserResult,
-  type GetProgramDataReturnValue,
-} from "@/app/programs/server";
+import { type GetProgramDataReturnValue } from "@/app/programs/server";
 import { displayAccountName, displayDomain } from "@/app/programs/ui";
 import { CelatoneUrl } from "@/const";
 import { useAssetMetadata } from "@/app/rebalancer/ui";
@@ -107,18 +104,6 @@ export const AccountsTable = ({
       })}
     </div>
   );
-};
-
-const getAccount = (
-  address: string,
-  accounts?: ProgramParserResult["accounts"],
-) => {
-  if (!accounts) {
-    return undefined;
-  }
-  const accts = Object.values(accounts);
-  const account = accts.find((account) => account.addr === address);
-  return account;
 };
 
 const headers: TableColumnHeader[] = [

@@ -7,8 +7,8 @@ import {
   TextInput,
 } from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
-import { useQueryArgs } from "@/app/programs/ui";
 import { debounce } from "lodash";
+import { useQueryArgs } from "@/app/programs/ui";
 
 type RpcConfigFormValues = {
   main: {
@@ -24,12 +24,11 @@ type RpcConfigFormValues = {
   }>;
 };
 export const RpcConfigForm = ({}: {}) => {
-  const [queryConfig, setQueryConfig] = useQueryArgs();
-
+  const { queryConfig, setQueryConfig } = useQueryArgs();
   const mainChain = queryConfig.main;
   const externalChains = queryConfig.external;
 
-  const { register, handleSubmit } = useForm<RpcConfigFormValues>({
+  const { register, handleSubmit, setValue } = useForm<RpcConfigFormValues>({
     defaultValues: {
       main: {
         name: mainChain.name,
@@ -64,7 +63,7 @@ export const RpcConfigForm = ({}: {}) => {
         })),
       ],
     });
-  }, 300);
+  }, 1200);
 
   return (
     <div>

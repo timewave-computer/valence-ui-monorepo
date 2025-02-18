@@ -1,4 +1,3 @@
-export * from "./ProgramsHero";
 export * from "./AccountsTable";
 export * from "./ExecutionHistoryTable";
 export * from "./ProcessorDisplay";
@@ -10,3 +9,8 @@ export * from "./RpcConfigForm";
 export * from "./useLibrarySchemaCache";
 export * from "./useProgramQuery";
 export * from "./ProgramViewerErrorDisplay";
+export * from "./ProgramRegistryViewer";
+export * from "./ProgramRpcSettings";
+export * from "./useGetAllProgramsQuery";
+export * from "./common-query-config";
+export * from "./RefetchButton";
