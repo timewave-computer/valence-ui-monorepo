@@ -7,20 +7,6 @@ import {
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
 
-export type QueryConfig = {
-  main: {
-    registryAddress?: string;
-    chainId: string;
-    rpcUrl: string;
-    name: string;
-  };
-  external: Array<{
-    rpc: string;
-    chainId: string;
-    name: string;
-  }>;
-};
-
 export const queryConfigSchema = z.object({
   main: z.object({
     registryAddress: z.string().optional(),
@@ -36,18 +22,18 @@ export const queryConfigSchema = z.object({
     }),
   ),
 });
-
+export type QueryConfig = z.infer<typeof queryConfigSchema>;
 export const defaultQueryConfig = {
   main: getDefaultMainChainConfig(),
   external: [], // needs to be derived from accounts in config
 };
 
-export const queryConfigSearchParams = {
+const queryConfigLoader = {
   queryConfig: parseAsJson(queryConfigSchema.parse).withDefault(
     defaultQueryConfig,
   ),
 };
-export const loadSearchParams = createLoader(queryConfigSearchParams);
+export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 
 type RequiredMain = Required<Pick<QueryConfig, "main">>;
 type OptionalExternal = Partial<Pick<QueryConfig, "external">>;

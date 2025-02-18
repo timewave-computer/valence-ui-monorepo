@@ -31,7 +31,6 @@ type GetProgramDataProps = {
 };
 
 export type GetProgramDataReturnValue = {
-  queryConfig: QueryConfig;
   balances?: AccountBalancesReturnValue;
   parsedProgram?: ProgramParserResult;
   rawProgram?: string;
@@ -63,7 +62,6 @@ export const getProgramData = async ({
   } catch (e) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.RPC_CONNECTION,
@@ -76,7 +74,6 @@ export const getProgramData = async ({
   if (!mainChainConfig.registryAddress) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.NO_REGISTRY,
@@ -95,7 +92,6 @@ export const getProgramData = async ({
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.PROGRAM_ID_NOT_FOUND,
@@ -115,7 +111,6 @@ export const getProgramData = async ({
     console.log(`Program ID ${programId} parse error: ${e} `);
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
       rawProgram,
       errors: makeApiErrors([{ code: GetProgramErrorCodes.PARSE }]),
     };
@@ -154,7 +149,6 @@ export const getProgramData = async ({
 
   return {
     dataLastUpdatedAt: getLastUpdatedTime(), // for handling stale time in react-query
-    queryConfig: completeQueryConfig,
     balances: accountBalances,
     parsedProgram: program,
     rawProgram,

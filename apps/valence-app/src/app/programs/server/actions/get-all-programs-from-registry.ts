@@ -19,7 +19,6 @@ import { ArrayOfProgramResponse } from "@valence-ui/generated-types/dist/cosmwas
 type ParsedPrograms = Array<{ id: number; config: ProgramParserResult }>;
 export type GetAllProgramsReturnValue = {
   dataLastUpdatedAt: number;
-  queryConfig: QueryConfig;
   errors: ErrorCodes;
   parsedPrograms?: ParsedPrograms;
 };
@@ -130,7 +129,6 @@ export const getAllProgramsFromRegistry = async ({
 
   return {
     dataLastUpdatedAt: getLastUpdatedTime(),
-    queryConfig: queryConfigManager.getQueryConfig(),
     errors: {},
     parsedPrograms: parsedPrograms,
   };
