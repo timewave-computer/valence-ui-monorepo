@@ -13,6 +13,8 @@ import React from "react";
 import { Toaster, cn } from "@valence-ui/ui-components";
 import ReactQueryDevToolsWithProd from "@/components/react-query-devtools";
 import { Unica77, Unica77Mono } from "@valence-ui/fonts";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
 import "@valence-ui/ui-components/styles/index.css";
 
 export const metadata: Metadata = {
@@ -59,18 +61,20 @@ export default function RootLayout({
           "flex max-h-screen min-h-screen grow flex-col text-valence-black",
         )}
       >
-        <ReactQueryProvider>
-          <JotaiProvider>
-            <FeatureFlagsProvider flags={flags}>
-              <CosmosProvider>
-                <ReactQueryDevToolsWithProd />
-                <ValenceAppNav />
-                {children}
-                <Toaster />
-              </CosmosProvider>
-            </FeatureFlagsProvider>
-          </JotaiProvider>
-        </ReactQueryProvider>
+        <NuqsAdapter>
+          <ReactQueryProvider>
+            <JotaiProvider>
+              <FeatureFlagsProvider flags={flags}>
+                <CosmosProvider>
+                  <ReactQueryDevToolsWithProd />
+                  <ValenceAppNav />
+                  {children}
+                  <Toaster />
+                </CosmosProvider>
+              </FeatureFlagsProvider>
+            </JotaiProvider>
+          </ReactQueryProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ABSOLUTE_URL, PROGRAMS_DESCRIPTION } from "@/const";
 import { X_HANDLE } from "@valence-ui/socials";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export const metadata: Metadata = {
   title: "Programs",
@@ -25,5 +24,5 @@ export default function ProgramsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <NuqsAdapter>{children}</NuqsAdapter>;
+  return <>{children}</>;
 }
