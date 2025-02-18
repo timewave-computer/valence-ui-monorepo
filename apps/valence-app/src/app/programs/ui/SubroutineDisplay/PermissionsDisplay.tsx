@@ -6,9 +6,9 @@ import {
   isPermissionWithoutLimit,
 } from "@/app/programs/server";
 import { Heading } from "@valence-ui/ui-components";
-
 import { AuthorizationInfo } from "@valence-ui/generated-types";
 import { permissionFactoryDenom } from "@/app/programs/ui";
+
 export const PermissionsDisplay = ({
   authorization,
   authorizationsAddress,
@@ -30,7 +30,7 @@ export const PermissionsDisplay = ({
                 return (
                   <li
                     className="font-mono text-xs text-wrap break-words"
-                    key={`permission`}
+                    key={`permission-${originalReciever}-${authorizationsAddress}-${authorization.label}`}
                   >
                     {permissionFactoryDenom({
                       authorizationsAddress,
