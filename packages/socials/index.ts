@@ -7,4 +7,4 @@ export const VAULTS_URL =
   "https://docs.valence.zone/examples/crosschain_vaults.html";
 export const APP_URL = "https://app.valence.zone";
 export const LOCAL_DEV_DOC_URL =
-  "https://docs.valence.zone/testing/_overview.html";
+  "https://docs.valence.zone/deployment/local.html";
