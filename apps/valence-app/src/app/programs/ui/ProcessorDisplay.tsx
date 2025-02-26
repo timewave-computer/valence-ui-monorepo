@@ -18,13 +18,15 @@ import { GetProgramDataReturnValue } from "@/app/programs/server";
 import { BsClockFill } from "react-icons/bs";
 import { displayAddress } from "@/utils";
 import { CelatoneUrl } from "@/const";
-import { ComingSoonHoverContent } from "@/app/programs/ui";
+import { ConnectWalletHoverContent } from "@/app/programs/ui";
+import { useWallet } from "@/hooks";
 
 export const ProcessorDisplay = ({
   program,
 }: {
   program?: GetProgramDataReturnValue;
 }) => {
+  const { isWalletConnected } = useWallet();
   const processorAddresses =
     program?.parsedProgram?.authorizationData?.processor_addrs;
   let processors = Array<[string, string]>();
@@ -95,7 +97,7 @@ export const ProcessorDisplay = ({
             <HoverCardRoot>
               <HoverCardTrigger asChild>
                 <Button
-                  disabled={true}
+                  disabled={!isWalletConnected}
                   PrefixIcon={BsClockFill}
                   variant="secondary"
                   onClick={(e) => {
@@ -106,9 +108,11 @@ export const ProcessorDisplay = ({
                   Tick
                 </Button>
               </HoverCardTrigger>
-              <HoverCardContent side="right" sideOffset={10} className="w-64">
-                <ComingSoonHoverContent />
-              </HoverCardContent>
+              {!isWalletConnected && (
+                <HoverCardContent side="right" sideOffset={10} className="w-64">
+                  <ConnectWalletHoverContent />
+                </HoverCardContent>
+              )}
             </HoverCardRoot>
 
             <div className="flex flex-col  items-start">

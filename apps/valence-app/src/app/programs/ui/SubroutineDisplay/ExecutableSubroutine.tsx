@@ -17,7 +17,7 @@ import {
   ToastMessage,
 } from "@valence-ui/ui-components";
 import {
-  ComingSoonHoverContent,
+  ConnectWalletHoverContent,
   displayLibraryContractName,
   FunctionMessageFormField,
   generateMessageBody,
@@ -33,7 +33,7 @@ import {
 } from "@valence-ui/generated-types";
 import { CelatoneUrl } from "@/const";
 import { displayAddress } from "@/utils";
-import { X_HANDLE, X_URL } from "@valence-ui/socials";
+import { useWallet } from "@/hooks";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -51,6 +51,10 @@ export const ExecutableSubroutine = ({
   isAuthorized: boolean;
   isAtomic: boolean;
 }) => {
+  const { address, isWalletConnected } = useWallet();
+
+  const isExecutedEnabled = isWalletConnected && isAuthorized;
+
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
       messages: functions.map((subroutineFunction) => {
@@ -166,12 +170,14 @@ export const ExecutableSubroutine = ({
       <HoverCardRoot>
         <HoverCardTrigger asChild>
           <FormSubmit className="mt-4" asChild>
-            <Button disabled={true}>Execute</Button>
+            <Button disabled={!isExecutedEnabled}>Execute</Button>
           </FormSubmit>
         </HoverCardTrigger>
-        <HoverCardContent side="right" sideOffset={10} className="w-64">
-          <ComingSoonHoverContent />
-        </HoverCardContent>
+        {!isWalletConnected && (
+          <HoverCardContent side="right" sideOffset={10} className="w-64">
+            <ConnectWalletHoverContent />
+          </HoverCardContent>
+        )}
       </HoverCardRoot>
     </FormRoot>
   );
