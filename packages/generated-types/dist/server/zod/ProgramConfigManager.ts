@@ -325,24 +325,7 @@ export const nonAtomicFunctionSchema = z.object({
   retry_logic: retryLogicSchema.optional().nullable(),
 });
 
-export const libraryConfigUpdateSchema = z.union([
-  z.literal("None"),
-  z.object({
-    ValenceForwarderLibrary: libraryConfigUpdate2Schema,
-  }),
-  z.object({
-    ValenceSplitterLibrary: libraryConfigUpdate3Schema,
-  }),
-  z.object({
-    ValenceReverseSplitterLibrary: libraryConfigUpdate4Schema,
-  }),
-  z.object({
-    ValenceAstroportLper: libraryConfigUpdate5Schema,
-  }),
-  z.object({
-    ValenceAstroportWithdrawer: libraryConfigUpdate6Schema,
-  }),
-]);
+export const libraryConfigUpdateSchema = z.any();
 
 export const atomicSubroutineSchema = z.object({
   functions: z.array(atomicFunctionSchema),
@@ -366,7 +349,7 @@ export const libraryInfoSchema = z.object({
   addr: z.string().optional().nullable(),
   domain: domainSchema,
   name: z.string(),
-  config: libraryConfigUpdateSchema.optional(),
+  config: z.any(),
 });
 
 export const authorizationInfoSchema = z.object({

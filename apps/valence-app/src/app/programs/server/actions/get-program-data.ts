@@ -91,6 +91,7 @@ export const getProgramData = async ({
       registryAddress: mainChainConfig.registryAddress,
       cosmwasmClient: mainChainCosmwasmClient,
     });
+    console.log("raw program", rawProgram);
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
@@ -185,6 +186,7 @@ const fetchProgramFromRegistry = async ({
     });
     const binaryString = response.program_config;
     const decodedString = atob(binaryString);
+    console.log("decoded string", decodedString);
     const programConfig = JSON.parse(decodedString);
 
     return programConfig;

@@ -28,7 +28,7 @@ const generateCosmwasmMessageBody = (message: Message) => {
   message.params_restrictions?.forEach((restriction) => {
     if (isMustBeIncludedParamRestriction(restriction)) {
       const keys = restriction.must_be_included;
-      const nestedObject = constructNestedObject(keys, "");
+      const nestedObject = constructNestedObject(keys, {});
       Object.assign(contents, nestedObject);
     } else if (isCannotBeIncludedParamRestriction(restriction)) {
       // nothing to do, more relevant in validation
@@ -44,7 +44,7 @@ const generateCosmwasmMessageBody = (message: Message) => {
   return contents;
 };
 
-function constructNestedObject(keys: string[], value: string) {
+function constructNestedObject(keys: string[], value: string | object) {
   if (keys.length === 0) {
     return value;
   }
