@@ -4,6 +4,10 @@ interface JsonTextProps extends React.HTMLAttributes<HTMLPreElement> {
   data?: { [key: string]: any } | string;
 }
 
+const replacer = (key: string, value: any) => {
+  return typeof value === "bigint" ? value.toString() + "n" : value;
+};
+
 export const PrettyJson = ({ data, className, ...props }: JsonTextProps) => {
   return (
     <pre
@@ -13,7 +17,7 @@ export const PrettyJson = ({ data, className, ...props }: JsonTextProps) => {
         className,
       )}
     >
-      {JSON.stringify(data, null, 1)}
+      {JSON.stringify(data, replacer, 1)}
     </pre>
   );
 };

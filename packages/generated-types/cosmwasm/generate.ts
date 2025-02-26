@@ -25,6 +25,10 @@ codegen
         name: "ProgramRegistry",
         dir: `${inputDir}/program-registry/schema`,
       },
+      // {
+      //   name: "Authorizations",
+      //   dir: `${inputDir}/authorizations/schema`,
+      // },
     ],
     outPath: outputDir,
     // options are completely optional ;)

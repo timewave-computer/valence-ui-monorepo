@@ -1,0 +1,94 @@
+[
+  {
+    "msg_index": 0,
+    "events": [
+      {
+        "type": "message",
+        "attributes": [
+          {
+            "key": "action",
+            "value": "/cosmwasm.wasm.v1.MsgExecuteContract"
+          },
+          {
+            "key": "sender",
+            "value": "neutron100t2cl9f8880ffa5khgn742f7ful08yefnynv6"
+          },
+          {
+            "key": "module",
+            "value": "wasm"
+          }
+        ]
+      },
+      {
+        "type": "execute",
+        "attributes": [
+          {
+            "key": "_contract_address",
+            "value": "neutron17effuullfzsx5aam73yka0lw2ut9vqg3lxqzw6crz4dpw57up6vqy0xq5m"
+          }
+        ]
+      },
+      {
+        "type": "wasm",
+        "attributes": [
+          {
+            "key": "_contract_address",
+            "value": "neutron17effuullfzsx5aam73yka0lw2ut9vqg3lxqzw6crz4dpw57up6vqy0xq5m"
+          },
+          {
+            "key": "method",
+            "value": "tick"
+          }
+        ]
+      },
+      {
+        "type": "reply",
+        "attributes": [
+          {
+            "key": "_contract_address",
+            "value": "neutron17effuullfzsx5aam73yka0lw2ut9vqg3lxqzw6crz4dpw57up6vqy0xq5m"
+          }
+        ]
+      },
+      {
+        "type": "wasm",
+        "attributes": [
+          {
+            "key": "_contract_address",
+            "value": "neutron17effuullfzsx5aam73yka0lw2ut9vqg3lxqzw6crz4dpw57up6vqy0xq5m"
+          },
+          {
+            "key": "method",
+            "value": "reply"
+          }
+        ]
+      },
+      {
+        "type": "execute",
+        "attributes": [
+          {
+            "key": "_contract_address",
+            "value": "neutron132zz062e2t3tsmyaf9hh2htyh53rdfy7cj7tda3grlhyxv0felesu97gjg"
+          }
+        ]
+      },
+      {
+        "type": "wasm",
+        "attributes": [
+          {
+            "key": "_contract_address",
+            "value": "neutron132zz062e2t3tsmyaf9hh2htyh53rdfy7cj7tda3grlhyxv0felesu97gjg"
+          },
+          {
+            "key": "action",
+            "value": "process_processor_callback"
+          },
+          {
+            "key": "execution_id",
+            "value": "0"
+          }
+        ]
+      }
+    ]
+  }
+]

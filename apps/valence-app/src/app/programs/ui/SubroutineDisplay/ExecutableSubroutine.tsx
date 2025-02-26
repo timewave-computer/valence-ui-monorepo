@@ -18,6 +18,7 @@ import {
 } from "@valence-ui/ui-components";
 import {
   ConnectWalletHoverContent,
+  connectWithSigner,
   displayLibraryContractName,
   FunctionMessageFormField,
   generateMessageBody,
@@ -25,6 +26,8 @@ import {
   jsonToIndentedText,
   LibraryDetails,
   useLibrarySchema,
+  useQueryArgs,
+  useRefetchProgram,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
 import {
@@ -32,8 +35,11 @@ import {
   type NonAtomicFunction,
 } from "@valence-ui/generated-types";
 import { CelatoneUrl } from "@/const";
-import { displayAddress } from "@/utils";
+import { displayAddress, jsonToBase64, jsonToUtf8 } from "@/utils";
 import { useWallet } from "@/hooks";
+import { EncodeObject } from "@cosmjs/proto-signing";
+import { MsgExecuteContract } from "@/smol_telescope/generated-files";
+import { useMutation } from "@tanstack/react-query";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -46,14 +52,15 @@ export const ExecutableSubroutine = ({
   functions,
   isAuthorized,
   isAtomic,
+  authorizationsAddress,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
   isAtomic: boolean;
+  authorizationsAddress: string;
 }) => {
-  const { address, isWalletConnected } = useWallet();
-
-  const isExecutedEnabled = isWalletConnected && isAuthorized;
+  const { address: walletAddress, isWalletConnected } = useWallet();
+  const { queryConfig } = useQueryArgs();
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
@@ -64,35 +71,84 @@ export const ExecutableSubroutine = ({
       }),
     },
   });
-  const { getValues, resetField } = form;
-  const { getLibrarySchema } = useLibrarySchema();
 
-  const handleExecuteMessage = (values: SubroutineMessageFormValues) => {
-    try {
+  const refetch = useRefetchProgram();
+
+  const { mutate: handleExecute, isPending: isExecuting } = useMutation({
+    mutationKey: ["execute"],
+    mutationFn: async (values: SubroutineMessageFormValues) => {
       const extractedValues = values.messages.map((msg) => {
         return JSON.parse(msg);
       });
-      toast.success(
-        <ToastMessage variant="success" title="Messages">
-          <PrettyJson data={extractedValues} />
-        </ToastMessage>,
+      const signer = await connectWithSigner({
+        chainId: "localneutron-1",
+        chainName: "localneutron-1",
+        rpcUrl: queryConfig.main.rpcUrl,
+      });
+
+      const msg1 = extractedValues[0];
+      console.log("body", values.messages, "parsed", msg1);
+
+      const messages: EncodeObject[] = [
+        {
+          typeUrl: MsgExecuteContract.typeUrl,
+          value: {
+            sender: walletAddress,
+            contract: authorizationsAddress,
+            msg: jsonToUtf8({
+              permissionless_action: {
+                send_msgs: {
+                  label: "provide_liquidity",
+                  messages: [
+                    {
+                      cosmwasm_execute_msg: {
+                        msg: jsonToBase64(msg1),
+                      },
+                    },
+                  ],
+                },
+              },
+            }),
+          },
+        },
+      ];
+
+      const result = await signer.signAndBroadcast(
+        walletAddress ?? "",
+        messages,
+        "auto",
       );
-    } catch (e) {
+      return result;
+    },
+    onError: (e) => {
       toast.error(
         <ToastMessage variant="error" title="Failed to execute">
           {e.message}
         </ToastMessage>,
       );
       console.log("error", e);
-    }
-  };
+    },
+    onSuccess: (data, variables) => {
+      toast.success(
+        <ToastMessage variant="success" title="Message sent to processor">
+          <PrettyJson data={variables} />
+        </ToastMessage>,
+      );
+      refetch();
+    },
+  });
+
+  const isExecutedEnabled = isWalletConnected && isAuthorized && !isExecuting;
+
+  const { getValues, resetField } = form;
+  const { getLibrarySchema } = useLibrarySchema();
 
   return (
     <FormRoot
       onSubmit={(e) => {
         e.preventDefault();
         const vals = getValues();
-        return handleExecuteMessage(vals);
+        return handleExecute(vals);
       }}
     >
       <div
@@ -170,7 +226,9 @@ export const ExecutableSubroutine = ({
       <HoverCardRoot>
         <HoverCardTrigger asChild>
           <FormSubmit className="mt-4" asChild>
-            <Button disabled={!isExecutedEnabled}>Execute</Button>
+            <Button isLoading={isExecuting} disabled={!isExecutedEnabled}>
+              Execute
+            </Button>
           </FormSubmit>
         </HoverCardTrigger>
         {!isWalletConnected && (

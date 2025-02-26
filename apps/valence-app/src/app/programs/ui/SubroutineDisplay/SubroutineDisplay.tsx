@@ -71,6 +71,7 @@ export const SubroutineDisplay = ({
 
               {/* it's a separate component because each subroutine should have its own useForm instantiation */}
               <ExecutableSubroutine
+                authorizationsAddress={authorizationsAddress}
                 isAtomic={isAtomic}
                 key={`subroutine-${authorization.label}-${i}`}
                 functions={functions}

@@ -31,6 +31,7 @@ type GetProgramDataProps = {
 };
 
 export type GetProgramDataReturnValue = {
+  programId: string;
   queryConfig: QueryConfig;
   balances?: AccountBalancesReturnValue;
   parsedProgram?: ProgramParserResult;
@@ -62,6 +63,7 @@ export const getProgramData = async ({
     mainChainCosmwasmClient = await getCosmwasmClient(mainChainConfig.rpcUrl);
   } catch (e) {
     return {
+      programId: programId,
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -75,6 +77,8 @@ export const getProgramData = async ({
 
   if (!mainChainConfig.registryAddress) {
     return {
+      programId: programId,
+
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -91,10 +95,11 @@ export const getProgramData = async ({
       registryAddress: mainChainConfig.registryAddress,
       cosmwasmClient: mainChainCosmwasmClient,
     });
-    console.log("raw program", rawProgram);
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
+      programId: programId,
+
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -115,6 +120,8 @@ export const getProgramData = async ({
     queryConfigManager.setAllChainsConfigIfEmpty({});
     console.log(`Program ID ${programId} parse error: ${e} `);
     return {
+      programId: programId,
+
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       rawProgram,
@@ -154,6 +161,7 @@ export const getProgramData = async ({
   });
 
   return {
+    programId: programId,
     dataLastUpdatedAt: getLastUpdatedTime(), // for handling stale time in react-query
     queryConfig: completeQueryConfig, // needed to decide if refetch needed in useQuery
     balances: accountBalances,
@@ -186,7 +194,6 @@ const fetchProgramFromRegistry = async ({
     });
     const binaryString = response.program_config;
     const decodedString = atob(binaryString);
-    console.log("decoded string", decodedString);
     const programConfig = JSON.parse(decodedString);
 
     return programConfig;
@@ -274,7 +281,7 @@ function getDenomsAndChainIds({
   return metadataQueries;
 }
 
-type FetchProcessorQueuesReturnType = Array<{
+export type FetchProcessorQueuesReturnType = Array<{
   chainName: string;
   processorAddress: string;
   queue?: ArrayOfMessageBatch;

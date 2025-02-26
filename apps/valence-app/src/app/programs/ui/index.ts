@@ -15,3 +15,4 @@ export * from "./useGetAllProgramsQuery";
 export * from "./common-query-config";
 export * from "./RefetchButton";
 export * from "./ConnectWalletHoverContent";
+export * from "./ProcessorSection";
