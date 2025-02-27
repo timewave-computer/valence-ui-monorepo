@@ -26,7 +26,3 @@ export const QUERY_KEYS = {
   PROGRAMS_LIBRARY_SCHEMA: "programs-library-schema",
   PROGRAMS_REGISTRY_ALL_PROGRAMS: "program-registry-all-programs",
 };
-
-export const MUTATION_KEYS = {
-  PROGRAMS_TICK: "tick",
-};

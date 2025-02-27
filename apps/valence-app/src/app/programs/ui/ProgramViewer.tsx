@@ -119,7 +119,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-2  "
           >
-            <ExecutionHistoryTable programId={programId} />
+            <ExecutionHistoryTable program={data} />
           </Card>
         </div>
       </div>

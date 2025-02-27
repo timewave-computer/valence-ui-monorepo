@@ -17,8 +17,8 @@ import {
 } from "@valence-ui/ui-components";
 import { type FetchProcessorQueuesReturnType } from "@/app/programs/server";
 import { BsClockFill } from "react-icons/bs";
-import { base64ToJson, displayAddress, jsonToUtf8, utf8ToJson } from "@/utils";
-import { CelatoneUrl, MUTATION_KEYS, QUERY_KEYS } from "@/const";
+import { displayAddress, jsonToUtf8 } from "@/utils";
+import { CelatoneUrl, QUERY_KEYS } from "@/const";
 import {
   ConnectWalletHoverContent,
   connectWithSigner,
@@ -30,12 +30,10 @@ import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const ProcessorSection = ({
-  programId,
   processorData,
   processorAddress,
   domain,
 }: {
-  programId?: string;
   processorData?: FetchProcessorQueuesReturnType[number];
   processorAddress: string;
   domain?: string;
@@ -45,7 +43,6 @@ export const ProcessorSection = ({
   const queryClient = useQueryClient();
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
-    mutationKey: [MUTATION_KEYS.PROGRAMS_TICK, programId],
     mutationFn: async () => {
       const signer = await connectWithSigner({
         chainId: "localneutron-1",
@@ -102,27 +99,12 @@ export const ProcessorSection = ({
 
   const data =
     queue?.map((messageBatch) => {
-      const { id, priority, retry, msgs, subroutine } = messageBatch;
+      console.log("message batch", messageBatch);
 
-      const possiblyDecodedMsgs = msgs.map((msg) => {
-        try {
-          if (msg.cosmwasm_execute_msg) {
-            return {
-              ...msg,
-              cosmwasm_execute_msg: {
-                decoded: base64ToJson(msg.cosmwasm_execute_msg.msg),
-                msg: base64ToJson(msg.cosmwasm_execute_msg.msg),
-              },
-            };
-          }
-        } catch (e) {
-          return msg;
-        }
-      });
+      const { id, priority, retry, msgs, subroutine } = messageBatch;
 
       return {
         [ProcessorTableKeys.executionId]: { value: id.toString() },
-        // [ProcessorTableKeys.subroutineLabel]: subroutine,
         [ProcessorTableKeys.priority]: {
           value: priority,
           color:
@@ -143,7 +125,7 @@ export const ProcessorSection = ({
           body: (
             <>
               <Heading level="h2">Messages</Heading>
-              <PrettyJson data={possiblyDecodedMsgs} />
+              <PrettyJson data={msgs} />
             </>
           ),
         },
@@ -223,7 +205,6 @@ export const ProcessorSection = ({
 
 enum ProcessorTableKeys {
   executionId = "executionId",
-  // subroutineLabel = "subroutineLabel",
   priority = "priority",
   retryCounts = "retryCounts",
   retryCooldown = "retryCooldown",
@@ -238,11 +219,6 @@ const headers: TableColumnHeader[] = [
     cellType: CellType.Text,
     align: "left",
   },
-  // {
-  //   key: ProcessorTableKeys.subroutineLabel,
-  //   label: "Subroutine Label",
-  //   cellType: CellType.Text,
-  // },
   {
     key: ProcessorTableKeys.priority,
     label: "Priority",

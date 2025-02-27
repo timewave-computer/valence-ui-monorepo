@@ -10,7 +10,7 @@ import { type GetProgramDataReturnValue } from "@/app/programs/server";
 import { displayAccountName, displayDomain } from "@/app/programs/ui";
 import { CelatoneUrl } from "@/const";
 import { useAssetMetadata } from "@/app/rebalancer/ui";
-import { displayAddress, displayNumberV2, microToBase } from "@/utils";
+import { displayAddress, displayNumberV2 } from "@/utils";
 
 export const AccountsTable = ({
   program,
@@ -35,24 +35,11 @@ export const AccountsTable = ({
               ...balances.map((balance) => {
                 const asset = getOriginAsset(balance.denom);
 
-                let symbol: string | undefined = undefined,
-                  amount: string;
-                if (asset) {
-                  symbol = asset.symbol ?? "";
-                  amount = displayNumberV2(
-                    microToBase(balance.amount, asset.decimals),
-                    {
-                      maximumFractionDigits: 6,
-                      minimumFractionDigits: 2,
-                    },
-                  );
-                } else {
-                  symbol = "-";
-                  amount = `${displayNumberV2(parseFloat(balance.amount), {
-                    maximumFractionDigits: 6,
-                    minimumFractionDigits: 2,
-                  })}u`;
-                }
+                const amount = `${displayNumberV2(parseFloat(balance.amount), {
+                  maximumFractionDigits: 6,
+                  minimumFractionDigits: 2,
+                })}`;
+                const symbol = asset?.symbol ?? "-";
 
                 return {
                   denom: {
@@ -112,12 +99,12 @@ const headers: TableColumnHeader[] = [
     label: "Symbol",
     cellType: CellType.Text,
   },
+
   {
     key: "denom",
     label: "Denom",
     cellType: CellType.Text,
   },
-
   {
     key: "balances",
     label: "Balance",
