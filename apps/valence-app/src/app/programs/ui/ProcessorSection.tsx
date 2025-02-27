@@ -21,7 +21,7 @@ import { displayAddress, jsonToUtf8 } from "@/utils";
 import { CelatoneUrl, QUERY_KEYS } from "@/const";
 import {
   ConnectWalletHoverContent,
-  connectWithSigner,
+  connectWithOfflineSigner,
   useQueryArgs,
 } from "@/app/programs/ui";
 import { useWallet } from "@/hooks";
@@ -44,9 +44,9 @@ export const ProcessorSection = ({
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
-      const signer = await connectWithSigner({
-        chainId: "localneutron-1",
-        chainName: "localneutron-1",
+      const signer = await connectWithOfflineSigner({
+        chainId: queryConfig.main.chainId,
+        chainName: queryConfig.main.name,
         rpcUrl: queryConfig.main.rpcUrl,
       });
 

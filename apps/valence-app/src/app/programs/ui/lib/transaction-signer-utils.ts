@@ -1,12 +1,20 @@
 "use client";
 
+declare global {
+  interface Window {
+    keplr?: any;
+    getOfflineSigner: (chainId: string) => Promise<OfflineSigner | undefined>;
+  }
+}
+
 import { aminoTypes, protobufRegistry } from "@/context";
+import { OfflineSigner } from "@cosmjs/proto-signing";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { ChainInfo } from "@keplr-wallet/types";
 
 const { keplr } = window;
 
-export const connectWithSigner = async ({
+export const connectWithOfflineSigner = async ({
   chainId,
   rpcUrl,
   chainName,
@@ -21,11 +29,24 @@ export const connectWithSigner = async ({
     rpcUrl,
   });
 
+  if (!keplr) {
+    throw new Error(
+      "Keplr extension required. Support for more wallets will be added soon.",
+    );
+  }
+
   await keplr.experimentalSuggestChain(testChainInfo);
   await keplr.enable(chainId);
 
-  //@ts-ignore
-  const offlineSigner = window.getOfflineSigner!(chainId);
+  const offlineSigner = window.getOfflineSigner
+    ? await window.getOfflineSigner(chainId)
+    : undefined;
+
+  if (!offlineSigner) {
+    throw new Error(
+      "Offline signer not initialized. Try reconnecting wallet, and contact valence team if issue persists.",
+    );
+  }
 
   return SigningStargateClient.connectWithSigner(
     testChainInfo.rpc,
@@ -48,8 +69,8 @@ const getTestnetChainInfo = ({
   rpcUrl: string;
 }): ChainInfo => {
   return {
-    chainId: `${chainId}`,
-    chainName: `${chainName}`,
+    chainId: chainId,
+    chainName: chainName,
     rpc: rpcUrl,
     rest: rpcUrl,
     bip44: {

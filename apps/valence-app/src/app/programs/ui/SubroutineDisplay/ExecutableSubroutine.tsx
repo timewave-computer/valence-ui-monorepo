@@ -17,7 +17,7 @@ import {
 } from "@valence-ui/ui-components";
 import {
   ConnectWalletHoverContent,
-  connectWithSigner,
+  connectWithOfflineSigner,
   displayLibraryContractName,
   FunctionMessageFormField,
   generateMessageBody,
@@ -84,7 +84,8 @@ export const ExecutableSubroutine = ({
       const extractedValues = values.messages.map((msg) => {
         return JSON.parse(msg);
       });
-      const signer = await connectWithSigner({
+
+      const signer = await connectWithOfflineSigner({
         chainId: queryConfig.main.chainId,
         chainName: queryConfig.main.name,
         rpcUrl: queryConfig.main.rpcUrl,
@@ -133,9 +134,10 @@ export const ExecutableSubroutine = ({
     },
     onSuccess: () => {
       toast.success(
-        <ToastMessage variant="success" title="Execution successful">
-          Messages were successfully sent to the processor.
-        </ToastMessage>,
+        <ToastMessage
+          variant="success"
+          title="Messages sent to processor"
+        ></ToastMessage>,
       );
       queryClient.invalidateQueries(
         {
