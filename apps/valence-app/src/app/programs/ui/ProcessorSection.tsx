@@ -74,7 +74,7 @@ export const ProcessorSection = ({
     },
     onError: (e) => {
       toast.error(
-        <ToastMessage variant="error" title="Failed to tick">
+        <ToastMessage variant="error" title="Tick failed">
           {e.message}
         </ToastMessage>,
       );
@@ -90,7 +90,9 @@ export const ProcessorSection = ({
         {},
       );
       toast.success(
-        <ToastMessage variant="success" title="Tick Executed"></ToastMessage>,
+        <ToastMessage variant="success" title="Tick successful">
+          Subroutine will be executed by the authorizations contract.
+        </ToastMessage>,
       );
     },
   });
@@ -99,8 +101,6 @@ export const ProcessorSection = ({
 
   const data =
     queue?.map((messageBatch) => {
-      console.log("message batch", messageBatch);
-
       const { id, priority, retry, msgs, subroutine } = messageBatch;
 
       return {

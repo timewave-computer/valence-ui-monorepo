@@ -38,6 +38,7 @@ export const SubroutineDisplay = ({
         const isAuthorized = isPermissionless(authorization.mode);
         const isAtomic =
           displaySubroutineType(authorization.subroutine) === "ATOMIC";
+        const subroutineLabel = authorization.label;
 
         return (
           <CollapsibleSectionRoot
@@ -51,7 +52,7 @@ export const SubroutineDisplay = ({
             defaultIsOpen={false}
           >
             <CollapsibleSectionHeader>
-              <Heading level="h3">{authorization.label.toUpperCase()}</Heading>
+              <Heading level="h3">{subroutineLabel.toUpperCase()}</Heading>
             </CollapsibleSectionHeader>
             <CollapsibleSectionContent>
               <div className="flex flex-row gap-2 pb-2">
@@ -71,6 +72,7 @@ export const SubroutineDisplay = ({
 
               {/* it's a separate component because each subroutine should have its own useForm instantiation */}
               <ExecutableSubroutine
+                subroutineLabel={subroutineLabel}
                 authorizationsAddress={authorizationsAddress}
                 isAtomic={isAtomic}
                 key={`subroutine-${authorization.label}-${i}`}

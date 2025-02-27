@@ -73,11 +73,17 @@ export const RpcConfigForm = ({}: {}) => {
       >
         <div className="flex flex-col gap-2 ">
           <Heading level="h3">Main Chain</Heading>
-          <FormField name="main.rpcUrl">
-            <InputLabel
+          <FormField name="main.chainId">
+            <InputLabel size="sm" label={`Chain ID`} />
+
+            <TextInput
               size="sm"
-              label={`${mainChain.name} RPC URL (${mainChain.chainId})`}
+              {...register("main.chainId")}
+              placeholder="neutron-1"
             />
+          </FormField>
+          <FormField name="main.rpcUrl">
+            <InputLabel size="sm" label={`RPC URL`} />
 
             <TextInput
               size="sm"

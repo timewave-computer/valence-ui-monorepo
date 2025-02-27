@@ -16,7 +16,7 @@ export type CellLink = {
   LinkComponent?: ElementType<any>;
 };
 export interface NumberCellData {
-  value: string;
+  value: number;
   link?: CellLink;
   isUsd?: boolean;
 }

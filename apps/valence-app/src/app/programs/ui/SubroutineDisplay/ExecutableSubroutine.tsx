@@ -51,11 +51,13 @@ export const ExecutableSubroutine = ({
   isAuthorized,
   isAtomic,
   authorizationsAddress,
+  subroutineLabel,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
   isAtomic: boolean;
   authorizationsAddress: string;
+  subroutineLabel: string;
 }) => {
   const { address: walletAddress, isWalletConnected } = useWallet();
   const { queryConfig } = useQueryArgs();
@@ -72,18 +74,29 @@ export const ExecutableSubroutine = ({
   });
 
   const { mutate: handleExecute, isPending: isExecuting } = useMutation({
-    mutationFn: async (values: SubroutineMessageFormValues) => {
+    mutationFn: async ({
+      values,
+      subroutineLabel,
+    }: {
+      values: SubroutineMessageFormValues;
+      subroutineLabel: string;
+    }) => {
       const extractedValues = values.messages.map((msg) => {
         return JSON.parse(msg);
       });
       const signer = await connectWithSigner({
-        chainId: "localneutron-1",
-        chainName: "localneutron-1",
+        chainId: queryConfig.main.chainId,
+        chainName: queryConfig.main.name,
         rpcUrl: queryConfig.main.rpcUrl,
       });
 
-      const msg1 = extractedValues[0];
-      console.log("body", values.messages, "parsed", msg1);
+      const cwMessageBodies = extractedValues.map((msg) => {
+        return {
+          cosmwasm_execute_msg: {
+            msg: jsonToBase64(msg),
+          },
+        };
+      });
 
       const messages: EncodeObject[] = [
         {
@@ -94,14 +107,8 @@ export const ExecutableSubroutine = ({
             msg: jsonToUtf8({
               permissionless_action: {
                 send_msgs: {
-                  label: "withdraw_liquidity",
-                  messages: [
-                    {
-                      cosmwasm_execute_msg: {
-                        msg: jsonToBase64(msg1),
-                      },
-                    },
-                  ],
+                  label: subroutineLabel,
+                  messages: cwMessageBodies,
                 },
               },
             }),
@@ -118,18 +125,17 @@ export const ExecutableSubroutine = ({
     },
     onError: (e) => {
       toast.error(
-        <ToastMessage variant="error" title="Failed to execute">
+        <ToastMessage variant="error" title="Execution failed">
           {e.message}
         </ToastMessage>,
       );
       console.log("error", e);
     },
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       toast.success(
-        <ToastMessage
-          variant="success"
-          title="Execution submitted to processor"
-        ></ToastMessage>,
+        <ToastMessage variant="success" title="Execution successful">
+          Messages were successfully sent to the processor.
+        </ToastMessage>,
       );
       queryClient.invalidateQueries(
         {
@@ -152,7 +158,10 @@ export const ExecutableSubroutine = ({
       onSubmit={(e) => {
         e.preventDefault();
         const vals = getValues();
-        return handleExecute(vals);
+        return handleExecute({
+          values: vals,
+          subroutineLabel: subroutineLabel,
+        });
       }}
     >
       <div
