@@ -17,47 +17,35 @@ import {
 } from "@valence-ui/ui-components";
 import { type FetchProcessorQueuesReturnType } from "@/app/programs/server";
 import { BsClockFill } from "react-icons/bs";
-import { displayAddress, jsonToUtf8, utf8ToJson } from "@/utils";
-import { CelatoneUrl } from "@/const";
+import { base64ToJson, displayAddress, jsonToUtf8, utf8ToJson } from "@/utils";
+import { CelatoneUrl, MUTATION_KEYS, QUERY_KEYS } from "@/const";
 import {
   ConnectWalletHoverContent,
   connectWithSigner,
   useQueryArgs,
-  useRefetchProgram,
 } from "@/app/programs/ui";
 import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
-import {
-  useMutation,
-  useMutationState,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const ProcessorSection = ({
+  programId,
   processorData,
   processorAddress,
   domain,
 }: {
+  programId?: string;
   processorData?: FetchProcessorQueuesReturnType[number];
   processorAddress: string;
   domain?: string;
 }) => {
   const { isWalletConnected, address: walletAddress } = useWallet();
   const { queryConfig } = useQueryArgs();
-  const refetch = useRefetchProgram();
   const queryClient = useQueryClient();
 
-  const mutationData = useMutationState({
-    // this mutation key needs to match the mutation key of the given mutation (see above)
-    filters: { mutationKey: ["tick"] },
-    select: (mutation) => mutation.state.data,
-  });
-
-  console.log("mutationData", mutationData);
-
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
-    mutationKey: ["tick"],
+    mutationKey: [MUTATION_KEYS.PROGRAMS_TICK, programId],
     mutationFn: async () => {
       const signer = await connectWithSigner({
         chainId: "localneutron-1",
@@ -96,12 +84,17 @@ export const ProcessorSection = ({
       console.log("error", e);
     },
     onSuccess: (result) => {
-      toast.success(
-        <ToastMessage variant="success" title="Tick Result">
-          <PrettyJson data={result} />
-        </ToastMessage>,
+      queryClient.invalidateQueries(
+        {
+          refetchType: "active",
+          exact: false,
+          queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM],
+        },
+        {},
       );
-      refetch();
+      toast.success(
+        <ToastMessage variant="success" title="Tick Executed"></ToastMessage>,
+      );
     },
   });
 
@@ -110,6 +103,23 @@ export const ProcessorSection = ({
   const data =
     queue?.map((messageBatch) => {
       const { id, priority, retry, msgs, subroutine } = messageBatch;
+
+      const possiblyDecodedMsgs = msgs.map((msg) => {
+        try {
+          if (msg.cosmwasm_execute_msg) {
+            return {
+              ...msg,
+              cosmwasm_execute_msg: {
+                decoded: base64ToJson(msg.cosmwasm_execute_msg.msg),
+                msg: base64ToJson(msg.cosmwasm_execute_msg.msg),
+              },
+            };
+          }
+        } catch (e) {
+          return msg;
+        }
+      });
+
       return {
         [ProcessorTableKeys.executionId]: { value: id.toString() },
         // [ProcessorTableKeys.subroutineLabel]: subroutine,
@@ -133,7 +143,7 @@ export const ProcessorSection = ({
           body: (
             <>
               <Heading level="h2">Messages</Heading>
-              <PrettyJson data={msgs} />
+              <PrettyJson data={possiblyDecodedMsgs} />
             </>
           ),
         },

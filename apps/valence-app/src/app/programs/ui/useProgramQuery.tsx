@@ -1,5 +1,5 @@
 "use client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
 import {
   getProgramData,
@@ -71,23 +71,4 @@ export const useProgramQuery = ({
     // IMPORTANT, so react-query knows when to no longer use initialData and fetch instead
     initialDataUpdatedAt: initialQueryData?.dataLastUpdatedAt,
   });
-};
-
-export const useRefetchProgram = () => {
-  const queryClient = useQueryClient();
-
-  const refetchProgram = () => {
-    console.log("refetching program");
-
-    queryClient.invalidateQueries(
-      {
-        refetchType: "active",
-        exact: false,
-        queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM],
-      },
-      {},
-    );
-  };
-
-  return refetchProgram;
 };

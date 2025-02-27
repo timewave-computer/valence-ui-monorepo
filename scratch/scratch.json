@@ -3,37 +3,11 @@
     "msg_index": 0,
     "events": [
       {
-        "type": "message",
-        "attributes": [
-          {
-            "key": "action",
-            "value": "/cosmwasm.wasm.v1.MsgExecuteContract"
-          },
-          {
-            "key": "sender",
-            "value": "neutron100t2cl9f8880ffa5khgn742f7ful08yefnynv6"
-          },
-          {
-            "key": "module",
-            "value": "wasm"
-          }
-        ]
-      },
-      {
-        "type": "execute",
-        "attributes": [
-          {
-            "key": "_contract_address",
-            "value": "neutron17effuullfzsx5aam73yka0lw2ut9vqg3lxqzw6crz4dpw57up6vqy0xq5m"
-          }
-        ]
-      },
-      {
         "type": "wasm",
         "attributes": [
           {
             "key": "_contract_address",
-            "value": "neutron17effuullfzsx5aam73yka0lw2ut9vqg3lxqzw6crz4dpw57up6vqy0xq5m"
+            "value": "neutron1n2crxkwkyt8vmuwn50j7gs5j563f5lkqs0hct2c2cjjfqv8umywq5hsmzt"
           },
           {
             "key": "method",
@@ -46,7 +20,7 @@
         "attributes": [
           {
             "key": "_contract_address",
-            "value": "neutron17effuullfzsx5aam73yka0lw2ut9vqg3lxqzw6crz4dpw57up6vqy0xq5m"
+            "value": "neutron1n2crxkwkyt8vmuwn50j7gs5j563f5lkqs0hct2c2cjjfqv8umywq5hsmzt"
           }
         ]
       },
@@ -55,7 +29,7 @@
         "attributes": [
           {
             "key": "_contract_address",
-            "value": "neutron17effuullfzsx5aam73yka0lw2ut9vqg3lxqzw6crz4dpw57up6vqy0xq5m"
+            "value": "neutron1n2crxkwkyt8vmuwn50j7gs5j563f5lkqs0hct2c2cjjfqv8umywq5hsmzt"
           },
           {
             "key": "method",
@@ -68,7 +42,7 @@
         "attributes": [
           {
             "key": "_contract_address",
-            "value": "neutron132zz062e2t3tsmyaf9hh2htyh53rdfy7cj7tda3grlhyxv0felesu97gjg"
+            "value": "neutron1yhvzj0gjv4jq7jeg5qspahn27jwlzz33uvnz9fnftpsvyveykeqsf7zlza"
           }
         ]
       },
@@ -77,7 +51,7 @@
         "attributes": [
           {
             "key": "_contract_address",
-            "value": "neutron132zz062e2t3tsmyaf9hh2htyh53rdfy7cj7tda3grlhyxv0felesu97gjg"
+            "value": "neutron1yhvzj0gjv4jq7jeg5qspahn27jwlzz33uvnz9fnftpsvyveykeqsf7zlza"
           },
           {
             "key": "action",
@@ -85,7 +59,7 @@
           },
           {
             "key": "execution_id",
-            "value": "0"
+            "value": "10"
           }
         ]
       }

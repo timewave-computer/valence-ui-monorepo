@@ -9,7 +9,6 @@ import {
   HoverCardRoot,
   HoverCardTrigger,
   LinkText,
-  PrettyJson,
   Sheet,
   SheetContent,
   SheetTrigger,
@@ -27,19 +26,18 @@ import {
   LibraryDetails,
   useLibrarySchema,
   useQueryArgs,
-  useRefetchProgram,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
 import {
   type AtomicFunction,
   type NonAtomicFunction,
 } from "@valence-ui/generated-types";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl, QUERY_KEYS } from "@/const";
 import { displayAddress, jsonToBase64, jsonToUtf8 } from "@/utils";
 import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -61,6 +59,7 @@ export const ExecutableSubroutine = ({
 }) => {
   const { address: walletAddress, isWalletConnected } = useWallet();
   const { queryConfig } = useQueryArgs();
+  const queryClient = useQueryClient();
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
@@ -72,10 +71,7 @@ export const ExecutableSubroutine = ({
     },
   });
 
-  const refetch = useRefetchProgram();
-
   const { mutate: handleExecute, isPending: isExecuting } = useMutation({
-    mutationKey: ["execute"],
     mutationFn: async (values: SubroutineMessageFormValues) => {
       const extractedValues = values.messages.map((msg) => {
         return JSON.parse(msg);
@@ -98,7 +94,7 @@ export const ExecutableSubroutine = ({
             msg: jsonToUtf8({
               permissionless_action: {
                 send_msgs: {
-                  label: "provide_liquidity",
+                  label: "withdraw_liquidity",
                   messages: [
                     {
                       cosmwasm_execute_msg: {
@@ -130,11 +126,19 @@ export const ExecutableSubroutine = ({
     },
     onSuccess: (data, variables) => {
       toast.success(
-        <ToastMessage variant="success" title="Message sent to processor">
-          <PrettyJson data={variables} />
-        </ToastMessage>,
+        <ToastMessage
+          variant="success"
+          title="Execution submitted to processor"
+        ></ToastMessage>,
       );
-      refetch();
+      queryClient.invalidateQueries(
+        {
+          refetchType: "active",
+          exact: false,
+          queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM],
+        },
+        {},
+      );
     },
   });
 

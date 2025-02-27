@@ -4,7 +4,6 @@ import { aminoTypes, protobufRegistry } from "@/context";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { ChainInfo } from "@keplr-wallet/types";
 
-//@ts-ignore
 const { keplr } = window;
 
 export const connectWithSigner = async ({
@@ -19,15 +18,14 @@ export const connectWithSigner = async ({
   const testChainInfo = getTestnetChainInfo({
     chainId,
     chainName,
-    // chainName: "localneutron-1",
     rpcUrl,
   });
 
   await keplr.experimentalSuggestChain(testChainInfo);
-  await keplr.enable("localneutron-1");
+  await keplr.enable(chainId);
 
   //@ts-ignore
-  const offlineSigner = window.getOfflineSigner!("localneutron-1");
+  const offlineSigner = window.getOfflineSigner!(chainId);
 
   return SigningStargateClient.connectWithSigner(
     testChainInfo.rpc,

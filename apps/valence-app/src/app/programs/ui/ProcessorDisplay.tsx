@@ -31,6 +31,7 @@ export const ProcessorDisplay = ({
 
     return (
       <ProcessorSection
+        programId={program?.programId}
         key={`processor-table-${processorAddress}`}
         processorData={processorData}
         processorAddress={processorAddress}
