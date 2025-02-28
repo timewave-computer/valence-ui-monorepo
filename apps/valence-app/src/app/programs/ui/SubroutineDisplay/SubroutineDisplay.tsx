@@ -1,6 +1,8 @@
 "use client";
 import {
+  isPermissioned,
   isPermissionless,
+  isPermissionWithLimit,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import {
@@ -16,12 +18,14 @@ import {
   displayAuthMode,
   displaySubroutineType,
   ExecutableSubroutine,
+  getExecutionLimit,
   getSubroutine,
   permissionFactoryDenom,
   PermissionsDisplay,
   useQueryArgs,
 } from "@/app/programs/ui";
 import { useWallet, useWalletBalancesV2 } from "@/hooks";
+import { AuthorizationInfo } from "@valence-ui/generated-types";
 
 export const SubroutineDisplay = ({
   program,
@@ -52,20 +56,24 @@ export const SubroutineDisplay = ({
           displaySubroutineType(authorization.subroutine) === "ATOMIC";
         const subroutineLabel = authorization.label;
 
-        const authToken = isSubroutinePermissionless
+        const authTokenDenom = isSubroutinePermissionless
           ? null
           : permissionFactoryDenom({
               authorizationsAddress,
               authorizationLabel: subroutineLabel,
             });
-        const isHoldingAuthToken = authToken
-          ? null
-          : balances?.find((b) => b.denom === authToken);
+
+        const authTokenBalance = balances?.find(
+          (b) => b.denom === authTokenDenom,
+        );
+        const isHoldingAuthToken = !!authTokenBalance;
         const isAuthorized = isSubroutinePermissionless
           ? true
           : isLoadingBalances
             ? false
             : !!isHoldingAuthToken;
+
+        const executionLimit = getExecutionLimit(authorization.mode);
 
         return (
           <CollapsibleSectionRoot
@@ -105,6 +113,8 @@ export const SubroutineDisplay = ({
                 key={`subroutine-${authorization.label}-${i}`}
                 functions={functions}
                 isAuthorized={isAuthorized}
+                authTokenBalance={authTokenBalance}
+                executionLimit={executionLimit}
               />
             </CollapsibleSectionContent>
           </CollapsibleSectionRoot>

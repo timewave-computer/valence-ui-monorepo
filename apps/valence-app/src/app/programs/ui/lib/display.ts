@@ -4,6 +4,7 @@ import {
   Subroutine,
 } from "@valence-ui/generated-types";
 import { getSubroutineType, isPermissionless } from "@/app/programs/ui";
+import { isPermissioned, isPermissionWithLimit } from "@/app/programs/server";
 
 export const displayDomain = (domain: Domain) => {
   return Object.values(domain)[0];
@@ -55,4 +56,19 @@ export const permissionFactoryDenom = ({
   authorizationLabel: string;
 }) => {
   return `factory/${authorizationsAddress}/${authorizationLabel}`;
+};
+
+export const getExecutionLimit = (
+  authorizationMode: AuthorizationModeInfo,
+): string | null => {
+  if (isPermissionless(authorizationMode)) {
+    return null;
+  }
+  if (isPermissioned(authorizationMode)) {
+    if (isPermissionWithLimit(authorizationMode.permissioned)) {
+      // TODO: confused
+      return authorizationMode.permissioned.with_call_limit[0][1];
+    }
+  }
+  return null;
 };

@@ -8,6 +8,7 @@ import {
   HoverCardContent,
   HoverCardRoot,
   HoverCardTrigger,
+  InfoText,
   LinkText,
   Sheet,
   SheetContent,
@@ -24,7 +25,6 @@ import {
   getFunctionLibraryAddress,
   jsonToIndentedText,
   LibraryDetails,
-  permissionFactoryDenom,
   useLibrarySchema,
   useQueryArgs,
 } from "@/app/programs/ui";
@@ -39,6 +39,7 @@ import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Coin } from "@cosmjs/stargate";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -53,12 +54,16 @@ export const ExecutableSubroutine = ({
   isAtomic,
   authorizationsAddress,
   subroutineLabel,
+  authTokenBalance,
+  executionLimit,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
   isAtomic: boolean;
   authorizationsAddress: string;
   subroutineLabel: string;
+  authTokenBalance: Coin | undefined;
+  executionLimit: string | null;
 }) => {
   const { address: walletAddress, isWalletConnected } = useWallet();
   const { queryConfig } = useQueryArgs();
@@ -254,10 +259,7 @@ export const ExecutableSubroutine = ({
               <div className="text-sm pt-2">
                 Wallet must hold the authorization token:{" "}
                 <span className="font-mono text-wrap break-words text-xs">
-                  {permissionFactoryDenom({
-                    authorizationsAddress,
-                    authorizationLabel: subroutineLabel,
-                  })}
+                  {authTokenBalance?.denom}
                 </span>
               </div>
             </div>
@@ -269,6 +271,11 @@ export const ExecutableSubroutine = ({
           </HoverCardContent>
         )}
       </HoverCardRoot>
+      {isAuthorized && executionLimit && (
+        <InfoText className="pt-2">
+          ({authTokenBalance?.amount}/{executionLimit} executions remaining)
+        </InfoText>
+      )}
     </FormRoot>
   );
 };
