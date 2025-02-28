@@ -8,7 +8,8 @@ export const QUERY_KEYS = {
   ASTROPORT_PRICES: "astroport-prices",
   LIVE_AUCTIONS: "live-auctions",
   HISTORIC_VALUES: "historic-values",
-  WALLET_BALANCES: "wallet-balances",
+  WALLET_BALANCES: "wallet-balances", // only queries balances supported in rebalancer. should deprecate
+  WALLET_BALANCES_V2: "wallet-balances_v2",
   COINGECKO_PRICE: "coingecko-price",
   ORIGIN_ASSET: "origin-asset",
   VALENCE_ACCOUNT: "valence-account",

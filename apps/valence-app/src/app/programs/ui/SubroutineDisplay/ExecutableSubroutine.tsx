@@ -24,6 +24,7 @@ import {
   getFunctionLibraryAddress,
   jsonToIndentedText,
   LibraryDetails,
+  permissionFactoryDenom,
   useLibrarySchema,
   useQueryArgs,
 } from "@/app/programs/ui";
@@ -246,6 +247,22 @@ export const ExecutableSubroutine = ({
             </Button>
           </FormSubmit>
         </HoverCardTrigger>
+        {!isAuthorized && (
+          <HoverCardContent side="right" sideOffset={10} className="w-80">
+            <div>
+              <Heading level="h3">Unauthorized.</Heading>
+              <div className="text-sm pt-2">
+                Wallet must hold the authorization token:{" "}
+                <span className="font-mono text-wrap break-words text-xs">
+                  {permissionFactoryDenom({
+                    authorizationsAddress,
+                    authorizationLabel: subroutineLabel,
+                  })}
+                </span>
+              </div>
+            </div>
+          </HoverCardContent>
+        )}
         {!isWalletConnected && (
           <HoverCardContent side="right" sideOffset={10} className="w-64">
             <ConnectWalletHoverContent />

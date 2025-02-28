@@ -75,7 +75,6 @@ export const FunctionMessageFormField = ({
           name={fieldRef.name}
           size="sm"
           rows={textAreaSize}
-          isDisabled={!isAuthorized}
         />
         <div className="flex flex-col">
           {Object.keys(customErrors.types || {}).map((e, i) => (

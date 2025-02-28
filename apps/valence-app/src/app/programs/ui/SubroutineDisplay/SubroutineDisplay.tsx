@@ -17,14 +17,25 @@ import {
   displaySubroutineType,
   ExecutableSubroutine,
   getSubroutine,
+  permissionFactoryDenom,
   PermissionsDisplay,
+  useQueryArgs,
 } from "@/app/programs/ui";
+import { useWallet, useWalletBalancesV2 } from "@/hooks";
 
 export const SubroutineDisplay = ({
   program,
 }: {
   program?: GetProgramDataReturnValue;
 }) => {
+  const { queryConfig } = useQueryArgs();
+  const { address: walletAddress } = useWallet();
+
+  const { data: balances, isLoading: isLoadingBalances } = useWalletBalancesV2({
+    rpcUrl: queryConfig?.main?.rpcUrl,
+    address: walletAddress,
+  });
+
   const authorizations = program?.parsedProgram?.authorizations;
   const authorizationsAddress =
     program?.parsedProgram?.authorizationData?.authorization_addr ?? "";
@@ -35,10 +46,26 @@ export const SubroutineDisplay = ({
       {authorizations.map((authorization, i) => {
         const subroutine = getSubroutine(authorization.subroutine);
         const functions = subroutine.functions;
-        const isAuthorized = isPermissionless(authorization.mode);
+        const isSubroutinePermissionless = isPermissionless(authorization.mode);
+
         const isAtomic =
           displaySubroutineType(authorization.subroutine) === "ATOMIC";
         const subroutineLabel = authorization.label;
+
+        const authToken = isSubroutinePermissionless
+          ? null
+          : permissionFactoryDenom({
+              authorizationsAddress,
+              authorizationLabel: subroutineLabel,
+            });
+        const isHoldingAuthToken = authToken
+          ? null
+          : balances?.find((b) => b.denom === authToken);
+        const isAuthorized = isSubroutinePermissionless
+          ? true
+          : isLoadingBalances
+            ? false
+            : !!isHoldingAuthToken;
 
         return (
           <CollapsibleSectionRoot
@@ -77,7 +104,7 @@ export const SubroutineDisplay = ({
                 isAtomic={isAtomic}
                 key={`subroutine-${authorization.label}-${i}`}
                 functions={functions}
-                isAuthorized={true}
+                isAuthorized={isAuthorized}
               />
             </CollapsibleSectionContent>
           </CollapsibleSectionRoot>
