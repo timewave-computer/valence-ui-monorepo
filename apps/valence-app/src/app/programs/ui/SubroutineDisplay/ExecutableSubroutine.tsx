@@ -246,11 +246,18 @@ export const ExecutableSubroutine = ({
 
       <HoverCardRoot>
         <HoverCardTrigger asChild>
-          <FormSubmit className="mt-4" asChild>
-            <Button isLoading={isExecuting} disabled={!isExecutedEnabled}>
-              Execute
-            </Button>
-          </FormSubmit>
+          <div className="flex flex-row gap-4 items-cente mt-4 w-fit">
+            <FormSubmit asChild>
+              <Button isLoading={isExecuting} disabled={!isExecutedEnabled}>
+                Execute
+              </Button>
+            </FormSubmit>
+            {isAuthorized && executionLimit && (
+              <InfoText>
+                {authTokenBalance?.amount} executions remaining
+              </InfoText>
+            )}
+          </div>
         </HoverCardTrigger>
         {!isAuthorized && (
           <HoverCardContent side="right" sideOffset={10} className="w-80">
@@ -271,11 +278,6 @@ export const ExecutableSubroutine = ({
           </HoverCardContent>
         )}
       </HoverCardRoot>
-      {isAuthorized && executionLimit && (
-        <InfoText className="pt-2">
-          ({authTokenBalance?.amount}/{executionLimit} executions remaining)
-        </InfoText>
-      )}
     </FormRoot>
   );
 };

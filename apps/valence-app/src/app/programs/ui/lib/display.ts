@@ -60,14 +60,21 @@ export const permissionFactoryDenom = ({
 
 export const getExecutionLimit = (
   authorizationMode: AuthorizationModeInfo,
+  recieverAddress: string | null,
 ): string | null => {
+  if (!recieverAddress) {
+    return null;
+  }
   if (isPermissionless(authorizationMode)) {
     return null;
   }
   if (isPermissioned(authorizationMode)) {
     if (isPermissionWithLimit(authorizationMode.permissioned)) {
-      // TODO: confused
-      return authorizationMode.permissioned.with_call_limit[0][1];
+      const limit = authorizationMode.permissioned.with_call_limit.find(
+        ([originalReciever, _]) => originalReciever === recieverAddress,
+      );
+
+      return limit ? limit[1] : null;
     }
   }
   return null;

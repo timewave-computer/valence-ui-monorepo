@@ -73,7 +73,10 @@ export const SubroutineDisplay = ({
             ? false
             : !!isHoldingAuthToken;
 
-        const executionLimit = getExecutionLimit(authorization.mode);
+        const executionLimit = getExecutionLimit(
+          authorization.mode,
+          walletAddress ?? null,
+        );
 
         return (
           <CollapsibleSectionRoot
