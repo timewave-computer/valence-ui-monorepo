@@ -6,6 +6,8 @@ export enum GetProgramErrorCodes {
   PARSE = "PARSE",
   BALANCES = "BALANCES",
   DECODE_BINARY = "DECODE_BINARY",
+  PROCESSOR_QUEUE = "PROCESSOR_QUEUE",
+  EXECUTION_HISTORY = "EXECUTION_HISTORY",
 }
 
 type ErrorKey = {
@@ -42,6 +44,12 @@ const PROGRAM_ERROR_CONTENT: ErrorCodes = {
   },
   [GetProgramErrorCodes.DECODE_BINARY]: {
     title: "Failed to decode program",
+  },
+  [GetProgramErrorCodes.PROCESSOR_QUEUE]: {
+    title: "Failed to fetch processor queue",
+  },
+  [GetProgramErrorCodes.EXECUTION_HISTORY]: {
+    title: "Failed to fetch execution history",
   },
 };
 

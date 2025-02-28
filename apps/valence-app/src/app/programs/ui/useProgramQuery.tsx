@@ -15,6 +15,7 @@ type UseProgramQueryArgs = {
   programId: string;
   initialQueryData: GetProgramDataReturnValue;
 };
+
 export const useProgramQuery = ({
   programId,
   initialQueryData,
@@ -56,9 +57,9 @@ export const useProgramQuery = ({
     retry: false,
     queryKey: [
       QUERY_KEYS.PROGRAMS_FETCH_PROGRAM,
-      queryConfig.external,
-      queryConfig.main,
       programId,
+      queryConfig.main,
+      queryConfig.external,
     ],
     // only supply initial data if the query config is the same
     initialData: isEqual(queryConfig, initialQueryData?.queryConfig)

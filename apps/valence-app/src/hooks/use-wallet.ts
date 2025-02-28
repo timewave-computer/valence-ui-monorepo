@@ -14,6 +14,7 @@ export const useWallet = () => {
   const chainContext = useChainContext();
 
   const wallet = chainContext.chainWallet;
+
   const getSigningStargateClient = () => {
     try {
       return chainContext.getSigningStargateClient();

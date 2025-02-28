@@ -43,7 +43,7 @@ export const TableCells: TableCells = {
     renderer: createRenderer<CellType.Number>((data) => (
       <>
         {`${data.isUsd ? "$" : ""}`}
-        {data.value}
+        {data.value.toString()}
       </>
     )),
     sorter: (a: NumberCellData, b: NumberCellData, ascending) =>

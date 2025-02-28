@@ -17,13 +17,19 @@ codegen
         name: "Auction",
         dir: `${inputDir}/auction/schema`,
       },
-      {
-        name: "Processor",
-        dir: `${inputDir}/processor/schema`,
-      },
+      // ResultOfArrayOfBinaryOrErrorResponse error
+      // {
+      //   name: "Processor",
+      //   dir: `${inputDir}/processor/schema`,
+      // },
       {
         name: "ProgramRegistry",
         dir: `${inputDir}/program-registry/schema`,
+      },
+      {
+        // "execute" excluded due to ResultOfArrayOfBinaryOrErrorResponse error
+        name: "Authorizations",
+        dir: `${inputDir}/authorizations/schema`,
       },
     ],
     outPath: outputDir,

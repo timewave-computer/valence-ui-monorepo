@@ -34,7 +34,7 @@ export const ProgramRegistryViewer = ({
 
     return {
       id: {
-        value: id.toString(),
+        value: id,
         link: {
           href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfig)}`,
           LinkComponent: Link,
@@ -91,7 +91,7 @@ const headers: TableColumnHeader[] = [
   {
     label: "Program ID",
     key: "id",
-    cellType: CellType.Text,
+    cellType: CellType.Number,
   },
   {
     label: "Config",

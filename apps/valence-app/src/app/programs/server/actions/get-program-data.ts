@@ -24,6 +24,8 @@ import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { ProcessorQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.client";
 import { AuthorizationData } from "@valence-ui/generated-types";
 import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
+import { AuthorizationsQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.client";
+import { ArrayOfProcessorCallbackInfo } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.types";
 
 type GetProgramDataProps = {
   programId: string;
@@ -31,6 +33,7 @@ type GetProgramDataProps = {
 };
 
 export type GetProgramDataReturnValue = {
+  programId: string;
   queryConfig: QueryConfig;
   balances?: AccountBalancesReturnValue;
   parsedProgram?: ProgramParserResult;
@@ -40,9 +43,11 @@ export type GetProgramDataReturnValue = {
   errors?: ErrorCodes;
   dataLastUpdatedAt: number; // for handling stale time in react-query
   processorQueues?: FetchProcessorQueuesReturnType;
+  processorHistory?: ArrayOfProcessorCallbackInfo;
 };
 
 // TODO: make a 'response' builder so error handling is cleaner / func more readable / testable
+// TODO: make an object of all chain clients, with chain id and chain name
 export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
@@ -62,6 +67,7 @@ export const getProgramData = async ({
     mainChainCosmwasmClient = await getCosmwasmClient(mainChainConfig.rpcUrl);
   } catch (e) {
     return {
+      programId: programId,
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -75,6 +81,8 @@ export const getProgramData = async ({
 
   if (!mainChainConfig.registryAddress) {
     return {
+      programId: programId,
+
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -94,6 +102,8 @@ export const getProgramData = async ({
   } catch (e) {
     queryConfigManager.setAllChainsConfigIfEmpty({});
     return {
+      programId: programId,
+
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -114,6 +124,8 @@ export const getProgramData = async ({
     queryConfigManager.setAllChainsConfigIfEmpty({});
     console.log(`Program ID ${programId} parse error: ${e} `);
     return {
+      programId: programId,
+
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       rawProgram,
@@ -146,13 +158,50 @@ export const getProgramData = async ({
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
 
-  // TODO: make an object of all chain clients, with chain id and chain name
-  const processorQueues = await fetchProcessorQueues({
-    processorAddresses: program.authorizationData?.processor_addrs,
-    queryConfig: completeQueryConfig,
-  });
+  let processorHistory: ArrayOfProcessorCallbackInfo | undefined = undefined;
+  let processorQueues: FetchProcessorQueuesReturnType | undefined = undefined;
+  const asyncResults = await Promise.allSettled([
+    getProcessorHistory({
+      rpcUrl: mainChainConfig.rpcUrl,
+      authorizationsAddress: program.authorizationData?.authorization_addr,
+    }),
+    fetchProcessorQueues({
+      processorAddresses: program.authorizationData?.processor_addrs,
+      queryConfig: completeQueryConfig,
+    }),
+  ]);
+
+  if (asyncResults[0].status === "rejected") {
+    errors = {
+      ...errors,
+      ...makeApiErrors([
+        {
+          code: GetProgramErrorCodes.EXECUTION_HISTORY,
+          message: asyncResults[0].reason?.message,
+        },
+      ]),
+    };
+  } else if (asyncResults[0].status === "fulfilled") {
+    processorHistory = asyncResults[0].value;
+  }
+
+  // TODO: the processor queue errors will not bubble up
+  if (asyncResults[1].status === "rejected") {
+    errors = {
+      ...errors,
+      ...makeApiErrors([
+        {
+          code: GetProgramErrorCodes.PROCESSOR_QUEUE,
+          message: asyncResults[1].reason?.message,
+        },
+      ]),
+    };
+  } else if (asyncResults[1].status === "fulfilled") {
+    processorQueues = asyncResults[1].value;
+  }
 
   return {
+    programId: programId,
     dataLastUpdatedAt: getLastUpdatedTime(), // for handling stale time in react-query
     queryConfig: completeQueryConfig, // needed to decide if refetch needed in useQuery
     balances: accountBalances,
@@ -162,6 +211,7 @@ export const getProgramData = async ({
     librarySchemas: librarySchemas,
     errors: errors,
     processorQueues: processorQueues,
+    processorHistory: processorHistory,
   };
 };
 
@@ -272,7 +322,7 @@ function getDenomsAndChainIds({
   return metadataQueries;
 }
 
-type FetchProcessorQueuesReturnType = Array<{
+export type FetchProcessorQueuesReturnType = Array<{
   chainName: string;
   processorAddress: string;
   queue?: ArrayOfMessageBatch;
@@ -285,6 +335,7 @@ async function fetchProcessorQueues({
   queryConfig: QueryConfig;
 }): Promise<FetchProcessorQueuesReturnType> {
   if (!processorAddresses) return [];
+
   const requests = Object.entries(processorAddresses).map(
     async ([domainChainName, processorAddress]) => {
       const [domain, chainName] = domainChainName.split(":");
@@ -328,16 +379,21 @@ async function getProcessorQueue({
   rpcUrl: string;
   processorAddress: string;
 }): Promise<ArrayOfMessageBatch> {
-  const processorClient = new ProcessorQueryClient(
-    await getCosmwasmClient(rpcUrl),
-    processorAddress,
-  );
+  try {
+    const processorClient = new ProcessorQueryClient(
+      await getCosmwasmClient(rpcUrl),
+      processorAddress,
+    );
 
-  const results = await Promise.all([
-    processorClient.getQueue({ priority: "high" }),
-    processorClient.getQueue({ priority: "medium" }),
-  ]);
-  return results.flat();
+    const results = await Promise.all([
+      processorClient.getQueue({ priority: "high" }),
+      processorClient.getQueue({ priority: "medium" }),
+    ]);
+    return results.flat();
+  } catch (e) {
+    console.log(`Error fetching processor queue: ${e}`);
+    return [];
+  }
 }
 
 async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
@@ -366,4 +422,26 @@ async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
     {} as Record<string, FetchLibrarySchemaReturnValue>,
   );
   return librarySchemas;
+}
+
+async function getProcessorHistory({
+  rpcUrl,
+  authorizationsAddress,
+}: {
+  rpcUrl: string;
+  authorizationsAddress?: string;
+}): Promise<ArrayOfProcessorCallbackInfo> {
+  if (!authorizationsAddress) {
+    return Promise.reject(new Error("No authorizations address found"));
+  }
+  try {
+    const authorizationsClient = new AuthorizationsQueryClient(
+      await getCosmwasmClient(rpcUrl),
+      authorizationsAddress,
+    );
+    return authorizationsClient.processorCallbacks({});
+  } catch (e) {
+    console.log(`Error fetching processor history: ${e}`);
+    return Promise.reject(e);
+  }
 }

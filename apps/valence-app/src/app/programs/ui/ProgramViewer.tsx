@@ -16,7 +16,6 @@ import { useInitializeMetadataCache } from "@/hooks";
 import {
   Button,
   Card,
-  cn,
   Heading,
   LinkText,
   PrettyJson,
@@ -120,7 +119,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-2  "
           >
-            <ExecutionHistoryTable />
+            <ExecutionHistoryTable program={data} />
           </Card>
         </div>
       </div>
