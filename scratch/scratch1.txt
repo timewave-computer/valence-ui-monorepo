@@ -1,1 +1,0 @@
-Broadcasting transaction failed with code 5 (codespace: sdk). Log: spendable balance 53046untrn is smaller than 341664untrn: insufficient funds: insufficient fundsBroadcasting transaction failed with code 5 (codespace: sdk). Log: spendable balance .053046untrn is smaller than .341664untrn: insufficient funds: insufficient funds
