@@ -36,8 +36,7 @@ export const AccountsTable = ({
                 const asset = getOriginAsset(balance.denom);
 
                 const amount = `${displayNumberV2(parseFloat(balance.amount), {
-                  maximumFractionDigits: 6,
-                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 0, // its a raw balance
                 })}`;
                 const symbol = asset?.symbol ?? "-";
 
@@ -46,7 +45,7 @@ export const AccountsTable = ({
                     value: balance.denom,
                   },
 
-                  balances: {
+                  rawBalance: {
                     value: amount,
                   },
                   symbol: {
@@ -106,8 +105,8 @@ const headers: TableColumnHeader[] = [
     cellType: CellType.Text,
   },
   {
-    key: "balances",
-    label: "Balance",
+    key: "rawBalance",
+    label: "Raw Balance",
     cellType: CellType.Number,
     align: "right",
   },
