@@ -1,8 +1,6 @@
 "use client";
 import {
-  isPermissioned,
   isPermissionless,
-  isPermissionWithLimit,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import {
@@ -25,7 +23,6 @@ import {
   useQueryArgs,
 } from "@/app/programs/ui";
 import { useWallet, useWalletBalancesV2 } from "@/hooks";
-import { AuthorizationInfo } from "@valence-ui/generated-types";
 
 export const SubroutineDisplay = ({
   program,
@@ -103,13 +100,16 @@ export const SubroutineDisplay = ({
               <div className="pb-2">
                 {" "}
                 <PermissionsDisplay
-                  authorizationsAddress={authorizationsAddress}
-                  authorization={authorization}
+                  isPermissionless={isSubroutinePermissionless}
+                  executionLimit={executionLimit ?? null}
+                  authToken={authTokenDenom ?? null}
                 />
               </div>
 
               {/* it's a separate component because each subroutine should have its own useForm instantiation */}
               <ExecutableSubroutine
+                programId={program?.programId}
+                authTokenDenom={authTokenDenom}
                 subroutineLabel={subroutineLabel}
                 authorizationsAddress={authorizationsAddress}
                 isAtomic={isAtomic}

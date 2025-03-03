@@ -2,6 +2,9 @@
 import {
   Button,
   cn,
+  CollapsibleSectionContent,
+  CollapsibleSectionHeader,
+  CollapsibleSectionRoot,
   FormRoot,
   FormSubmit,
   Heading,
@@ -9,7 +12,9 @@ import {
   HoverCardRoot,
   HoverCardTrigger,
   InfoText,
+  InputLabel,
   LinkText,
+  PrettyJson,
   Sheet,
   SheetContent,
   SheetTrigger,
@@ -26,6 +31,7 @@ import {
   jsonToIndentedText,
   LibraryDetails,
   useLibrarySchema,
+  useProgramQuery,
   useQueryArgs,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
@@ -56,6 +62,8 @@ export const ExecutableSubroutine = ({
   subroutineLabel,
   authTokenBalance,
   executionLimit,
+  authTokenDenom,
+  programId,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
@@ -64,10 +72,13 @@ export const ExecutableSubroutine = ({
   subroutineLabel: string;
   authTokenBalance: Coin | undefined;
   executionLimit: string | null;
+  authTokenDenom: string | null;
+  programId: string;
 }) => {
   const { address: walletAddress, isWalletConnected } = useWallet();
   const { queryConfig } = useQueryArgs();
   const queryClient = useQueryClient();
+  const { data: program } = useProgramQuery({ programId });
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
@@ -109,6 +120,14 @@ export const ExecutableSubroutine = ({
         {
           typeUrl: MsgExecuteContract.typeUrl,
           value: {
+            funds: executionLimit
+              ? [
+                  {
+                    denom: authTokenDenom,
+                    amount: "1",
+                  },
+                ]
+              : undefined,
             sender: walletAddress,
             contract: authorizationsAddress,
             msg: jsonToUtf8({
@@ -128,6 +147,9 @@ export const ExecutableSubroutine = ({
         messages,
         "auto",
       );
+      if (result.code !== 0) {
+        throw new Error(result.rawLog);
+      }
       return result;
     },
     onError: (e) => {
@@ -145,14 +167,16 @@ export const ExecutableSubroutine = ({
           title="Messages sent to processor"
         ></ToastMessage>,
       );
-      queryClient.invalidateQueries(
-        {
-          refetchType: "active",
-          exact: false,
-          queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM],
-        },
-        {},
-      );
+      queryClient.invalidateQueries({
+        refetchType: "active",
+        exact: false,
+        queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM],
+      });
+      queryClient.invalidateQueries({
+        refetchType: "active",
+        exact: false,
+        queryKey: [QUERY_KEYS.WALLET_BALANCES_V2],
+      });
     },
   });
 
@@ -181,6 +205,12 @@ export const ExecutableSubroutine = ({
         {functions?.map((func, i) => {
           const libraryAddress = getFunctionLibraryAddress(func);
           const librarySchema = getLibrarySchema(libraryAddress);
+
+          const libraryConfig =
+            program?.libraryConfigs && libraryAddress in program?.libraryConfigs
+              ? program?.libraryConfigs[libraryAddress]
+              : null;
+
           return (
             <div
               className={cn(
@@ -205,6 +235,16 @@ export const ExecutableSubroutine = ({
                   {displayAddress(libraryAddress)}
                 </LinkText>
               </div>
+              {libraryConfig && (
+                <CollapsibleSectionRoot defaultIsOpen={false} className="pb-2">
+                  <CollapsibleSectionHeader buttonClassname="h-3 w-3">
+                    <InputLabel noGap label="Config" size="sm" />
+                  </CollapsibleSectionHeader>
+                  <CollapsibleSectionContent>
+                    <PrettyJson data={libraryConfig} />
+                  </CollapsibleSectionContent>
+                </CollapsibleSectionRoot>
+              )}
 
               {/* this is its own component to simplify custom error handling */}
               <FunctionMessageFormField
@@ -246,7 +286,7 @@ export const ExecutableSubroutine = ({
 
       <HoverCardRoot>
         <HoverCardTrigger asChild>
-          <div className="flex flex-row gap-4 items-cente mt-4 w-fit">
+          <div className="flex flex-row gap-2 items-center mt-4 w-fit">
             <FormSubmit asChild>
               <Button isLoading={isExecuting} disabled={!isExecutedEnabled}>
                 Execute
@@ -259,14 +299,14 @@ export const ExecutableSubroutine = ({
             )}
           </div>
         </HoverCardTrigger>
-        {!isAuthorized && (
+        {!isAuthorized && isWalletConnected && (
           <HoverCardContent side="right" sideOffset={10} className="w-80">
             <div>
               <Heading level="h3">Unauthorized.</Heading>
               <div className="text-sm pt-2">
                 Wallet must hold the authorization token:{" "}
                 <span className="font-mono text-wrap break-words text-xs">
-                  {authTokenBalance?.denom}
+                  {authTokenDenom}
                 </span>
               </div>
             </div>

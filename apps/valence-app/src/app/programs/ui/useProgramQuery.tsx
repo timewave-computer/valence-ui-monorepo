@@ -13,7 +13,7 @@ import { useQueryArgs } from "@/app/programs/ui";
 
 type UseProgramQueryArgs = {
   programId: string;
-  initialQueryData: GetProgramDataReturnValue;
+  initialQueryData?: GetProgramDataReturnValue;
 };
 
 export const useProgramQuery = ({

@@ -40,6 +40,7 @@ export type GetProgramDataReturnValue = {
   rawProgram?: string;
   metadata?: Record<string, any>;
   librarySchemas?: Record<string, FetchLibrarySchemaReturnValue>;
+  libraryConfigs?: Record<string, any>;
   errors?: ErrorCodes;
   dataLastUpdatedAt: number; // for handling stale time in react-query
   processorQueues?: FetchProcessorQueuesReturnType;
@@ -125,7 +126,6 @@ export const getProgramData = async ({
     console.log(`Program ID ${programId} parse error: ${e} `);
     return {
       programId: programId,
-
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       rawProgram,
@@ -157,6 +157,11 @@ export const getProgramData = async ({
   metadata = await fetchAssetMetadata(metadataToFetch);
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
+
+  const libraryConfigs = await fetchLibraryConfigs(
+    program.libraries,
+    mainChainConfig.rpcUrl,
+  );
 
   let processorHistory: ArrayOfProcessorCallbackInfo | undefined = undefined;
   let processorQueues: FetchProcessorQueuesReturnType | undefined = undefined;
@@ -212,6 +217,7 @@ export const getProgramData = async ({
     errors: errors,
     processorQueues: processorQueues,
     processorHistory: processorHistory,
+    libraryConfigs: libraryConfigs,
   };
 };
 
@@ -409,6 +415,57 @@ async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
       return {
         address,
         schema: await fetchLibrarySchema(address),
+      };
+    }),
+  );
+
+  // todo: for each library, fetch codeId, and use codeId to fetch schema
+  const librarySchemas = requests.reduce(
+    (acc, { address, schema }) => {
+      acc[address] = schema;
+      return acc;
+    },
+    {} as Record<string, FetchLibrarySchemaReturnValue>,
+  );
+  return librarySchemas;
+}
+
+async function fetchLibraryConfig({
+  rpcUrl,
+  libraryAddress,
+}: {
+  rpcUrl: string;
+  libraryAddress: string;
+}): Promise<ArrayOfProcessorCallbackInfo> {
+  try {
+    const client = await getCosmwasmClient(rpcUrl);
+    return client.queryContractSmart(libraryAddress, {
+      get_library_config: {},
+    });
+  } catch (e) {
+    console.log(`Error fetching processor history: ${e}`);
+    return Promise.reject(e);
+  }
+}
+
+async function fetchLibraryConfigs(
+  libraries: NormalizedLibraries,
+  rpcUrl: string,
+) {
+  // TODO: maybe better to pull library addresses from the function data instead.
+  const librariesToFetch = Object.values(libraries).reduce((acc, lib) => {
+    if (lib.addr && !!lib.domain?.CosmosCosmwasm) return [...acc, lib.addr];
+    else return [...acc];
+  }, [] as string[]);
+
+  const requests = await Promise.all(
+    librariesToFetch.map(async (address) => {
+      return {
+        address,
+        schema: await fetchLibraryConfig({
+          rpcUrl,
+          libraryAddress: address,
+        }),
       };
     }),
   );
