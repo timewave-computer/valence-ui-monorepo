@@ -2,6 +2,7 @@
 import {
   isPermissionless,
   type GetProgramDataReturnValue,
+  getExecutionLimit,
 } from "@/app/programs/server";
 import {
   Card,
@@ -16,7 +17,6 @@ import {
   displayAuthMode,
   displaySubroutineType,
   ExecutableSubroutine,
-  getExecutionLimit,
   getSubroutine,
   permissionFactoryDenom,
   PermissionsDisplay,

@@ -12,12 +12,7 @@ import {
   RefetchButton,
   useQueryArgs,
 } from "@/app/programs/ui";
-import {
-  useInitializeMetadataCache,
-  useWallet,
-  useWalletBalances,
-  useWalletBalancesV2,
-} from "@/hooks";
+import { useInitializeMetadataCache } from "@/hooks";
 import {
   Button,
   Card,

@@ -78,6 +78,7 @@ export const ExecutableSubroutine = ({
   const { address: walletAddress, isWalletConnected } = useWallet();
   const { queryConfig } = useQueryArgs();
   const queryClient = useQueryClient();
+  // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
   const { data: program } = useProgramQuery({ programId });
 
   const form = useForm<SubroutineMessageFormValues>({
@@ -251,7 +252,6 @@ export const ExecutableSubroutine = ({
                 fieldName={`messages.${i}`}
                 form={form}
                 subroutineFunction={func}
-                isAuthorized={isAuthorized}
               />
               <div className="flex flex-row gap-2 items-center pt-2">
                 <Button

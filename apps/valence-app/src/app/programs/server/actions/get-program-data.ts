@@ -26,6 +26,8 @@ import { AuthorizationData } from "@valence-ui/generated-types";
 import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
 import { AuthorizationsQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.client";
 import { ArrayOfProcessorCallbackInfo } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.types";
+import { z } from "zod";
+import { isFulfilled } from "@/server/utils";
 
 type GetProgramDataProps = {
   programId: string;
@@ -436,14 +438,16 @@ async function fetchLibraryConfig({
 }: {
   rpcUrl: string;
   libraryAddress: string;
-}): Promise<ArrayOfProcessorCallbackInfo> {
+}): Promise<object> {
   try {
     const client = await getCosmwasmClient(rpcUrl);
-    return client.queryContractSmart(libraryAddress, {
+
+    const result = await client.queryContractSmart(libraryAddress, {
       get_library_config: {},
     });
+    return z.object({}).passthrough().parse(result);
   } catch (e) {
-    console.log(`Error fetching processor history: ${e}`);
+    console.log(`Error fetching library config: ${e}`);
     return Promise.reject(e);
   }
 }
@@ -458,7 +462,7 @@ async function fetchLibraryConfigs(
     else return [...acc];
   }, [] as string[]);
 
-  const requests = await Promise.all(
+  const allRequests = await Promise.allSettled(
     librariesToFetch.map(async (address) => {
       return {
         address,
@@ -470,15 +474,16 @@ async function fetchLibraryConfigs(
     }),
   );
 
-  // todo: for each library, fetch codeId, and use codeId to fetch schema
-  const librarySchemas = requests.reduce(
+  const requests = allRequests.filter(isFulfilled).map((r) => r.value);
+
+  const configs = requests.reduce(
     (acc, { address, schema }) => {
       acc[address] = schema;
       return acc;
     },
-    {} as Record<string, FetchLibrarySchemaReturnValue>,
+    {} as Record<string, object>,
   );
-  return librarySchemas;
+  return configs;
 }
 
 async function getProcessorHistory({
