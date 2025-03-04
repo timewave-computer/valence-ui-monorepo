@@ -93,10 +93,7 @@ export const RpcConfigForm = ({}: {}) => {
             />
           </FormField>
           <FormField name="main.chainId">
-            <InputLabel
-              size="sm"
-              label={`Chain ID (must be accurate for signing)`}
-            />
+            <InputLabel size="sm" label={`Chain ID (for signing)`} />
 
             <TextInput
               size="sm"

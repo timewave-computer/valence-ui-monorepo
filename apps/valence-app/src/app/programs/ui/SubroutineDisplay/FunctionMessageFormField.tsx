@@ -23,12 +23,10 @@ import { useEffect, useState } from "react";
  */
 export const FunctionMessageFormField = ({
   subroutineFunction,
-  isAuthorized,
   fieldName,
   form,
 }: {
   subroutineFunction: NonAtomicFunction | AtomicFunction;
-  isAuthorized: boolean;
   fieldName: `messages.${number}`;
   form: UseFormReturn<SubroutineMessageFormValues>;
 }) => {
@@ -75,7 +73,6 @@ export const FunctionMessageFormField = ({
           name={fieldRef.name}
           size="sm"
           rows={textAreaSize}
-          isDisabled={!isAuthorized}
         />
         <div className="flex flex-col">
           {Object.keys(customErrors.types || {}).map((e, i) => (

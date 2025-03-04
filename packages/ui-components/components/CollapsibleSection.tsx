@@ -74,9 +74,11 @@ export const CollapsibleSectionRoot: React.FC<RootProps> = ({
 export const CollapsibleSectionHeader = ({
   children,
   className,
+  buttonClassname,
 }: {
   children: React.ReactNode;
   className?: string;
+  buttonClassname?: string;
 }) => {
   const { isOpen, setIsOpen, variant } = useContext(CollapsibleSectionContext);
   const Icon = isOpen ? FaChevronDown : FaChevronLeft;
@@ -89,7 +91,7 @@ export const CollapsibleSectionHeader = ({
       className={cn(headerVariants({ className, variant }))}
     >
       {children}
-      <Icon className={cn("h-4 w-4")} />
+      <Icon className={cn("h-4 w-4", buttonClassname)} />
     </div>
   );
 };

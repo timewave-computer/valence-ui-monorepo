@@ -89,6 +89,11 @@ export const ProcessorSection = ({
         },
         {},
       );
+      queryClient.invalidateQueries({
+        refetchType: "active",
+        exact: false,
+        queryKey: [QUERY_KEYS.WALLET_BALANCES_V2],
+      });
       toast.success(
         <ToastMessage variant="success" title="Tick successful">
           Subroutine will be executed by the authorizations contract.

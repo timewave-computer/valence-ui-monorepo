@@ -2,13 +2,19 @@
 import {
   Button,
   cn,
+  CollapsibleSectionContent,
+  CollapsibleSectionHeader,
+  CollapsibleSectionRoot,
   FormRoot,
   FormSubmit,
   Heading,
   HoverCardContent,
   HoverCardRoot,
   HoverCardTrigger,
+  InfoText,
+  InputLabel,
   LinkText,
+  PrettyJson,
   Sheet,
   SheetContent,
   SheetTrigger,
@@ -25,6 +31,7 @@ import {
   jsonToIndentedText,
   LibraryDetails,
   useLibrarySchema,
+  useProgramQuery,
   useQueryArgs,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
@@ -38,6 +45,7 @@ import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Coin } from "@cosmjs/stargate";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -52,16 +60,26 @@ export const ExecutableSubroutine = ({
   isAtomic,
   authorizationsAddress,
   subroutineLabel,
+  authTokenBalance,
+  executionLimit,
+  authTokenDenom,
+  programId,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
   isAtomic: boolean;
   authorizationsAddress: string;
   subroutineLabel: string;
+  authTokenBalance: Coin | undefined;
+  executionLimit: string | null;
+  authTokenDenom: string | null;
+  programId: string;
 }) => {
   const { address: walletAddress, isWalletConnected } = useWallet();
   const { queryConfig } = useQueryArgs();
   const queryClient = useQueryClient();
+  // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
+  const { data: program } = useProgramQuery({ programId });
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
@@ -103,6 +121,14 @@ export const ExecutableSubroutine = ({
         {
           typeUrl: MsgExecuteContract.typeUrl,
           value: {
+            funds: executionLimit
+              ? [
+                  {
+                    denom: authTokenDenom,
+                    amount: "1",
+                  },
+                ]
+              : undefined,
             sender: walletAddress,
             contract: authorizationsAddress,
             msg: jsonToUtf8({
@@ -122,6 +148,9 @@ export const ExecutableSubroutine = ({
         messages,
         "auto",
       );
+      if (result.code !== 0) {
+        throw new Error(result.rawLog);
+      }
       return result;
     },
     onError: (e) => {
@@ -139,14 +168,16 @@ export const ExecutableSubroutine = ({
           title="Messages sent to processor"
         ></ToastMessage>,
       );
-      queryClient.invalidateQueries(
-        {
-          refetchType: "active",
-          exact: false,
-          queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM],
-        },
-        {},
-      );
+      queryClient.invalidateQueries({
+        refetchType: "active",
+        exact: false,
+        queryKey: [QUERY_KEYS.PROGRAMS_FETCH_PROGRAM],
+      });
+      queryClient.invalidateQueries({
+        refetchType: "active",
+        exact: false,
+        queryKey: [QUERY_KEYS.WALLET_BALANCES_V2],
+      });
     },
   });
 
@@ -175,6 +206,12 @@ export const ExecutableSubroutine = ({
         {functions?.map((func, i) => {
           const libraryAddress = getFunctionLibraryAddress(func);
           const librarySchema = getLibrarySchema(libraryAddress);
+
+          const libraryConfig =
+            program?.libraryConfigs && libraryAddress in program?.libraryConfigs
+              ? program?.libraryConfigs[libraryAddress]
+              : null;
+
           return (
             <div
               className={cn(
@@ -199,13 +236,22 @@ export const ExecutableSubroutine = ({
                   {displayAddress(libraryAddress)}
                 </LinkText>
               </div>
+              {libraryConfig && (
+                <CollapsibleSectionRoot defaultIsOpen={false} className="pb-2">
+                  <CollapsibleSectionHeader buttonClassname="h-3 w-3">
+                    <InputLabel noGap label="Config" size="sm" />
+                  </CollapsibleSectionHeader>
+                  <CollapsibleSectionContent>
+                    <PrettyJson data={libraryConfig} />
+                  </CollapsibleSectionContent>
+                </CollapsibleSectionRoot>
+              )}
 
               {/* this is its own component to simplify custom error handling */}
               <FunctionMessageFormField
                 fieldName={`messages.${i}`}
                 form={form}
                 subroutineFunction={func}
-                isAuthorized={isAuthorized}
               />
               <div className="flex flex-row gap-2 items-center pt-2">
                 <Button
@@ -240,15 +286,35 @@ export const ExecutableSubroutine = ({
 
       <HoverCardRoot>
         <HoverCardTrigger asChild>
-          <FormSubmit className="mt-4" asChild>
-            <Button isLoading={isExecuting} disabled={!isExecutedEnabled}>
-              Execute
-            </Button>
-          </FormSubmit>
+          <div className="flex flex-row gap-2 items-center mt-4 w-fit">
+            <FormSubmit asChild>
+              <Button isLoading={isExecuting} disabled={!isExecutedEnabled}>
+                Execute
+              </Button>
+            </FormSubmit>
+            {isAuthorized && executionLimit && (
+              <InfoText>
+                {authTokenBalance?.amount} executions remaining
+              </InfoText>
+            )}
+          </div>
         </HoverCardTrigger>
         {!isWalletConnected && (
           <HoverCardContent side="right" sideOffset={10} className="w-64">
             <ConnectWalletHoverContent />
+          </HoverCardContent>
+        )}
+        {isWalletConnected && !isAuthorized && (
+          <HoverCardContent side="right" sideOffset={10} className="w-80">
+            <div>
+              <Heading level="h3">Unauthorized.</Heading>
+              <div className="text-sm pt-2">
+                Wallet must hold the authorization token:{" "}
+                <span className="font-mono text-wrap break-words text-xs">
+                  {authTokenDenom}
+                </span>
+              </div>
+            </div>
           </HoverCardContent>
         )}
       </HoverCardRoot>
