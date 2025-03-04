@@ -299,7 +299,12 @@ export const ExecutableSubroutine = ({
             )}
           </div>
         </HoverCardTrigger>
-        {!isAuthorized && isWalletConnected && (
+        {!isWalletConnected && (
+          <HoverCardContent side="right" sideOffset={10} className="w-64">
+            <ConnectWalletHoverContent />
+          </HoverCardContent>
+        )}
+        {isWalletConnected && !isAuthorized && (
           <HoverCardContent side="right" sideOffset={10} className="w-80">
             <div>
               <Heading level="h3">Unauthorized.</Heading>
@@ -310,11 +315,6 @@ export const ExecutableSubroutine = ({
                 </span>
               </div>
             </div>
-          </HoverCardContent>
-        )}
-        {!isWalletConnected && (
-          <HoverCardContent side="right" sideOffset={10} className="w-64">
-            <ConnectWalletHoverContent />
           </HoverCardContent>
         )}
       </HoverCardRoot>

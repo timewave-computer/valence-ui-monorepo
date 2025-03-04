@@ -42,7 +42,7 @@ export type GetProgramDataReturnValue = {
   rawProgram?: string;
   metadata?: Record<string, any>;
   librarySchemas?: Record<string, FetchLibrarySchemaReturnValue>;
-  libraryConfigs?: Record<string, any>;
+  libraryConfigs?: Record<string, object>;
   errors?: ErrorCodes;
   dataLastUpdatedAt: number; // for handling stale time in react-query
   processorQueues?: FetchProcessorQueuesReturnType;
