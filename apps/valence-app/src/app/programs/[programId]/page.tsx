@@ -3,12 +3,28 @@ import {
   GetProgramDataReturnValue,
   loadQueryConfigSearchParams,
 } from "@/app/programs/server";
-import { ProgramViewer } from "@/app/programs/ui";
+import { ProgramViewer, SuspenseLoadingSkeleton } from "@/app/programs/ui";
+import { Suspense } from "react";
 
-export default async function ProgramPage({
+export const revalidate = 60;
+
+interface ProgramPageProps {
+  params: { programId: string };
+  searchParams: Record<string, string>;
+}
+
+export default async function ProgramPage(props: ProgramPageProps) {
+  return (
+    <Suspense fallback={<SuspenseLoadingSkeleton />}>
+      <ProgramViewerLoader {...props} />
+    </Suspense>
+  );
+}
+
+async function ProgramViewerLoader({
   params: { programId },
   searchParams,
-}) {
+}: ProgramPageProps) {
   const { queryConfig } = await loadQueryConfigSearchParams(searchParams);
   const data = (await getProgramData({
     programId,

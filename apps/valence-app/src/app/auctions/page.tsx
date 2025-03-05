@@ -36,14 +36,14 @@ export default async function AuctionsPage() {
       <LiveAuctionsHero />
       <div className="flex w-full grow flex-col items-center self-center pt-8 ">
         <Suspense fallback={<Loading />}>
-          <LoaderWithSuspense />
+          <LiveAuctionsTableWithSuspense />
         </Suspense>
       </div>
     </main>
   );
 }
 
-async function LoaderWithSuspense() {
+async function LiveAuctionsTableWithSuspense() {
   const denomList = chainConfig.supportedRebalancerAssets.map((a) => a.denom);
   const [metadata, auctionsData] = await Promise.all([
     fetchAssetMetadata([
