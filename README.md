@@ -33,6 +33,8 @@ To test production build
 
 ```bash
 turbo build
+turbo build --filter @valence-ui/valence-app
+turbo start --filter @valence-ui/valence-app
 ```
 
 ## How to add a package
