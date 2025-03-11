@@ -41,7 +41,8 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     initialQueryData: initialData,
   });
 
-  const { queryConfig } = useQueryArgs();
+  const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
+
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
 
@@ -66,7 +67,10 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
               {programId}
             </LinkText>
           </div>
-          <ProgramRpcSettings />
+          <ProgramRpcSettings
+            queryConfig={queryConfig}
+            setQueryConfig={setQueryConfig}
+          />
         </div>
 
         <ProgramViewerErrorDisplay errors={data?.errors} />
@@ -118,14 +122,14 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-0 "
           >
-            <ProcessorDisplay program={data} />
+            <ProcessorDisplay program={data} queryConfig={queryConfig} />
           </Card>
         </div>
         <div className="flex flex-col col-span-2 flex-grow gap-2">
           <Heading level="h2">Execution History</Heading>
           <Card
             isLoading={isLoading}
-            className="overflow-x-scroll flex-grow p-2  "
+            className="overflow-x-scroll  flex-grow p-2  "
           >
             <ExecutionHistoryTable program={data} />
           </Card>

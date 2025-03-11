@@ -45,7 +45,8 @@ import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Coin, SigningStargateClient } from "@cosmjs/stargate";
+import { Coin } from "@cosmjs/stargate";
+import { type QueryConfig } from "@/app/programs/server";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -64,6 +65,7 @@ export const ExecutableSubroutine = ({
   executionLimit,
   authTokenDenom,
   programId,
+  queryConfig,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
@@ -74,12 +76,13 @@ export const ExecutableSubroutine = ({
   executionLimit: string | null;
   authTokenDenom: string | null;
   programId: string;
+  queryConfig: QueryConfig;
 }) => {
-  const { address: walletAddress, isWalletConnected } = useWallet();
-  const { queryConfig } = useQueryArgs();
-  const queryClient = useQueryClient();
   // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
   const { data: program } = useProgramQuery({ programId });
+  const { address: walletAddress, isWalletConnected } = useWallet();
+
+  const queryClient = useQueryClient();
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {

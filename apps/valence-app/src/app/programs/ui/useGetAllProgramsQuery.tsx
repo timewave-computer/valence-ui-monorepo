@@ -17,7 +17,8 @@ type UseProgramQueryArgs = {
 export const useGetAllProgramsQuery = ({
   initialQueryData,
 }: UseProgramQueryArgs) => {
-  const { queryConfig } = useQueryArgs();
+  const { queryConfig } = useQueryArgs(initialQueryData.queryConfig);
+  console.log("query config in registry", queryConfig);
 
   // must be defined in callback to detect input changes
   const queryFn = useCallback(async () => {

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   NormalizedAccounts,
+  NormalizedAuthorizationData,
   NormalizedLibraries,
   type ParseFunction,
 } from "@/app/programs/server";
@@ -49,7 +50,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
       );
       if (!registeredChain) {
         throw new Error(
-          `Unable to set default rpc. Chain name ${chainName} not found in chain registry.`,
+          `Unable to detect chainId for chain name ${chainName}. Not found in chain registry.`,
         );
       }
       acc[key] = {
@@ -62,10 +63,45 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
     {} as NormalizedLibraries,
   );
 
+  const processorsWithChainId = Object.entries(
+    programData.authorization_data?.processor_addrs ?? {},
+  ).reduce(
+    (acc, [domainChainName, address]) => {
+      const split = domainChainName.split(":");
+      if (split.length !== 2) {
+        throw new Error(`Invalid domainChainName: ${domainChainName}`);
+      }
+      const [domain, chainName] = split;
+      if (domain !== "CosmosCosmwasm") {
+        throw new Error(`Processor on unsupported domain: ${domain} `);
+      }
+
+      const registeredChain = chains.find(
+        (chain) => chain.chain_name === chainName,
+      );
+
+      if (!registeredChain) {
+        throw new Error(
+          `Unable to find chainId for chain name: ${chainName}. Not found in chain registry.`,
+        );
+      }
+      acc[domainChainName] = {
+        address: address,
+        chainId: registeredChain.chain_id,
+        chainName: chainName,
+      };
+      return acc;
+    },
+    {} as NormalizedAuthorizationData["processorData"],
+  );
+
   return {
     // since there is only 1 format we pretty much just return what what we have for now
     authorizations: programData.authorizations,
-    authorizationData: programData.authorization_data,
+    authorizationData: {
+      ...programData.authorization_data,
+      processorData: processorsWithChainId,
+    },
     accounts: accountsWithChainId,
     libraries: librariesWithChainId,
     links: programData.links,

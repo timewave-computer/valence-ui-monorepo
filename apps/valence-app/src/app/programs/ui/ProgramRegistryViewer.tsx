@@ -27,7 +27,7 @@ export const ProgramRegistryViewer = ({
   const { data, isLoading, refetch, isFetching } = useGetAllProgramsQuery({
     initialQueryData: initialData,
   });
-  const { queryConfig } = useQueryArgs();
+  const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
 
   const tableData = data?.parsedPrograms?.map(({ id, config }) => {
     const authorizationsAddress = config.authorizationData?.authorization_addr;
@@ -70,7 +70,10 @@ export const ProgramRegistryViewer = ({
           Programs (alpha)
         </LinkText>
 
-        <ProgramRpcSettings />
+        <ProgramRpcSettings
+          queryConfig={queryConfig}
+          setQueryConfig={setQueryConfig}
+        />
       </div>
 
       <ProgramViewerErrorDisplay errors={data?.errors} />

@@ -11,6 +11,7 @@ import {
   ErrorCodes,
   makeApiErrors,
   getLastUpdatedTime,
+  NormalizedAuthorizationData,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
@@ -103,10 +104,9 @@ export const getProgramData = async ({
       cosmwasmClient: mainChainCosmwasmClient,
     });
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty({});
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       programId: programId,
-
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -119,12 +119,11 @@ export const getProgramData = async ({
   }
 
   let program: ProgramParserResult;
-  queryConfigManager.setAllChainsConfigIfEmpty({});
 
   try {
     program = ProgramParser.extractData(rawProgram);
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty({});
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     console.log(`Program ID ${programId} parse error: ${e} `);
     return {
       programId: programId,
@@ -137,7 +136,7 @@ export const getProgramData = async ({
   // for all processors and accounts, populate external chains
 
   const { accounts } = program;
-  queryConfigManager.setAllChainsConfigIfEmpty(accounts);
+  queryConfigManager.setAllChainsConfigIfEmpty(program);
   const completeQueryConfig = queryConfigManager.getQueryConfig();
 
   let accountBalances;
@@ -174,7 +173,7 @@ export const getProgramData = async ({
       authorizationsAddress: program.authorizationData?.authorization_addr,
     }),
     fetchProcessorQueues({
-      processorAddresses: program.authorizationData?.processor_addrs,
+      processorAddresses: program.authorizationData.processorData,
       queryConfig: completeQueryConfig,
     }),
   ]);
@@ -253,6 +252,14 @@ const fetchProgramFromRegistry = async ({
     );
   }
 };
+
+const getAllDomains = ({
+  accounts,
+  processors,
+}: {
+  accounts: ProgramParserResult["accounts"];
+  processors: ProgramParserResult["authorizationData"]["processor_addrs"];
+}) => {};
 
 const queryAccountBalances = async (
   accounts: ProgramParserResult["accounts"],
@@ -334,41 +341,41 @@ function getDenomsAndChainIds({
 export type FetchProcessorQueuesReturnType = Array<{
   chainName: string;
   processorAddress: string;
+  chainId: string;
   queue?: ArrayOfMessageBatch;
 }>;
 async function fetchProcessorQueues({
   processorAddresses,
   queryConfig,
 }: {
-  processorAddresses?: AuthorizationData["processor_addrs"];
+  processorAddresses?: NormalizedAuthorizationData["processorData"];
   queryConfig: QueryConfig;
 }): Promise<FetchProcessorQueuesReturnType> {
   if (!processorAddresses) return [];
 
   const requests = Object.entries(processorAddresses).map(
-    async ([domainChainName, processorAddress]) => {
-      const [domain, chainName] = domainChainName.split(":");
-
+    async ([
+      domainChainName,
+      { chainId, chainName, address: processorAddress },
+    ]) => {
       const rpcUrl =
-        queryConfig.main.name === chainName
+        queryConfig.main.chainId === chainId
           ? queryConfig.main.rpcUrl
-          : queryConfig.external.find((chain) => chain.name === chainName)?.rpc;
+          : queryConfig.external.find((chain) => chain.chainId === chainId)
+              ?.rpc;
 
       const processorMetadata = {
         chainName,
         processorAddress,
+        chainId,
       };
 
-      let queue: ArrayOfMessageBatch | undefined = undefined;
-      if (domain == "CosmosCosmwasm") {
-        // todo: display some unsupported error
-        queue = rpcUrl
-          ? await getProcessorQueue({
-              rpcUrl,
-              processorAddress,
-            })
-          : undefined;
-      }
+      const queue = rpcUrl
+        ? await getProcessorQueue({
+            rpcUrl,
+            processorAddress,
+          })
+        : undefined;
 
       return {
         ...processorMetadata,

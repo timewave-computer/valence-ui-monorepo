@@ -3,6 +3,7 @@ import {
   isPermissionless,
   type GetProgramDataReturnValue,
   getExecutionLimit,
+  type QueryConfig,
 } from "@/app/programs/server";
 import {
   Card,
@@ -20,16 +21,16 @@ import {
   getSubroutine,
   permissionFactoryDenom,
   PermissionsDisplay,
-  useQueryArgs,
 } from "@/app/programs/ui";
 import { useWallet, useWalletBalancesV2 } from "@/hooks";
 
 export const SubroutineDisplay = ({
   program,
+  queryConfig,
 }: {
   program?: GetProgramDataReturnValue;
+  queryConfig: QueryConfig;
 }) => {
-  const { queryConfig } = useQueryArgs();
   const { address: walletAddress } = useWallet();
 
   const { data: balances, isLoading: isLoadingBalances } = useWalletBalancesV2({

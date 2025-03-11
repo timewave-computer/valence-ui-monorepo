@@ -8,7 +8,7 @@ import {
 } from "@valence-ui/ui-components";
 import { useForm } from "react-hook-form";
 import { debounce } from "lodash";
-import { useQueryArgs } from "@/app/programs/ui";
+import { type QueryConfig } from "@/app/programs/server";
 
 type RpcConfigFormValues = {
   main: {
@@ -23,10 +23,15 @@ type RpcConfigFormValues = {
     name: string;
   }>;
 };
-export const RpcConfigForm = ({}: {}) => {
-  const { queryConfig, setQueryConfig } = useQueryArgs();
+export const RpcConfigForm = ({
+  queryConfig,
+  setQueryConfig,
+}: {
+  queryConfig: QueryConfig;
+  setQueryConfig: (config: QueryConfig) => void;
+}) => {
   const mainChain = queryConfig.main;
-  const externalChains = queryConfig.external;
+  const externalChains = queryConfig.external ?? [];
   console.log("external chains", externalChains);
 
   const { register, handleSubmit } = useForm<RpcConfigFormValues>({
@@ -37,7 +42,7 @@ export const RpcConfigForm = ({}: {}) => {
         registryAddress: mainChain.registryAddress,
         rpcUrl: mainChain.rpcUrl,
       },
-      externalChains: externalChains.map((c) => {
+      externalChains: externalChains?.map((c) => {
         return {
           chainId: c.chainId,
           rpcUrl: c.rpc,
@@ -55,7 +60,6 @@ export const RpcConfigForm = ({}: {}) => {
         chainId: values.main.chainId,
         rpcUrl: values.main.rpcUrl,
       },
-
       external: [
         ...values.externalChains.map((chain) => ({
           chainId: chain.chainId,
