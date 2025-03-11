@@ -163,7 +163,7 @@ export const ExecutableSubroutine = ({
           {e.message}
         </ToastMessage>,
       );
-      console.log("error executing transaction", e);
+      console.log(e);
     },
     onSuccess: () => {
       toast.success(

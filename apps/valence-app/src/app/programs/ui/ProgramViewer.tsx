@@ -102,7 +102,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-0  border-0 "
           >
-            <SubroutineDisplay program={data} />
+            <SubroutineDisplay program={data} queryConfig={queryConfig} />
           </Card>
         </div>
 

@@ -23,7 +23,6 @@ import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cos
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { ProcessorQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.client";
-import { AuthorizationData } from "@valence-ui/generated-types";
 import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
 import { AuthorizationsQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.client";
 import { ArrayOfProcessorCallbackInfo } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.types";
@@ -162,7 +161,7 @@ export const getProgramData = async ({
 
   const libraryConfigs = await fetchLibraryConfigs(
     program.libraries,
-    mainChainConfig.rpcUrl,
+    completeQueryConfig,
   );
 
   let processorHistory: ArrayOfProcessorCallbackInfo | undefined = undefined;
@@ -253,14 +252,6 @@ const fetchProgramFromRegistry = async ({
   }
 };
 
-const getAllDomains = ({
-  accounts,
-  processors,
-}: {
-  accounts: ProgramParserResult["accounts"];
-  processors: ProgramParserResult["authorizationData"]["processor_addrs"];
-}) => {};
-
 const queryAccountBalances = async (
   accounts: ProgramParserResult["accounts"],
   config: QueryConfig,
@@ -275,7 +266,7 @@ const queryAccountBalances = async (
     if (account.chainName === config.main.name) {
       rpcUrl = config.main.rpcUrl;
     } else {
-      rpcUrl = config.external.find(
+      rpcUrl = config.external?.find(
         (chain) => chain.name === account.chainName,
       )?.rpc;
     }
@@ -361,7 +352,7 @@ async function fetchProcessorQueues({
       const rpcUrl =
         queryConfig.main.chainId === chainId
           ? queryConfig.main.rpcUrl
-          : queryConfig.external.find((chain) => chain.chainId === chainId)
+          : queryConfig.external?.find((chain) => chain.chainId === chainId)
               ?.rpc;
 
       const processorMetadata = {
@@ -462,21 +453,40 @@ async function fetchLibraryConfig({
 
 async function fetchLibraryConfigs(
   libraries: NormalizedLibraries,
-  rpcUrl: string,
+  queryConfig: QueryConfig,
 ) {
   // TODO: maybe better to pull library addresses from the function data instead.
-  const librariesToFetch = Object.values(libraries).reduce((acc, lib) => {
-    if (lib.addr && !!lib.domain?.CosmosCosmwasm) return [...acc, lib.addr];
-    else return [...acc];
-  }, [] as string[]);
+  const librariesToFetch = Object.values(libraries).reduce(
+    (acc, lib) => {
+      if (lib.addr && !!lib.domain?.CosmosCosmwasm) {
+        const rpcUrl =
+          lib.chainId === queryConfig.main.chainId
+            ? queryConfig.main.rpcUrl
+            : queryConfig.external?.find(
+                (chain) => chain.chainId === lib.chainId,
+              )?.rpc;
+        if (rpcUrl) {
+          return [
+            ...acc,
+            {
+              chainId: lib.chainId,
+              address: lib.addr,
+              rpcUrl: rpcUrl,
+            },
+          ];
+        } else return [...acc];
+      } else return [...acc];
+    },
+    [] as Array<{ address: string; chainId: string; rpcUrl: string }>,
+  );
 
   const allRequests = await Promise.allSettled(
-    librariesToFetch.map(async (address) => {
+    librariesToFetch.map(async (lib) => {
       return {
-        address,
-        schema: await fetchLibraryConfig({
-          rpcUrl,
-          libraryAddress: address,
+        address: lib.address,
+        config: await fetchLibraryConfig({
+          rpcUrl: lib.rpcUrl,
+          libraryAddress: lib.address,
         }),
       };
     }),
@@ -485,8 +495,8 @@ async function fetchLibraryConfigs(
   const requests = allRequests.filter(isFulfilled).map((r) => r.value);
 
   const configs = requests.reduce(
-    (acc, { address, schema }) => {
-      acc[address] = schema;
+    (acc, { address, config }) => {
+      acc[address] = config;
       return acc;
     },
     {} as Record<string, object>,

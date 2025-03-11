@@ -11,6 +11,7 @@ import { aminoTypes, protobufRegistry } from "@/context";
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { ChainInfo } from "@keplr-wallet/types";
+import { chains } from "chain-registry";
 
 const { keplr } = window;
 
@@ -23,20 +24,24 @@ export const connectWithOfflineSigner = async ({
   chainName: string;
   rpcUrl: string;
 }) => {
-  const testChainInfo = getTestnetChainInfo({
-    chainId,
-    chainName,
-    rpcUrl,
-  });
-
   if (!keplr) {
     throw new Error(
-      "Keplr extension required. Support for more wallets will be added soon.",
+      "Keplr is unavailable. Please log in or install the extension. Support for more wallets will be added soon.",
     );
   }
 
-  await keplr.experimentalSuggestChain(testChainInfo);
+  const isRegisteredChain = chains.find((c) => c.chain_id === chainId);
+  if (!isRegisteredChain) {
+    const testChainInfo = getTestnetChainInfo({
+      chainId,
+      chainName,
+      rpcUrl,
+    });
+    await keplr.experimentalSuggestChain(testChainInfo);
+  }
   await keplr.enable(chainId);
+
+  console.log("Keplr enabled", chainId, chainName, rpcUrl);
 
   const offlineSigner = window.getOfflineSigner
     ? await window.getOfflineSigner(chainId)
@@ -49,15 +54,12 @@ export const connectWithOfflineSigner = async ({
   }
 
   try {
-    return SigningStargateClient.connectWithSigner(
-      testChainInfo.rpc,
-      offlineSigner,
-      {
-        gasPrice: GasPrice.fromString("0.005untrn"),
-        registry: protobufRegistry,
-        aminoTypes: aminoTypes,
-      },
-    );
+    console.log("Connecting with offline signer", rpcUrl);
+    return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
+      gasPrice: GasPrice.fromString("0.005juno"),
+      registry: protobufRegistry,
+      aminoTypes: aminoTypes,
+    });
   } catch (e) {
     console.log(
       "Error connecting with offline signer",

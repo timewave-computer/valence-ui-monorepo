@@ -101,7 +101,7 @@ export const ProcessorSection = ({
           {e.message}
         </ToastMessage>,
       );
-      console.log("error", e);
+      console.log(e);
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries(

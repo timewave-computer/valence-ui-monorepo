@@ -77,7 +77,7 @@ export const RpcConfigForm = ({
         className="flex flex-col gap-6"
       >
         <div className="flex flex-col gap-2 ">
-          <Heading level="h3">Main Chain</Heading>
+          <Heading level="h3">Main Chain: {mainChain.name}</Heading>
 
           <FormField name="main.rpcUrl">
             <InputLabel size="sm" label={`RPC URL`} />
@@ -86,6 +86,16 @@ export const RpcConfigForm = ({
               size="sm"
               {...register("main.rpcUrl")}
               placeholder="https://"
+            />
+          </FormField>
+
+          <FormField name="main.chainId">
+            <InputLabel size="sm" label={`Chain ID (for signing)`} />
+
+            <TextInput
+              size="sm"
+              {...register("main.chainId")}
+              placeholder="neutron-1"
             />
           </FormField>
           <FormField name="main.registryAddress">
@@ -97,38 +107,39 @@ export const RpcConfigForm = ({
               placeholder="neutron1234..."
             />
           </FormField>
-          <FormField name="main.chainId">
-            <InputLabel size="sm" label={`Chain ID (for signing)`} />
-
-            <TextInput
-              size="sm"
-              {...register("main.chainId")}
-              placeholder="neutron-1"
-            />
-          </FormField>
         </div>
         {externalChains.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <Heading level="h3">External Chains</Heading>
+          <>
             {externalChains.map((chain, index) => {
               return (
-                <FormField
-                  key={`chain-rpcurl-${chain.chainId}`}
-                  name={`chains.${index}.rpcUrl`}
-                >
-                  <InputLabel
-                    size="sm"
-                    label={`${chain.name} RPC URL (${chain.chainId})`}
-                  />
-                  <TextInput
-                    size="sm"
-                    {...register(`externalChains.${index}.rpcUrl`)}
-                    placeholder="https://"
-                  />
-                </FormField>
+                <div className="flex flex-col gap-2">
+                  <Heading level="h3">External Chain: {chain.name}</Heading>
+                  <FormField
+                    key={`chain-rpcurl-${chain.chainId}`}
+                    name={`chains.${index}.rpcUrl`}
+                  >
+                    <InputLabel size="sm" label={"RPC URL"} />
+                    <TextInput
+                      size="sm"
+                      {...register(`externalChains.${index}.rpcUrl`)}
+                      placeholder="https://"
+                    />
+                  </FormField>
+                  <FormField
+                    key={`chain-chainId-${chain.chainId}`}
+                    name={`chains.${index}.chainId`}
+                  >
+                    <InputLabel size="sm" label={"Chain ID (for signing)"} />
+                    <TextInput
+                      size="sm"
+                      {...register(`externalChains.${index}.chainId`)}
+                      placeholder="chain-1"
+                    />
+                  </FormField>
+                </div>
               );
             })}
-          </div>
+          </>
         )}
       </FormRoot>
     </div>
