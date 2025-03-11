@@ -11,7 +11,13 @@ export type NormalizedAccounts = {
     chainName: string;
   };
 };
-export type NormalizedLibraries = ProgramConfig["libraries"];
+type NormalizedLibrary = ProgramConfig["libraries"][0];
+export type NormalizedLibraries = {
+  [k: string]: NormalizedLibrary & {
+    chainId: string;
+    chainName: string;
+  };
+};
 export type NormalizedLinks = ProgramConfig["links"];
 
 export type NormalizedAuthorizations = ProgramConfig["authorizations"];

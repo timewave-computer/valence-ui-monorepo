@@ -65,18 +65,22 @@ export const ProgramRegistryViewer = ({
   });
   return (
     <main className="flex grow flex-col bg-valence-white p-4">
-      <LinkText href={`/programs`} LinkComponent={Link} variant="breadcrumb">
-        Programs (alpha)
-      </LinkText>
+      <div className="flex flex-row gap-2 items-center justify-between">
+        <LinkText href={`/programs`} LinkComponent={Link} variant="breadcrumb">
+          Programs (alpha)
+        </LinkText>
+
+        <ProgramRpcSettings />
+      </div>
 
       <ProgramViewerErrorDisplay errors={data?.errors} />
 
-      <div className="flex flex-row gap-2 items-center pt-2">
+      <div className="flex flex-row gap-2 w-full  justify-between pt-2">
         <RefetchButton isFetching={isFetching} refetch={refetch} />
-        <ProgramRpcSettings />
       </div>
-      <div className="flex flex-col  gap-2 pt-8">
+      <div className="flex flex-col  gap-2 pt-4">
         <Table
+          loadingRows={10}
           isLoading={isLoading}
           variant="primary"
           headers={headers}

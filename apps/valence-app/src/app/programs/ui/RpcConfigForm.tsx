@@ -27,8 +27,9 @@ export const RpcConfigForm = ({}: {}) => {
   const { queryConfig, setQueryConfig } = useQueryArgs();
   const mainChain = queryConfig.main;
   const externalChains = queryConfig.external;
+  console.log("external chains", externalChains);
 
-  const { register, handleSubmit, setValue } = useForm<RpcConfigFormValues>({
+  const { register, handleSubmit } = useForm<RpcConfigFormValues>({
     defaultValues: {
       main: {
         name: mainChain.name,

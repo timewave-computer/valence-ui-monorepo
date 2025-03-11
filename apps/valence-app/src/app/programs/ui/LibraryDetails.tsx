@@ -21,8 +21,10 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
  */
 export const LibraryDetails = ({
   libraryAddress,
+  libraryChainId,
 }: {
   libraryAddress: string;
+  libraryChainId: string;
 }) => {
   const { getLibrarySchema } = useLibrarySchema();
 
@@ -37,7 +39,7 @@ export const LibraryDetails = ({
         blankTarget={true}
         className="font-mono text-xs"
         variant={"secondary"}
-        href={CelatoneUrl.contract(libraryAddress)}
+        href={CelatoneUrl.contract(libraryAddress, libraryChainId)}
       >
         {libraryAddress}
       </LinkText>

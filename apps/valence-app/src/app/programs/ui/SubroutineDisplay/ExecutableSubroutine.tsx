@@ -45,7 +45,7 @@ import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Coin } from "@cosmjs/stargate";
+import { Coin, SigningStargateClient } from "@cosmjs/stargate";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -148,6 +148,7 @@ export const ExecutableSubroutine = ({
         messages,
         "auto",
       );
+
       if (result.code !== 0) {
         throw new Error(result.rawLog);
       }
@@ -159,7 +160,7 @@ export const ExecutableSubroutine = ({
           {e.message}
         </ToastMessage>,
       );
-      console.log("error", e);
+      console.log("error executing transaction", e);
     },
     onSuccess: () => {
       toast.success(
@@ -207,10 +208,16 @@ export const ExecutableSubroutine = ({
           const libraryAddress = getFunctionLibraryAddress(func);
           const librarySchema = getLibrarySchema(libraryAddress);
 
+          const authorization = Object.values(
+            program?.parsedProgram?.libraries ?? {},
+          ).find((lib) => lib.addr === libraryAddress);
+          const libraryChainId = authorization?.chainId ?? ""; // TODO handle this more nicely
           const libraryConfig =
             program?.libraryConfigs && libraryAddress in program?.libraryConfigs
               ? program?.libraryConfigs[libraryAddress]
               : null;
+
+          // TODO: remove use of celatone
 
           return (
             <div
@@ -231,7 +238,7 @@ export const ExecutableSubroutine = ({
                   blankTarget={true}
                   className="font-mono text-xs"
                   variant={"secondary"}
-                  href={CelatoneUrl.contract(libraryAddress)}
+                  href={CelatoneUrl.contract(libraryAddress, libraryChainId)}
                 >
                   {displayAddress(libraryAddress)}
                 </LinkText>
@@ -274,7 +281,10 @@ export const ExecutableSubroutine = ({
                     </SheetTrigger>
 
                     <SheetContent side="right" className="w-3/4">
-                      <LibraryDetails libraryAddress={libraryAddress} />
+                      <LibraryDetails
+                        libraryChainId={libraryChainId}
+                        libraryAddress={libraryAddress}
+                      />
                     </SheetContent>
                   </Sheet>
                 )}

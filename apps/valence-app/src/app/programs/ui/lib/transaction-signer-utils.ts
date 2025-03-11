@@ -48,15 +48,26 @@ export const connectWithOfflineSigner = async ({
     );
   }
 
-  return SigningStargateClient.connectWithSigner(
-    testChainInfo.rpc,
-    offlineSigner,
-    {
-      gasPrice: GasPrice.fromString("0.001untrn"),
-      registry: protobufRegistry,
-      aminoTypes: aminoTypes,
-    },
-  );
+  try {
+    return SigningStargateClient.connectWithSigner(
+      testChainInfo.rpc,
+      offlineSigner,
+      {
+        gasPrice: GasPrice.fromString("0.005untrn"),
+        registry: protobufRegistry,
+        aminoTypes: aminoTypes,
+      },
+    );
+  } catch (e) {
+    console.log(
+      "Error connecting with offline signer",
+      e.message,
+      JSON.stringify(e),
+    );
+    throw new Error(
+      `Connected wallet unable to connect with signer at ${rpcUrl}. Make sure the RPC endpoint supports CORS. Error: ${e.message}`,
+    );
+  }
 };
 
 const getTestnetChainInfo = ({
@@ -70,7 +81,7 @@ const getTestnetChainInfo = ({
 }): ChainInfo => {
   return {
     chainId: chainId,
-    chainName: chainName,
+    chainName: chainName, // Neutron
     rpc: rpcUrl,
     rest: rpcUrl,
     bip44: {

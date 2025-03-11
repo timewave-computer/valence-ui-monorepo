@@ -134,6 +134,7 @@ export const getProgramData = async ({
       errors: makeApiErrors([{ code: GetProgramErrorCodes.PARSE }]),
     };
   }
+  // for all processors and accounts, populate external chains
 
   const { accounts } = program;
   queryConfigManager.setAllChainsConfigIfEmpty(accounts);

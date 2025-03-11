@@ -87,16 +87,17 @@ export const SubroutineDisplay = ({
             defaultIsOpen={false}
           >
             <CollapsibleSectionHeader>
-              <Heading level="h3">{subroutineLabel.toUpperCase()}</Heading>
+              <div className="flex flex-col gap-1 w-full">
+                <Heading level="h3">{subroutineLabel.toUpperCase()}</Heading>
+                <div className="flex flex-row gap-2">
+                  <Label variant={isAtomic ? "teal" : "purple"}>
+                    {displaySubroutineType(authorization.subroutine)}
+                  </Label>
+                  <Label>{displayAuthMode(authorization.mode)}</Label>
+                </div>
+              </div>
             </CollapsibleSectionHeader>
             <CollapsibleSectionContent>
-              <div className="flex flex-row gap-2 pb-2">
-                <Label variant={isAtomic ? "teal" : "purple"}>
-                  {displaySubroutineType(authorization.subroutine)}
-                </Label>
-                <Label>{displayAuthMode(authorization.mode)}</Label>
-              </div>
-
               <div className="pb-2">
                 {" "}
                 <PermissionsDisplay

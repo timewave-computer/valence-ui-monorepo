@@ -48,39 +48,47 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">
       <div className="flex flex-col  w-full">
-        <div className="flex flex-row gap-2">
-          <LinkText
-            href={`/programs?queryConfig=${JSON.stringify(queryConfig)}`}
-            LinkComponent={Link}
-            variant="breadcrumb"
-          >
-            Programs (alpha)
-          </LinkText>
-          <Heading level="h1"> / </Heading>
-          <LinkText
-            href={`/programs/${programId}`}
-            LinkComponent={Link}
-            variant="breadcrumb"
-          >
-            {programId}
-          </LinkText>
-        </div>
-        <ProgramViewerErrorDisplay errors={data?.errors} />
-        <div className="flex flex-row gap-2 items-center pt-2">
-          <RefetchButton isFetching={isFetching} refetch={refetch} />
-
+        <div className="flex flex-row gap-2 items-center justify-between">
+          <div className="flex flex-row gap-2">
+            <LinkText
+              href={`/programs?queryConfig=${JSON.stringify(queryConfig)}`}
+              LinkComponent={Link}
+              variant="breadcrumb"
+            >
+              Programs (alpha)
+            </LinkText>
+            <Heading level="h1"> / </Heading>
+            <LinkText
+              href={`/programs/${programId}`}
+              LinkComponent={Link}
+              variant="breadcrumb"
+            >
+              {programId}
+            </LinkText>
+          </div>
           <ProgramRpcSettings />
-          {data?.rawProgram && (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="secondary">Raw Program</Button>
-              </SheetTrigger>
-              <SheetContent title="Raw Program" className="w-1/2" side="right">
-                <Heading level="h2">Raw Program</Heading>
-                <PrettyJson data={data?.rawProgram} />
-              </SheetContent>
-            </Sheet>
-          )}
+        </div>
+
+        <ProgramViewerErrorDisplay errors={data?.errors} />
+        <div className="flex flex-row gap-2 items-center justify-between pt-2">
+          <div className="flex flex-row gap-2 items-center">
+            <RefetchButton isFetching={isFetching} refetch={refetch} />
+            {data?.rawProgram && (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="secondary">Raw Program</Button>
+                </SheetTrigger>
+                <SheetContent
+                  title="Raw Program"
+                  className="w-1/2"
+                  side="right"
+                >
+                  <Heading level="h2">Raw Program</Heading>
+                  <PrettyJson data={data?.rawProgram} />
+                </SheetContent>
+              </Sheet>
+            )}
+          </div>
         </div>
       </div>
       <div className="grid grid-cols-4 w-full gap-4 pt-4 pb-4">

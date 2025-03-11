@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { NormalizedAccounts, type ParseFunction } from "@/app/programs/server";
+import {
+  NormalizedAccounts,
+  NormalizedLibraries,
+  type ParseFunction,
+} from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
 import { chains } from "chain-registry";
 
@@ -34,12 +38,36 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
     {} as NormalizedAccounts,
   );
 
+  const librariesWithChainId = Object.entries(programData.libraries).reduce(
+    (acc, [key, value]) => {
+      const chainName = value.domain.CosmosCosmwasm;
+      if (!chainName) {
+        throw new Error(`Domain is not yet supported: ${value.domain} `);
+      }
+      const registeredChain = chains.find(
+        (chain) => chain.chain_name === chainName,
+      );
+      if (!registeredChain) {
+        throw new Error(
+          `Unable to set default rpc. Chain name ${chainName} not found in chain registry.`,
+        );
+      }
+      acc[key] = {
+        ...value,
+        chainId: registeredChain.chain_id,
+        chainName: chainName,
+      };
+      return acc;
+    },
+    {} as NormalizedLibraries,
+  );
+
   return {
     // since there is only 1 format we pretty much just return what what we have for now
     authorizations: programData.authorizations,
     authorizationData: programData.authorization_data,
     accounts: accountsWithChainId,
-    libraries: programData.libraries,
+    libraries: librariesWithChainId,
     links: programData.links,
   };
 };

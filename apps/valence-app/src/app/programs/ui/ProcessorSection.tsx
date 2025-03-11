@@ -41,6 +41,7 @@ export const ProcessorSection = ({
   const { isWalletConnected, address: walletAddress } = useWallet();
   const { queryConfig } = useQueryArgs();
   const queryClient = useQueryClient();
+  console.log("processor data", processorData);
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
