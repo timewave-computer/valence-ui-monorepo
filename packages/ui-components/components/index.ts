@@ -26,3 +26,4 @@ export * from "./HoverContent";
 export * from "./Asset";
 export * from "./RadioGroup";
 export * from "./Checkbox";
+export * from "./Copyable";
