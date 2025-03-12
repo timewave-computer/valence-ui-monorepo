@@ -55,12 +55,30 @@ export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
 }: GetProgramDataProps): Promise<GetProgramDataReturnValue> => {
-  let queryConfigManager = new QueryConfigManager(
-    userSuppliedQueryConfig ?? {
+  let initialQueryConfig: QueryConfig;
+  // if external is empty array, set it to undefined
+  if (userSuppliedQueryConfig) {
+    let sanitizedExternal =
+      !!userSuppliedQueryConfig.external?.length &&
+      userSuppliedQueryConfig.external?.length > 0
+        ? userSuppliedQueryConfig.external
+        : [];
+    if (!sanitizedExternal) {
+      sanitizedExternal;
+    }
+
+    initialQueryConfig = {
+      ...userSuppliedQueryConfig,
+      external: sanitizedExternal,
+    };
+  } else {
+    initialQueryConfig = {
       main: getDefaultMainChainConfig(),
-      external: undefined, // needs to be derived from accounts in config
-    },
-  );
+      external: [], // needs to be derived from accounts in config
+    };
+  }
+
+  let queryConfigManager = new QueryConfigManager(initialQueryConfig);
   // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
   const mainChainConfig = queryConfigManager.getMainChainConfig();
@@ -69,6 +87,7 @@ export const getProgramData = async ({
   try {
     mainChainCosmwasmClient = await getCosmwasmClient(mainChainConfig.rpcUrl);
   } catch (e) {
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       programId: programId,
       dataLastUpdatedAt: getLastUpdatedTime(),

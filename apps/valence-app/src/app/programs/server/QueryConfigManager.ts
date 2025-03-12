@@ -14,21 +14,19 @@ export const queryConfigSchema = z.object({
     rpcUrl: z.string(),
     name: z.string(),
   }),
-  external: z
-    .array(
-      z.object({
-        rpc: z.string(),
-        chainId: z.string(),
-        name: z.string(),
-      }),
-    )
-    .optional(),
+  external: z.array(
+    z.object({
+      rpc: z.string(),
+      chainId: z.string(),
+      name: z.string(),
+    }),
+  ),
 });
 export type QueryConfig = z.infer<typeof queryConfigSchema>;
 
 export const defaultQueryConfig = {
   main: getDefaultMainChainConfig(),
-  external: undefined, // needs to be derived from accounts in config
+  external: [], // needs to be derived from accounts in config
 };
 
 const queryConfigLoader = {
@@ -63,13 +61,14 @@ export class QueryConfigManager {
 
   setAllChainsConfigIfEmpty(program: ProgramParserResult | null) {
     if (program === null) {
-      this.externalChainConfig = [];
+      this.externalChainConfig = undefined;
       return;
     }
 
     // if query config already specified, we dont have to make it ourselves.
-    if (this.externalChainConfig?.length) return;
-    else {
+    if (!!this.externalChainConfig?.length) {
+      return;
+    } else {
       const externalConfig = QueryConfigManager.makeExternalChainConfig(
         program,
         this.mainChainConfig.chainId,
@@ -79,12 +78,6 @@ export class QueryConfigManager {
   }
 
   getQueryConfig(): QueryConfig {
-    if (!this.externalChainConfig) {
-      // this is to catch errors during development.
-      throw new Error(
-        "All chains config not set. Please call setAllChainsConfigIfEmpty before calling getQueryConfig",
-      );
-    }
     return {
       main: this.mainChainConfig,
       external: this.externalChainConfig,

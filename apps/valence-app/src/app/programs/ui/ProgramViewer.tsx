@@ -50,7 +50,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     <div className="w-screen h-screen flex flex-col items-start p-4 ">
       <div className="flex flex-col  w-full">
         <div className="flex flex-row gap-2 items-center justify-between">
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 flex-wrap">
             <LinkText
               href={`/programs?queryConfig=${JSON.stringify(queryConfig)}`}
               LinkComponent={Link}

@@ -40,9 +40,6 @@ export const connectWithOfflineSigner = async ({
     await keplr.experimentalSuggestChain(testChainInfo);
   }
   await keplr.enable(chainId);
-
-  console.log("Keplr enabled", chainId, chainName, rpcUrl);
-
   const offlineSigner = window.getOfflineSigner
     ? await window.getOfflineSigner(chainId)
     : undefined;
@@ -53,9 +50,7 @@ export const connectWithOfflineSigner = async ({
     );
   }
 
-  console.log("offlinesigner", offlineSigner);
   try {
-    console.log("Connecting with offline signer", rpcUrl);
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
       gasPrice: GasPrice.fromString("0.005juno"),
       registry: protobufRegistry,

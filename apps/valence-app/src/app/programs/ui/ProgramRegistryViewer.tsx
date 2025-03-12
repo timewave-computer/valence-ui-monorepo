@@ -32,11 +32,18 @@ export const ProgramRegistryViewer = ({
   const tableData = data?.parsedPrograms?.map(({ id, config }) => {
     const authorizationsAddress = config.authorizationData?.authorization_addr;
 
+    const sanitizedQueryConfig = {
+      ...queryConfig,
+      external: !!queryConfig.external?.length
+        ? queryConfig.external
+        : undefined,
+    };
+
     return {
       id: {
         value: id,
         link: {
-          href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfig)}`,
+          href: `/programs/${id}?queryConfig=${JSON.stringify(sanitizedQueryConfig)}`,
           LinkComponent: Link,
           blankTarget: false,
         },
