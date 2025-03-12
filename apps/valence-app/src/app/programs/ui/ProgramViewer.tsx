@@ -41,46 +41,58 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     initialQueryData: initialData,
   });
 
-  const { queryConfig } = useQueryArgs();
+  const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
+
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">
       <div className="flex flex-col  w-full">
-        <div className="flex flex-row gap-2">
-          <LinkText
-            href={`/programs?queryConfig=${JSON.stringify(queryConfig)}`}
-            LinkComponent={Link}
-            variant="breadcrumb"
-          >
-            Programs (alpha)
-          </LinkText>
-          <Heading level="h1"> / </Heading>
-          <LinkText
-            href={`/programs/${programId}`}
-            LinkComponent={Link}
-            variant="breadcrumb"
-          >
-            {programId}
-          </LinkText>
+        <div className="flex flex-row gap-2 items-center justify-between">
+          <div className="flex flex-row gap-2 flex-wrap">
+            <LinkText
+              href={`/programs?queryConfig=${JSON.stringify(queryConfig)}`}
+              LinkComponent={Link}
+              variant="breadcrumb"
+            >
+              Programs (alpha)
+            </LinkText>
+            <Heading level="h1"> / </Heading>
+            <LinkText
+              href={`/programs/${programId}`}
+              LinkComponent={Link}
+              variant="breadcrumb"
+            >
+              {programId}
+            </LinkText>
+          </div>
+          <ProgramRpcSettings
+            queryConfig={queryConfig}
+            setQueryConfig={setQueryConfig}
+          />
         </div>
-        <ProgramViewerErrorDisplay errors={data?.errors} />
-        <div className="flex flex-row gap-2 items-center pt-2">
-          <RefetchButton isFetching={isFetching} refetch={refetch} />
 
-          <ProgramRpcSettings />
-          {data?.rawProgram && (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="secondary">Raw Program</Button>
-              </SheetTrigger>
-              <SheetContent title="Raw Program" className="w-1/2" side="right">
-                <Heading level="h2">Raw Program</Heading>
-                <PrettyJson data={data?.rawProgram} />
-              </SheetContent>
-            </Sheet>
-          )}
+        <ProgramViewerErrorDisplay errors={data?.errors} />
+        <div className="flex flex-row gap-2 items-center justify-between pt-2">
+          <div className="flex flex-row gap-2 items-center">
+            <RefetchButton isFetching={isFetching} refetch={refetch} />
+            {data?.rawProgram && (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="secondary">Raw Program</Button>
+                </SheetTrigger>
+                <SheetContent
+                  title="Raw Program"
+                  className="w-1/2"
+                  side="right"
+                >
+                  <Heading level="h2">Raw Program</Heading>
+                  <PrettyJson data={data?.rawProgram} />
+                </SheetContent>
+              </Sheet>
+            )}
+          </div>
         </div>
       </div>
       <div className="grid grid-cols-4 w-full gap-4 pt-4 pb-4">
@@ -90,7 +102,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-0  border-0 "
           >
-            <SubroutineDisplay program={data} />
+            <SubroutineDisplay program={data} queryConfig={queryConfig} />
           </Card>
         </div>
 
@@ -110,14 +122,14 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-0 "
           >
-            <ProcessorDisplay program={data} />
+            <ProcessorDisplay program={data} queryConfig={queryConfig} />
           </Card>
         </div>
         <div className="flex flex-col col-span-2 flex-grow gap-2">
           <Heading level="h2">Execution History</Heading>
           <Card
             isLoading={isLoading}
-            className="overflow-x-scroll flex-grow p-2  "
+            className="overflow-x-scroll  flex-grow p-2  "
           >
             <ExecutionHistoryTable program={data} />
           </Card>

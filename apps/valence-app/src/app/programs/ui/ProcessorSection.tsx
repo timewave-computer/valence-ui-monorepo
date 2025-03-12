@@ -4,6 +4,7 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  Copyable,
   Heading,
   HoverCardContent,
   HoverCardRoot,
@@ -15,14 +16,17 @@ import {
   ToastMessage,
   type TableColumnHeader,
 } from "@valence-ui/ui-components";
-import { type FetchProcessorQueuesReturnType } from "@/app/programs/server";
+import {
+  NormalizedProcessorInfo,
+  type QueryConfig,
+  type FetchProcessorQueuesReturnType,
+} from "@/app/programs/server";
 import { BsClockFill } from "react-icons/bs";
 import { displayAddress, jsonToUtf8 } from "@/utils";
-import { CelatoneUrl, QUERY_KEYS } from "@/const";
+import { QUERY_KEYS } from "@/const";
 import {
   ConnectWalletHoverContent,
   connectWithOfflineSigner,
-  useQueryArgs,
 } from "@/app/programs/ui";
 import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
@@ -30,32 +34,52 @@ import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const ProcessorSection = ({
+  processorQueue,
   processorData,
-  processorAddress,
   domain,
+  queryConfig,
 }: {
-  processorData?: FetchProcessorQueuesReturnType[number];
-  processorAddress: string;
+  processorQueue?: FetchProcessorQueuesReturnType[number];
+  processorData: NormalizedProcessorInfo;
   domain?: string;
+  queryConfig: QueryConfig;
 }) => {
   const { isWalletConnected, address: walletAddress } = useWallet();
-  const { queryConfig } = useQueryArgs();
   const queryClient = useQueryClient();
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
-      const signer = await connectWithOfflineSigner({
-        chainId: queryConfig.main.chainId,
-        chainName: queryConfig.main.name,
-        rpcUrl: queryConfig.main.rpcUrl,
-      });
+      let connectionData;
+      if (processorData.chainId === queryConfig.main.chainId) {
+        connectionData = {
+          chainId: queryConfig.main.chainId,
+          chainName: queryConfig.main.name,
+          rpcUrl: queryConfig.main.rpcUrl,
+        };
+      } else {
+        const externalConfig = queryConfig.external?.find(
+          (c) => c.chainId === processorData.chainId,
+        );
+        if (!externalConfig) {
+          throw new Error(
+            `No RPC configuration specified for chain ID ${processorData.chainId}`,
+          );
+        }
+        connectionData = {
+          chainId: externalConfig.chainId,
+          chainName: externalConfig.name,
+          rpcUrl: externalConfig.rpc,
+        };
+      }
+
+      const signer = await connectWithOfflineSigner(connectionData);
 
       const messages: EncodeObject[] = [
         {
           typeUrl: MsgExecuteContract.typeUrl,
           value: {
             sender: walletAddress,
-            contract: processorAddress,
+            contract: processorData.address,
             msg: jsonToUtf8({
               permissionless_action: {
                 tick: {},
@@ -78,7 +102,7 @@ export const ProcessorSection = ({
           {e.message}
         </ToastMessage>,
       );
-      console.log("error", e);
+      console.log(e);
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries(
@@ -102,7 +126,7 @@ export const ProcessorSection = ({
     },
   });
 
-  const queue = processorData?.queue;
+  const queue = processorQueue?.queue;
 
   const data =
     queue?.map((messageBatch) => {
@@ -150,9 +174,9 @@ export const ProcessorSection = ({
     <CollapsibleSectionRoot
       defaultIsOpen={true}
       className=""
-      key={`processor-${processorAddress}`}
+      key={`processor-${processorData.address}`}
     >
-      <CollapsibleSectionHeader className="flex flex-row items-center gap-2 w-full  justify-between p-4 pb-0">
+      <CollapsibleSectionHeader className="flex flex-row items-center gap-2 w-full  justify-between p-4 pb-2">
         <div className="flex flex-row gap-2 items-center">
           <HoverCardRoot>
             <HoverCardTrigger asChild>
@@ -178,23 +202,24 @@ export const ProcessorSection = ({
           </HoverCardRoot>
 
           <div className="flex flex-col  items-start">
-            <Heading level="h3">{processorData?.chainName ?? domain}</Heading>
-            <LinkText
-              blankTarget
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              href={CelatoneUrl.contract(processorAddress)}
-              className="font-mono text-xs"
-            >
-              {displayAddress(processorAddress)}
-            </LinkText>
+            <Heading level="h3">{processorQueue?.chainName ?? domain}</Heading>
+            <Copyable copyText={processorData.address}>
+              <LinkText
+                LinkComponent={"div"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="font-mono text-xs"
+              >
+                {displayAddress(processorData.address)}
+              </LinkText>
+            </Copyable>
           </div>
         </div>
       </CollapsibleSectionHeader>
       <CollapsibleSectionContent>
         {!queue ? (
-          <p>Queue not found</p>
+          <p className="px-4 pb-2">Queue not found</p>
         ) : (
           <Table
             className="p-2"

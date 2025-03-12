@@ -5,6 +5,7 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  Copyable,
   FormRoot,
   FormSubmit,
   Heading,
@@ -46,6 +47,7 @@ import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Coin } from "@cosmjs/stargate";
+import { type QueryConfig } from "@/app/programs/server";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -64,6 +66,7 @@ export const ExecutableSubroutine = ({
   executionLimit,
   authTokenDenom,
   programId,
+  queryConfig,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
@@ -74,12 +77,13 @@ export const ExecutableSubroutine = ({
   executionLimit: string | null;
   authTokenDenom: string | null;
   programId: string;
+  queryConfig: QueryConfig;
 }) => {
-  const { address: walletAddress, isWalletConnected } = useWallet();
-  const { queryConfig } = useQueryArgs();
-  const queryClient = useQueryClient();
   // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
   const { data: program } = useProgramQuery({ programId });
+  const { address: walletAddress, isWalletConnected } = useWallet();
+
+  const queryClient = useQueryClient();
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
@@ -148,6 +152,7 @@ export const ExecutableSubroutine = ({
         messages,
         "auto",
       );
+
       if (result.code !== 0) {
         throw new Error(result.rawLog);
       }
@@ -159,7 +164,7 @@ export const ExecutableSubroutine = ({
           {e.message}
         </ToastMessage>,
       );
-      console.log("error", e);
+      console.log(e);
     },
     onSuccess: () => {
       toast.success(
@@ -207,11 +212,14 @@ export const ExecutableSubroutine = ({
           const libraryAddress = getFunctionLibraryAddress(func);
           const librarySchema = getLibrarySchema(libraryAddress);
 
+          const authorization = Object.values(
+            program?.parsedProgram?.libraries ?? {},
+          ).find((lib) => lib.addr === libraryAddress);
+          const libraryChainId = authorization?.chainId ?? ""; // TODO handle this more nicely
           const libraryConfig =
             program?.libraryConfigs && libraryAddress in program?.libraryConfigs
               ? program?.libraryConfigs[libraryAddress]
               : null;
-
           return (
             <div
               className={cn(
@@ -226,15 +234,15 @@ export const ExecutableSubroutine = ({
                     librarySchema?.raw?.contract_name,
                   )}
                 </Heading>
-
-                <LinkText
-                  blankTarget={true}
-                  className="font-mono text-xs"
-                  variant={"secondary"}
-                  href={CelatoneUrl.contract(libraryAddress)}
-                >
-                  {displayAddress(libraryAddress)}
-                </LinkText>
+                <Copyable copyText={libraryAddress}>
+                  <LinkText
+                    LinkComponent={"div"}
+                    className="font-mono text-xs"
+                    variant={"secondary"}
+                  >
+                    {displayAddress(libraryAddress)}
+                  </LinkText>
+                </Copyable>
               </div>
               {libraryConfig && (
                 <CollapsibleSectionRoot defaultIsOpen={false} className="pb-2">
@@ -274,7 +282,10 @@ export const ExecutableSubroutine = ({
                     </SheetTrigger>
 
                     <SheetContent side="right" className="w-3/4">
-                      <LibraryDetails libraryAddress={libraryAddress} />
+                      <LibraryDetails
+                        libraryChainId={libraryChainId}
+                        libraryAddress={libraryAddress}
+                      />
                     </SheetContent>
                   </Sheet>
                 )}

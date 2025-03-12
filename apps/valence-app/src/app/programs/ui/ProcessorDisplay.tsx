@@ -1,18 +1,20 @@
 import { Card } from "@valence-ui/ui-components";
-import { GetProgramDataReturnValue } from "@/app/programs/server";
+import {
+  type GetProgramDataReturnValue,
+  type QueryConfig,
+} from "@/app/programs/server";
 import { ProcessorSection } from "@/app/programs/ui";
 
 export const ProcessorDisplay = ({
   program,
+  queryConfig,
 }: {
   program?: GetProgramDataReturnValue;
+  queryConfig: QueryConfig;
 }) => {
-  const processorAddresses =
-    program?.parsedProgram?.authorizationData?.processor_addrs;
-  let processors = Array<[string, string]>();
-  if (processorAddresses) {
-    processors = Object.entries(processorAddresses);
-  }
+  const processorData =
+    program?.parsedProgram?.authorizationData.processorData ?? {};
+  const processors = Object.entries(processorData);
 
   if (!processors.length) {
     return (
@@ -20,17 +22,18 @@ export const ProcessorDisplay = ({
     );
   }
 
-  return processors.map(([domain, processorAddress]) => {
-    const processorData = program?.processorQueues?.find(
-      (q) => q.processorAddress === processorAddress,
+  return processors.map(([domain, processorData]) => {
+    const processorQueue = program?.processorQueues?.find(
+      (q) => q.processorAddress === processorData.address,
     );
 
     return (
       <ProcessorSection
-        key={`processor-table-${processorAddress}`}
+        key={`processor-table-${processorData.address}`}
+        processorQueue={processorQueue}
         processorData={processorData}
-        processorAddress={processorAddress}
         domain={domain}
+        queryConfig={queryConfig}
       />
     );
   });

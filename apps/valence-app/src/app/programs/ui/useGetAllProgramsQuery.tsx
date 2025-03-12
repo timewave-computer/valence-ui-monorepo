@@ -17,7 +17,7 @@ type UseProgramQueryArgs = {
 export const useGetAllProgramsQuery = ({
   initialQueryData,
 }: UseProgramQueryArgs) => {
-  const { queryConfig } = useQueryArgs();
+  const { queryConfig } = useQueryArgs(initialQueryData.queryConfig);
 
   // must be defined in callback to detect input changes
   const queryFn = useCallback(async () => {

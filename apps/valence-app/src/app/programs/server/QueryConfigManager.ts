@@ -1,4 +1,4 @@
-import { type NormalizedAccounts } from "@/app/programs/server";
+import { ProgramParserResult } from "@/app/programs/server";
 import { chains } from "chain-registry";
 import {
   getDefaultMainChainConfig,
@@ -23,6 +23,7 @@ export const queryConfigSchema = z.object({
   ),
 });
 export type QueryConfig = z.infer<typeof queryConfigSchema>;
+
 export const defaultQueryConfig = {
   main: getDefaultMainChainConfig(),
   external: [], // needs to be derived from accounts in config
@@ -58,35 +59,38 @@ export class QueryConfigManager {
     return this.mainChainConfig;
   }
 
-  setAllChainsConfigIfEmpty(accounts: NormalizedAccounts) {
+  setAllChainsConfigIfEmpty(program: ProgramParserResult | null) {
+    if (program === null) {
+      this.externalChainConfig = undefined;
+      return;
+    }
+
     // if query config already specified, we dont have to make it ourselves.
-    if (this.externalChainConfig?.length) return;
-    else
-      this.externalChainConfig = QueryConfigManager.makeExternalChainConfig(
-        accounts,
+    if (!!this.externalChainConfig?.length) {
+      return;
+    } else {
+      const externalConfig = QueryConfigManager.makeExternalChainConfig(
+        program,
         this.mainChainConfig.chainId,
       );
+      this.externalChainConfig = externalConfig;
+    }
   }
 
   getQueryConfig(): QueryConfig {
-    if (!this.externalChainConfig) {
-      // this is to catch errors during development.
-      throw new Error(
-        "All chains config not set. Please call setAllChainsConfigIfEmpty before calling getQueryConfig",
-      );
-    }
     return {
       main: this.mainChainConfig,
-      external: this.externalChainConfig,
+      external: this.externalChainConfig ?? [],
     };
   }
 
   // takes list of accounts and default rpcs and makes rpc config object
   private static makeExternalChainConfig(
-    accounts: NormalizedAccounts,
+    program: ProgramParserResult,
     mainChainId: string,
   ): QueryConfig["external"] {
     const rpcs: QueryConfig["external"] = [];
+    const accounts = program.accounts;
 
     for (const account of Object.values(accounts)) {
       // if already present, skip
@@ -121,6 +125,7 @@ export class QueryConfigManager {
         });
       }
     }
+
     return rpcs;
   }
 }

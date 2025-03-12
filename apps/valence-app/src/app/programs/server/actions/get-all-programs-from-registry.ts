@@ -76,7 +76,7 @@ export const getAllProgramsFromRegistry = async ({
       cosmwasmClient: mainChainCosmwasmClient,
     });
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty({});
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
@@ -127,6 +127,8 @@ export const getAllProgramsFromRegistry = async ({
     },
     [] as ParsedPrograms,
   );
+
+  queryConfigManager.setAllChainsConfigIfEmpty(null);
 
   return {
     dataLastUpdatedAt: getLastUpdatedTime(),

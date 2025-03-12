@@ -11,6 +11,7 @@ import { aminoTypes, protobufRegistry } from "@/context";
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { ChainInfo } from "@keplr-wallet/types";
+import { chains } from "chain-registry";
 
 const { keplr } = window;
 
@@ -23,24 +24,34 @@ export const connectWithOfflineSigner = async ({
   chainName: string;
   rpcUrl: string;
 }) => {
-  const testChainInfo = getTestnetChainInfo({
-    chainId,
-    chainName,
-    rpcUrl,
-  });
-
   if (!keplr) {
     throw new Error(
-      "Keplr extension required. Support for more wallets will be added soon.",
+      "Keplr is unavailable. Please log in or install the extension. Support for more wallets will be added soon.",
     );
   }
 
-  await keplr.experimentalSuggestChain(testChainInfo);
+  const isRegisteredChain = chains.find((c) => c.chain_id === chainId);
+  if (!isRegisteredChain) {
+    const testChainInfo = getTestnetChainInfo({
+      chainId,
+      chainName,
+      rpcUrl,
+    });
+    await keplr.experimentalSuggestChain(testChainInfo);
+  }
   await keplr.enable(chainId);
-
   const offlineSigner = window.getOfflineSigner
     ? await window.getOfflineSigner(chainId)
     : undefined;
+
+  const registeredFeeTokens = chains.find((c) => c.chain_id === chainId)?.fees
+    ?.fee_tokens;
+  if (!registeredFeeTokens || registeredFeeTokens.length === 0) {
+    throw new Error(
+      `Unable to select fee token for ${chainId}. Please contact valence team.`,
+    );
+  }
+  const feeDenom = registeredFeeTokens[0].denom;
 
   if (!offlineSigner) {
     throw new Error(
@@ -48,15 +59,22 @@ export const connectWithOfflineSigner = async ({
     );
   }
 
-  return SigningStargateClient.connectWithSigner(
-    testChainInfo.rpc,
-    offlineSigner,
-    {
-      gasPrice: GasPrice.fromString("0.001untrn"),
+  try {
+    return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
+      gasPrice: GasPrice.fromString(`0.005${feeDenom}`),
       registry: protobufRegistry,
       aminoTypes: aminoTypes,
-    },
-  );
+    });
+  } catch (e) {
+    console.log(
+      "Error connecting with offline signer",
+      e.message,
+      JSON.stringify(e),
+    );
+    throw new Error(
+      `Connected wallet unable to connect with signer at ${rpcUrl}. Make sure the RPC endpoint supports CORS. Error: ${e.message}`,
+    );
+  }
 };
 
 const getTestnetChainInfo = ({

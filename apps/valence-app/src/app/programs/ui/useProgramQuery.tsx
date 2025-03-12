@@ -20,7 +20,7 @@ export const useProgramQuery = ({
   programId,
   initialQueryData,
 }: UseProgramQueryArgs) => {
-  const { queryConfig } = useQueryArgs();
+  const { queryConfig } = useQueryArgs(initialQueryData?.queryConfig!);
 
   // must be defined in callback to detect input changes
   const queryFn = useCallback(async () => {
@@ -50,16 +50,17 @@ export const useProgramQuery = ({
         </ToastMessage>,
       );
     }
-  }, [programId, queryConfig.main, queryConfig.external]);
+  }, [programId, queryConfig?.main, queryConfig?.external]);
   return useQuery<GetProgramDataReturnValue | undefined>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    enabled: !!queryConfig,
     retry: false,
     queryKey: [
       QUERY_KEYS.PROGRAMS_FETCH_PROGRAM,
       programId,
-      queryConfig.main,
-      queryConfig.external,
+      queryConfig?.main,
+      queryConfig?.external,
     ],
     // only supply initial data if the query config is the same
     initialData: isEqual(queryConfig, initialQueryData?.queryConfig)

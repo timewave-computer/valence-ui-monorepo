@@ -11,6 +11,7 @@ import {
   ErrorCodes,
   makeApiErrors,
   getLastUpdatedTime,
+  NormalizedAuthorizationData,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
@@ -22,7 +23,6 @@ import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cos
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { ProcessorQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.client";
-import { AuthorizationData } from "@valence-ui/generated-types";
 import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
 import { AuthorizationsQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.client";
 import { ArrayOfProcessorCallbackInfo } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.types";
@@ -55,12 +55,30 @@ export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
 }: GetProgramDataProps): Promise<GetProgramDataReturnValue> => {
-  let queryConfigManager = new QueryConfigManager(
-    userSuppliedQueryConfig ?? {
+  let initialQueryConfig: QueryConfig;
+  // if external is empty array, set it to undefined
+  if (userSuppliedQueryConfig) {
+    let sanitizedExternal =
+      !!userSuppliedQueryConfig.external?.length &&
+      userSuppliedQueryConfig.external?.length > 0
+        ? userSuppliedQueryConfig.external
+        : [];
+    if (!sanitizedExternal) {
+      sanitizedExternal;
+    }
+
+    initialQueryConfig = {
+      ...userSuppliedQueryConfig,
+      external: sanitizedExternal,
+    };
+  } else {
+    initialQueryConfig = {
       main: getDefaultMainChainConfig(),
-      external: undefined, // needs to be derived from accounts in config
-    },
-  );
+      external: [], // needs to be derived from accounts in config
+    };
+  }
+
+  let queryConfigManager = new QueryConfigManager(initialQueryConfig);
   // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
   const mainChainConfig = queryConfigManager.getMainChainConfig();
@@ -69,6 +87,7 @@ export const getProgramData = async ({
   try {
     mainChainCosmwasmClient = await getCosmwasmClient(mainChainConfig.rpcUrl);
   } catch (e) {
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       programId: programId,
       dataLastUpdatedAt: getLastUpdatedTime(),
@@ -83,9 +102,9 @@ export const getProgramData = async ({
   }
 
   if (!mainChainConfig.registryAddress) {
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       programId: programId,
-
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -103,10 +122,9 @@ export const getProgramData = async ({
       cosmwasmClient: mainChainCosmwasmClient,
     });
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty({});
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       programId: programId,
-
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([
@@ -119,12 +137,11 @@ export const getProgramData = async ({
   }
 
   let program: ProgramParserResult;
-  queryConfigManager.setAllChainsConfigIfEmpty({});
 
   try {
     program = ProgramParser.extractData(rawProgram);
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty({});
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     console.log(`Program ID ${programId} parse error: ${e} `);
     return {
       programId: programId,
@@ -134,9 +151,10 @@ export const getProgramData = async ({
       errors: makeApiErrors([{ code: GetProgramErrorCodes.PARSE }]),
     };
   }
+  // for all processors and accounts, populate external chains
 
   const { accounts } = program;
-  queryConfigManager.setAllChainsConfigIfEmpty(accounts);
+  queryConfigManager.setAllChainsConfigIfEmpty(program);
   const completeQueryConfig = queryConfigManager.getQueryConfig();
 
   let accountBalances;
@@ -162,7 +180,7 @@ export const getProgramData = async ({
 
   const libraryConfigs = await fetchLibraryConfigs(
     program.libraries,
-    mainChainConfig.rpcUrl,
+    completeQueryConfig,
   );
 
   let processorHistory: ArrayOfProcessorCallbackInfo | undefined = undefined;
@@ -173,7 +191,7 @@ export const getProgramData = async ({
       authorizationsAddress: program.authorizationData?.authorization_addr,
     }),
     fetchProcessorQueues({
-      processorAddresses: program.authorizationData?.processor_addrs,
+      processorAddresses: program.authorizationData.processorData,
       queryConfig: completeQueryConfig,
     }),
   ]);
@@ -267,7 +285,7 @@ const queryAccountBalances = async (
     if (account.chainName === config.main.name) {
       rpcUrl = config.main.rpcUrl;
     } else {
-      rpcUrl = config.external.find(
+      rpcUrl = config.external?.find(
         (chain) => chain.name === account.chainName,
       )?.rpc;
     }
@@ -299,7 +317,7 @@ function getDenomsAndChainIds({
   balances: AccountBalancesReturnValue;
   accounts: NormalizedAccounts;
 }) {
-  const unflattenedMetadataQueries = balances.map((account) => {
+  const unflattenedMetadataQueries = balances?.map((account) => {
     const acct = Object.values(accounts).find(
       (a) => a.addr === account.address,
     );
@@ -333,41 +351,41 @@ function getDenomsAndChainIds({
 export type FetchProcessorQueuesReturnType = Array<{
   chainName: string;
   processorAddress: string;
+  chainId: string;
   queue?: ArrayOfMessageBatch;
 }>;
 async function fetchProcessorQueues({
   processorAddresses,
   queryConfig,
 }: {
-  processorAddresses?: AuthorizationData["processor_addrs"];
+  processorAddresses?: NormalizedAuthorizationData["processorData"];
   queryConfig: QueryConfig;
 }): Promise<FetchProcessorQueuesReturnType> {
   if (!processorAddresses) return [];
 
   const requests = Object.entries(processorAddresses).map(
-    async ([domainChainName, processorAddress]) => {
-      const [domain, chainName] = domainChainName.split(":");
-
+    async ([
+      domainChainName,
+      { chainId, chainName, address: processorAddress },
+    ]) => {
       const rpcUrl =
-        queryConfig.main.name === chainName
+        queryConfig.main.chainId === chainId
           ? queryConfig.main.rpcUrl
-          : queryConfig.external.find((chain) => chain.name === chainName)?.rpc;
+          : queryConfig.external?.find((chain) => chain.chainId === chainId)
+              ?.rpc;
 
       const processorMetadata = {
         chainName,
         processorAddress,
+        chainId,
       };
 
-      let queue: ArrayOfMessageBatch | undefined = undefined;
-      if (domain == "CosmosCosmwasm") {
-        // todo: display some unsupported error
-        queue = rpcUrl
-          ? await getProcessorQueue({
-              rpcUrl,
-              processorAddress,
-            })
-          : undefined;
-      }
+      const queue = rpcUrl
+        ? await getProcessorQueue({
+            rpcUrl,
+            processorAddress,
+          })
+        : undefined;
 
       return {
         ...processorMetadata,
@@ -454,21 +472,40 @@ async function fetchLibraryConfig({
 
 async function fetchLibraryConfigs(
   libraries: NormalizedLibraries,
-  rpcUrl: string,
+  queryConfig: QueryConfig,
 ) {
   // TODO: maybe better to pull library addresses from the function data instead.
-  const librariesToFetch = Object.values(libraries).reduce((acc, lib) => {
-    if (lib.addr && !!lib.domain?.CosmosCosmwasm) return [...acc, lib.addr];
-    else return [...acc];
-  }, [] as string[]);
+  const librariesToFetch = Object.values(libraries).reduce(
+    (acc, lib) => {
+      if (lib.addr && !!lib.domain?.CosmosCosmwasm) {
+        const rpcUrl =
+          lib.chainId === queryConfig.main.chainId
+            ? queryConfig.main.rpcUrl
+            : queryConfig.external?.find(
+                (chain) => chain.chainId === lib.chainId,
+              )?.rpc;
+        if (rpcUrl) {
+          return [
+            ...acc,
+            {
+              chainId: lib.chainId,
+              address: lib.addr,
+              rpcUrl: rpcUrl,
+            },
+          ];
+        } else return [...acc];
+      } else return [...acc];
+    },
+    [] as Array<{ address: string; chainId: string; rpcUrl: string }>,
+  );
 
   const allRequests = await Promise.allSettled(
-    librariesToFetch.map(async (address) => {
+    librariesToFetch.map(async (lib) => {
       return {
-        address,
-        schema: await fetchLibraryConfig({
-          rpcUrl,
-          libraryAddress: address,
+        address: lib.address,
+        config: await fetchLibraryConfig({
+          rpcUrl: lib.rpcUrl,
+          libraryAddress: lib.address,
         }),
       };
     }),
@@ -477,8 +514,8 @@ async function fetchLibraryConfigs(
   const requests = allRequests.filter(isFulfilled).map((r) => r.value);
 
   const configs = requests.reduce(
-    (acc, { address, schema }) => {
-      acc[address] = schema;
+    (acc, { address, config }) => {
+      acc[address] = config;
       return acc;
     },
     {} as Record<string, object>,

@@ -1,5 +1,6 @@
 "use client";
 import {
+  Copyable,
   Heading,
   InfoText,
   LinkText,
@@ -15,14 +16,17 @@ import {
 } from "@/app/programs/ui";
 import { CelatoneUrl } from "@/const";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { displayAddress } from "@/utils";
 
 /**
  * This is itws own component because each subroutine should have its own useForm instantiatio
  */
 export const LibraryDetails = ({
   libraryAddress,
+  libraryChainId,
 }: {
   libraryAddress: string;
+  libraryChainId: string;
 }) => {
   const { getLibrarySchema } = useLibrarySchema();
 
@@ -33,14 +37,15 @@ export const LibraryDetails = ({
       <Heading level="h2">
         {displayLibraryContractName(librarySchema?.raw.contract_name)}
       </Heading>
-      <LinkText
-        blankTarget={true}
-        className="font-mono text-xs"
-        variant={"secondary"}
-        href={CelatoneUrl.contract(libraryAddress)}
-      >
-        {libraryAddress}
-      </LinkText>
+      <Copyable copyText={libraryAddress}>
+        <LinkText
+          LinkComponent={"div"}
+          className="font-mono text-xs"
+          variant={"secondary"}
+        >
+          {libraryAddress}
+        </LinkText>
+      </Copyable>
 
       {librarySchema ? (
         <>

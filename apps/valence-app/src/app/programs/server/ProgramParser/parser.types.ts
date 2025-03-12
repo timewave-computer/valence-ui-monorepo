@@ -1,8 +1,21 @@
-import { type ProgramConfig } from "@valence-ui/generated-types";
+import {
+  AuthorizationData,
+  type ProgramConfig,
+} from "@valence-ui/generated-types";
 
 // there is only one file version, so the normalized types are just the types from the schema. Adjust as needed
 
-export type NormalizedAuthorizationData = ProgramConfig["authorization_data"];
+export type NormalizedProcessorInfo = {
+  address: string;
+  chainId: string;
+  chainName: string;
+};
+
+export type NormalizedAuthorizationData = AuthorizationData & {
+  processorData: {
+    [k: string]: NormalizedProcessorInfo;
+  };
+};
 
 type NormalizedAccount = ProgramConfig["accounts"][0];
 export type NormalizedAccounts = {
@@ -11,7 +24,13 @@ export type NormalizedAccounts = {
     chainName: string;
   };
 };
-export type NormalizedLibraries = ProgramConfig["libraries"];
+type NormalizedLibrary = ProgramConfig["libraries"][0];
+export type NormalizedLibraries = {
+  [k: string]: NormalizedLibrary & {
+    chainId: string;
+    chainName: string;
+  };
+};
 export type NormalizedLinks = ProgramConfig["links"];
 
 export type NormalizedAuthorizations = ProgramConfig["authorizations"];

@@ -8,9 +8,16 @@ import {
   SheetContent,
   LinkText,
 } from "@valence-ui/ui-components";
-import { RpcConfigForm } from "./RpcConfigForm";
+import { RpcConfigForm } from "@/app/programs/ui";
+import { type QueryConfig } from "@/app/programs/server";
 
-export const ProgramRpcSettings = () => {
+export const ProgramRpcSettings = ({
+  queryConfig,
+  setQueryConfig,
+}: {
+  queryConfig: QueryConfig;
+  setQueryConfig: (config: QueryConfig) => void;
+}) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -32,7 +39,10 @@ export const ProgramRpcSettings = () => {
           </LinkText>
         </div>
 
-        <RpcConfigForm />
+        <RpcConfigForm
+          queryConfig={queryConfig}
+          setQueryConfig={setQueryConfig}
+        />
       </SheetContent>
     </Sheet>
   );
