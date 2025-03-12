@@ -52,7 +52,6 @@ export const connectWithOfflineSigner = async ({
     );
   }
   const feeDenom = registeredFeeTokens[0].denom;
-  console.log("fee denom", feeDenom);
 
   if (!offlineSigner) {
     throw new Error(
