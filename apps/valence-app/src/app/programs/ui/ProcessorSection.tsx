@@ -23,7 +23,7 @@ import {
 } from "@/app/programs/server";
 import { BsClockFill } from "react-icons/bs";
 import { displayAddress, jsonToUtf8 } from "@/utils";
-import { CelatoneUrl, QUERY_KEYS } from "@/const";
+import { QUERY_KEYS } from "@/const";
 import {
   ConnectWalletHoverContent,
   connectWithOfflineSigner,

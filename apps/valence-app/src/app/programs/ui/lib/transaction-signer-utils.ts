@@ -53,6 +53,7 @@ export const connectWithOfflineSigner = async ({
     );
   }
 
+  console.log("offlinesigner", offlineSigner);
   try {
     console.log("Connecting with offline signer", rpcUrl);
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {

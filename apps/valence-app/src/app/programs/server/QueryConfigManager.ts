@@ -63,15 +63,10 @@ export class QueryConfigManager {
 
   setAllChainsConfigIfEmpty(program: ProgramParserResult | null) {
     if (program === null) {
-      console.log("settings to empty array");
       this.externalChainConfig = [];
       return;
     }
-    console.log(
-      "setting all chains config",
-      this.externalChainConfig,
-      !!program,
-    );
+
     // if query config already specified, we dont have to make it ourselves.
     if (this.externalChainConfig?.length) return;
     else {

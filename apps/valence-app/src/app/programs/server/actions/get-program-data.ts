@@ -298,7 +298,7 @@ function getDenomsAndChainIds({
   balances: AccountBalancesReturnValue;
   accounts: NormalizedAccounts;
 }) {
-  const unflattenedMetadataQueries = balances.map((account) => {
+  const unflattenedMetadataQueries = balances?.map((account) => {
     const acct = Object.values(accounts).find(
       (a) => a.addr === account.address,
     );
