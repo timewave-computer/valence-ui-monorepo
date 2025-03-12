@@ -44,14 +44,15 @@ export const connectWithOfflineSigner = async ({
     ? await window.getOfflineSigner(chainId)
     : undefined;
 
-  const chainFees = chains.find((c) => c.chain_id === chainId);
-  console.log("chainFees", chainFees);
-  if (!chainFees) {
+  const registeredFeeTokens = chains.find((c) => c.chain_id === chainId)?.fees
+    ?.fee_tokens;
+  if (!registeredFeeTokens || registeredFeeTokens.length === 0) {
     throw new Error(
-      `Chain fees not found for chain id ${chainId}. Please contact valence team.`,
+      `Unable to select fee token for ${chainId}. Please contact valence team.`,
     );
   }
-  const feeDenom = chainFees[0].denom;
+  const feeDenom = registeredFeeTokens[0].denom;
+  console.log("fee denom", feeDenom);
 
   if (!offlineSigner) {
     throw new Error(
