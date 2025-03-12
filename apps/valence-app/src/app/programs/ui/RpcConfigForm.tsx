@@ -111,7 +111,10 @@ export const RpcConfigForm = ({
           <>
             {externalChains.map((chain, index) => {
               return (
-                <div className="flex flex-col gap-2">
+                <div
+                  key={`externalchain-${chain.chainId}`}
+                  className="flex flex-col gap-2"
+                >
                   <Heading level="h3">External Chain: {chain.name}</Heading>
                   <FormField
                     key={`chain-rpcurl-${chain.chainId}`}

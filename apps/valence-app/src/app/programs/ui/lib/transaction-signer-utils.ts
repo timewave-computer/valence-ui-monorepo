@@ -44,6 +44,14 @@ export const connectWithOfflineSigner = async ({
     ? await window.getOfflineSigner(chainId)
     : undefined;
 
+  const chainFees = chains.find((c) => c.chain_id === chainId)?.fees;
+  if (!chainFees) {
+    throw new Error(
+      `Chain fees not found for chain id ${chainId}. Please contact valence team.`,
+    );
+  }
+  const feeDenom = chainFees[0].denom;
+
   if (!offlineSigner) {
     throw new Error(
       "Offline signer not initialized. Try reconnecting wallet, and contact valence team if issue persists.",
@@ -52,7 +60,7 @@ export const connectWithOfflineSigner = async ({
 
   try {
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
-      gasPrice: GasPrice.fromString("0.005juno"),
+      gasPrice: GasPrice.fromString(`0.005${feeDenom}`),
       registry: protobufRegistry,
       aminoTypes: aminoTypes,
     });

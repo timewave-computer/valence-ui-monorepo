@@ -63,8 +63,12 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
     {} as NormalizedLibraries,
   );
 
+  if (!programData.authorization_data) {
+    throw new Error("Invalid program, no authorizations specified");
+  }
+
   const processorsWithChainId = Object.entries(
-    programData.authorization_data?.processor_addrs ?? {},
+    programData.authorization_data.processor_addrs ?? {},
   ).reduce(
     (acc, [domainChainName, address]) => {
       const split = domainChainName.split(":");

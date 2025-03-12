@@ -80,7 +80,7 @@ export class QueryConfigManager {
   getQueryConfig(): QueryConfig {
     return {
       main: this.mainChainConfig,
-      external: this.externalChainConfig,
+      external: this.externalChainConfig ?? [],
     };
   }
 

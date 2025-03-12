@@ -37,8 +37,12 @@ export const LibraryDetails = ({
       <Heading level="h2">
         {displayLibraryContractName(librarySchema?.raw.contract_name)}
       </Heading>
-      <Copyable LinkComponent={"div"} copyText={libraryAddress}>
-        <LinkText className="font-mono text-xs" variant={"secondary"}>
+      <Copyable copyText={libraryAddress}>
+        <LinkText
+          LinkComponent={"div"}
+          className="font-mono text-xs"
+          variant={"secondary"}
+        >
           {libraryAddress}
         </LinkText>
       </Copyable>
