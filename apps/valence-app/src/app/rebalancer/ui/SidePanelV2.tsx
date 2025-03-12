@@ -21,6 +21,7 @@ import {
   Heading,
   cn,
 } from "@valence-ui/ui-components";
+import { useAccount } from "graz";
 
 export const SidePanelV2: React.FC<{
   rerouteOnConnect?: boolean;
@@ -97,10 +98,13 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
     defaultValue: "",
   });
 
-  const { address, isWalletConnected } = useWallet();
+  const { data: connectedAccount, isConnected: isWalletConnected } =
+    useAccount();
+  const walletAddress = connectedAccount?.bech32Address;
   const { data: valenceAddress, isLoading: isValenceAccountLoading } =
-    useValenceAccount(address);
-  const { data: allValenceAccounts } = useMultipleValenceAccounts(address);
+    useValenceAccount(walletAddress);
+  const { data: allValenceAccounts } =
+    useMultipleValenceAccounts(walletAddress);
   let featuredAccounts = chainConfig.featuredAccounts;
 
   const router = useRouter();

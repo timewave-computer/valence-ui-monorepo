@@ -36,6 +36,7 @@ import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
 import { CelatoneUrl } from "@/const";
 import { useQueryState } from "nuqs";
+import { useAccount, useCosmWasmSigningClient } from "graz";
 
 type WithdrawInputForm = {
   amounts: Coin[];
@@ -43,7 +44,11 @@ type WithdrawInputForm = {
 export const WithdrawDialog: React.FC<{}> = ({}) => {
   const queryClient = useQueryClient();
   const { getOriginAsset } = useAssetMetadata();
-  const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
+
+  const { data: account } = useAccount();
+  const { data: signingCoswmasmClient } = useCosmWasmSigningClient();
+  const walletAddress = account?.bech32Address;
+
   const [accountAddress] = useQueryState("account", {
     defaultValue: "",
   });
@@ -58,7 +63,10 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
   );
 
   const withdraw = async (amounts: WithdrawInputForm["amounts"]) => {
-    const signer = await getSigningCosmwasmClient();
+    const signer = signingCoswmasmClient;
+    if (!signer) {
+      throw new Error("No signing client found");
+    }
 
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen

@@ -22,7 +22,8 @@ import {
   permissionFactoryDenom,
   PermissionsDisplay,
 } from "@/app/programs/ui";
-import { useWallet, useWalletBalancesV2 } from "@/hooks";
+import { useWalletBalancesV2 } from "@/hooks";
+import { useAccount } from "graz";
 
 export const SubroutineDisplay = ({
   program,
@@ -31,7 +32,8 @@ export const SubroutineDisplay = ({
   program?: GetProgramDataReturnValue;
   queryConfig: QueryConfig;
 }) => {
-  const { address: walletAddress } = useWallet();
+  const { data: account } = useAccount();
+  const walletAddress = account?.bech32Address;
 
   const { data: balances, isLoading: isLoadingBalances } = useWalletBalancesV2({
     rpcUrl: queryConfig?.main?.rpcUrl,

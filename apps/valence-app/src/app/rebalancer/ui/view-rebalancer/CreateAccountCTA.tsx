@@ -2,12 +2,15 @@
 import { Asset, Heading } from "@valence-ui/ui-components";
 import { SymbolColors, useAssetMetadata } from "@/app/rebalancer/ui";
 import { displayNumberV2, microToBase } from "@/utils";
-import { useWallet, useWalletBalances } from "@/hooks";
+import { useWalletBalances } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { chainConfig } from "@/const/config";
 import { StatusBar } from "@/components/StatusBar";
+import { useAccount } from "graz";
 export const CreateAccountCTA = () => {
-  const { address: walletAddress } = useWallet();
+  const { data: connectedAccount, isConnected: isWalletConnected } =
+    useAccount();
+  const walletAddress = connectedAccount?.bech32Address;
   // only to handle loading state when wallet is connected
   const router = useRouter();
   const {

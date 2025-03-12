@@ -48,6 +48,7 @@ import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Coin } from "@cosmjs/stargate";
 import { type QueryConfig } from "@/app/programs/server";
+import { useAccount } from "graz";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -81,7 +82,8 @@ export const ExecutableSubroutine = ({
 }) => {
   // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
   const { data: program } = useProgramQuery({ programId });
-  const { address: walletAddress, isWalletConnected } = useWallet();
+  const { data: account, isConnected: isWalletConnected } = useAccount();
+  const walletAddress = account?.bech32Address;
 
   const queryClient = useQueryClient();
 

@@ -11,6 +11,7 @@ import { GeneratedType, Registry } from "@cosmjs/proto-signing";
  */
 import { protoRegistry } from "@/smol_telescope/proto-registry";
 import { aminoConverters } from "@/smol_telescope/amino-converters";
+import { GrazProvider } from "graz";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
@@ -43,6 +44,16 @@ const ENABLED_WALLETS = [wallets[0]]; // only keplr web, not mobile
 export const CosmosProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  // note, must be wrapped in query client provider
+  return (
+    <GrazProvider
+      grazOptions={{
+        chains: [],
+      }}
+    >
+      {children}
+    </GrazProvider>
+  );
   return (
     <ChainProvider
       walletModal={WalletModal} // temporarily is a no-op

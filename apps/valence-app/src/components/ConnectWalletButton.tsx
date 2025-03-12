@@ -6,39 +6,44 @@ import {
   cn,
   toast,
 } from "@valence-ui/ui-components";
-import { useAlert, useChainContext, useIsServer, useWallet } from "@/hooks";
+import { useAlert, useIsServer } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
-import { WalletStatus } from "@cosmos-kit/core";
 import { displayAddress } from "@/utils";
+import {
+  useAccount,
+  checkWallet,
+  useConnect,
+  useDisconnect,
+  WalletType,
+  useActiveChains,
+} from "graz";
 
 export const ConnectWalletButton: React.FC<{}> = ({}) => {
   const isServer = useIsServer();
+
+  const { connect, error: connectError } = useConnect();
+
+  const { disconnect } = useDisconnect();
   const {
-    isWalletConnected,
-    isWalletConnecting,
-    connect,
-    address,
-    walletStatus,
-    walletInfo,
-    disconnect,
-  } = useWallet();
+    data: account,
+    isConnected: isWalletConnected,
+    isConnecting: isWalletConnecting,
+  } = useAccount();
+  const walletAddress = account?.bech32Address;
+  const activeChains = useActiveChains();
 
-  const { chain } = useChainContext();
+  console.log("activeChains", activeChains);
 
-  useAlert(
-    walletStatus === WalletStatus.Error ||
-      walletStatus === WalletStatus.Rejected,
-    () => {
-      // TODO: prevent from spamming
-      toast.error(
-        <ToastMessage variant="error" title="Error connecting wallet.">
-          Please try again.
-        </ToastMessage>,
-      );
-    },
-  );
+  useAlert(!!(connectError as any), () => {
+    // TODO: prevent from spamming
+    toast.error(
+      <ToastMessage variant="error" title="Error connecting wallet.">
+        Please try again.
+      </ToastMessage>,
+    );
+  });
 
-  useAlert(walletStatus === WalletStatus.NotExist, () => {
+  useAlert(!checkWallet(WalletType.KEPLR), () => {
     toast.error(
       <ToastMessage variant="error" title="Please install keplr.">
         Support for more wallets will be added soon.
@@ -80,7 +85,7 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
           )}
           variant="secondary"
         >
-          {displayAddress(address ?? "")}
+          {displayAddress(walletAddress ?? "")}
         </Button>
       </Popover.Trigger>
 
@@ -92,19 +97,12 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
         <div className="items-left flex flex-col gap-3">
           <div className="flex flex-row justify-between items-start">
             <h1 className="text-base font-semibold">Wallet connected</h1>
-
-            <div
-              className="h-6 w-6 bg-contain bg-center bg-no-repeat "
-              style={{
-                backgroundImage: `url(${walletInfo?.logo})`,
-              }}
-            />
           </div>
 
           <div>
-            <Label> {chain.pretty_name}</Label>
+            {/* <Label> {chain.pretty_name}</Label> */}
             <div className="max-w-48 text-balance break-words text-left font-mono text-xs">
-              {address}
+              {walletAddress}
             </div>
           </div>
         </div>

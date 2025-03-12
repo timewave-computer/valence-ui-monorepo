@@ -33,6 +33,7 @@ import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { useAtom } from "jotai";
 import { useWallet } from "@/hooks";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
+import { useAccount } from "graz";
 
 export const HistoricalGraph: React.FC<{
   isError: boolean;
@@ -108,10 +109,13 @@ export const HistoricalGraph: React.FC<{
   const { portalPosition, overlayRef } = useGraphOverlay(graphRef);
 
   const {
-    address: walletAddress,
-    isWalletConnected,
-    isWalletConnecting,
-  } = useWallet();
+    data: connectedAccount,
+    isConnected: isWalletConnected,
+    status,
+  } = useAccount();
+  const isWalletConnecting = status === "loading";
+  const walletAddress = connectedAccount?.bech32Address;
+
   // only to handle loading state when wallet is connected
   const valenceAccountQuery = useValenceAccount(walletAddress);
 

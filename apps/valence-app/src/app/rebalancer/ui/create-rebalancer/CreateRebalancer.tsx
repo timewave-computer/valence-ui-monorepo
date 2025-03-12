@@ -42,19 +42,25 @@ import { useCallback, useState } from "react";
 import { HiMiniArrowLeft } from "react-icons/hi2";
 import { VALENCE_DOMAIN, X_HANDLE, X_URL } from "@valence-ui/socials";
 import { CelatoneUrl } from "@/const";
+import {
+  useAccount,
+  useConnect,
+  useCosmWasmClient,
+  useStargateSigningClient,
+} from "graz";
 
 type CreateRebalancerProps = {};
 
 export function CreateRebalancer({}: CreateRebalancerProps) {
   const router = useRouter();
 
-  const {
-    address: _walletAddress,
-    isWalletConnecting,
-    getCosmWasmClient,
-    getSigningStargateClient,
-    isWalletConnected,
-  } = useWallet();
+  const { data: connectedAccount } = useAccount();
+  const { data: cosmwasmClient } = useCosmWasmClient();
+  const { data: signingStargateClient } = useStargateSigningClient();
+
+  const { status } = useConnect();
+  const _walletAddress = connectedAccount?.bech32Address;
+  const isWalletConnecting = status === "loading";
 
   const walletAddress = _walletAddress ?? "";
   const form = useForm<CreateRebalancerForm>({
@@ -119,7 +125,12 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
       throw new Error(
         "No address specified. Please reconnect wallet or contact @ValenceZone for help.",
       );
-    const cwClient = await getCosmWasmClient();
+    const cwClient = cosmwasmClient;
+    if (!cwClient) {
+      throw new Error(
+        "Unable to create cosmwam client. Please reconnect wallet or contact @ValenceZone for help.",
+      );
+    }
 
     // atomically create & fund valence account and register account to rebalancer
     const { valenceAddress, messages } = await makeCreateRebalancerMessages({
@@ -127,14 +138,20 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
       creatorAddress: walletAddress,
       config: form.getValues(),
     });
-    const signer = await getSigningStargateClient();
+
+    const signer = signingStargateClient;
+    if (!signer) {
+      throw new Error(
+        "Unable to create signer. Please reconnect wallet or contact @ValenceZone for help.",
+      );
+    }
     const result = await signer.signAndBroadcast(
       walletAddress,
       messages,
       "auto",
     );
     return { valenceAddress, result };
-  }, [getSigningStargateClient, getCosmWasmClient, form, walletAddress]);
+  }, [cosmwasmClient, signingStargateClient, form, walletAddress]);
 
   const queryClient = useQueryClient();
 
@@ -245,7 +262,7 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
   });
   const isServer = useIsServer();
 
-  useTestSignerConnection();
+  // useTestSignerConnection();
 
   if (isWalletConnecting) {
     return <LoadingSkeleton className="min-h-screen" />;

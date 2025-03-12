@@ -1,7 +1,7 @@
 import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
-import { useWallet, useWalletBalances } from "@/hooks";
+import { useWalletBalances } from "@/hooks";
 import { displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import {
@@ -31,6 +31,7 @@ import {
   useNoSupportedAssetsWarning,
   SymbolColors,
 } from "@/app/rebalancer/ui";
+import { useAccount } from "graz";
 
 export const DepositAssets: React.FC<{
   address: string;
@@ -44,8 +45,7 @@ export const DepositAssets: React.FC<{
     refetchInveral: 10 * 1000,
   });
   const { setValue, getValues, watch } = form;
-  const { isWalletConnected } = useWallet();
-
+  const { isConnected: isWalletConnected } = useAccount();
   const addTarget = useCallback(
     (denom: string) => {
       const targets = getValues("targets");

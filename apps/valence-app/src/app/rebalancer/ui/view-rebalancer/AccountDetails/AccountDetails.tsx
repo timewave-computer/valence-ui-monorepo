@@ -26,6 +26,7 @@ import {
 import Link from "next/link";
 import { BsCheck, BsInfo } from "react-icons/bs";
 import { useSearchParams } from "next/navigation";
+import { useAccount } from "graz";
 
 export const AccountDetailsPanel: React.FC<{}> = ({}) => {
   const searchParams = useSearchParams();
@@ -160,7 +161,9 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
 const AccountDetailsHeader: React.FC<{
   selectedAddress: string;
 }> = ({ selectedAddress }) => {
-  const { isWalletConnected, address: walletAddress } = useWallet();
+  const { data: connectedAccount, isConnected: isWalletConnected } =
+    useAccount();
+  const walletAddress = connectedAccount?.bech32Address;
 
   const { data: allValenceAccounts } =
     useMultipleValenceAccounts(walletAddress);

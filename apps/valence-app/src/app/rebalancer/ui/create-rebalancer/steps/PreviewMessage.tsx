@@ -16,25 +16,17 @@ import {
 } from "@/app/rebalancer/ui";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const/query-keys";
-import { useWallet } from "@/hooks";
-import { useEffect, useMemo } from "react";
 import { ErrorHandler } from "@/const/error";
+import { useCosmWasmClient } from "graz";
+import { useEffect } from "react";
 
 export const PreviewMessage: React.FC<{
   form: UseFormReturn<CreateRebalancerForm, any, undefined>;
   address: string;
 }> = ({ form, address }) => {
   const { watch } = form;
-  const { getCosmWasmClient } = useWallet();
 
-  const cwClient = useMemo(() => {
-    try {
-      return getCosmWasmClient();
-    } catch (e) {
-      ErrorHandler.makeError("Failed to make CosmWasm client", e);
-      return null;
-    }
-  }, [getCosmWasmClient]);
+  const { data: cosmwasmClient } = useCosmWasmClient();
 
   const values = watch();
   const {
@@ -44,17 +36,21 @@ export const PreviewMessage: React.FC<{
     error,
   } = useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: [QUERY_KEYS.REBALANCER_FORM_MESSAGE_PREVIEW, address, values],
-    enabled: !!cwClient,
+    queryKey: [
+      QUERY_KEYS.REBALANCER_FORM_MESSAGE_PREVIEW,
+      address,
+      values,
+      cosmwasmClient,
+    ],
+    enabled: !!cosmwasmClient,
 
     queryFn: async () => {
-      const client = await cwClient;
-      if (!client)
+      if (!cosmwasmClient)
         throw ErrorHandler.makeError("CosmWasm client not available");
       const { valenceAddress, messages } = await makeCreateRebalancerMessages({
         config: values,
         creatorAddress: address,
-        cosmwasmClient: client,
+        cosmwasmClient,
       });
       const decodedInstatiateMessage = decodeInstatiateMessage(messages[0]);
       const decodedRegisterMessage = decodeRegisterMessage(messages[1]);
@@ -70,6 +66,7 @@ export const PreviewMessage: React.FC<{
   useEffect(() => {
     if (!!error) console.log("Error loading preview", error);
   }, [error]);
+
   return (
     <CollapsibleSectionRoot variant="secondary" defaultIsOpen={false}>
       <CollapsibleSectionHeader>

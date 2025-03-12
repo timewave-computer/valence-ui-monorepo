@@ -28,10 +28,10 @@ import {
   ConnectWalletHoverContent,
   connectWithOfflineSigner,
 } from "@/app/programs/ui";
-import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAccount } from "graz";
 
 export const ProcessorSection = ({
   processorQueue,
@@ -44,7 +44,9 @@ export const ProcessorSection = ({
   domain?: string;
   queryConfig: QueryConfig;
 }) => {
-  const { isWalletConnected, address: walletAddress } = useWallet();
+  const { data: account, isConnected: isWalletConnected } = useAccount();
+  const walletAddress = account?.bech32Address;
+
   const queryClient = useQueryClient();
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({

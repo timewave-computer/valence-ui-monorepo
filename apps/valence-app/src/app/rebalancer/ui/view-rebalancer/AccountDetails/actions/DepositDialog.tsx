@@ -33,23 +33,29 @@ import {
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
 import { CelatoneUrl } from "@/const";
 import { useQueryState } from "nuqs";
+import { useAccount, useStargateSigningClient } from "graz";
 
 type DepositInputForm = {
   amounts: Coin[];
 };
 export const DepositDialog: React.FC<{}> = ({}) => {
   const queryClient = useQueryClient();
-  const { address: walletAddress, getSigningStargateClient } = useWallet();
+  const { data: account } = useAccount();
+  const { data: signingStargateClient } = useStargateSigningClient();
+  const walletAddress = account?.bech32Address;
   const [accountAddress] = useQueryState("account", {
     defaultValue: "",
   });
   const getOriginAsset = useAssetMetadata().getOriginAsset;
 
   const deposit = async (amounts: DepositInputForm["amounts"]) => {
-    const stargateClient = await getSigningStargateClient();
+    const stargateClient = signingStargateClient;
 
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen
+    }
+    if (!signingStargateClient) {
+      throw new Error("No signing client found");
     }
     const convertedAmounts = amounts.reduce((acc, coin) => {
       const asset = getOriginAsset(coin.denom);
