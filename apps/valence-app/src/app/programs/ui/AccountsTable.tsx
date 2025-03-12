@@ -5,6 +5,7 @@ import {
   type TableColumnHeader,
   Label,
   LinkText,
+  Copyable,
 } from "@valence-ui/ui-components";
 import { type GetProgramDataReturnValue } from "@/app/programs/server";
 import { displayAccountName, displayDomain } from "@/app/programs/ui";
@@ -65,14 +66,15 @@ export const AccountsTable = ({
               <div className="flex flex-row items-center gap-2">
                 <Heading level="h4">{displayAccountName(account.name)}</Heading>
                 {account.addr && (
-                  <LinkText
-                    blankTarget={true}
-                    className="font-mono text-xs"
-                    variant={"secondary"}
-                    href={CelatoneUrl.contract(account.addr)}
-                  >
-                    {displayAddress(account.addr)}
-                  </LinkText>
+                  <Copyable copyText={account.addr}>
+                    <LinkText
+                      LinkComponent={"div"}
+                      className="font-mono text-xs"
+                      variant={"secondary"}
+                    >
+                      {displayAddress(account.addr)}
+                    </LinkText>
+                  </Copyable>
                 )}
               </div>
 

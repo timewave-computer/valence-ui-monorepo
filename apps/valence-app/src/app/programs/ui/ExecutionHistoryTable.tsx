@@ -76,7 +76,7 @@ const headers: TableColumnHeader[] = [
   {
     key: ExecutionHistoryTableKeys.executionId,
     label: "Execution ID",
-    cellType: CellType.Text,
+    cellType: CellType.Number,
   },
   {
     key: ExecutionHistoryTableKeys.label,

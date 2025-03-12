@@ -4,6 +4,7 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  Copyable,
   Heading,
   HoverCardContent,
   HoverCardRoot,
@@ -202,16 +203,17 @@ export const ProcessorSection = ({
 
           <div className="flex flex-col  items-start">
             <Heading level="h3">{processorQueue?.chainName ?? domain}</Heading>
-            <LinkText
-              blankTarget
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              href={CelatoneUrl.contract(processorData.address)}
-              className="font-mono text-xs"
-            >
-              {displayAddress(processorData.address)}
-            </LinkText>
+            <Copyable copyText={processorData.address}>
+              <LinkText
+                LinkComponent={"div"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="font-mono text-xs"
+              >
+                {displayAddress(processorData.address)}
+              </LinkText>
+            </Copyable>
           </div>
         </div>
       </CollapsibleSectionHeader>

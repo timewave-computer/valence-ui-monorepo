@@ -10,7 +10,10 @@ export const useQueryArgs = (
 ) => {
   const [queryConfig, setQueryConfig] = useQueryState(
     "queryConfig",
-    parseAsJson(queryConfigSchema.parse).withDefault(initialQueryConfig),
+    parseAsJson(queryConfigSchema.parse).withDefault({
+      ...initialQueryConfig,
+      external: initialQueryConfig.external ?? [],
+    }),
   );
 
   return { queryConfig, setQueryConfig };

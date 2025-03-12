@@ -5,6 +5,7 @@ import {
   CollapsibleSectionContent,
   CollapsibleSectionHeader,
   CollapsibleSectionRoot,
+  Copyable,
   FormRoot,
   FormSubmit,
   Heading,
@@ -236,15 +237,15 @@ export const ExecutableSubroutine = ({
                     librarySchema?.raw?.contract_name,
                   )}
                 </Heading>
-
-                <LinkText
-                  blankTarget={true}
-                  className="font-mono text-xs"
-                  variant={"secondary"}
-                  href={CelatoneUrl.contract(libraryAddress, libraryChainId)}
-                >
-                  {displayAddress(libraryAddress)}
-                </LinkText>
+                <Copyable copyText={libraryAddress}>
+                  <LinkText
+                    LinkComponent={"div"}
+                    className="font-mono text-xs"
+                    variant={"secondary"}
+                  >
+                    {displayAddress(libraryAddress)}
+                  </LinkText>
+                </Copyable>
               </div>
               {libraryConfig && (
                 <CollapsibleSectionRoot defaultIsOpen={false} className="pb-2">

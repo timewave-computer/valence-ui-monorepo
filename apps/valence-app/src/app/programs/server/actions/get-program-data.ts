@@ -83,9 +83,9 @@ export const getProgramData = async ({
   }
 
   if (!mainChainConfig.registryAddress) {
+    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       programId: programId,
-
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: queryConfigManager.getQueryConfig(),
       errors: makeApiErrors([

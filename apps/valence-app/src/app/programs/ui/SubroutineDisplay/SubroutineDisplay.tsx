@@ -120,6 +120,7 @@ export const SubroutineDisplay = ({
                 isAuthorized={isAuthorized}
                 authTokenBalance={authTokenBalance}
                 executionLimit={executionLimit}
+                queryConfig={queryConfig}
               />
             </CollapsibleSectionContent>
           </CollapsibleSectionRoot>
