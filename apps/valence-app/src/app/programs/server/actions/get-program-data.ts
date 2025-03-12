@@ -332,7 +332,7 @@ function getDenomsAndChainIds({
     };
   });
   // flatten denomList if same chainId
-  const metadataQueries = unflattenedMetadataQueries.reduce(
+  const metadataQueries = unflattenedMetadataQueries?.reduce(
     (acc, curr) => {
       const existing = acc.find((a) => a.chainId === curr.chainId);
       if (existing) {
@@ -345,7 +345,7 @@ function getDenomsAndChainIds({
     [] as { chainId: string; denoms: string[] }[],
   );
 
-  return metadataQueries;
+  return metadataQueries ?? [];
 }
 
 export type FetchProcessorQueuesReturnType = Array<{

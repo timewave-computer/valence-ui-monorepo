@@ -1,48 +1,37 @@
 "use client";
 
-declare global {
-  interface Window {
-    keplr?: any;
-    getOfflineSigner: (chainId: string) => Promise<OfflineSigner | undefined>;
-  }
-}
-
 import { aminoTypes, protobufRegistry } from "@/context";
-import { OfflineSigner } from "@cosmjs/proto-signing";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
-import { ChainInfo } from "@keplr-wallet/types";
+import { ChainInfo, OfflineAminoSigner } from "@keplr-wallet/types";
 import { chains } from "chain-registry";
+import { ConnectArgs, OfflineSigners, WalletType } from "graz";
 
-const { keplr } = window;
-
+export type ConnectWithOfflineSignerInput = {
+  chainId: string;
+  rpcUrl: string;
+  offlineSigner?: OfflineAminoSigner;
+};
 export const connectWithOfflineSigner = async ({
   chainId,
   rpcUrl,
-  chainName,
-}: {
-  chainId: string;
-  chainName: string;
-  rpcUrl: string;
-}) => {
-  if (!keplr) {
-    throw new Error(
-      "Keplr is unavailable. Please log in or install the extension. Support for more wallets will be added soon.",
-    );
+
+  offlineSigner,
+}: ConnectWithOfflineSignerInput) => {
+  if (!offlineSigner) {
+    throw new Error(`Unable to initialize signer for ${chainId} at ${rpcUrl}`);
   }
 
-  const isRegisteredChain = chains.find((c) => c.chain_id === chainId);
-  if (!isRegisteredChain) {
-    const testChainInfo = getTestnetChainInfo({
-      chainId,
-      chainName,
-      rpcUrl,
-    });
-    await keplr.experimentalSuggestChain(testChainInfo);
-  }
-  await keplr.enable(chainId);
-  const offlineSigner = window.getOfflineSigner
-    ? await window.getOfflineSigner(chainId)
-    : undefined;
+  // const registeredChain = chains.find((c) => c.chain_id === chainId);
+  // if (!registeredChain) {
+  //   const testChainInfo = getTestnetChainInfo({
+  //     chainId,
+  //     chainName,
+  //     rpcUrl,
+  //   });
+  //   await keplr.experimentalSuggestChain(testChainInfo);
+  // }
+
+  // await keplr.enable(chainId);
 
   const registeredFeeTokens = chains.find((c) => c.chain_id === chainId)?.fees
     ?.fee_tokens;

@@ -12,6 +12,7 @@ import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 import { protoRegistry } from "@/smol_telescope/proto-registry";
 import { aminoConverters } from "@/smol_telescope/amino-converters";
 import { GrazProvider } from "graz";
+import { neutron, juno, osmosis, cosmoshub } from "graz/chains";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
@@ -48,7 +49,7 @@ export const CosmosProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <GrazProvider
       grazOptions={{
-        chains: [],
+        chains: [neutron, juno, osmosis, cosmoshub],
       }}
     >
       {children}

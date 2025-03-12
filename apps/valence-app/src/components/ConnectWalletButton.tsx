@@ -1,7 +1,7 @@
 "use client";
 import {
   Button,
-  Label,
+  PrettyJson,
   ToastMessage,
   cn,
   toast,
@@ -15,7 +15,6 @@ import {
   useConnect,
   useDisconnect,
   WalletType,
-  useActiveChains,
 } from "graz";
 
 export const ConnectWalletButton: React.FC<{}> = ({}) => {
@@ -30,23 +29,21 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
     isConnecting: isWalletConnecting,
   } = useAccount();
   const walletAddress = account?.bech32Address;
-  const activeChains = useActiveChains();
-
-  console.log("activeChains", activeChains);
 
   useAlert(!!(connectError as any), () => {
     // TODO: prevent from spamming
     toast.error(
       <ToastMessage variant="error" title="Error connecting wallet.">
-        Please try again.
+        <PrettyJson data={connectError ?? {}} />
       </ToastMessage>,
     );
   });
 
   useAlert(!checkWallet(WalletType.KEPLR), () => {
     toast.error(
-      <ToastMessage variant="error" title="Please install keplr.">
-        Support for more wallets will be added soon.
+      <ToastMessage variant="error" title="Keplr is unavailable.">
+        Sign in, or install the extenstion. Support for more wallets will be
+        added soon.
       </ToastMessage>,
     );
   });
@@ -65,7 +62,11 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
         className="hidden md:flex"
         disabled={isWalletConnecting}
         onClick={async () => {
-          await connect();
+          await connect({
+            chainId: "neutron-1",
+            autoReconnect: false,
+            walletType: WalletType.KEPLR,
+          });
         }}
         variant="primary"
       >
@@ -100,7 +101,6 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
           </div>
 
           <div>
-            {/* <Label> {chain.pretty_name}</Label> */}
             <div className="max-w-48 text-balance break-words text-left font-mono text-xs">
               {walletAddress}
             </div>

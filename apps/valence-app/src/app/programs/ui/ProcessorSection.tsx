@@ -27,11 +27,13 @@ import { QUERY_KEYS } from "@/const";
 import {
   ConnectWalletHoverContent,
   connectWithOfflineSigner,
+  type ConnectWithOfflineSignerInput,
 } from "@/app/programs/ui";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAccount } from "graz";
+import { useAccount, useActiveChainIds } from "graz";
+import { useOfflineSigners } from "graz";
 
 export const ProcessorSection = ({
   processorQueue,
@@ -45,17 +47,49 @@ export const ProcessorSection = ({
   queryConfig: QueryConfig;
 }) => {
   const { data: account, isConnected: isWalletConnected } = useAccount();
+  const { data: offlineSigners } = useOfflineSigners({
+    chainId: ["neutron-1", "juno-1"],
+    multiChain: true,
+  });
+
+  console.log("offlineSigners", offlineSigners);
+
   const walletAddress = account?.bech32Address;
+  const activeChainIds = useActiveChainIds();
+
+  const { data: accounts } = useAccount({
+    chainId: ["neutron-1", "juno-1"],
+    multiChain: true,
+  });
+  console.log("activeChainIds", activeChainIds);
+  console.log("accts", accounts);
 
   const queryClient = useQueryClient();
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
-      let connectionData;
+      let connectionData: ConnectWithOfflineSignerInput;
+      if (!offlineSigners) return;
+      const offlineSignersForN = offlineSigners["neutron-1"];
+      const offlineSignersForJ = offlineSigners["juno-1"];
+
+      console.log(
+        "offlineSignersForN",
+        offlineSignersForN,
+        offlineSignersForN.offlineSignerAmino,
+        offlineSignersForN.offlineSignerAuto,
+      );
+      console.log(
+        "offlineSignersForJ",
+        offlineSignersForJ,
+        offlineSignersForJ.offlineSignerAmino,
+        offlineSignersForJ.offlineSignerAuto,
+      );
+
       if (processorData.chainId === queryConfig.main.chainId) {
         connectionData = {
+          offlineSigner: offlineSignersForN.offlineSigner,
           chainId: queryConfig.main.chainId,
-          chainName: queryConfig.main.name,
           rpcUrl: queryConfig.main.rpcUrl,
         };
       } else {
@@ -67,9 +101,10 @@ export const ProcessorSection = ({
             `No RPC configuration specified for chain ID ${processorData.chainId}`,
           );
         }
+        console.log("externalConfig", externalConfig);
         connectionData = {
+          offlineSigner: offlineSignersForJ.offlineSigner,
           chainId: externalConfig.chainId,
-          chainName: externalConfig.name,
           rpcUrl: externalConfig.rpc,
         };
       }
