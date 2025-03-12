@@ -44,7 +44,8 @@ export const connectWithOfflineSigner = async ({
     ? await window.getOfflineSigner(chainId)
     : undefined;
 
-  const chainFees = chains.find((c) => c.chain_id === chainId)?.fees;
+  const chainFees = chains.find((c) => c.chain_id === chainId);
+  console.log("chainFees", chainFees);
   if (!chainFees) {
     throw new Error(
       `Chain fees not found for chain id ${chainId}. Please contact valence team.`,
@@ -87,7 +88,7 @@ const getTestnetChainInfo = ({
 }): ChainInfo => {
   return {
     chainId: chainId,
-    chainName: chainName, // Neutron
+    chainName: chainName,
     rpc: rpcUrl,
     rest: rpcUrl,
     bip44: {

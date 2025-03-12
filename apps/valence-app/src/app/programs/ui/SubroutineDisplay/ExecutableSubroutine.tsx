@@ -220,9 +220,6 @@ export const ExecutableSubroutine = ({
             program?.libraryConfigs && libraryAddress in program?.libraryConfigs
               ? program?.libraryConfigs[libraryAddress]
               : null;
-
-          // TODO: remove use of celatone
-
           return (
             <div
               className={cn(

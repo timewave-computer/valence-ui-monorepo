@@ -1,16 +1,14 @@
-const CELATONE_URL = "https://neutron.celat.one";
-
-// TODO: pass chainID everywhere for programs.
+import { chainConfig } from "@/const/config";
 
 class CelatoneUrl {
-  static transaction = (transactionHash: string, chainId?: string) => {
-    return `${CELATONE_URL}/${chainId}/txs/${transactionHash}`;
+  static transaction = (transactionHash: string) => {
+    return `${chainConfig.celatoneUrl}/txs/${transactionHash}`;
   };
-  static block = (blockHeight: number | string, chainId?: string) => {
-    return `${CELATONE_URL}/${chainId}/blocks/${blockHeight}`;
+  static block = (blockHeight: number | string) => {
+    return `${chainConfig.celatoneUrl}/blocks/${blockHeight}`;
   };
-  static contract = (address: string, chainId?: string) => {
-    return `${CELATONE_URL}/${chainId}/contracts/${address}`;
+  static contract = (address: string) => {
+    return `${chainConfig.celatoneUrl}/contracts/${address}`;
   };
 }
 
