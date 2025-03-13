@@ -14,7 +14,6 @@ export type ConnectWithOfflineSignerInput = {
 export const connectWithOfflineSigner = async ({
   chainId,
   rpcUrl,
-
   offlineSigner,
 }: ConnectWithOfflineSignerInput) => {
   if (!offlineSigner) {
@@ -40,6 +39,7 @@ export const connectWithOfflineSigner = async ({
       `Unable to select fee token for ${chainId}. Please contact valence team.`,
     );
   }
+  // TODO fix this
   const feeDenom = registeredFeeTokens[0].denom;
 
   if (!offlineSigner) {
@@ -50,7 +50,7 @@ export const connectWithOfflineSigner = async ({
 
   try {
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
-      gasPrice: GasPrice.fromString(`0.005${feeDenom}`),
+      gasPrice: GasPrice.fromString(`0.005${"untrn"}`),
       registry: protobufRegistry,
       aminoTypes: aminoTypes,
     });

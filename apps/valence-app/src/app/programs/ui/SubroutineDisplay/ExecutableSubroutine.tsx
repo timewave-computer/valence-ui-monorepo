@@ -48,7 +48,7 @@ import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Coin } from "@cosmjs/stargate";
 import { type QueryConfig } from "@/app/programs/server";
-import { useAccount, useActiveChainIds } from "graz";
+import { useAccount, useActiveChainIds, useOfflineSigners } from "graz";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -82,8 +82,13 @@ export const ExecutableSubroutine = ({
 }) => {
   // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
   const { data: program } = useProgramQuery({ programId });
-  const { data: account, isConnected: isWalletConnected } = useAccount();
-  const {} = useActiveChainIds();
+  const mainChainId = queryConfig.main.chainId;
+  const { data: account, isConnected: isWalletConnected } = useAccount({
+    chainId: mainChainId,
+  });
+  const { data: offlineSigners } = useOfflineSigners({
+    chainId: mainChainId,
+  });
   const walletAddress = account?.bech32Address;
 
   const queryClient = useQueryClient();
@@ -111,8 +116,8 @@ export const ExecutableSubroutine = ({
       });
 
       const signer = await connectWithOfflineSigner({
+        offlineSigner: offlineSigners?.offlineSigner,
         chainId: queryConfig.main.chainId,
-        chainName: queryConfig.main.name,
         rpcUrl: queryConfig.main.rpcUrl,
       });
 
@@ -173,7 +178,7 @@ export const ExecutableSubroutine = ({
       toast.success(
         <ToastMessage
           variant="success"
-          title="Messages sent to processor"
+          title="Sent to processor"
         ></ToastMessage>,
       );
       queryClient.invalidateQueries({

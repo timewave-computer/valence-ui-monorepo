@@ -27,13 +27,13 @@ import { QUERY_KEYS } from "@/const";
 import {
   ConnectWalletHoverContent,
   connectWithOfflineSigner,
-  type ConnectWithOfflineSignerInput,
 } from "@/app/programs/ui";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAccount, useActiveChainIds } from "graz";
+import { useAccount, useConnect } from "graz";
 import { useOfflineSigners } from "graz";
+import { X_URL } from "@valence-ui/socials";
 
 export const ProcessorSection = ({
   processorQueue,
@@ -46,76 +46,63 @@ export const ProcessorSection = ({
   domain?: string;
   queryConfig: QueryConfig;
 }) => {
-  const { data: account, isConnected: isWalletConnected } = useAccount();
+  const chainIds = Array.from(
+    new Set([queryConfig.main.chainId, processorData.chainId]),
+  );
+
+  const { data: accounts, isConnected: isWalletConnected } = useAccount({
+    chainId: chainIds,
+    multiChain: true,
+  });
+  const { connect } = useConnect();
+
   const { data: offlineSigners } = useOfflineSigners({
-    chainId: ["neutron-1", "juno-1"],
+    chainId: chainIds,
     multiChain: true,
   });
-
-  console.log("offlineSigners", offlineSigners);
-
-  const walletAddress = account?.bech32Address;
-  const activeChainIds = useActiveChainIds();
-
-  const { data: accounts } = useAccount({
-    chainId: ["neutron-1", "juno-1"],
-    multiChain: true,
-  });
-  console.log("activeChainIds", activeChainIds);
-  console.log("accts", accounts);
 
   const queryClient = useQueryClient();
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
-      let connectionData: ConnectWithOfflineSignerInput;
-      if (!offlineSigners) return;
-      const offlineSignersForN = offlineSigners["neutron-1"];
-      const offlineSignersForJ = offlineSigners["juno-1"];
+      if (!offlineSigners)
+        throw new Error("No offline signers found. Try reconnecting wallet.");
 
-      console.log(
-        "offlineSignersForN",
-        offlineSignersForN,
-        offlineSignersForN.offlineSignerAmino,
-        offlineSignersForN.offlineSignerAuto,
-      );
-      console.log(
-        "offlineSignersForJ",
-        offlineSignersForJ,
-        offlineSignersForJ.offlineSignerAmino,
-        offlineSignersForJ.offlineSignerAuto,
-      );
-
-      if (processorData.chainId === queryConfig.main.chainId) {
-        connectionData = {
-          offlineSigner: offlineSignersForN.offlineSigner,
-          chainId: queryConfig.main.chainId,
-          rpcUrl: queryConfig.main.rpcUrl,
-        };
-      } else {
-        const externalConfig = queryConfig.external?.find(
-          (c) => c.chainId === processorData.chainId,
+      const signerAddress = accounts
+        ? accounts[processorData.chainId]?.bech32Address
+        : undefined;
+      if (!signerAddress) {
+        connect({ chainId: processorData.chainId });
+        throw new Error(
+          `Wallet address for ${processorData.chainId} not available. Please try again or contact support ${X_URL}.`,
         );
-        if (!externalConfig) {
-          throw new Error(
-            `No RPC configuration specified for chain ID ${processorData.chainId}`,
-          );
-        }
-        console.log("externalConfig", externalConfig);
-        connectionData = {
-          offlineSigner: offlineSignersForJ.offlineSigner,
-          chainId: externalConfig.chainId,
-          rpcUrl: externalConfig.rpc,
-        };
       }
 
-      const signer = await connectWithOfflineSigner(connectionData);
+      const rpcUrl =
+        processorData.chainId === queryConfig.main.chainId
+          ? queryConfig.main.rpcUrl
+          : queryConfig.external?.find(
+              (c) => c.chainId === processorData.chainId,
+            )?.rpc;
+
+      if (!rpcUrl) {
+        throw new Error(
+          `No RPC URL configured for chain ID ${processorData.chainId}`,
+        );
+      }
+      const offlineSigner = offlineSigners[processorData.chainId];
+
+      const signer = await connectWithOfflineSigner({
+        offlineSigner: offlineSigner.offlineSignerAmino,
+        chainId: processorData.chainId,
+        rpcUrl,
+      });
 
       const messages: EncodeObject[] = [
         {
           typeUrl: MsgExecuteContract.typeUrl,
           value: {
-            sender: walletAddress,
+            sender: signerAddress,
             contract: processorData.address,
             msg: jsonToUtf8({
               permissionless_action: {
@@ -127,7 +114,7 @@ export const ProcessorSection = ({
       ];
 
       const result = await signer.signAndBroadcast(
-        walletAddress ?? "",
+        signerAddress ?? "",
         messages,
         "auto",
       );
