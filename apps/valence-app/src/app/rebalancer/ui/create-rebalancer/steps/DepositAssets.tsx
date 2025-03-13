@@ -45,7 +45,9 @@ export const DepositAssets: React.FC<{
     refetchInveral: 10 * 1000,
   });
   const { setValue, getValues, watch } = form;
-  const { isConnected: isWalletConnected } = useAccount();
+  const { isConnected: isWalletConnected } = useAccount({
+    chainId: chainConfig.chain.chain_id,
+  });
   const addTarget = useCallback(
     (denom: string) => {
       const targets = getValues("targets");

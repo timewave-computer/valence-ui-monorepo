@@ -8,8 +8,9 @@ import { chainConfig } from "@/const/config";
 import { StatusBar } from "@/components/StatusBar";
 import { useAccount } from "graz";
 export const CreateAccountCTA = () => {
-  const { data: connectedAccount, isConnected: isWalletConnected } =
-    useAccount();
+  const { data: connectedAccount } = useAccount({
+    chainId: chainConfig.chain.chain_id,
+  });
   const walletAddress = connectedAccount?.bech32Address;
   // only to handle loading state when wallet is connected
   const router = useRouter();

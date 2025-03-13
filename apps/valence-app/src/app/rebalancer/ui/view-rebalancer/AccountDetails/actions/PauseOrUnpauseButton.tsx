@@ -10,14 +10,14 @@ import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl, chainConfig } from "@/const";
 import { useQueryState } from "nuqs";
 import { useAccount, useCosmWasmSigningClient } from "graz";
 
 export const PauseOrUnpauseButton: React.FC<{}> = () => {
   const queryClient = useQueryClient();
 
-  const { data: account } = useAccount();
+  const { data: account } = useAccount({ chainId: chainConfig.chain.chain_id });
   const { data: signingCoswmasmClient } = useCosmWasmSigningClient();
   const walletAddress = account?.bech32Address;
   const [selectedAccountAddress] = useQueryState("account", {

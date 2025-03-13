@@ -20,6 +20,7 @@ export const connectWithOfflineSigner = async ({
     throw new Error(`Unable to initialize signer for ${chainId} at ${rpcUrl}`);
   }
 
+  // TODO: use experimentalSuggestChain
   // const registeredChain = chains.find((c) => c.chain_id === chainId);
   // if (!registeredChain) {
   //   const testChainInfo = getTestnetChainInfo({

@@ -42,7 +42,6 @@ import {
 } from "@valence-ui/generated-types";
 import { CelatoneUrl, QUERY_KEYS } from "@/const";
 import { displayAddress, jsonToBase64, jsonToUtf8 } from "@/utils";
-import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

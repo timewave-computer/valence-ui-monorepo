@@ -7,7 +7,6 @@ export * from "./useSettingsProjection";
 export * from "./useAssetMetadata";
 export * from "./useMinimumRequiredValue";
 export * from "./useNoSupportedAssetsWarning";
-export * from "./useTestSignerConnection";
 export * from "./create-rebalancer";
 export * from "./edit-rebalancer";
 export * from "./useWhitelistedDenoms";

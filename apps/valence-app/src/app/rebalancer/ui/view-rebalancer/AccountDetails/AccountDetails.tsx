@@ -13,13 +13,11 @@ import {
   useRebalanceStatusQuery,
 } from "@/app/rebalancer/ui";
 import React, { useMemo, useState } from "react";
-import { useWallet } from "@/hooks";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import { displayMinBalance, displayPid } from "@/utils";
 import {
   Button,
   WithIconAndTooltip,
-  LoadingSkeleton,
   Label,
   Heading,
 } from "@valence-ui/ui-components";
@@ -27,6 +25,7 @@ import Link from "next/link";
 import { BsCheck, BsInfo } from "react-icons/bs";
 import { useSearchParams } from "next/navigation";
 import { useAccount } from "graz";
+import { chainConfig } from "@/const";
 
 export const AccountDetailsPanel: React.FC<{}> = ({}) => {
   const searchParams = useSearchParams();
@@ -161,8 +160,9 @@ export const AccountDetailsPanel: React.FC<{}> = ({}) => {
 const AccountDetailsHeader: React.FC<{
   selectedAddress: string;
 }> = ({ selectedAddress }) => {
-  const { data: connectedAccount, isConnected: isWalletConnected } =
-    useAccount();
+  const { data: connectedAccount, isConnected: isWalletConnected } = useAccount(
+    { chainId: chainConfig.chain.chain_id },
+  );
   const walletAddress = connectedAccount?.bech32Address;
 
   const { data: allValenceAccounts } =

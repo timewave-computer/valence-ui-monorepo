@@ -15,7 +15,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@valence-ui/ui-components";
-import { useIsServer, useWallet } from "@/hooks";
+import { useIsServer } from "@/hooks";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { useRouter } from "next/navigation";
 import { useForm, UseFormReturn } from "react-hook-form";
@@ -29,7 +29,6 @@ import {
   PreviewMessage,
   useBaseTokenValue,
   useMinimumRequiredValue,
-  useTestSignerConnection,
   BetaDisclaimer,
   makeCreateRebalancerMessages,
 } from "@/app/rebalancer/ui";
@@ -54,7 +53,9 @@ type CreateRebalancerProps = {};
 export function CreateRebalancer({}: CreateRebalancerProps) {
   const router = useRouter();
 
-  const { data: connectedAccount } = useAccount();
+  const { data: connectedAccount } = useAccount({
+    chainId: chainConfig.chain.chain_id,
+  });
   const { data: cosmwasmClient } = useCosmWasmClient();
   const { data: signingStargateClient } = useStargateSigningClient();
 
@@ -261,8 +262,6 @@ export function CreateRebalancer({}: CreateRebalancerProps) {
     },
   });
   const isServer = useIsServer();
-
-  // useTestSignerConnection();
 
   if (isWalletConnecting) {
     return <LoadingSkeleton className="min-h-screen" />;

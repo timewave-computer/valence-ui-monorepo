@@ -31,9 +31,9 @@ import { StatusBar } from "@/components/StatusBar";
 import { FiAlertTriangle } from "react-icons/fi";
 import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { useAtom } from "jotai";
-import { useWallet } from "@/hooks";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { useAccount } from "graz";
+import { chainConfig } from "@/const";
 
 export const HistoricalGraph: React.FC<{
   isError: boolean;
@@ -112,7 +112,7 @@ export const HistoricalGraph: React.FC<{
     data: connectedAccount,
     isConnected: isWalletConnected,
     status,
-  } = useAccount();
+  } = useAccount({ chainId: chainConfig.chain.chain_id });
   const isWalletConnecting = status === "loading";
   const walletAddress = connectedAccount?.bech32Address;
 

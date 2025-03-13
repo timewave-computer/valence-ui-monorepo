@@ -1,7 +1,6 @@
 "use client";
 import { ValenceProductBrand } from "@/components";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
-import { useWallet } from "@/hooks";
 import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
 import {
@@ -98,8 +97,9 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
     defaultValue: "",
   });
 
-  const { data: connectedAccount, isConnected: isWalletConnected } =
-    useAccount();
+  const { data: connectedAccount, isConnected: isWalletConnected } = useAccount(
+    { chainId: chainConfig.chain.chain_id },
+  );
   const walletAddress = connectedAccount?.bech32Address;
   const { data: valenceAddress, isLoading: isValenceAccountLoading } =
     useValenceAccount(walletAddress);
