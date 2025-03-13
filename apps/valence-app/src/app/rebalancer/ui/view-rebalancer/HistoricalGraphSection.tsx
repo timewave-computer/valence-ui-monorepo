@@ -111,9 +111,9 @@ export const HistoricalGraph: React.FC<{
   const {
     data: connectedAccount,
     isConnected: isWalletConnected,
+    isConnecting: isWalletConnecting,
     status,
   } = useAccount({ chainId: chainConfig.chain.chain_id });
-  const isWalletConnecting = status === "loading";
   const walletAddress = connectedAccount?.bech32Address;
 
   // only to handle loading state when wallet is connected

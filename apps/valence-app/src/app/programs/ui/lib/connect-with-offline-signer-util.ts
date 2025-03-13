@@ -4,7 +4,6 @@ import { aminoTypes, protobufRegistry } from "@/context";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { ChainInfo, OfflineAminoSigner } from "@keplr-wallet/types";
 import { chains } from "chain-registry";
-import { ConnectArgs, OfflineSigners, WalletType } from "graz";
 
 export type ConnectWithOfflineSignerInput = {
   chainId: string;
@@ -17,7 +16,9 @@ export const connectWithOfflineSigner = async ({
   offlineSigner,
 }: ConnectWithOfflineSignerInput) => {
   if (!offlineSigner) {
-    throw new Error(`Unable to initialize signer for ${chainId} at ${rpcUrl}`);
+    throw new Error(
+      `Unable to initialize signer for ${chainId} at ${rpcUrl}. Reconnect and try again.`,
+    );
   }
 
   // TODO: use experimentalSuggestChain
@@ -40,8 +41,9 @@ export const connectWithOfflineSigner = async ({
       `Unable to select fee token for ${chainId}. Please contact valence team.`,
     );
   }
-  // TODO fix this
+
   const feeDenom = registeredFeeTokens[0].denom;
+  // TODO: handle no fee denom (unregistered chain)
 
   if (!offlineSigner) {
     throw new Error(
@@ -51,7 +53,8 @@ export const connectWithOfflineSigner = async ({
 
   try {
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
-      gasPrice: GasPrice.fromString(`0.005${"untrn"}`),
+      // TODO: do not hardcode the quantity
+      gasPrice: GasPrice.fromString(`0.05${feeDenom}`),
       registry: protobufRegistry,
       aminoTypes: aminoTypes,
     });

@@ -33,65 +33,71 @@ import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAccount, useConnect } from "graz";
 import { useOfflineSigners } from "graz";
-import { X_URL } from "@valence-ui/socials";
+import { X_HANDLE } from "@valence-ui/socials";
 
 export const ProcessorSection = ({
   processorQueue,
   processorData,
   domain,
   queryConfig,
+  chainIds,
 }: {
   processorQueue?: FetchProcessorQueuesReturnType[number];
   processorData: NormalizedProcessorInfo;
   domain?: string;
   queryConfig: QueryConfig;
+  chainIds: string[];
 }) => {
-  const chainIds = Array.from(
-    new Set([queryConfig.main.chainId, processorData.chainId]),
-  );
-
   const { data: accounts, isConnected: isWalletConnected } = useAccount({
     chainId: chainIds,
     multiChain: true,
   });
   const { connect } = useConnect();
 
-  const { data: offlineSigners } = useOfflineSigners({
-    chainId: chainIds,
-    multiChain: true,
+  const { data: offlineSigner } = useOfflineSigners({
+    chainId: processorData.chainId,
   });
+
+  console.log(
+    "processorChainOfflineSigner",
+    processorData.chainId,
+    offlineSigner,
+  );
 
   const queryClient = useQueryClient();
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
-      if (!offlineSigners)
-        throw new Error("No offline signers found. Try reconnecting wallet.");
-
       const signerAddress = accounts
         ? accounts[processorData.chainId]?.bech32Address
         : undefined;
+
       if (!signerAddress) {
+        // todo show dialog
         connect({ chainId: processorData.chainId });
         throw new Error(
-          `Wallet address for ${processorData.chainId} not available. Please try again or contact support ${X_URL}.`,
+          `Connecting wallet for ${processorData.chainId}. Please try. If retry fails, contact support ${X_HANDLE}.`,
         );
       }
 
-      const rpcUrl =
-        processorData.chainId === queryConfig.main.chainId
-          ? queryConfig.main.rpcUrl
-          : queryConfig.external?.find(
-              (c) => c.chainId === processorData.chainId,
-            )?.rpc;
+      const isMainChain = processorData.chainId === queryConfig.main.chainId;
+
+      const rpcUrl = isMainChain
+        ? queryConfig.main.rpcUrl
+        : queryConfig.external?.find((c) => c.chainId === processorData.chainId)
+            ?.rpc;
 
       if (!rpcUrl) {
         throw new Error(
           `No RPC URL configured for chain ID ${processorData.chainId}`,
         );
       }
-      const offlineSigner = offlineSigners[processorData.chainId];
 
+      if (!offlineSigner) {
+        throw new Error(
+          `Offline signer for ${processorData.chainId} unavaiable. Try reconnecting wallet, and contact valence team if issue persists ${X_HANDLE}.`,
+        );
+      }
       const signer = await connectWithOfflineSigner({
         offlineSigner: offlineSigner.offlineSignerAmino,
         chainId: processorData.chainId,
@@ -113,7 +119,7 @@ export const ProcessorSection = ({
         },
       ];
 
-      const result = await signer.signAndBroadcast(
+      const result = await signer.signAndBroadcastSync(
         signerAddress ?? "",
         messages,
         "auto",

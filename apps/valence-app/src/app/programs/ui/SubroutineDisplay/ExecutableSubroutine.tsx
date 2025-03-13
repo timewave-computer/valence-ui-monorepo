@@ -33,21 +33,20 @@ import {
   LibraryDetails,
   useLibrarySchema,
   useProgramQuery,
-  useQueryArgs,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
 import {
   type AtomicFunction,
   type NonAtomicFunction,
 } from "@valence-ui/generated-types";
-import { CelatoneUrl, QUERY_KEYS } from "@/const";
+import { QUERY_KEYS } from "@/const";
 import { displayAddress, jsonToBase64, jsonToUtf8 } from "@/utils";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Coin } from "@cosmjs/stargate";
 import { type QueryConfig } from "@/app/programs/server";
-import { useAccount, useActiveChainIds, useOfflineSigners } from "graz";
+import { useAccount, useOfflineSigners } from "graz";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -67,6 +66,7 @@ export const ExecutableSubroutine = ({
   authTokenDenom,
   programId,
   queryConfig,
+  chainIds,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
@@ -78,6 +78,7 @@ export const ExecutableSubroutine = ({
   authTokenDenom: string | null;
   programId: string;
   queryConfig: QueryConfig;
+  chainIds: string;
 }) => {
   // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
   const { data: program } = useProgramQuery({ programId });
@@ -85,9 +86,15 @@ export const ExecutableSubroutine = ({
   const { data: account, isConnected: isWalletConnected } = useAccount({
     chainId: mainChainId,
   });
+
   const { data: offlineSigners } = useOfflineSigners({
-    chainId: mainChainId,
+    chainId: chainIds,
+    multiChain: true,
   });
+  const mainChainSigner =
+    offlineSigners && mainChainId in offlineSigners
+      ? offlineSigners[mainChainId]
+      : null;
   const walletAddress = account?.bech32Address;
 
   const queryClient = useQueryClient();
@@ -110,12 +117,17 @@ export const ExecutableSubroutine = ({
       values: SubroutineMessageFormValues;
       subroutineLabel: string;
     }) => {
+      if (!mainChainSigner) {
+        throw new Error(
+          `No offline signer available for ${mainChainId}. Try reconnecting wallet.`,
+        );
+      }
       const extractedValues = values.messages.map((msg) => {
         return JSON.parse(msg);
       });
 
       const signer = await connectWithOfflineSigner({
-        offlineSigner: offlineSigners?.offlineSigner,
+        offlineSigner: mainChainSigner.offlineSignerAmino,
         chainId: queryConfig.main.chainId,
         rpcUrl: queryConfig.main.rpcUrl,
       });

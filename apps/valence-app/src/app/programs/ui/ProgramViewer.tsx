@@ -23,6 +23,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@valence-ui/ui-components";
+
 import Link from "next/link";
 
 export type ProgramViewerProps = {
@@ -41,10 +42,10 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     initialQueryData: initialData,
   });
 
-  const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
-
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
+
+  const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">

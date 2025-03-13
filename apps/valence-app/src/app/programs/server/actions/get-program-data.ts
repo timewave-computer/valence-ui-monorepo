@@ -47,6 +47,7 @@ export type GetProgramDataReturnValue = {
   dataLastUpdatedAt: number; // for handling stale time in react-query
   processorQueues?: FetchProcessorQueuesReturnType;
   processorHistory?: ArrayOfProcessorCallbackInfo;
+  chainIds?: string[];
 };
 
 // TODO: make a 'response' builder so error handling is cleaner / func more readable / testable
@@ -225,6 +226,13 @@ export const getProgramData = async ({
     processorQueues = asyncResults[1].value;
   }
 
+  const accountChainIds = Object.values(accounts).map((a) => a.chainId);
+  const processorChainIds = Object.values(
+    program.authorizationData.processorData,
+  ).map(({ chainId }) => chainId);
+  const allChainIds = [...accountChainIds, ...processorChainIds];
+  const uniqueChainIds = Array.from(new Set(allChainIds));
+
   return {
     programId: programId,
     dataLastUpdatedAt: getLastUpdatedTime(), // for handling stale time in react-query
@@ -238,6 +246,7 @@ export const getProgramData = async ({
     processorQueues: processorQueues,
     processorHistory: processorHistory,
     libraryConfigs: libraryConfigs,
+    chainIds: uniqueChainIds,
   };
 };
 

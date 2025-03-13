@@ -8,7 +8,6 @@ import {
 } from "@valence-ui/ui-components";
 import { useAlert, useIsServer } from "@/hooks";
 import * as Popover from "@radix-ui/react-popover";
-import { displayAddress } from "@/utils";
 import {
   useAccount,
   checkWallet,
@@ -16,6 +15,7 @@ import {
   useDisconnect,
   WalletType,
 } from "graz";
+import { chains } from "chain-registry";
 
 export const ConnectWalletButton: React.FC<{}> = ({}) => {
   const isServer = useIsServer();
@@ -24,14 +24,14 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
 
   const { disconnect } = useDisconnect();
   const {
-    data: account,
+    data: accounts,
     isConnected: isWalletConnected,
     isConnecting: isWalletConnecting,
-  } = useAccount();
-  const walletAddress = account?.bech32Address;
+  } = useAccount({
+    multiChain: true,
+  });
 
   useAlert(!!(connectError as any), () => {
-    // TODO: prevent from spamming
     toast.error(
       <ToastMessage variant="error" title="Error connecting wallet.">
         <PrettyJson data={connectError ?? {}} />
@@ -79,14 +79,12 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
     <Popover.Root>
       <Popover.Trigger asChild>
         <Button
-          size="sm"
           className={cn(
-            "font-mono text-xs",
             "hidden md:flex", // hide on mobile
           )}
           variant="secondary"
         >
-          {displayAddress(walletAddress ?? "")}
+          Wallet
         </Button>
       </Popover.Trigger>
 
@@ -97,13 +95,29 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
       >
         <div className="items-left flex flex-col gap-3">
           <div className="flex flex-row justify-between items-start">
-            <h1 className="text-base font-semibold">Wallet connected</h1>
+            <h1 className="text-base font-semibold">Connected chains</h1>
           </div>
 
-          <div>
-            <div className="max-w-48 text-balance break-words text-left font-mono text-xs">
-              {walletAddress}
-            </div>
+          <div className="flex flex-col gap-1">
+            {Object.entries(accounts ?? {}).map(([chainId, account]) => {
+              const chainName = chains.find(
+                (c) => c.chain_id === chainId,
+              )?.chain_name;
+
+              return (
+                <div
+                  key={`wallet-connection-${chainId}`}
+                  className="flex flex-col gap-0.5"
+                >
+                  {chainName && (
+                    <div className="text-xs font-semibold">{chainName}</div>
+                  )}
+                  <div className="max-w-48 text-balance break-words text-left font-mono text-xs">
+                    {account?.bech32Address}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
