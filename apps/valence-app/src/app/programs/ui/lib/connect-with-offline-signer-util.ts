@@ -1,6 +1,7 @@
 "use client";
 
 import { aminoTypes, protobufRegistry } from "@/context";
+import { OfflineSigner } from "@cosmjs/proto-signing";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { ChainInfo, OfflineAminoSigner } from "@keplr-wallet/types";
 import { chains } from "chain-registry";
@@ -8,7 +9,7 @@ import { chains } from "chain-registry";
 export type ConnectWithOfflineSignerInput = {
   chainId: string;
   rpcUrl: string;
-  offlineSigner?: OfflineAminoSigner;
+  offlineSigner?: OfflineSigner;
 };
 export const connectWithOfflineSigner = async ({
   chainId,
@@ -54,7 +55,7 @@ export const connectWithOfflineSigner = async ({
   try {
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
       // TODO: do not hardcode the quantity
-      gasPrice: GasPrice.fromString(`0.05${feeDenom}`),
+      gasPrice: GasPrice.fromString(`0.005${feeDenom}`),
       registry: protobufRegistry,
       aminoTypes: aminoTypes,
     });

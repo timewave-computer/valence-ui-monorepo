@@ -58,12 +58,6 @@ export const ProcessorSection = ({
     chainId: processorData.chainId,
   });
 
-  console.log(
-    "processorChainOfflineSigner",
-    processorData.chainId,
-    offlineSigner,
-  );
-
   const queryClient = useQueryClient();
 
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
@@ -99,7 +93,7 @@ export const ProcessorSection = ({
         );
       }
       const signer = await connectWithOfflineSigner({
-        offlineSigner: offlineSigner.offlineSignerAmino,
+        offlineSigner: offlineSigner.offlineSigner,
         chainId: processorData.chainId,
         rpcUrl,
       });
