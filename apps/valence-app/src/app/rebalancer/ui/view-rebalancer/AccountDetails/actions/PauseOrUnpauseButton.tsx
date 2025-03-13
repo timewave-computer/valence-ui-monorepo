@@ -47,12 +47,15 @@ export const PauseOrUnpauseButton: React.FC<{}> = () => {
   };
 
   const unpauseRebalancer = async () => {
-    const cwClient = await getSigningCosmwasmClient();
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen
     }
+
+    if (!signingCoswmasmClient) {
+      throw new Error("No signing client found");
+    }
     const valenceAccountClient = new AccountClient(
-      cwClient,
+      signingCoswmasmClient,
       walletAddress,
       selectedAccountAddress,
     );

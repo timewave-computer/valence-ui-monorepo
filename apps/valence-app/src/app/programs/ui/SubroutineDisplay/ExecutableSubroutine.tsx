@@ -78,7 +78,7 @@ export const ExecutableSubroutine = ({
   authTokenDenom: string | null;
   programId: string;
   queryConfig: QueryConfig;
-  chainIds: string;
+  chainIds: string[];
 }) => {
   // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
   const { data: program } = useProgramQuery({ programId });

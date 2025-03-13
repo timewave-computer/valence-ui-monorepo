@@ -112,6 +112,7 @@ export const SubroutineDisplay = ({
 
               {/* it's a separate component because each subroutine should have its own useForm instantiation */}
               <ExecutableSubroutine
+                chainIds={program?.chainIds ?? []}
                 programId={program?.programId}
                 authTokenDenom={authTokenDenom}
                 subroutineLabel={subroutineLabel}

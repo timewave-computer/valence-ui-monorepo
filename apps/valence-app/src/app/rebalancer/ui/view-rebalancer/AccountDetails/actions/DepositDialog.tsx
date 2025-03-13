@@ -49,8 +49,6 @@ export const DepositDialog: React.FC<{}> = ({}) => {
   const getOriginAsset = useAssetMetadata().getOriginAsset;
 
   const deposit = async (amounts: DepositInputForm["amounts"]) => {
-    const stargateClient = signingStargateClient;
-
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen
     }
@@ -69,7 +67,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
       });
     }, [] as Coin[]);
 
-    return stargateClient.sendTokens(
+    return signingStargateClient.sendTokens(
       walletAddress,
       accountAddress,
       convertedAmounts,
