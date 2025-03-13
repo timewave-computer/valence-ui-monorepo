@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --port 3000",
     "lint": "next lint",
-    "postinstall": "graz generate -g"
+    "postinstall": "echo 'Running graz generate -g' && graz generate -g"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.8.2",
