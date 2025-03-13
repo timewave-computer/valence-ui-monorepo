@@ -82,15 +82,14 @@ export const ExecutableSubroutine = ({
 }) => {
   // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
   const { data: program } = useProgramQuery({ programId });
-  const mainChainId = queryConfig.main.chainId;
-  const { data: account, isConnected: isWalletConnected } = useAccount({
-    chainId: mainChainId,
-  });
+  const mainChainId = queryConfig?.main?.chainId;
+  const { data: account, isConnected: isWalletConnected } = useAccount();
 
   const { data: offlineSigners } = useOfflineSigners({
     chainId: chainIds,
     multiChain: true,
   });
+
   const mainChainSigner =
     offlineSigners && mainChainId in offlineSigners
       ? offlineSigners[mainChainId]
@@ -117,17 +116,12 @@ export const ExecutableSubroutine = ({
       values: SubroutineMessageFormValues;
       subroutineLabel: string;
     }) => {
-      if (!mainChainSigner) {
-        throw new Error(
-          `No offline signer available for ${mainChainId}. Try reconnecting wallet.`,
-        );
-      }
       const extractedValues = values.messages.map((msg) => {
         return JSON.parse(msg);
       });
 
       const signer = await connectWithOfflineSigner({
-        offlineSigner: mainChainSigner.offlineSigner,
+        offlineSigner: mainChainSigner?.offlineSigner,
         chainId: queryConfig.main.chainId,
         rpcUrl: queryConfig.main.rpcUrl,
       });

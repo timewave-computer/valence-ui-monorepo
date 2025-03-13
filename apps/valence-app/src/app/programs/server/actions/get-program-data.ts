@@ -155,6 +155,14 @@ export const getProgramData = async ({
   // for all processors and accounts, populate external chains
 
   const { accounts } = program;
+
+  const accountChainIds = Object.values(accounts).map((a) => a.chainId);
+  const processorChainIds = Object.values(
+    program.authorizationData.processorData,
+  ).map(({ chainId }) => chainId);
+  const allChainIds = [...accountChainIds, ...processorChainIds];
+  const uniqueChainIds = Array.from(new Set(allChainIds));
+
   queryConfigManager.setAllChainsConfigIfEmpty(program);
   const completeQueryConfig = queryConfigManager.getQueryConfig();
 
@@ -225,13 +233,6 @@ export const getProgramData = async ({
   } else if (asyncResults[1].status === "fulfilled") {
     processorQueues = asyncResults[1].value;
   }
-
-  const accountChainIds = Object.values(accounts).map((a) => a.chainId);
-  const processorChainIds = Object.values(
-    program.authorizationData.processorData,
-  ).map(({ chainId }) => chainId);
-  const allChainIds = [...accountChainIds, ...processorChainIds];
-  const uniqueChainIds = Array.from(new Set(allChainIds));
 
   return {
     programId: programId,
