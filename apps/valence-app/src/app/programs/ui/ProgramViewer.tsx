@@ -10,7 +10,7 @@ import {
   ProgramViewerErrorDisplay,
   ProgramRpcSettings,
   RefetchButton,
-  useQueryArgs,
+  useProgramQueryConfig,
 } from "@/app/programs/ui";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
@@ -23,7 +23,6 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@valence-ui/ui-components";
-
 import Link from "next/link";
 
 export type ProgramViewerProps = {
@@ -32,6 +31,10 @@ export type ProgramViewerProps = {
 };
 export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   // page loads with initial server-fetched data. this inserts it into useQuery, so the access pattern is easy
+
+  const { queryConfig, setQueryConfig } = useProgramQueryConfig(
+    initialData.queryConfig,
+  );
   const {
     data: data,
     isLoading,
@@ -39,15 +42,11 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     isFetching,
   } = useProgramQuery({
     programId,
+    queryConfig,
     initialQueryData: initialData,
   });
-
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
-  console.log("initial data", initialData.queryConfig);
-
-  const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
-  console.log("query config", queryConfig);
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">

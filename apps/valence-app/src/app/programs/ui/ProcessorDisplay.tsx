@@ -29,7 +29,6 @@ export const ProcessorDisplay = ({
 
     return (
       <ProcessorSection
-        chainIds={program?.chainIds ?? []}
         key={`processor-table-${processorData.address}`}
         processorQueue={processorQueue}
         processorData={processorData}

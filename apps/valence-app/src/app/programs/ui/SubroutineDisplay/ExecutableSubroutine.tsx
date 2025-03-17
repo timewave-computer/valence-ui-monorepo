@@ -45,8 +45,11 @@ import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Coin } from "@cosmjs/stargate";
-import { type QueryConfig } from "@/app/programs/server";
-import { useAccount, useOfflineSigners } from "graz";
+import {
+  GetProgramDataReturnValue,
+  type QueryConfig,
+} from "@/app/programs/server";
+import { useAccount } from "graz";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -64,9 +67,8 @@ export const ExecutableSubroutine = ({
   authTokenBalance,
   executionLimit,
   authTokenDenom,
-  programId,
   queryConfig,
-  chainIds,
+  program,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
@@ -76,24 +78,11 @@ export const ExecutableSubroutine = ({
   authTokenBalance: Coin | undefined;
   executionLimit: string | null;
   authTokenDenom: string | null;
-  programId: string;
   queryConfig: QueryConfig;
-  chainIds: string[];
+  program: GetProgramDataReturnValue;
 }) => {
-  // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
-  const { data: program } = useProgramQuery({ programId });
-  const mainChainId = queryConfig?.main?.chainId;
   const { data: account, isConnected: isWalletConnected } = useAccount();
 
-  const { data: offlineSigners } = useOfflineSigners({
-    chainId: chainIds,
-    multiChain: true,
-  });
-
-  const mainChainSigner =
-    offlineSigners && mainChainId in offlineSigners
-      ? offlineSigners[mainChainId]
-      : null;
   const walletAddress = account?.bech32Address;
 
   const queryClient = useQueryClient();
@@ -122,8 +111,8 @@ export const ExecutableSubroutine = ({
 
       const signer = await connectWithOfflineSigner({
         chainId: queryConfig.main.chainId,
-        chainName: queryConfig.main.name,
-        rpcUrl: queryConfig.main.rpcUrl,
+        chainName: queryConfig.main.chainName,
+        rpcUrl: queryConfig.main.rpc,
       });
 
       const cwMessageBodies = extractedValues.map((msg) => {

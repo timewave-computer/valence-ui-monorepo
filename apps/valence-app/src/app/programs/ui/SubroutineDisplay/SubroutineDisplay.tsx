@@ -36,7 +36,7 @@ export const SubroutineDisplay = ({
   const walletAddress = account?.bech32Address;
 
   const { data: balances, isLoading: isLoadingBalances } = useWalletBalancesV2({
-    rpcUrl: queryConfig?.main?.rpcUrl,
+    rpcUrl: queryConfig?.main?.rpc,
     address: walletAddress,
   });
 
@@ -112,8 +112,7 @@ export const SubroutineDisplay = ({
 
               {/* it's a separate component because each subroutine should have its own useForm instantiation */}
               <ExecutableSubroutine
-                chainIds={program?.chainIds ?? []}
-                programId={program?.programId}
+                program={program}
                 authTokenDenom={authTokenDenom}
                 subroutineLabel={subroutineLabel}
                 authorizationsAddress={authorizationsAddress}

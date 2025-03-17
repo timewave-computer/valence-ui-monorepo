@@ -11,7 +11,7 @@ export * from "./ProgramViewerErrorDisplay";
 export * from "./ProgramRegistryViewer";
 export * from "./ProgramRpcSettings";
 export * from "./useGetAllProgramsQuery";
-export * from "./common-query-config";
+export * from "./useProgramQueryConfig";
 export * from "./RefetchButton";
 export * from "./ConnectWalletHoverContent";
 export * from "./ProcessorSection";

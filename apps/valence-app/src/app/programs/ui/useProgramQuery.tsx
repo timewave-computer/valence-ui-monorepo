@@ -3,25 +3,25 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
 import {
   getProgramData,
+  QueryConfig,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import { LinkText, ToastMessage, toast } from "@valence-ui/ui-components";
 import { useCallback } from "react";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { isEqual } from "lodash";
-import { useQueryArgs } from "@/app/programs/ui";
 
 type UseProgramQueryArgs = {
   programId: string;
-  initialQueryData?: GetProgramDataReturnValue;
+  initialQueryData: GetProgramDataReturnValue;
+  queryConfig: QueryConfig;
 };
 
 export const useProgramQuery = ({
   programId,
   initialQueryData,
+  queryConfig,
 }: UseProgramQueryArgs) => {
-  const { queryConfig } = useQueryArgs(initialQueryData?.queryConfig!);
-
   // must be defined in callback to detect input changes
   const queryFn = useCallback(async () => {
     // nullify initial data after first fetch, otherwise it will be used for every response

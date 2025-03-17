@@ -31,72 +31,51 @@ import {
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAccount, useConnect } from "graz";
-import { useOfflineSigners } from "graz";
-import { X_HANDLE } from "@valence-ui/socials";
+import { useAccount } from "graz";
 
 export const ProcessorSection = ({
   processorQueue,
   processorData,
   domain,
   queryConfig,
-  chainIds,
 }: {
   processorQueue?: FetchProcessorQueuesReturnType[number];
   processorData: NormalizedProcessorInfo;
   domain?: string;
   queryConfig: QueryConfig;
-  chainIds: string[];
 }) => {
-  const { data: accounts, isConnected: isWalletConnected } = useAccount({
-    chainId: chainIds,
-    multiChain: true,
-  });
-  const { connect } = useConnect();
+  const processorChainId = queryConfig.main.chainId; // only supports mainchain for now.
 
-  const { data: offlineSigner } = useOfflineSigners({
-    chainId: processorData.chainId,
-  });
+  const { data: account, isConnected: isWalletConnected } = useAccount();
+  console.log("accounts", account);
 
   const queryClient = useQueryClient();
 
+  // TODO: processorData needs adjusted chainId as well during parse
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
-      const signerAddress = accounts
-        ? accounts[processorData.chainId]?.bech32Address
-        : undefined;
-
-      if (!signerAddress) {
-        // todo show dialog
-        connect({ chainId: processorData.chainId });
-        throw new Error(
-          `Connecting wallet for ${processorData.chainId}. Please try. If retry fails, contact support ${X_HANDLE}.`,
-        );
-      }
-
-      const isMainChain = processorData.chainId === queryConfig.main.chainId;
-
-      const rpcUrl = isMainChain
-        ? queryConfig.main.rpc
-        : queryConfig.external?.find((c) => c.chainId === processorData.chainId)
-            ?.rpc;
-
+      const rpcUrl = queryConfig.main.rpc;
       if (!rpcUrl) {
         throw new Error(
-          `No RPC URL configured for chain ID ${processorData.chainId}`,
+          `No RPC URL configured for domain  ${processorData.domainName}`,
         );
       }
 
-      if (!offlineSigner) {
-        throw new Error(
-          `Offline signer for ${processorData.chainId} unavaiable. Try reconnecting wallet, and contact valence team if issue persists ${X_HANDLE}.`,
-        );
-      }
       const signer = await connectWithOfflineSigner({
-        chainId: processorData.chainId,
-        chainName: processorData.chainName,
+        chainId: processorChainId,
+        chainName: queryConfig.main.chainName,
         rpcUrl,
       });
+
+      // must come after 'connect with offline signer' so chain can be added if its not already
+      const signerAddress = account?.bech32Address ?? undefined;
+
+      if (!signerAddress) {
+        throw new Error(
+          `Signer address for ${queryConfig.main.domainName} (chain ID ${processorChainId}) not found. Check that chain is connected to wallet.`,
+        );
+      }
+      console.log("signer", signerAddress, signer);
 
       const messages: EncodeObject[] = [
         {

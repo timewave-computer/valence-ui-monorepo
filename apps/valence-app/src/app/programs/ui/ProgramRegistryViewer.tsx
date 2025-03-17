@@ -12,7 +12,7 @@ import {
   ProgramViewerErrorDisplay,
   RefetchButton,
   useGetAllProgramsQuery,
-  useQueryArgs,
+  useProgramQueryConfig,
 } from "@/app/programs/ui";
 import { displayAddress } from "@/utils";
 import { CelatoneUrl } from "@/const";
@@ -27,7 +27,9 @@ export const ProgramRegistryViewer = ({
   const { data, isLoading, refetch, isFetching } = useGetAllProgramsQuery({
     initialQueryData: initialData,
   });
-  const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
+  const { queryConfig, setQueryConfig } = useProgramQueryConfig(
+    initialData.queryConfig,
+  );
 
   const tableData = data?.parsedPrograms?.map(({ id, config }) => {
     const authorizationsAddress = config.authorizationData?.authorization_addr;
