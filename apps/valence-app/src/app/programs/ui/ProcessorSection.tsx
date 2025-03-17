@@ -77,7 +77,7 @@ export const ProcessorSection = ({
       const isMainChain = processorData.chainId === queryConfig.main.chainId;
 
       const rpcUrl = isMainChain
-        ? queryConfig.main.rpcUrl
+        ? queryConfig.main.rpc
         : queryConfig.external?.find((c) => c.chainId === processorData.chainId)
             ?.rpc;
 
@@ -93,8 +93,8 @@ export const ProcessorSection = ({
         );
       }
       const signer = await connectWithOfflineSigner({
-        offlineSigner: offlineSigner.offlineSigner,
         chainId: processorData.chainId,
+        chainName: processorData.chainName,
         rpcUrl,
       });
 

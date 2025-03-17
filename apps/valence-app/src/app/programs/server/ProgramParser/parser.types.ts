@@ -9,6 +9,7 @@ export type NormalizedProcessorInfo = {
   address: string;
   chainId: string;
   chainName: string;
+  domainName: string;
 };
 
 export type NormalizedAuthorizationData = AuthorizationData & {
@@ -22,6 +23,7 @@ export type NormalizedAccounts = {
   [k: string]: NormalizedAccount & {
     chainId: string;
     chainName: string;
+    domainName: string;
   };
 };
 type NormalizedLibrary = ProgramConfig["libraries"][0];
@@ -29,6 +31,7 @@ export type NormalizedLibraries = {
   [k: string]: NormalizedLibrary & {
     chainId: string;
     chainName: string;
+    domainName: string;
   };
 };
 export type NormalizedLinks = ProgramConfig["links"];

@@ -121,8 +121,8 @@ export const ExecutableSubroutine = ({
       });
 
       const signer = await connectWithOfflineSigner({
-        offlineSigner: mainChainSigner?.offlineSigner,
         chainId: queryConfig.main.chainId,
+        chainName: queryConfig.main.name,
         rpcUrl: queryConfig.main.rpcUrl,
       });
 

@@ -1,9 +1,4 @@
-import { ProgramParserResult } from "@/app/programs/server";
 import { chains } from "chain-registry";
-import {
-  getDefaultMainChainConfig,
-  getPreferredRpcs,
-} from "@/app/programs/server/config";
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
 
@@ -11,121 +6,83 @@ export const queryConfigSchema = z.object({
   main: z.object({
     registryAddress: z.string().optional(),
     chainId: z.string(),
-    rpcUrl: z.string(),
-    name: z.string(),
+    rpc: z.string(),
+    chainName: z.string(),
+    domainName: z.string(),
   }),
-  external: z.array(
-    z.object({
-      rpc: z.string(),
-      chainId: z.string(),
-      name: z.string(),
-    }),
-  ),
+  external: z
+    .array(
+      z.object({
+        rpc: z.string(),
+        chainId: z.string(),
+        domainName: z.string(),
+        chainName: z.string(),
+      }), // note: cannot be optional, it wont be detected by nuqs
+    )
+    .nullable(),
 });
 export type QueryConfig = z.infer<typeof queryConfigSchema>;
 
-export const defaultQueryConfig = {
-  main: getDefaultMainChainConfig(),
-  external: [], // needs to be derived from accounts in config
-};
-
 const queryConfigLoader = {
-  queryConfig: parseAsJson(queryConfigSchema.parse).withDefault(
-    defaultQueryConfig,
-  ),
+  queryConfig: parseAsJson(queryConfigSchema.parse),
 };
 export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 
-type RequiredMain = Required<Pick<QueryConfig, "main">>;
-type OptionalExternal = Partial<Pick<QueryConfig, "external">>;
-type WorkingQueryConfig = RequiredMain &
-  OptionalExternal &
-  Omit<QueryConfig, "main" | "external">;
+export const makeExternalDomainConfig = ({
+  externalProgramDomains,
+  userSuppliedQueryConfig,
+}: {
+  externalProgramDomains: string[];
+  userSuppliedQueryConfig?: QueryConfig;
+}) => {
+  if (externalProgramDomains.length === 0) {
+    return [];
+  } else if (userSuppliedQueryConfig?.external) {
+    // TODO: maybe carry over the rest of user args?
 
-export class QueryConfigManager {
-  // 'main' is requied but temp can be undefined
-  private mainChainConfig: QueryConfig["main"];
-  private externalChainConfig?: QueryConfig["external"];
-
-  constructor(workingConfig: WorkingQueryConfig) {
-    this.mainChainConfig = workingConfig.main;
-
-    if (workingConfig.external) {
-      this.externalChainConfig = workingConfig.external;
-    }
-  }
-
-  getMainChainConfig() {
-    return this.mainChainConfig;
-  }
-
-  setAllChainsConfigIfEmpty(program: ProgramParserResult | null) {
-    if (program === null) {
-      this.externalChainConfig = undefined;
-      return;
-    }
-
-    // if query config already specified, we dont have to make it ourselves.
-    if (!!this.externalChainConfig?.length) {
-      return;
-    } else {
-      const externalConfig = QueryConfigManager.makeExternalChainConfig(
-        program,
-        this.mainChainConfig.chainId,
+    return externalProgramDomains.map((domain) => {
+      const userSuppliedChain = userSuppliedQueryConfig.external?.find(
+        (config) => {
+          return config.domainName === domain;
+        },
       );
-      this.externalChainConfig = externalConfig;
-    }
+      return {
+        rpc: userSuppliedChain?.rpc || "",
+        chainId: userSuppliedChain?.chainId || "",
+        domainName: domain,
+        chainName: userSuppliedChain?.chainName || "",
+      };
+    });
+  } else {
+    // make from defaults
+    return externalProgramDomains.map((domain) => {
+      const registeredChain = chains.find((chain) => {
+        return chain.chain_name === domain;
+      });
+
+      const rpcUrl = registeredChain?.apis?.rpc?.[0]?.address || "";
+      return {
+        rpc: rpcUrl,
+        chainId: registeredChain?.chain_id || "",
+        domainName: domain,
+        chainName: registeredChain?.chain_name || "",
+      };
+    });
   }
+};
 
-  getQueryConfig(): QueryConfig {
-    return {
-      main: this.mainChainConfig,
-      external: this.externalChainConfig ?? [],
-    };
+export const getDomainConfig = ({
+  queryConfig,
+  domainName,
+}: {
+  queryConfig: QueryConfig;
+  domainName: string;
+}) => {
+  if (queryConfig.main.domainName === domainName) {
+    return queryConfig.main;
+  } else {
+    return queryConfig.external?.find((config) => {
+      return config.domainName === domainName;
+    });
   }
-
-  // takes list of accounts and default rpcs and makes rpc config object
-  private static makeExternalChainConfig(
-    program: ProgramParserResult,
-    mainChainId: string,
-  ): QueryConfig["external"] {
-    const rpcs: QueryConfig["external"] = [];
-    const accounts = program.accounts;
-
-    for (const account of Object.values(accounts)) {
-      // if already present, skip
-      if (rpcs.find((rpc) => rpc.chainId === account.chainId)) continue;
-
-      let rpcUrl;
-      const preferredRpcs = getPreferredRpcs();
-      if (account.chainId in preferredRpcs) {
-        rpcUrl = preferredRpcs[account.chainId];
-      } else {
-        const registeredChain = chains.find(
-          (chain) => chain.chain_id === account.chainId,
-        );
-        if (!registeredChain) {
-          throw new Error(
-            `Unable to set default rpc. Chain id ${account.chainId} not found in chain registry.`,
-          );
-        }
-        const registeredEndpoint = registeredChain.apis?.rpc?.[0];
-        if (!registeredEndpoint) {
-          throw new Error(
-            `Unable to set default rpc. Registered chain ${account.chainId} does not have an rpc endpoint.`,
-          );
-        }
-        rpcUrl = registeredEndpoint.address;
-      }
-      if (account.chainId !== mainChainId) {
-        rpcs.push({
-          rpc: rpcUrl,
-          chainId: account.chainId,
-          name: account.chainName,
-        });
-      }
-    }
-
-    return rpcs;
-  }
-}
+};

@@ -34,6 +34,7 @@ export const ProgramRegistryViewer = ({
 
     const sanitizedQueryConfig = {
       ...queryConfig,
+      // remove as an arg so it can be populated by the program page
       external: !!queryConfig.external?.length
         ? queryConfig.external
         : undefined,

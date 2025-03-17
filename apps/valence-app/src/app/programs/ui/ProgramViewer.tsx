@@ -44,8 +44,10 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
 
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
+  console.log("initial data", initialData.queryConfig);
 
   const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
+  console.log("query config", queryConfig);
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">

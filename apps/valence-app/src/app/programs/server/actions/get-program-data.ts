@@ -3,7 +3,6 @@ import {
   ProgramParser,
   fetchAccountBalances,
   type QueryConfig,
-  QueryConfigManager,
   type ProgramParserResult,
   type NormalizedAccounts,
   type NormalizedLibraries,
@@ -12,6 +11,8 @@ import {
   makeApiErrors,
   getLastUpdatedTime,
   NormalizedAuthorizationData,
+  makeExternalDomainConfig,
+  getDomainConfig,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
@@ -50,64 +51,44 @@ export type GetProgramDataReturnValue = {
   chainIds?: string[];
 };
 
-// TODO: make a 'response' builder so error handling is cleaner / func more readable / testable
 // TODO: make an object of all chain clients, with chain id and chain name
 export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
 }: GetProgramDataProps): Promise<GetProgramDataReturnValue> => {
-  let initialQueryConfig: QueryConfig;
-  // if external is empty array, set it to undefined
-  if (userSuppliedQueryConfig) {
-    let sanitizedExternal =
-      !!userSuppliedQueryConfig.external?.length &&
-      userSuppliedQueryConfig.external?.length > 0
-        ? userSuppliedQueryConfig.external
-        : [];
-    if (!sanitizedExternal) {
-      sanitizedExternal;
-    }
+  const mainDomainConfig = !!userSuppliedQueryConfig
+    ? userSuppliedQueryConfig?.main
+    : getDefaultMainChainConfig();
 
-    initialQueryConfig = {
-      ...userSuppliedQueryConfig,
-      external: sanitizedExternal,
-    };
-  } else {
-    initialQueryConfig = {
-      main: getDefaultMainChainConfig(),
-      external: [], // needs to be derived from accounts in config
-    };
-  }
-
-  let queryConfigManager = new QueryConfigManager(initialQueryConfig);
-  // must default registry address and mainchain RPC if no config given
   let rawProgram = "";
-  const mainChainConfig = queryConfigManager.getMainChainConfig();
-
   let mainChainCosmwasmClient: CosmWasmClient;
   try {
-    mainChainCosmwasmClient = await getCosmwasmClient(mainChainConfig.rpcUrl);
+    mainChainCosmwasmClient = await getCosmwasmClient(mainDomainConfig.rpc);
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       programId: programId,
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
+      queryConfig: {
+        main: mainDomainConfig,
+        external: null,
+      },
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.RPC_CONNECTION,
-          message: `Could not connect to RPC at ${mainChainConfig.rpcUrl}`,
+          message: `Could not connect to RPC at ${mainDomainConfig.rpc}`,
         },
       ]),
     };
   }
 
-  if (!mainChainConfig.registryAddress) {
-    queryConfigManager.setAllChainsConfigIfEmpty(null);
+  if (!mainDomainConfig.registryAddress) {
     return {
       programId: programId,
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
+      queryConfig: {
+        main: mainDomainConfig,
+        external: null,
+      },
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.NO_REGISTRY,
@@ -119,15 +100,17 @@ export const getProgramData = async ({
   try {
     rawProgram = await fetchProgramFromRegistry({
       programId,
-      registryAddress: mainChainConfig.registryAddress,
+      registryAddress: mainDomainConfig.registryAddress,
       cosmwasmClient: mainChainCosmwasmClient,
     });
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       programId: programId,
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
+      queryConfig: {
+        main: mainDomainConfig,
+        external: [],
+      },
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.PROGRAM_ID_NOT_FOUND,
@@ -142,36 +125,42 @@ export const getProgramData = async ({
   try {
     program = ProgramParser.extractData(rawProgram);
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty(null);
     console.log(`Program ID ${programId} parse error: ${e} `);
     return {
       programId: programId,
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
+      queryConfig: {
+        main: mainDomainConfig,
+        external: null,
+      },
       rawProgram,
       errors: makeApiErrors([{ code: GetProgramErrorCodes.PARSE }]),
     };
   }
-  // for all processors and accounts, populate external chains
 
-  const { accounts } = program;
-
-  const accountChainIds = Object.values(accounts).map((a) => a.chainId);
-  const processorChainIds = Object.values(
-    program.authorizationData.processorData,
-  ).map(({ chainId }) => chainId);
-  const allChainIds = [...accountChainIds, ...processorChainIds];
-  const uniqueChainIds = Array.from(new Set(allChainIds));
-
-  queryConfigManager.setAllChainsConfigIfEmpty(program);
-  const completeQueryConfig = queryConfigManager.getQueryConfig();
+  const programChainIds = getChainIds(program);
+  const externalDomainNames = getExternalDomains(
+    program,
+    mainDomainConfig.domainName,
+  );
+  const externalDomainConfig = makeExternalDomainConfig({
+    externalProgramDomains: externalDomainNames,
+    userSuppliedQueryConfig: userSuppliedQueryConfig,
+  });
+  const completeQueryConfig = {
+    main: mainDomainConfig,
+    external: externalDomainConfig,
+  };
 
   let accountBalances;
   let metadata;
   let errors = {};
 
   try {
-    accountBalances = await queryAccountBalances(accounts, completeQueryConfig);
+    accountBalances = await queryAccountBalances(
+      program.accounts,
+      completeQueryConfig,
+    );
   } catch (e) {
     errors = makeApiErrors([
       { code: GetProgramErrorCodes.BALANCES, message: e?.message },
@@ -180,9 +169,8 @@ export const getProgramData = async ({
 
   const metadataToFetch = getDenomsAndChainIds({
     balances: accountBalances,
-    accounts,
+    accounts: program.accounts,
   });
-
   metadata = await fetchAssetMetadata(metadataToFetch);
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
@@ -194,9 +182,10 @@ export const getProgramData = async ({
 
   let processorHistory: ArrayOfProcessorCallbackInfo | undefined = undefined;
   let processorQueues: FetchProcessorQueuesReturnType | undefined = undefined;
+
   const asyncResults = await Promise.allSettled([
     getProcessorHistory({
-      rpcUrl: mainChainConfig.rpcUrl,
+      rpcUrl: mainDomainConfig.rpc,
       authorizationsAddress: program.authorizationData?.authorization_addr,
     }),
     fetchProcessorQueues({
@@ -247,8 +236,33 @@ export const getProgramData = async ({
     processorQueues: processorQueues,
     processorHistory: processorHistory,
     libraryConfigs: libraryConfigs,
-    chainIds: uniqueChainIds,
+    chainIds: programChainIds,
   };
+};
+
+const getChainIds = (program: ProgramParserResult) => {
+  const accountChainIds = Object.values(program.accounts).map((a) => a.chainId);
+  const processorChainIds = Object.values(
+    program.authorizationData.processorData,
+  ).map(({ chainId }) => chainId);
+  const allChainIds = [...accountChainIds, ...processorChainIds];
+  return Array.from(new Set(allChainIds));
+};
+
+const getExternalDomains = (
+  program: ProgramParserResult,
+  mainDomainName: string,
+) => {
+  const accountDomains = Object.values(program.accounts).map(
+    (a) => a.domainName,
+  );
+  const processorDomains = Object.values(
+    program.authorizationData.processorData,
+  ).map(({ domainName }) => domainName);
+  const allExternalDomains = [...accountDomains, ...processorDomains].filter(
+    (d) => d !== mainDomainName,
+  );
+  return Array.from(new Set(allExternalDomains));
 };
 
 const fetchProgramFromRegistry = async ({
@@ -291,17 +305,12 @@ const queryAccountBalances = async (
       throw new Error(`Account ${id} does not have an address`);
     }
 
-    let rpcUrl: string | undefined = undefined;
-    if (account.chainName === config.main.name) {
-      rpcUrl = config.main.rpcUrl;
-    } else {
-      rpcUrl = config.external?.find(
-        (chain) => chain.name === account.chainName,
-      )?.rpc;
-    }
-
+    const rpcUrl = getDomainConfig({
+      queryConfig: config,
+      domainName: account.domainName,
+    })?.rpc;
     if (!rpcUrl) {
-      throw new Error(`No RPC URL found for chain ID ${account.chainName}`);
+      throw new Error(`No RPC URL found for domain ${account.domainName}`);
     }
     const balances = await fetchAccountBalances({
       accountAddress: account.addr,
@@ -373,19 +382,13 @@ async function fetchProcessorQueues({
 }): Promise<FetchProcessorQueuesReturnType> {
   if (!processorAddresses) return [];
 
-  const requests = Object.entries(processorAddresses).map(
-    async ([
-      domainChainName,
-      { chainId, chainName, address: processorAddress },
-    ]) => {
-      const rpcUrl =
-        queryConfig.main.chainId === chainId
-          ? queryConfig.main.rpcUrl
-          : queryConfig.external?.find((chain) => chain.chainId === chainId)
-              ?.rpc;
+  const requests = Object.values(processorAddresses).map(
+    async ({ chainId, chainName, address: processorAddress, domainName }) => {
+      const rpcUrl = getDomainConfig({ queryConfig, domainName })?.rpc;
 
       const processorMetadata = {
         chainName,
+        domainName,
         processorAddress,
         chainId,
       };
@@ -487,13 +490,11 @@ async function fetchLibraryConfigs(
   // TODO: maybe better to pull library addresses from the function data instead.
   const librariesToFetch = Object.values(libraries).reduce(
     (acc, lib) => {
-      if (lib.addr && !!lib.domain?.CosmosCosmwasm) {
-        const rpcUrl =
-          lib.chainId === queryConfig.main.chainId
-            ? queryConfig.main.rpcUrl
-            : queryConfig.external?.find(
-                (chain) => chain.chainId === lib.chainId,
-              )?.rpc;
+      if (lib.addr && lib.domainName) {
+        const rpcUrl = getDomainConfig({
+          queryConfig,
+          domainName: lib.domainName,
+        })?.rpc;
         if (rpcUrl) {
           return [
             ...acc,

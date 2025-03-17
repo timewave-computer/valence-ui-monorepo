@@ -58,7 +58,6 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
   if (!isWalletConnected) {
     return (
       <Button
-        size="sm"
         className="hidden md:flex"
         disabled={isWalletConnecting}
         onClick={async () => {

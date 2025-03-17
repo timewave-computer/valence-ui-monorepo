@@ -5,7 +5,6 @@ export * from "./ProgramViewer";
 export * from "./lib";
 export * from "./SubroutineDisplay";
 export * from "./LibraryDetails";
-export * from "./RpcConfigForm";
 export * from "./useLibrarySchemaCache";
 export * from "./useProgramQuery";
 export * from "./ProgramViewerErrorDisplay";

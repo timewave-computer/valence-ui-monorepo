@@ -15,13 +15,8 @@ export const getDefaultMainChainConfig = (): QueryConfig["main"] => {
   return {
     chainId: "neutron-1",
     registryAddress: defaultRegistry,
-    rpcUrl,
-    name: "neutron",
-  };
-};
-
-export const getPreferredRpcs = () => {
-  return {
-    "neutron-1": defaultNeutronRpc,
+    rpc: rpcUrl,
+    domainName: "neutron",
+    chainName: "neutron",
   };
 };
