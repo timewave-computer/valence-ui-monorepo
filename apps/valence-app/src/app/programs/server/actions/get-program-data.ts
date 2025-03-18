@@ -56,6 +56,7 @@ export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
 }: GetProgramDataProps): Promise<GetProgramDataReturnValue> => {
+  console.log("user supplied query config", userSuppliedQueryConfig);
   const mainDomainConfig = !!userSuppliedQueryConfig
     ? userSuppliedQueryConfig?.main
     : getDefaultMainChainConfig();

@@ -108,6 +108,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             <ProgramMetdataDisplay queryConfig={queryConfig} program={data} />
           </Card>
         </div>
+        <div className="col-span-2" />
         <div className="col-span-2 flex flex-col  gap-2">
           <Heading level="h2">Accounts</Heading>
           <Card
@@ -137,7 +138,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             <ProcessorDisplay program={data} queryConfig={queryConfig} />
           </Card>
         </div>
-        <div className="flex flex-col col-span-4 flex-grow gap-2">
+        <div className="flex flex-col col-span-2 flex-grow gap-2">
           <Heading level="h2">Execution History</Heading>
           <Card
             isLoading={isLoading}

@@ -1,14 +1,15 @@
 import { chains } from "chain-registry";
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
+import { getDefaultMainChainConfig } from "@/app/programs/server/config";
 
 export const queryConfigSchema = z.object({
   main: z.object({
-    registryAddress: z.string().optional(),
     chainId: z.string(),
+    registryAddress: z.string().optional(),
     rpc: z.string(),
-    chainName: z.string(),
     domainName: z.string(),
+    chainName: z.string(),
   }),
   external: z
     .array(
@@ -19,12 +20,15 @@ export const queryConfigSchema = z.object({
         chainName: z.string(),
       }), // note: cannot be optional, it wont be detected by nuqs
     )
-    .nullable(),
+    .nullish(),
 });
 export type ProgramQueryConfig = z.infer<typeof queryConfigSchema>;
 
 const queryConfigLoader = {
-  queryConfig: parseAsJson(queryConfigSchema.parse),
+  queryConfig: parseAsJson(queryConfigSchema.parse).withDefault({
+    main: getDefaultMainChainConfig(),
+    external: null,
+  }),
 };
 export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 
