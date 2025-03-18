@@ -27,6 +27,14 @@ export const CosmosProvider: React.FC<{ children: ReactNode }> = ({
     <GrazProvider
       grazOptions={{
         chains: [neutron, juno, terra],
+        chainsConfig: {
+          "neutron-1": {
+            gas: {
+              price: "0.005",
+              denom: "untrn",
+            },
+          },
+        },
       }}
     >
       {children}

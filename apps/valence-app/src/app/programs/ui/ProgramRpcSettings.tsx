@@ -102,7 +102,6 @@ const RpcSettingsForm = ({
     },
   });
 
-  console.log("query config in form", queryConfig);
   const handleSubmitForm = debounce((values: RpcConfigFormValues) => {
     setQueryConfig({
       main: {

@@ -28,7 +28,7 @@ async function ProgramViewerLoader({
   const { queryConfig } = await loadQueryConfigSearchParams(searchParams);
   const data = (await getProgramData({
     programId,
-    queryConfig,
+    queryConfig: queryConfig ?? undefined,
   })) as GetProgramDataReturnValue;
 
   return <ProgramViewer programId={programId} initialData={data} />;

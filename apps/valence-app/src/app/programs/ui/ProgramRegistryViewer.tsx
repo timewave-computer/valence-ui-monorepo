@@ -34,8 +34,6 @@ export const ProgramRegistryViewer = ({
     main: queryConfig.main,
   };
 
-  console.log("queryconfig", queryConfig);
-
   const tableData = data?.parsedPrograms?.map(({ id, parsed, raw }) => {
     const authorizationsAddress = parsed.authorizationData?.authorization_addr;
 
