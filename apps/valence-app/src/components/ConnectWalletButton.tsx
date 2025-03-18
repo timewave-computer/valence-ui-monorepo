@@ -1,6 +1,7 @@
 "use client";
 import {
   Button,
+  Heading,
   PrettyJson,
   ToastMessage,
   cn,
@@ -92,12 +93,21 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
         sideOffset={11}
         className="items-left z-50 flex flex-col gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all mr-4"
       >
-        <div className="items-left flex flex-col gap-3">
-          <div className="flex flex-row justify-between items-start">
-            <h1 className="text-base font-semibold">Connected chains</h1>
+        <div className="items-left flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <Heading level="h3">Connected chains</Heading>
+            {Object.values(accounts ?? {}).length > 0 && (
+              <Button
+                onClick={() => disconnect()}
+                size="sm"
+                variant="secondary"
+              >
+                Disconnect all
+              </Button>
+            )}
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-4">
             {Object.entries(accounts ?? {}).map(([chainId, account]) => {
               const chainName = chains.find(
                 (c) => c.chain_id === chainId,
@@ -106,7 +116,7 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
               return (
                 <div
                   key={`wallet-connection-${chainId}`}
-                  className="flex flex-col gap-0.5"
+                  className="flex flex-col gap-1"
                 >
                   {chainName && (
                     <div className="text-xs font-semibold">{chainName}</div>
@@ -114,15 +124,18 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
                   <div className="max-w-48 text-balance break-words text-left font-mono text-xs">
                     {account?.bech32Address}
                   </div>
+                  <Button
+                    size="sm"
+                    onClick={() => disconnect({ chainId })}
+                    variant="secondary"
+                  >
+                    Disconnect
+                  </Button>
                 </div>
               );
             })}
           </div>
         </div>
-
-        <Button size="sm" onClick={() => disconnect()} variant="secondary">
-          Disconnect
-        </Button>
       </Popover.Content>
     </Popover.Root>
   );

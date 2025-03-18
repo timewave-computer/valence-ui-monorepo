@@ -3,7 +3,7 @@ import {
   isPermissionless,
   type GetProgramDataReturnValue,
   getExecutionLimit,
-  type QueryConfig,
+  type ProgramQueryConfig,
 } from "@/app/programs/server";
 import {
   Card,
@@ -30,7 +30,7 @@ export const SubroutineDisplay = ({
   queryConfig,
 }: {
   program?: GetProgramDataReturnValue;
-  queryConfig: QueryConfig;
+  queryConfig: ProgramQueryConfig;
 }) => {
   const { data: account } = useAccount();
   const walletAddress = account?.bech32Address;

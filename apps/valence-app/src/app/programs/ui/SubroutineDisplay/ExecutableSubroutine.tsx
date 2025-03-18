@@ -47,9 +47,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Coin } from "@cosmjs/stargate";
 import {
   GetProgramDataReturnValue,
-  type QueryConfig,
+  type ProgramQueryConfig,
 } from "@/app/programs/server";
-import { useAccount } from "graz";
+import { useAccount, useOfflineSigners } from "graz";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -78,14 +78,20 @@ export const ExecutableSubroutine = ({
   authTokenBalance: Coin | undefined;
   executionLimit: string | null;
   authTokenDenom: string | null;
-  queryConfig: QueryConfig;
+  queryConfig: ProgramQueryConfig;
   program: GetProgramDataReturnValue;
 }) => {
-  const { data: account, isConnected: isWalletConnected } = useAccount();
+  const { data: account, isConnected: isWalletConnected } = useAccount({
+    chainId: queryConfig.main.chainId,
+  });
 
   const walletAddress = account?.bech32Address;
 
   const queryClient = useQueryClient();
+
+  const { data: offlineSigner } = useOfflineSigners({
+    chainId: queryConfig.main.chainId,
+  });
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
@@ -110,6 +116,7 @@ export const ExecutableSubroutine = ({
       });
 
       const signer = await connectWithOfflineSigner({
+        offlineSigner: offlineSigner?.offlineSigner,
         chainId: queryConfig.main.chainId,
         chainName: queryConfig.main.chainName,
         rpcUrl: queryConfig.main.rpc,
@@ -242,7 +249,7 @@ export const ExecutableSubroutine = ({
                     className="font-mono text-xs"
                     variant={"secondary"}
                   >
-                    {libraryAddress}
+                    {displayAddress(libraryAddress)}
                   </LinkText>
                 </Copyable>
               </div>

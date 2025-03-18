@@ -16,3 +16,4 @@ export * from "./RefetchButton";
 export * from "./ConnectWalletHoverContent";
 export * from "./ProcessorSection";
 export * from "./SuspenseLoadingSkeleton";
+export * from "./ProgramMetadataDisplay";

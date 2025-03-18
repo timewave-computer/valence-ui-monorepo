@@ -19,12 +19,14 @@ export type ConnectWithOfflineSignerInput = {
   chainId: string;
   chainName: string;
   rpcUrl: string;
+  offlineSigner?: OfflineSigner;
 };
 
 export const connectWithOfflineSigner = async ({
   chainId,
   chainName,
   rpcUrl,
+  offlineSigner,
 }: ConnectWithOfflineSignerInput) => {
   if (!keplr) {
     throw new Error(
@@ -42,10 +44,6 @@ export const connectWithOfflineSigner = async ({
     await keplr.experimentalSuggestChain(testChainInfo);
   }
   await keplr.enable(chainId);
-
-  const offlineSigner = window.getOfflineSigner
-    ? await window.getOfflineSigner(chainId)
-    : undefined;
 
   if (!offlineSigner) {
     throw new Error(

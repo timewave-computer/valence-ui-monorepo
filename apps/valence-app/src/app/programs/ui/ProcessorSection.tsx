@@ -18,7 +18,7 @@ import {
 } from "@valence-ui/ui-components";
 import {
   NormalizedProcessorInfo,
-  type QueryConfig,
+  type ProgramQueryConfig,
   type FetchProcessorQueuesReturnType,
 } from "@/app/programs/server";
 import { BsClockFill } from "react-icons/bs";
@@ -31,36 +31,49 @@ import {
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAccount } from "graz";
+import { useAccount, useOfflineSigners } from "graz";
 
 export const ProcessorSection = ({
   processorQueue,
   processorData,
-  domain,
+
   queryConfig,
 }: {
   processorQueue?: FetchProcessorQueuesReturnType[number];
   processorData: NormalizedProcessorInfo;
-  domain?: string;
-  queryConfig: QueryConfig;
-}) => {
-  const processorChainId = queryConfig.main.chainId; // only supports mainchain for now.
 
-  const { data: account, isConnected: isWalletConnected } = useAccount();
+  queryConfig: ProgramQueryConfig;
+}) => {
+  const processorChainId = processorData.chainId;
+  const processorDomain = processorData.domainName;
+
+  const { data: account, isConnected: isWalletConnected } = useAccount({
+    chainId: processorChainId,
+  });
+  const { data: offlineSigner } = useOfflineSigners({
+    chainId: processorChainId,
+  });
 
   const queryClient = useQueryClient();
 
   // TODO: processorData needs adjusted chainId as well during parse
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
-      const rpcUrl = queryConfig.main.rpc;
+      const rpcUrl =
+        processorDomain === queryConfig.main.domainName
+          ? queryConfig.main.rpc
+          : queryConfig.external?.find(
+              (chain) => chain.domainName === processorDomain,
+            )?.rpc;
+
       if (!rpcUrl) {
         throw new Error(
-          `No RPC URL configured for domain  ${processorData.domainName}`,
+          `No RPC URL configured for domain ${processorData.domainName}`,
         );
       }
 
       const signer = await connectWithOfflineSigner({
+        offlineSigner: offlineSigner?.offlineSigner,
         chainId: processorChainId,
         chainName: queryConfig.main.chainName,
         rpcUrl,
@@ -203,7 +216,7 @@ export const ProcessorSection = ({
           </HoverCardRoot>
 
           <div className="flex flex-col  items-start">
-            <Heading level="h3">{processorQueue?.chainName ?? domain}</Heading>
+            <Heading level="h3">{processorDomain}</Heading>
             <Copyable copyText={processorData.address}>
               <LinkText
                 LinkComponent={"div"}

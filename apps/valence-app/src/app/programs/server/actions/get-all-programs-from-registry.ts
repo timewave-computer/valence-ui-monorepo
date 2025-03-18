@@ -8,7 +8,7 @@ import {
   makeApiErrors,
   ProgramParser,
   ProgramParserResult,
-  type QueryConfig,
+  type ProgramQueryConfig,
 } from "@/app/programs/server";
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
@@ -22,7 +22,7 @@ type ParsedPrograms = Array<{
 }>;
 export type GetAllProgramsReturnValue = {
   dataLastUpdatedAt: number;
-  queryConfig: QueryConfig;
+  queryConfig: ProgramQueryConfig;
   errors: ErrorCodes;
   parsedPrograms?: ParsedPrograms;
 };
@@ -30,7 +30,7 @@ export type GetAllProgramsReturnValue = {
 export const getAllProgramsFromRegistry = async ({
   queryConfig: userSuppliedQueryConfig,
 }: {
-  queryConfig: QueryConfig | null;
+  queryConfig: ProgramQueryConfig | null;
 }): Promise<GetAllProgramsReturnValue> => {
   const isUserSuppliedArgs = !!userSuppliedQueryConfig;
 
