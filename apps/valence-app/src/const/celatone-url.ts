@@ -10,6 +10,9 @@ class CelatoneUrl {
   static contract = (address: string) => {
     return `${chainConfig.celatoneUrl}/contracts/${address}`;
   };
+  static account = (address: string) => {
+    return `${chainConfig.celatoneUrl}/accounts/${address}`;
+  };
 }
 
 export { CelatoneUrl };

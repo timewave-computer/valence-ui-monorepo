@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  getExternalDomains,
   NormalizedAccounts,
   NormalizedAuthorizationData,
   NormalizedLibraries,
@@ -102,13 +103,28 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
     {} as NormalizedAuthorizationData["processorData"],
   );
 
+  const authorizationData = {
+    ...programData.authorization_data,
+    processorData: processorsWithChainId,
+  };
+
+  const mainDomainName = "neutron"; // just default for now
+
+  const domains = {
+    main: mainDomainName,
+    external: getExternalDomains({
+      accounts: accountsWithChainId,
+      authorizationData,
+      mainDomainName,
+    }),
+  };
+
   return {
+    owner: programData.owner,
+    domains,
     // since there is only 1 format we pretty much just return what what we have for now
     authorizations: programData.authorizations,
-    authorizationData: {
-      ...programData.authorization_data,
-      processorData: processorsWithChainId,
-    },
+    authorizationData: authorizationData,
     accounts: accountsWithChainId,
     libraries: librariesWithChainId,
     links: programData.links,

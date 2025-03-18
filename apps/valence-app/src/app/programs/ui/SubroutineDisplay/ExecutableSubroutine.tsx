@@ -242,7 +242,7 @@ export const ExecutableSubroutine = ({
                     className="font-mono text-xs"
                     variant={"secondary"}
                   >
-                    {displayAddress(libraryAddress)}
+                    {libraryAddress}
                   </LinkText>
                 </Copyable>
               </div>

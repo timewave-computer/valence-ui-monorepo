@@ -15,7 +15,11 @@ import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { ArrayOfProgramResponse } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.types";
 
-type ParsedPrograms = Array<{ id: number; config: ProgramParserResult }>;
+type ParsedPrograms = Array<{
+  id: number;
+  parsed: ProgramParserResult;
+  raw: string;
+}>;
 export type GetAllProgramsReturnValue = {
   dataLastUpdatedAt: number;
   queryConfig: QueryConfig;
@@ -82,7 +86,7 @@ export const getAllProgramsFromRegistry = async ({
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: {
         main: mainDomainConfig,
-        external: undefined,
+        external: null,
       },
       errors: makeApiErrors([
         {
@@ -113,10 +117,10 @@ export const getAllProgramsFromRegistry = async ({
     (acc, { id, decodedConfig }) => {
       try {
         const validated = ProgramParser.extractData(decodedConfig);
-
         acc.push({
           id,
-          config: validated,
+          raw: decodedConfig,
+          parsed: validated,
         });
       } catch (e) {
         errors = makeApiErrors([
@@ -158,14 +162,16 @@ const fetchAllProgramsFromRegistry = async ({
       throw new Error("Registry has no programs");
     }
 
-    const limit = 20;
+    const limit = 100;
+
     const endIndex = lastId + 1;
+    const startIndex = Math.max(0, endIndex - limit);
 
     // return type on function is incorrect
     return programRegistryClient.getAllConfigs({
-      limit: limit,
       end: endIndex,
-      start: endIndex - limit,
+      start: startIndex,
+      limit: limit,
     });
   } catch (e) {
     throw new Error(

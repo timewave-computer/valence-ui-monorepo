@@ -47,7 +47,6 @@ export const ProcessorSection = ({
   const processorChainId = queryConfig.main.chainId; // only supports mainchain for now.
 
   const { data: account, isConnected: isWalletConnected } = useAccount();
-  console.log("accounts", account);
 
   const queryClient = useQueryClient();
 
@@ -75,7 +74,6 @@ export const ProcessorSection = ({
           `Signer address for ${queryConfig.main.domainName} (chain ID ${processorChainId}) not found. Check that chain is connected to wallet.`,
         );
       }
-      console.log("signer", signerAddress, signer);
 
       const messages: EncodeObject[] = [
         {

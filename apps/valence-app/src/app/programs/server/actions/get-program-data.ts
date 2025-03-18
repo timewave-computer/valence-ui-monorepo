@@ -139,10 +139,7 @@ export const getProgramData = async ({
   }
 
   const programChainIds = getChainIds(program);
-  const externalDomainNames = getExternalDomains(
-    program,
-    mainDomainConfig.domainName,
-  );
+  const externalDomainNames = program.domains.external;
   const externalDomainConfig = makeExternalDomainConfig({
     externalProgramDomains: externalDomainNames,
     userSuppliedQueryConfig: userSuppliedQueryConfig,
@@ -247,22 +244,6 @@ const getChainIds = (program: ProgramParserResult) => {
   ).map(({ chainId }) => chainId);
   const allChainIds = [...accountChainIds, ...processorChainIds];
   return Array.from(new Set(allChainIds));
-};
-
-const getExternalDomains = (
-  program: ProgramParserResult,
-  mainDomainName: string,
-) => {
-  const accountDomains = Object.values(program.accounts).map(
-    (a) => a.domainName,
-  );
-  const processorDomains = Object.values(
-    program.authorizationData.processorData,
-  ).map(({ domainName }) => domainName);
-  const allExternalDomains = [...accountDomains, ...processorDomains].filter(
-    (d) => d !== mainDomainName,
-  );
-  return Array.from(new Set(allExternalDomains));
 };
 
 const fetchProgramFromRegistry = async ({

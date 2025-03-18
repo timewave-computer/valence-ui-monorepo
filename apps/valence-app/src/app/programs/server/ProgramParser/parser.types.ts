@@ -12,6 +12,11 @@ export type NormalizedProcessorInfo = {
   domainName: string;
 };
 
+export type CompositeDomains = {
+  main: string;
+  external: string[];
+};
+
 export type NormalizedAuthorizationData = AuthorizationData & {
   processorData: {
     [k: string]: NormalizedProcessorInfo;
@@ -44,4 +49,6 @@ export interface ProgramParserResult {
   accounts: NormalizedAccounts;
   links: NormalizedLinks;
   libraries: NormalizedLibraries;
+  domains: CompositeDomains;
+  owner: string;
 }

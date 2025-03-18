@@ -54,7 +54,10 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 flex-wrap">
             <LinkText
-              href={`/programs?queryConfig=${JSON.stringify(queryConfig)}`}
+              href={`/programs?queryConfig=${JSON.stringify({
+                main: queryConfig.main,
+                external: null,
+              })}`}
               LinkComponent={Link}
               variant="breadcrumb"
             >
