@@ -19,7 +19,6 @@ import {
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useWallet } from "@/hooks";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
 import { Fragment, useState } from "react";
 import {
@@ -34,8 +33,9 @@ import { Coin } from "@cosmjs/stargate";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { UTCDate } from "@date-fns/utc";
 import { BsExclamationCircle } from "react-icons/bs";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl, chainConfig } from "@/const";
 import { useQueryState } from "nuqs";
+import { useAccount, useCosmWasmSigningClient } from "graz";
 
 type WithdrawInputForm = {
   amounts: Coin[];
@@ -43,7 +43,10 @@ type WithdrawInputForm = {
 export const WithdrawDialog: React.FC<{}> = ({}) => {
   const queryClient = useQueryClient();
   const { getOriginAsset } = useAssetMetadata();
-  const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
+  const { data: account } = useAccount({ chainId: chainConfig.chain.chain_id });
+  const { data: signingCoswmasmClient } = useCosmWasmSigningClient();
+  const walletAddress = account?.bech32Address;
+
   const [accountAddress] = useQueryState("account", {
     defaultValue: "",
   });
@@ -58,7 +61,10 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
   );
 
   const withdraw = async (amounts: WithdrawInputForm["amounts"]) => {
-    const signer = await getSigningCosmwasmClient();
+    const signer = signingCoswmasmClient;
+    if (!signer) {
+      throw new Error("No signing client found");
+    }
 
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen

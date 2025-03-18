@@ -1,7 +1,6 @@
 "use client";
 import { ValenceProductBrand } from "@/components";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
-import { useWallet } from "@/hooks";
 import { displayAddress, FeatureFlags, useFeatureFlag } from "@/utils";
 import Image from "next/image";
 import {
@@ -21,6 +20,7 @@ import {
   Heading,
   cn,
 } from "@valence-ui/ui-components";
+import { useAccount } from "graz";
 
 export const SidePanelV2: React.FC<{
   rerouteOnConnect?: boolean;
@@ -97,10 +97,14 @@ const DiscoverPanel: React.FC<{}> = ({}) => {
     defaultValue: "",
   });
 
-  const { address, isWalletConnected } = useWallet();
+  const { data: connectedAccount, isConnected: isWalletConnected } = useAccount(
+    { chainId: chainConfig.chain.chain_id },
+  );
+  const walletAddress = connectedAccount?.bech32Address;
   const { data: valenceAddress, isLoading: isValenceAccountLoading } =
-    useValenceAccount(address);
-  const { data: allValenceAccounts } = useMultipleValenceAccounts(address);
+    useValenceAccount(walletAddress);
+  const { data: allValenceAccounts } =
+    useMultipleValenceAccounts(walletAddress);
   let featuredAccounts = chainConfig.featuredAccounts;
 
   const router = useRouter();

@@ -9,7 +9,7 @@ import { LinkText, ToastMessage, toast } from "@valence-ui/ui-components";
 import { useCallback } from "react";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { isEqual } from "lodash";
-import { useQueryArgs } from "./common-query-config";
+import { useProgramQueryConfig } from "./useProgramQueryConfig";
 
 type UseProgramQueryArgs = {
   initialQueryData: GetAllProgramsReturnValue;
@@ -17,7 +17,7 @@ type UseProgramQueryArgs = {
 export const useGetAllProgramsQuery = ({
   initialQueryData,
 }: UseProgramQueryArgs) => {
-  const { queryConfig } = useQueryArgs(initialQueryData.queryConfig);
+  const { queryConfig } = useProgramQueryConfig(initialQueryData.queryConfig);
 
   // must be defined in callback to detect input changes
   const queryFn = useCallback(async () => {

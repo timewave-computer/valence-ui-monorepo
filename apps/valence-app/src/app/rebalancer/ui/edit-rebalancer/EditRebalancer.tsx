@@ -1,11 +1,9 @@
 "use client";
-import { useWallet } from "@/hooks/use-wallet";
 import { useForm } from "react-hook-form";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import {
   BalanceReturnValue,
   useAccountConfigQuery,
-  useTestSignerConnection,
   RebalancerFormHeader,
   AdvancedSettings,
   RebalanceSpeed,
@@ -30,13 +28,16 @@ import { ErrorHandler } from "@/const/error";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { DeliverTxResponse } from "@cosmjs/cosmwasm-stargate";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl, chainConfig } from "@/const";
+import { useAccount, useCosmWasmSigningClient } from "graz";
 
 export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
-  const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
+  const { data: account } = useAccount({ chainId: chainConfig.chain.chain_id });
+  const { data: signingCosmwasmClient } = useCosmWasmSigningClient();
+  const walletAddress = account?.bech32Address;
+
   const { data: config } = useAccountConfigQuery({ account: address });
   const queryClient = useQueryClient();
-  useTestSignerConnection();
 
   const defaultValues: CreateRebalancerForm = useMemo(() => {
     const balances = queryClient.getQueryData<BalanceReturnValue>([
@@ -150,10 +151,13 @@ export const EditRebalancer: React.FC<{ address: string }> = ({ address }) => {
     });
 
   const updateRebalancer = async (values: CreateRebalancerForm) => {
-    const signer = await getSigningCosmwasmClient();
+    const signer = signingCosmwasmClient;
 
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen
+    }
+    if (!signer) {
+      throw new Error("No signer found"); // should not happen
     }
     const messages: EncodeObject[] = [
       {

@@ -19,7 +19,7 @@ import {
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useWallet, useWalletBalances } from "@/hooks";
+import { useWalletBalances } from "@/hooks";
 import { Fragment, useState } from "react";
 import { baseToMicro, displayNumberV2, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
@@ -31,25 +31,29 @@ import {
   SupportedAssets,
 } from "@/app/rebalancer/ui";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl, chainConfig } from "@/const";
 import { useQueryState } from "nuqs";
+import { useAccount, useStargateSigningClient } from "graz";
 
 type DepositInputForm = {
   amounts: Coin[];
 };
 export const DepositDialog: React.FC<{}> = ({}) => {
   const queryClient = useQueryClient();
-  const { address: walletAddress, getSigningStargateClient } = useWallet();
+  const { data: account } = useAccount({ chainId: chainConfig.chain.chain_id });
+  const { data: signingStargateClient } = useStargateSigningClient();
+  const walletAddress = account?.bech32Address;
   const [accountAddress] = useQueryState("account", {
     defaultValue: "",
   });
   const getOriginAsset = useAssetMetadata().getOriginAsset;
 
   const deposit = async (amounts: DepositInputForm["amounts"]) => {
-    const stargateClient = await getSigningStargateClient();
-
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen
+    }
+    if (!signingStargateClient) {
+      throw new Error("No signing client found");
     }
     const convertedAmounts = amounts.reduce((acc, coin) => {
       const asset = getOriginAsset(coin.denom);
@@ -63,7 +67,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
       });
     }, [] as Coin[]);
 
-    return stargateClient.sendTokens(
+    return signingStargateClient.sendTokens(
       walletAddress,
       accountAddress,
       convertedAmounts,

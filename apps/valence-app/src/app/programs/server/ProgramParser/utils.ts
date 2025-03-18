@@ -13,6 +13,8 @@ import {
   isPermissioned,
   isPermissionless,
   isPermissionWithLimit,
+  NormalizedAccounts,
+  NormalizedAuthorizationData,
 } from "@/app/programs/server";
 
 export const getFunctionAddress = (
@@ -43,4 +45,23 @@ export const getExecutionLimit = (
     }
   }
   return null;
+};
+
+export const getExternalDomains = ({
+  accounts,
+  authorizationData,
+  mainDomainName,
+}: {
+  accounts: NormalizedAccounts;
+  authorizationData: NormalizedAuthorizationData;
+  mainDomainName: string;
+}) => {
+  const accountDomains = Object.values(accounts).map((a) => a.domainName);
+  const processorDomains = Object.values(authorizationData.processorData).map(
+    ({ domainName }) => domainName,
+  );
+  const allExternalDomains = [...accountDomains, ...processorDomains].filter(
+    (d) => d !== mainDomainName,
+  );
+  return Array.from(new Set(allExternalDomains));
 };

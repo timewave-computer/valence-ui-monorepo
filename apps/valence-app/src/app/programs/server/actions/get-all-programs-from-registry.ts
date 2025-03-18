@@ -9,14 +9,17 @@ import {
   ProgramParser,
   ProgramParserResult,
   type QueryConfig,
-  QueryConfigManager,
 } from "@/app/programs/server";
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { ArrayOfProgramResponse } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.types";
 
-type ParsedPrograms = Array<{ id: number; config: ProgramParserResult }>;
+type ParsedPrograms = Array<{
+  id: number;
+  parsed: ProgramParserResult;
+  raw: string;
+}>;
 export type GetAllProgramsReturnValue = {
   dataLastUpdatedAt: number;
   queryConfig: QueryConfig;
@@ -29,36 +32,39 @@ export const getAllProgramsFromRegistry = async ({
 }: {
   queryConfig: QueryConfig | null;
 }): Promise<GetAllProgramsReturnValue> => {
-  let queryConfigManager = new QueryConfigManager(
-    userSuppliedQueryConfig ?? {
-      main: getDefaultMainChainConfig(),
-      external: undefined, // needs to be derived from accounts in config
-    },
-  );
-  // must default registry address and mainchain RPC if no config given
-  const mainChainConfig = queryConfigManager.getMainChainConfig();
+  const isUserSuppliedArgs = !!userSuppliedQueryConfig;
+
+  const mainDomainConfig = isUserSuppliedArgs
+    ? userSuppliedQueryConfig?.main
+    : getDefaultMainChainConfig();
 
   let mainChainCosmwasmClient: CosmWasmClient;
   try {
-    mainChainCosmwasmClient = await getCosmwasmClient(mainChainConfig.rpcUrl);
+    mainChainCosmwasmClient = await getCosmwasmClient(mainDomainConfig.rpc);
   } catch (e) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
+      queryConfig: {
+        main: mainDomainConfig,
+        external: null,
+      },
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.RPC_CONNECTION,
-          message: `Could not connect to RPC at ${mainChainConfig.rpcUrl}`,
+          message: `Could not connect to RPC at ${mainDomainConfig.rpc}`,
         },
       ]),
     };
   }
 
-  const registryAddress = mainChainConfig.registryAddress;
+  const registryAddress = mainDomainConfig.registryAddress;
   if (!registryAddress) {
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
+      queryConfig: {
+        main: mainDomainConfig,
+        external: null,
+      },
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.NO_REGISTRY,
@@ -76,10 +82,12 @@ export const getAllProgramsFromRegistry = async ({
       cosmwasmClient: mainChainCosmwasmClient,
     });
   } catch (e) {
-    queryConfigManager.setAllChainsConfigIfEmpty(null);
     return {
       dataLastUpdatedAt: getLastUpdatedTime(),
-      queryConfig: queryConfigManager.getQueryConfig(),
+      queryConfig: {
+        main: mainDomainConfig,
+        external: null,
+      },
       errors: makeApiErrors([
         {
           code: GetProgramErrorCodes.INVALID_REGISTRY,
@@ -109,10 +117,10 @@ export const getAllProgramsFromRegistry = async ({
     (acc, { id, decodedConfig }) => {
       try {
         const validated = ProgramParser.extractData(decodedConfig);
-
         acc.push({
           id,
-          config: validated,
+          raw: decodedConfig,
+          parsed: validated,
         });
       } catch (e) {
         errors = makeApiErrors([
@@ -128,11 +136,9 @@ export const getAllProgramsFromRegistry = async ({
     [] as ParsedPrograms,
   );
 
-  queryConfigManager.setAllChainsConfigIfEmpty(null);
-
   return {
-    dataLastUpdatedAt: getLastUpdatedTime(),
-    queryConfig: queryConfigManager.getQueryConfig(), // needed to decide if refetch needed in useQuery
+    dataLastUpdatedAt: getLastUpdatedTime(), // required for useQuery knowing when to refetch
+    queryConfig: { main: mainDomainConfig, external: null },
     errors: {},
     parsedPrograms: parsedPrograms,
   };
@@ -151,9 +157,21 @@ const fetchAllProgramsFromRegistry = async ({
       registryAddress,
     );
 
+    const lastId = await programRegistryClient.getLastId();
+    if (!lastId) {
+      throw new Error("Registry has no programs");
+    }
+
+    const limit = 100;
+
+    const endIndex = lastId + 1;
+    const startIndex = Math.max(0, endIndex - limit);
+
     // return type on function is incorrect
     return programRegistryClient.getAllConfigs({
-      limit: 20,
+      end: endIndex,
+      start: startIndex,
+      limit: limit,
     });
   } catch (e) {
     throw new Error(

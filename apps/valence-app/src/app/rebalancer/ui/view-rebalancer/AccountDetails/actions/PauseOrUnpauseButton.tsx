@@ -1,5 +1,4 @@
 "use client";
-import { useAtom } from "jotai";
 import { useAccountConfigQuery } from "@/app/rebalancer/ui";
 import {
   Button,
@@ -9,15 +8,18 @@ import {
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useWallet } from "@/hooks";
 import { AccountClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Account.client";
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl, chainConfig } from "@/const";
 import { useQueryState } from "nuqs";
+import { useAccount, useCosmWasmSigningClient } from "graz";
 
 export const PauseOrUnpauseButton: React.FC<{}> = () => {
   const queryClient = useQueryClient();
-  const { address: walletAddress, getSigningCosmwasmClient } = useWallet();
+
+  const { data: account } = useAccount({ chainId: chainConfig.chain.chain_id });
+  const { data: signingCoswmasmClient } = useCosmWasmSigningClient();
+  const walletAddress = account?.bech32Address;
   const [selectedAccountAddress] = useQueryState("account", {
     defaultValue: "",
   });
@@ -26,7 +28,10 @@ export const PauseOrUnpauseButton: React.FC<{}> = () => {
   });
 
   const pauseRebalancer = async () => {
-    const cwClient = await getSigningCosmwasmClient();
+    const cwClient = signingCoswmasmClient;
+    if (!cwClient) {
+      throw new Error("No signing client found");
+    }
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen
     }
@@ -42,12 +47,15 @@ export const PauseOrUnpauseButton: React.FC<{}> = () => {
   };
 
   const unpauseRebalancer = async () => {
-    const cwClient = await getSigningCosmwasmClient();
     if (!walletAddress) {
       throw new Error("No wallet address found"); // should not happen
     }
+
+    if (!signingCoswmasmClient) {
+      throw new Error("No signing client found");
+    }
     const valenceAccountClient = new AccountClient(
-      cwClient,
+      signingCoswmasmClient,
       walletAddress,
       selectedAccountAddress,
     );

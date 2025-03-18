@@ -10,9 +10,10 @@ import {
   Button,
   cn,
 } from "@valence-ui/ui-components";
-import { useChainContext, useWalletBalances, useWallet } from "@/hooks";
+import { useWalletBalances } from "@/hooks";
 import { STATIC_URL } from "@/const";
 import { ConnectWalletButton } from "@/components";
+import { useAccount } from "graz";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -47,11 +48,11 @@ const NavLink = ({
 
 export const ValenceAppNav = () => {
   const path = usePathname();
-  const { chain } = useChainContext();
-  const { address, disconnect, isWalletConnected, walletInfo } = useWallet();
+  const { data: connectedAccount } = useAccount();
+  const walletAddress = connectedAccount?.bech32Address;
 
   // TODO: hydrate this on server so we dont have to call it unless user decides to click 'create'
-  useWalletBalances(address);
+  useWalletBalances(walletAddress);
 
   const isAuctionsEnabled = useFeatureFlag(
     FeatureFlags.AUCTIONS_LIVE_AGGREGATE,

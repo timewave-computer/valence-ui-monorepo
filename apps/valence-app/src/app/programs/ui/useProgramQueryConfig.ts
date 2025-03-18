@@ -5,7 +5,7 @@ import {
 } from "@/app/programs/server";
 import { parseAsJson, useQueryState } from "nuqs";
 
-export const useQueryArgs = (
+export const useProgramQueryConfig = (
   initialQueryConfig: GetProgramDataReturnValue["queryConfig"],
 ) => {
   const [queryConfig, setQueryConfig] = useQueryState(

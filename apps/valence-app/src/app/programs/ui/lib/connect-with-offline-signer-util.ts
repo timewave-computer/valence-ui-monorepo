@@ -1,5 +1,11 @@
 "use client";
 
+import { aminoTypes, protobufRegistry } from "@/context";
+import { OfflineSigner } from "@cosmjs/proto-signing";
+import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
+import { chains } from "chain-registry";
+import { ChainInfo } from "@keplr-wallet/types";
+
 declare global {
   interface Window {
     keplr?: any;
@@ -7,31 +13,27 @@ declare global {
   }
 }
 
-import { aminoTypes, protobufRegistry } from "@/context";
-import { OfflineSigner } from "@cosmjs/proto-signing";
-import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
-import { ChainInfo } from "@keplr-wallet/types";
-import { chains } from "chain-registry";
-
 const { keplr } = window;
 
-export const connectWithOfflineSigner = async ({
-  chainId,
-  rpcUrl,
-  chainName,
-}: {
+export type ConnectWithOfflineSignerInput = {
   chainId: string;
   chainName: string;
   rpcUrl: string;
-}) => {
+};
+
+export const connectWithOfflineSigner = async ({
+  chainId,
+  chainName,
+  rpcUrl,
+}: ConnectWithOfflineSignerInput) => {
   if (!keplr) {
     throw new Error(
       "Keplr is unavailable. Please log in or install the extension. Support for more wallets will be added soon.",
     );
   }
 
-  const isRegisteredChain = chains.find((c) => c.chain_id === chainId);
-  if (!isRegisteredChain) {
+  const registeredChain = chains.find((c) => c.chain_id === chainId);
+  if (!registeredChain) {
     const testChainInfo = getTestnetChainInfo({
       chainId,
       chainName,
@@ -40,27 +42,23 @@ export const connectWithOfflineSigner = async ({
     await keplr.experimentalSuggestChain(testChainInfo);
   }
   await keplr.enable(chainId);
+
   const offlineSigner = window.getOfflineSigner
     ? await window.getOfflineSigner(chainId)
     : undefined;
 
-  const registeredFeeTokens = chains.find((c) => c.chain_id === chainId)?.fees
-    ?.fee_tokens;
-  if (!registeredFeeTokens || registeredFeeTokens.length === 0) {
-    throw new Error(
-      `Unable to select fee token for ${chainId}. Please contact valence team.`,
-    );
-  }
-  const feeDenom = registeredFeeTokens[0].denom;
-
   if (!offlineSigner) {
     throw new Error(
-      "Offline signer not initialized. Try reconnecting wallet, and contact valence team if issue persists.",
+      `Unable to initialize signer for ${chainId} at ${rpcUrl}. Reconnect and try again.`,
     );
   }
+
+  const registeredFeeTokens = registeredChain?.fees?.fee_tokens;
+  const feeDenom = registeredFeeTokens ? registeredFeeTokens[0].denom : "untrn";
 
   try {
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
+      // TODO: do not hardcode the quantity, handle denom more nicely / accept chain info as input
       gasPrice: GasPrice.fromString(`0.005${feeDenom}`),
       registry: protobufRegistry,
       aminoTypes: aminoTypes,

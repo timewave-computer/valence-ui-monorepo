@@ -33,21 +33,23 @@ import {
   LibraryDetails,
   useLibrarySchema,
   useProgramQuery,
-  useQueryArgs,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
 import {
   type AtomicFunction,
   type NonAtomicFunction,
 } from "@valence-ui/generated-types";
-import { CelatoneUrl, QUERY_KEYS } from "@/const";
+import { QUERY_KEYS } from "@/const";
 import { displayAddress, jsonToBase64, jsonToUtf8 } from "@/utils";
-import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Coin } from "@cosmjs/stargate";
-import { type QueryConfig } from "@/app/programs/server";
+import {
+  GetProgramDataReturnValue,
+  type QueryConfig,
+} from "@/app/programs/server";
+import { useAccount } from "graz";
 
 export interface SubroutineMessageFormValues {
   messages: string[];
@@ -65,8 +67,8 @@ export const ExecutableSubroutine = ({
   authTokenBalance,
   executionLimit,
   authTokenDenom,
-  programId,
   queryConfig,
+  program,
 }: {
   functions: NonAtomicFunction[] | AtomicFunction[];
   isAuthorized: boolean;
@@ -76,12 +78,12 @@ export const ExecutableSubroutine = ({
   authTokenBalance: Coin | undefined;
   executionLimit: string | null;
   authTokenDenom: string | null;
-  programId: string;
   queryConfig: QueryConfig;
+  program: GetProgramDataReturnValue;
 }) => {
-  // TODO: revisit using this pattern vs passing as props. I didnt feel like props drilling all the way here. Not critical if loading state not handled.
-  const { data: program } = useProgramQuery({ programId });
-  const { address: walletAddress, isWalletConnected } = useWallet();
+  const { data: account, isConnected: isWalletConnected } = useAccount();
+
+  const walletAddress = account?.bech32Address;
 
   const queryClient = useQueryClient();
 
@@ -109,8 +111,8 @@ export const ExecutableSubroutine = ({
 
       const signer = await connectWithOfflineSigner({
         chainId: queryConfig.main.chainId,
-        chainName: queryConfig.main.name,
-        rpcUrl: queryConfig.main.rpcUrl,
+        chainName: queryConfig.main.chainName,
+        rpcUrl: queryConfig.main.rpc,
       });
 
       const cwMessageBodies = extractedValues.map((msg) => {
@@ -170,7 +172,7 @@ export const ExecutableSubroutine = ({
       toast.success(
         <ToastMessage
           variant="success"
-          title="Messages sent to processor"
+          title="Sent to processor"
         ></ToastMessage>,
       );
       queryClient.invalidateQueries({
@@ -240,7 +242,7 @@ export const ExecutableSubroutine = ({
                     className="font-mono text-xs"
                     variant={"secondary"}
                   >
-                    {displayAddress(libraryAddress)}
+                    {libraryAddress}
                   </LinkText>
                 </Copyable>
               </div>

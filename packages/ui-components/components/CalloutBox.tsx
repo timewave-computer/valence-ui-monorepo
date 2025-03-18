@@ -30,7 +30,7 @@ export const CalloutBox = React.forwardRef<HTMLDivElement, CalloutBoxProps>(
         ref={ref}
         {...props}
         className={cn(
-          "mt-2 flex flex-col gap-2 border p-4",
+          "mt-2 flex flex-col gap-2 border p-4 overflow-scroll",
           className,
           calloutBoxVariants({ variant }),
         )}

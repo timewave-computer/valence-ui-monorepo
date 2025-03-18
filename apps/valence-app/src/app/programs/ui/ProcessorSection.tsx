@@ -28,10 +28,10 @@ import {
   ConnectWalletHoverContent,
   connectWithOfflineSigner,
 } from "@/app/programs/ui";
-import { useWallet } from "@/hooks";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "@/smol_telescope/generated-files";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAccount } from "graz";
 
 export const ProcessorSection = ({
   processorQueue,
@@ -44,41 +44,42 @@ export const ProcessorSection = ({
   domain?: string;
   queryConfig: QueryConfig;
 }) => {
-  const { isWalletConnected, address: walletAddress } = useWallet();
+  const processorChainId = queryConfig.main.chainId; // only supports mainchain for now.
+
+  const { data: account, isConnected: isWalletConnected } = useAccount();
+
   const queryClient = useQueryClient();
 
+  // TODO: processorData needs adjusted chainId as well during parse
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
-      let connectionData;
-      if (processorData.chainId === queryConfig.main.chainId) {
-        connectionData = {
-          chainId: queryConfig.main.chainId,
-          chainName: queryConfig.main.name,
-          rpcUrl: queryConfig.main.rpcUrl,
-        };
-      } else {
-        const externalConfig = queryConfig.external?.find(
-          (c) => c.chainId === processorData.chainId,
+      const rpcUrl = queryConfig.main.rpc;
+      if (!rpcUrl) {
+        throw new Error(
+          `No RPC URL configured for domain  ${processorData.domainName}`,
         );
-        if (!externalConfig) {
-          throw new Error(
-            `No RPC configuration specified for chain ID ${processorData.chainId}`,
-          );
-        }
-        connectionData = {
-          chainId: externalConfig.chainId,
-          chainName: externalConfig.name,
-          rpcUrl: externalConfig.rpc,
-        };
       }
 
-      const signer = await connectWithOfflineSigner(connectionData);
+      const signer = await connectWithOfflineSigner({
+        chainId: processorChainId,
+        chainName: queryConfig.main.chainName,
+        rpcUrl,
+      });
+
+      // must come after 'connect with offline signer' so chain can be added if its not already
+      const signerAddress = account?.bech32Address ?? undefined;
+
+      if (!signerAddress) {
+        throw new Error(
+          `Signer address for ${queryConfig.main.domainName} (chain ID ${processorChainId}) not found. Check that chain is connected to wallet.`,
+        );
+      }
 
       const messages: EncodeObject[] = [
         {
           typeUrl: MsgExecuteContract.typeUrl,
           value: {
-            sender: walletAddress,
+            sender: signerAddress,
             contract: processorData.address,
             msg: jsonToUtf8({
               permissionless_action: {
@@ -89,8 +90,8 @@ export const ProcessorSection = ({
         },
       ];
 
-      const result = await signer.signAndBroadcast(
-        walletAddress ?? "",
+      const result = await signer.signAndBroadcastSync(
+        signerAddress ?? "",
         messages,
         "auto",
       );

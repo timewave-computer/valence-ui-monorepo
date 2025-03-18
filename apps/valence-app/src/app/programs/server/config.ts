@@ -10,18 +10,15 @@ if (!defaultRegistry) {
   throw new Error("Missing NEXT_PUBLIC_DEFAULT_REGISTRY");
 }
 
+export const defaultDomainName = "neutron";
+
 export const getDefaultMainChainConfig = (): QueryConfig["main"] => {
   const rpcUrl = defaultNeutronRpc;
   return {
     chainId: "neutron-1",
     registryAddress: defaultRegistry,
-    rpcUrl,
-    name: "neutron",
-  };
-};
-
-export const getPreferredRpcs = () => {
-  return {
-    "neutron-1": defaultNeutronRpc,
+    rpc: rpcUrl,
+    domainName: defaultDomainName,
+    chainName: defaultDomainName,
   };
 };

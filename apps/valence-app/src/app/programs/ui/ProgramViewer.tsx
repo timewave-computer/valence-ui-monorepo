@@ -10,7 +10,7 @@ import {
   ProgramViewerErrorDisplay,
   ProgramRpcSettings,
   RefetchButton,
-  useQueryArgs,
+  useProgramQueryConfig,
 } from "@/app/programs/ui";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
@@ -31,6 +31,10 @@ export type ProgramViewerProps = {
 };
 export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   // page loads with initial server-fetched data. this inserts it into useQuery, so the access pattern is easy
+
+  const { queryConfig, setQueryConfig } = useProgramQueryConfig(
+    initialData.queryConfig,
+  );
   const {
     data: data,
     isLoading,
@@ -38,11 +42,9 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     isFetching,
   } = useProgramQuery({
     programId,
+    queryConfig,
     initialQueryData: initialData,
   });
-
-  const { queryConfig, setQueryConfig } = useQueryArgs(initialData.queryConfig);
-
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
 
@@ -52,7 +54,10 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 flex-wrap">
             <LinkText
-              href={`/programs?queryConfig=${JSON.stringify(queryConfig)}`}
+              href={`/programs?queryConfig=${JSON.stringify({
+                main: queryConfig.main,
+                external: null,
+              })}`}
               LinkComponent={Link}
               variant="breadcrumb"
             >
