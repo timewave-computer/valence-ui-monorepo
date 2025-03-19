@@ -49,7 +49,6 @@ const NavLink = ({
 export const ValenceAppNav = () => {
   const path = usePathname();
 
-  // TODO: check for hydrating on "create"
   const isAuctionsEnabled = useFeatureFlag(
     FeatureFlags.AUCTIONS_LIVE_AGGREGATE,
   );
