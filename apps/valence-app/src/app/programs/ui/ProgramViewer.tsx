@@ -110,15 +110,6 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             <ProgramMetdataDisplay queryConfig={queryConfig} program={data} />
           )}
         </div>
-        <div className="col-span-2 flex flex-col  gap-2">
-          <Heading level="h2">Accounts</Heading>
-          <Card
-            isLoading={isLoading}
-            className="overflow-x-scroll flex-grow p-2"
-          >
-            <AccountsTable program={data} />
-          </Card>
-        </div>
 
         <div className="flex flex-col col-span-2  gap-2">
           <Heading level="h2">Subroutines</Heading>
@@ -127,6 +118,15 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             className="overflow-x-scroll flex-grow p-0  border-0 "
           >
             <SubroutineDisplay program={data} queryConfig={queryConfig} />
+          </Card>
+        </div>
+        <div className="col-span-2 flex flex-col  gap-2">
+          <Heading level="h2">Accounts</Heading>
+          <Card
+            isLoading={isLoading}
+            className="overflow-x-scroll flex-grow p-2"
+          >
+            <AccountsTable program={data} />
           </Card>
         </div>
 
