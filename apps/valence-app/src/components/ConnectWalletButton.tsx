@@ -2,6 +2,7 @@
 import {
   Button,
   Heading,
+  Label,
   PrettyJson,
   ToastMessage,
   cn,
@@ -118,9 +119,11 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
                   key={`wallet-connection-${chainId}`}
                   className="flex flex-col gap-1"
                 >
-                  {chainName && (
-                    <div className="text-xs font-semibold">{chainName}</div>
-                  )}
+                  <div className="flex flex-row flex-wrap gap-2 items-center">
+                    <Label>{chainName ?? "custom"}</Label>
+                    <div className="text-xs font-mono"> {chainId}</div>
+                  </div>
+
                   <div className="max-w-48 text-balance break-words text-left font-mono text-xs">
                     {account?.bech32Address}
                   </div>

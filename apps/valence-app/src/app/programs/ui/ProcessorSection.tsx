@@ -44,15 +44,36 @@ export const ProcessorSection = ({
 
   queryConfig: ProgramQueryConfig;
 }) => {
-  const processorChainId = processorData.chainId;
   const processorDomain = processorData.domainName;
+  const isMainChain = processorDomain === queryConfig.main.domainName;
+  const processorChainId = isMainChain
+    ? queryConfig.main.chainId
+    : queryConfig.external?.find(
+        (chain) => chain.domainName === processorDomain,
+      )?.chainId ?? "";
 
-  const { data: account, isConnected: isWalletConnected } = useAccount({
-    chainId: processorChainId,
+  // TODO: if tries to tick with wrong chain id, error is very noisy. should just be chain id error
+
+  const { data: accounts, isConnected: isWalletConnected } = useAccount({
+    chainId: processorChainId ?? "",
+    multiChain: true,
   });
-  const { data: offlineSigner } = useOfflineSigners({
-    chainId: processorChainId,
+
+  const account =
+    accounts && processorChainId in accounts
+      ? accounts[processorChainId]
+      : undefined;
+  console.log("accounts", accounts);
+
+  console.log("account for", processorChainId, account?.bech32Address);
+  const { data: offlineSigners } = useOfflineSigners({
+    chainId: processorChainId ?? "",
+    multiChain: true,
   });
+  const offlineSigner =
+    offlineSigners && processorChainId in offlineSigners
+      ? offlineSigners[processorChainId]
+      : undefined;
 
   const queryClient = useQueryClient();
 
@@ -77,6 +98,8 @@ export const ProcessorSection = ({
         chainName: queryConfig.main.chainName,
         rpcUrl,
       });
+
+      console.log("signer", signer);
 
       // must come after 'connect with offline signer' so chain can be added if its not already
       const signerAddress = account?.bech32Address ?? undefined;
@@ -103,7 +126,7 @@ export const ProcessorSection = ({
       ];
 
       const result = await signer.signAndBroadcastSync(
-        signerAddress ?? "",
+        signerAddress,
         messages,
         "auto",
       );

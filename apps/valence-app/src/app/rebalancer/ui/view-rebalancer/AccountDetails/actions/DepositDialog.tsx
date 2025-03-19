@@ -137,7 +137,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
           Deposit
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col gap-6">
+      <DialogContent className="flex flex-col gap-4">
         {
           // to reset when dialog closes
           isDepositDialogOpen && (

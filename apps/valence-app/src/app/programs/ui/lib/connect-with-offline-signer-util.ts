@@ -34,25 +34,14 @@ export const connectWithOfflineSigner = async ({
     );
   }
 
-  const registeredChain = chains.find((c) => c.chain_id === chainId);
-  if (!registeredChain) {
-    const testChainInfo = getTestnetChainInfo({
-      chainId,
-      chainName,
-      rpcUrl,
-    });
-    await keplr.experimentalSuggestChain(testChainInfo);
-  }
-  await keplr.enable(chainId);
-
   if (!offlineSigner) {
     throw new Error(
       `Unable to initialize signer for ${chainId} at ${rpcUrl}. Reconnect and try again.`,
     );
   }
 
-  const registeredFeeTokens = registeredChain?.fees?.fee_tokens;
-  const feeDenom = registeredFeeTokens ? registeredFeeTokens[0].denom : "untrn";
+  // todo: pass fee dnom
+  const feeDenom = "untrn";
 
   try {
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
