@@ -21,10 +21,6 @@ export const ProgramMetdataDisplay = ({
   program?: GetProgramDataReturnValue;
   queryConfig: ProgramQueryConfig;
 }) => {
-  const { data: accounts } = useAccount({
-    multiChain: true,
-  });
-
   return (
     <div className="grid grid-cols-4 w-full gap-x-2">
       <div className="">
@@ -55,7 +51,7 @@ export const ProgramMetdataDisplay = ({
         <Heading level="h4">Domains</Heading>
 
         {program?.parsedProgram?.domains && (
-          <div className="grid grid-cols-2 w-fit gap-y-1 gap-x-2 justify-items-start align-items-center">
+          <div className="grid grid-cols-2 w-fit gap-y-1 gap-x-2 justify-items-start items-center">
             {
               <DomainDisplay
                 chainId={queryConfig.main.chainId}
@@ -89,9 +85,12 @@ const DomainDisplay = ({
   domainName: string;
   chainId?: string;
 }) => {
-  const { data: account } = useAccount({
-    chainId,
+  const { isConnected: isWalletConnected, data: accounts } = useAccount({
+    multiChain: true,
   });
+
+  const account = accounts && chainId ? accounts[chainId] : null;
+
   const { connect } = useConnect();
 
   const handleConnect = () => {
@@ -116,23 +115,25 @@ const DomainDisplay = ({
 
   return (
     <>
-      <div className="text-xs font-mono">
-        {domainName} ({chainId ?? "-"})
-      </div>
-      <div className="text-xs">
-        {account ? (
-          <Label variant="green">Connected</Label>
-        ) : (
-          <Button
-            className="w-full"
-            onClick={handleConnect}
-            size="sm"
-            variant="secondary"
-          >
-            Connect
-          </Button>
-        )}
-      </div>
+      <div className="text-xs font-mono">{domainName}</div>
+      {isWalletConnected ? (
+        <div className="text-xs">
+          {account ? (
+            <Label variant="green">Connected</Label>
+          ) : (
+            <Button
+              className="w-full"
+              onClick={handleConnect}
+              size="sm"
+              variant="secondary"
+            >
+              Connect
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div></div>
+      )}
     </>
   );
 };

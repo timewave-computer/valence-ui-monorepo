@@ -83,7 +83,7 @@ export const ProcessorSection = ({
 
       if (!signerAddress) {
         throw new Error(
-          `Signer address for ${queryConfig.main.domainName} (chain ID ${processorChainId}) not found. Check that chain is connected to wallet.`,
+          `Signer for ${processorDomain} (id: ${processorChainId}) not found. Check that chain is connected.`,
         );
       }
 
