@@ -16,7 +16,12 @@ import {
 } from "@/app/programs/ui";
 import { CelatoneUrl } from "@/const";
 import Link from "next/link";
-import { type GetAllProgramsReturnValue } from "@/app/programs/server";
+import {
+  ExternalProgramQueryConfig,
+  type GetAllProgramsReturnValue,
+  ProgramQueryConfig,
+} from "@/app/programs/server";
+import { chains } from "chain-registry";
 
 export const ProgramRegistryViewer = ({
   data: initialData,
@@ -30,18 +35,40 @@ export const ProgramRegistryViewer = ({
     initialData.queryConfig,
   );
 
-  const queryConfigUrlParams = {
-    main: queryConfig.main,
-  };
+  const mainQueryConfig = queryConfig.main;
 
   const tableData = data?.parsedPrograms?.map(({ id, parsed, raw }) => {
     const authorizationsAddress = parsed.authorizationData?.authorization_addr;
+    const externalDomains = parsed.domains.external;
+
+    const externalDomainQueryConfig: ProgramQueryConfig["external"] =
+      externalDomains
+        ? externalDomains.reduce((acc, domain) => {
+            const registeredChain = chains.find(
+              (chain) => chain.chain_name === domain,
+            );
+            if (registeredChain) {
+              acc.push({
+                chainId: registeredChain.chain_id,
+                domainName: domain,
+                chainName: registeredChain.chain_name,
+                rpc: registeredChain.apis?.rpc?.[0]?.address ?? "",
+              });
+            }
+            return acc;
+          }, [] as ExternalProgramQueryConfig)
+        : null;
+
+    const queryConfigForProgram: ProgramQueryConfig = {
+      main: mainQueryConfig,
+      external: externalDomainQueryConfig,
+    };
 
     return {
       id: {
         value: id,
         link: {
-          href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfigUrlParams)}`,
+          href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfigForProgram)}`,
           LinkComponent: Link,
           blankTarget: false,
         },

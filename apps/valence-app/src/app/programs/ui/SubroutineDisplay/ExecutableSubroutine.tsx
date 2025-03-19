@@ -309,7 +309,7 @@ export const ExecutableSubroutine = ({
           <div className="flex flex-row gap-2 items-center mt-4 w-fit">
             <FormSubmit asChild>
               <Button isLoading={isExecuting} disabled={!isExecutedEnabled}>
-                Execute
+                Send to queue
               </Button>
             </FormSubmit>
             {isAuthorized && executionLimit && (

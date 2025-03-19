@@ -121,6 +121,7 @@ const RpcSettingsForm = ({
       ],
     });
   }, 1200);
+  // TODO!!: base from program domain setup instead of query config
   return (
     <div>
       <FormRoot

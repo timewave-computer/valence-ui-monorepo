@@ -109,6 +109,11 @@ const headers: TableColumnHeader[] = [
     cellType: CellType.Text,
   },
   {
+    key: ExecutionHistoryTableKeys.initiator,
+    label: "Initiator",
+    cellType: CellType.Text,
+  },
+  {
     key: ExecutionHistoryTableKeys.processorCallbackAddress,
     label: "Processor Callback Address",
     cellType: CellType.Text,

@@ -4,6 +4,7 @@ import {
 } from "@/app/programs/server";
 import {
   Button,
+  Copyable,
   Heading,
   Label,
   toast,
@@ -11,6 +12,7 @@ import {
 } from "@valence-ui/ui-components";
 import { useAccount, useConnect } from "graz";
 import { supportedProgramsChains } from "@/context";
+import { displayAddress } from "@/utils";
 
 export const ProgramMetdataDisplay = ({
   program,
@@ -24,30 +26,58 @@ export const ProgramMetdataDisplay = ({
   });
 
   return (
-    <div className="flex flex-col gap-2">
-      <Heading level="h3">Domains</Heading>
-      {program?.parsedProgram?.domains && (
-        <div className="grid grid-cols-3 w-fit gap-y-4 gap-x-2 justify-items-start align-items-center">
-          {
-            <DomainDisplay
-              chainId={queryConfig.main.chainId}
-              domainName={program.parsedProgram.domains.main}
-            />
+    <div className="grid grid-cols-4 w-full gap-x-2">
+      <div className="">
+        <Heading level="h4">Owner</Heading>
+        <Copyable copyText={program?.parsedProgram?.owner ?? ""}>
+          <div className="text-xs font-mono">
+            {displayAddress(program?.parsedProgram?.owner ?? "")}
+          </div>
+        </Copyable>
+      </div>
+
+      <div className="">
+        <Heading level="h4">Authorizations Contract</Heading>
+        <Copyable
+          copyText={
+            program?.parsedProgram?.authorizationData?.authorization_addr ?? ""
           }
-          {program.parsedProgram.domains.external.map((domain) => {
-            const chainId = queryConfig.external?.find(
-              (chain) => chain.domainName === domain,
-            )?.chainId;
-            return (
+        >
+          <div className="text-xs font-mono">
+            {displayAddress(
+              program?.parsedProgram?.authorizationData?.authorization_addr ??
+                "",
+            )}
+          </div>
+        </Copyable>
+      </div>
+      <div>
+        <Heading level="h4">Domains</Heading>
+
+        {program?.parsedProgram?.domains && (
+          <div className="grid grid-cols-2 w-fit gap-y-1 gap-x-2 justify-items-start align-items-center">
+            {
               <DomainDisplay
-                key={`metadata-domain-${domain}`}
-                domainName={domain}
-                chainId={chainId}
+                chainId={queryConfig.main.chainId}
+                domainName={program.parsedProgram.domains.main}
               />
-            );
-          })}
-        </div>
-      )}
+            }
+            {program.parsedProgram.domains.external.map((domain) => {
+              const chainId = queryConfig.external?.find(
+                (chain) => chain.domainName === domain,
+              )?.chainId;
+
+              return (
+                <DomainDisplay
+                  key={`metadata-domain-${domain}`}
+                  domainName={domain}
+                  chainId={chainId}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -86,9 +116,10 @@ const DomainDisplay = ({
 
   return (
     <>
-      <Heading level="h4">{domainName}</Heading>
-      <div className="text-sm font-mono">{chainId ?? "-"}</div>
-      <div className="text-sm">
+      <div className="text-xs font-mono">
+        {domainName} ({chainId ?? "-"})
+      </div>
+      <div className="text-xs">
         {account ? (
           <Label variant="green">Connected</Label>
         ) : (

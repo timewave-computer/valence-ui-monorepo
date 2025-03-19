@@ -56,7 +56,6 @@ export const ProcessorSection = ({
 
   const queryClient = useQueryClient();
 
-  // TODO: processorData needs adjusted chainId as well during parse
   const { mutate: handleTick, isPending: isTickPending } = useMutation({
     mutationFn: async () => {
       const rpcUrl =
@@ -205,7 +204,7 @@ export const ProcessorSection = ({
                   handleTick();
                 }}
               >
-                Tick
+                Tick to execute
               </Button>
             </HoverCardTrigger>
             {!isWalletConnected && (

@@ -27,17 +27,9 @@ async function ProgramViewerLoader({
 }: ProgramPageProps) {
   const searchParams = await _searchParams;
 
-  let queryConfig = null;
-  if (searchParams.queryConfig) {
-    try {
-      queryConfig = JSON.parse(searchParams.queryConfig);
-    } catch (error) {
-      console.error("Failed to parse queryConfig:", error);
-    }
-  }
-
-  const { queryConfig: parsedQueryConfig } =
-    loadQueryConfigSearchParams(queryConfig);
+  const { queryConfig: parsedQueryConfig } = loadQueryConfigSearchParams(
+    searchParams.queryConfig,
+  );
 
   const data = (await getProgramData({
     programId,

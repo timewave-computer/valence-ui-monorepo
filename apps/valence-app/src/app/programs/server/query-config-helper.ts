@@ -3,6 +3,14 @@ import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
 import { getDefaultMainChainConfig } from "@/app/programs/server/config";
 
+const externalConfigSchema = z.array(
+  z.object({
+    rpc: z.string(),
+    chainId: z.string(),
+    domainName: z.string(),
+    chainName: z.string(),
+  }), // note: cannot be optional, it wont be detected by nuqs
+);
 export const queryConfigSchema = z.object({
   main: z.object({
     chainId: z.string(),
@@ -11,17 +19,10 @@ export const queryConfigSchema = z.object({
     domainName: z.string(),
     chainName: z.string(),
   }),
-  external: z
-    .array(
-      z.object({
-        rpc: z.string(),
-        chainId: z.string(),
-        domainName: z.string(),
-        chainName: z.string(),
-      }), // note: cannot be optional, it wont be detected by nuqs
-    )
-    .nullish(),
+  external: externalConfigSchema.nullish(),
 });
+
+export type ExternalProgramQueryConfig = z.infer<typeof externalConfigSchema>;
 export type ProgramQueryConfig = z.infer<typeof queryConfigSchema>;
 
 const queryConfigLoader = {
