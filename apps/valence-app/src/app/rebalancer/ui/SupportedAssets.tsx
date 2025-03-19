@@ -6,10 +6,10 @@ export const SupportedAssets = (): ReactNode => {
     <Fragment>
       {chainConfig.supportedRebalancerAssets.map((a, i) => {
         return (
-          <>
+          <Fragment key={`supported-asset-copy-${a.symbol}`}>
             <span className="font-semibold">{a.symbol}</span>
             {i !== chainConfig.supportedRebalancerAssets.length - 1 && ", "}
-          </>
+          </Fragment>
         );
       })}
     </Fragment>

@@ -109,7 +109,7 @@ const DomainDisplay = ({
           {error.message}
         </ToastMessage>,
       );
-      console.log(error);
+      console.log("Connect domain error", error);
     }
   };
 

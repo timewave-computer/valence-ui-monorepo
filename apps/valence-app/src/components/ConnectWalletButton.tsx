@@ -96,7 +96,7 @@ export const ConnectWalletButton: React.FC<{}> = ({}) => {
         <div className="items-left flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <Heading level="h3">Connected chains</Heading>
-            {Object.values(accounts ?? {}).length > 0 && (
+            {Object.values(accounts ?? {}).length > 1 && (
               <Button
                 onClick={() => disconnect()}
                 size="sm"

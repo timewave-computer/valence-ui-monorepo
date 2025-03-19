@@ -115,7 +115,7 @@ export const ProcessorSection = ({
           {e.message}
         </ToastMessage>,
       );
-      console.log(e);
+      console.log("Tick error", e);
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries(
