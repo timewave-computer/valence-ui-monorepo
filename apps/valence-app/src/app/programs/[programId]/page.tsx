@@ -10,7 +10,7 @@ export const revalidate = 60;
 
 interface ProgramPageProps {
   params: { programId: string };
-  searchParams: Record<string, string>;
+  searchParams: Promise<Record<string, string>>;
 }
 
 export default async function ProgramPage(props: ProgramPageProps) {
@@ -23,12 +23,17 @@ export default async function ProgramPage(props: ProgramPageProps) {
 
 async function ProgramViewerLoader({
   params: { programId },
-  searchParams,
+  searchParams: _searchParams,
 }: ProgramPageProps) {
-  const { queryConfig } = await loadQueryConfigSearchParams(searchParams);
+  const searchParams = await _searchParams;
+
+  const { queryConfig: parsedQueryConfig } = loadQueryConfigSearchParams(
+    searchParams.queryConfig,
+  );
+
   const data = (await getProgramData({
     programId,
-    queryConfig: queryConfig ?? undefined,
+    queryConfig: parsedQueryConfig ?? undefined,
   })) as GetProgramDataReturnValue;
 
   return <ProgramViewer programId={programId} initialData={data} />;

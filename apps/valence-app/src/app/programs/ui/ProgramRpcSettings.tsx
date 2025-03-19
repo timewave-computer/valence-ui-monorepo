@@ -12,7 +12,7 @@ import {
   InputLabel,
   TextInput,
 } from "@valence-ui/ui-components";
-import { type QueryConfig } from "@/app/programs/server";
+import { type ProgramQueryConfig } from "@/app/programs/server";
 import { debounce } from "lodash";
 import { useForm } from "react-hook-form";
 
@@ -36,8 +36,8 @@ export const ProgramRpcSettings = ({
   queryConfig,
   setQueryConfig,
 }: {
-  queryConfig: QueryConfig;
-  setQueryConfig: (config: QueryConfig) => void;
+  queryConfig: ProgramQueryConfig;
+  setQueryConfig: (config: ProgramQueryConfig) => void;
 }) => {
   return (
     <Sheet>
@@ -76,8 +76,8 @@ const RpcSettingsForm = ({
   queryConfig,
   setQueryConfig,
 }: {
-  queryConfig: QueryConfig;
-  setQueryConfig: (config: QueryConfig) => void;
+  queryConfig: ProgramQueryConfig;
+  setQueryConfig: (config: ProgramQueryConfig) => void;
 }) => {
   const mainDomain = queryConfig.main;
   const externalDomains = queryConfig.external;
@@ -121,6 +121,7 @@ const RpcSettingsForm = ({
       ],
     });
   }, 1200);
+  // TODO!!: base from program domain setup instead of query config
   return (
     <div>
       <FormRoot

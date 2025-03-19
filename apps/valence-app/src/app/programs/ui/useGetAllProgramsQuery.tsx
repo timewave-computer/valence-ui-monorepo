@@ -24,7 +24,10 @@ export const useGetAllProgramsQuery = ({
     // nullify initial data after first fetch, otherwise it will be used for every response
     try {
       const data = await getAllProgramsFromRegistry({
-        queryConfig,
+        queryConfig: {
+          main: queryConfig.main,
+          external: queryConfig.external,
+        },
       });
       // return the partial result. it contains errors
       return data;

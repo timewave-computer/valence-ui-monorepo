@@ -2,7 +2,7 @@
 import {
   ProgramParser,
   fetchAccountBalances,
-  type QueryConfig,
+  type ProgramQueryConfig,
   type ProgramParserResult,
   type NormalizedAccounts,
   type NormalizedLibraries,
@@ -32,12 +32,12 @@ import { isFulfilled } from "@/server/utils";
 
 type GetProgramDataProps = {
   programId: string;
-  queryConfig?: QueryConfig;
+  queryConfig?: ProgramQueryConfig;
 };
 
 export type GetProgramDataReturnValue = {
   programId: string;
-  queryConfig: QueryConfig;
+  queryConfig: ProgramQueryConfig;
   balances?: AccountBalancesReturnValue;
   parsedProgram?: ProgramParserResult;
   rawProgram?: string;
@@ -278,7 +278,7 @@ const fetchProgramFromRegistry = async ({
 
 const queryAccountBalances = async (
   accounts: ProgramParserResult["accounts"],
-  config: QueryConfig,
+  config: ProgramQueryConfig,
 ) => {
   const requests = Object.entries(accounts).map(async ([id, account]) => {
     if (!account.addr) {
@@ -359,7 +359,7 @@ async function fetchProcessorQueues({
   queryConfig,
 }: {
   processorAddresses?: NormalizedAuthorizationData["processorData"];
-  queryConfig: QueryConfig;
+  queryConfig: ProgramQueryConfig;
 }): Promise<FetchProcessorQueuesReturnType> {
   if (!processorAddresses) return [];
 
@@ -466,7 +466,7 @@ async function fetchLibraryConfig({
 
 async function fetchLibraryConfigs(
   libraries: NormalizedLibraries,
-  queryConfig: QueryConfig,
+  queryConfig: ProgramQueryConfig,
 ) {
   // TODO: maybe better to pull library addresses from the function data instead.
   const librariesToFetch = Object.values(libraries).reduce(

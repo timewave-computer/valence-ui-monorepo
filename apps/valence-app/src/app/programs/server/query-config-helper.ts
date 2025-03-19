@@ -1,30 +1,35 @@
 import { chains } from "chain-registry";
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
+import { getDefaultMainChainConfig } from "@/app/programs/server/config";
 
+const externalConfigSchema = z.array(
+  z.object({
+    rpc: z.string(),
+    chainId: z.string(),
+    domainName: z.string(),
+    chainName: z.string(),
+  }), // note: cannot be optional, it wont be detected by nuqs
+);
 export const queryConfigSchema = z.object({
   main: z.object({
-    registryAddress: z.string().optional(),
     chainId: z.string(),
+    registryAddress: z.string().optional(),
     rpc: z.string(),
-    chainName: z.string(),
     domainName: z.string(),
+    chainName: z.string(),
   }),
-  external: z
-    .array(
-      z.object({
-        rpc: z.string(),
-        chainId: z.string(),
-        domainName: z.string(),
-        chainName: z.string(),
-      }), // note: cannot be optional, it wont be detected by nuqs
-    )
-    .nullable(),
+  external: externalConfigSchema.nullish(),
 });
-export type QueryConfig = z.infer<typeof queryConfigSchema>;
+
+export type ExternalProgramQueryConfig = z.infer<typeof externalConfigSchema>;
+export type ProgramQueryConfig = z.infer<typeof queryConfigSchema>;
 
 const queryConfigLoader = {
-  queryConfig: parseAsJson(queryConfigSchema.parse),
+  queryConfig: parseAsJson(queryConfigSchema.parse).withDefault({
+    main: getDefaultMainChainConfig(),
+    external: null,
+  }),
 };
 export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 
@@ -33,7 +38,7 @@ export const makeExternalDomainConfig = ({
   userSuppliedQueryConfig,
 }: {
   externalProgramDomains: string[];
-  userSuppliedQueryConfig?: QueryConfig;
+  userSuppliedQueryConfig?: ProgramQueryConfig;
 }) => {
   if (externalProgramDomains.length === 0) {
     return [];
@@ -75,7 +80,7 @@ export const getDomainConfig = ({
   queryConfig,
   domainName,
 }: {
-  queryConfig: QueryConfig;
+  queryConfig: ProgramQueryConfig;
   domainName: string;
 }) => {
   if (queryConfig.main.domainName === domainName) {

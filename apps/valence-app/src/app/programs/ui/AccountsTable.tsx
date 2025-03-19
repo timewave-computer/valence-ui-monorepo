@@ -9,7 +9,6 @@ import {
 } from "@valence-ui/ui-components";
 import { type GetProgramDataReturnValue } from "@/app/programs/server";
 import { displayAccountName, displayDomain } from "@/app/programs/ui";
-import { CelatoneUrl } from "@/const";
 import { useAssetMetadata } from "@/app/rebalancer/ui";
 import { displayAddress, displayNumberV2 } from "@/utils";
 

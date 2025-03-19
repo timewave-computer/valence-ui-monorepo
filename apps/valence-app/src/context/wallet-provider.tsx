@@ -10,6 +10,8 @@ import { aminoConverters } from "@/smol_telescope/amino-converters";
 import { GrazProvider } from "graz";
 import { neutron, juno, terra } from "graz/chains";
 
+export const supportedProgramsChains = [neutron, juno, terra];
+
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
 ];
@@ -26,7 +28,7 @@ export const CosmosProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <GrazProvider
       grazOptions={{
-        chains: [neutron, juno, terra],
+        chains: supportedProgramsChains,
         chainsConfig: {
           "neutron-1": {
             gas: {

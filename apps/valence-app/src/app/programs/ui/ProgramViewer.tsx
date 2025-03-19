@@ -11,6 +11,7 @@ import {
   ProgramRpcSettings,
   RefetchButton,
   useProgramQueryConfig,
+  ProgramMetdataDisplay,
 } from "@/app/programs/ui";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
@@ -18,6 +19,7 @@ import {
   Card,
   Heading,
   LinkText,
+  LoadingSkeleton,
   PrettyJson,
   Sheet,
   SheetContent,
@@ -101,6 +103,14 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         </div>
       </div>
       <div className="grid grid-cols-4 w-full gap-4 pt-4 pb-4">
+        <div className="flex flex-col gap-2 col-span-4">
+          {isLoading ? (
+            <LoadingSkeleton className="min-h-4" />
+          ) : (
+            <ProgramMetdataDisplay queryConfig={queryConfig} program={data} />
+          )}
+        </div>
+
         <div className="flex flex-col col-span-2  gap-2">
           <Heading level="h2">Subroutines</Heading>
           <Card
@@ -110,7 +120,6 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             <SubroutineDisplay program={data} queryConfig={queryConfig} />
           </Card>
         </div>
-
         <div className="col-span-2 flex flex-col  gap-2">
           <Heading level="h2">Accounts</Heading>
           <Card
@@ -122,7 +131,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
         </div>
 
         <div className="flex flex-col col-span-2  gap-2">
-          <Heading level="h2">Processors</Heading>
+          <Heading level="h2">Processor Queues</Heading>
           <Card
             isLoading={isLoading}
             className="overflow-x-scroll flex-grow p-0 "

@@ -48,11 +48,6 @@ const NavLink = ({
 
 export const ValenceAppNav = () => {
   const path = usePathname();
-  const { data: connectedAccount } = useAccount();
-  const walletAddress = connectedAccount?.bech32Address;
-
-  // TODO: hydrate this on server so we dont have to call it unless user decides to click 'create'
-  useWalletBalances(walletAddress);
 
   const isAuctionsEnabled = useFeatureFlag(
     FeatureFlags.AUCTIONS_LIVE_AGGREGATE,

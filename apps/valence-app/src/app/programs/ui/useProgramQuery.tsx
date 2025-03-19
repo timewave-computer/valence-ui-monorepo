@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
 import {
   getProgramData,
-  QueryConfig,
+  ProgramQueryConfig,
   type GetProgramDataReturnValue,
 } from "@/app/programs/server";
 import { LinkText, ToastMessage, toast } from "@valence-ui/ui-components";
@@ -14,7 +14,7 @@ import { isEqual } from "lodash";
 type UseProgramQueryArgs = {
   programId: string;
   initialQueryData: GetProgramDataReturnValue;
-  queryConfig: QueryConfig;
+  queryConfig: ProgramQueryConfig;
 };
 
 export const useProgramQuery = ({

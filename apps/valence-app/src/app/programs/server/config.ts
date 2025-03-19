@@ -1,4 +1,4 @@
-import { QueryConfig } from "@/app/programs/server";
+import { ProgramQueryConfig } from "@/app/programs/server";
 
 const defaultNeutronRpc = process.env.NEXT_PUBLIC_DEFAULT_NEUTRON_RPC;
 if (!defaultNeutronRpc) {
@@ -12,7 +12,7 @@ if (!defaultRegistry) {
 
 export const defaultDomainName = "neutron";
 
-export const getDefaultMainChainConfig = (): QueryConfig["main"] => {
+export const getDefaultMainChainConfig = (): ProgramQueryConfig["main"] => {
   const rpcUrl = defaultNeutronRpc;
   return {
     chainId: "neutron-1",
