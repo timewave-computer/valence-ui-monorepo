@@ -19,7 +19,7 @@ import {
 } from "graz";
 import { chains } from "chain-registry";
 
-export const ConnectWalletButton: React.FC<{}> = ({}) => {
+export const ConnectWalletButton: React.FC = () => {
   const isServer = useIsServer();
 
   const { connect, error: connectError } = useConnect();

@@ -17,14 +17,12 @@ const { keplr } = window;
 
 export type ConnectWithOfflineSignerInput = {
   chainId: string;
-  chainName: string;
   rpcUrl: string;
   offlineSigner?: OfflineSigner;
 };
 
 export const connectWithOfflineSigner = async ({
   chainId,
-  chainName,
   rpcUrl,
   offlineSigner,
 }: ConnectWithOfflineSignerInput) => {

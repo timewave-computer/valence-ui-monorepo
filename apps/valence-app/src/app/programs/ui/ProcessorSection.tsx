@@ -63,9 +63,7 @@ export const ProcessorSection = ({
     accounts && processorChainId in accounts
       ? accounts[processorChainId]
       : undefined;
-  console.log("accounts", accounts);
 
-  console.log("account for", processorChainId, account?.bech32Address);
   const { data: offlineSigners } = useOfflineSigners({
     chainId: processorChainId ?? "",
     multiChain: true,
@@ -95,11 +93,8 @@ export const ProcessorSection = ({
       const signer = await connectWithOfflineSigner({
         offlineSigner: offlineSigner?.offlineSigner,
         chainId: processorChainId,
-        chainName: queryConfig.main.chainName,
         rpcUrl,
       });
-
-      console.log("signer", signer);
 
       // must come after 'connect with offline signer' so chain can be added if its not already
       const signerAddress = account?.bech32Address ?? undefined;

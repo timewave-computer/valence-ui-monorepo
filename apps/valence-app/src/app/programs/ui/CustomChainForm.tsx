@@ -41,10 +41,11 @@ export const CustomChainForm = ({
     rpc: suggestedRpc,
     chainId: suggestedChainId,
     rest: suggestedRest,
+    chainName: _chainName, // this will be left out
     ...restOfChainInfo
   } = suggestedChainInfo;
 
-  const placeholderChainInfo: ChainInfo = {
+  const placeholderChainInfo: Omit<ChainInfo, "chainName"> = {
     chainId: chainId ?? suggestedChainId,
     rpc: rpcUrl ?? suggestedRpc,
     rest: rpcUrl ?? suggestedRest,
@@ -65,12 +66,15 @@ export const CustomChainForm = ({
       <FormRoot
         onSubmit={(e) => {
           e.preventDefault();
-          console.log("e", e);
           const values = getValues();
 
           try {
             const parsed = JSON.parse(values.suggestedChainInfo);
-            onSubmit(parsed as ChainInfo);
+            const parsedWithChainName = {
+              ...parsed,
+              chainName: domainName,
+            };
+            onSubmit(parsedWithChainName as ChainInfo);
           } catch (e) {
             toast.error(
               <ToastMessage variant="error" title="Failed to parse chain info">
@@ -87,6 +91,9 @@ export const CustomChainForm = ({
           required to be accurate, unless you would like the wallet to read
           balances.
         </p>
+        <InfoText variant="info">
+          Chain name will be defaulted to the domain name.
+        </InfoText>
         <FormField name="suggestedChainInfo">
           <TextAreaInput
             className="text-xs"
