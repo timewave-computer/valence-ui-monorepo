@@ -38,6 +38,7 @@ export const CustomChainForm = ({
   const {
     currencies,
     feeCurrencies,
+    stakeCurrency,
     rpc: suggestedRpc,
     chainId: suggestedChainId,
     rest: suggestedRest,
@@ -50,6 +51,7 @@ export const CustomChainForm = ({
     rpc: rpcUrl ?? suggestedRpc,
     rest: rpcUrl ?? suggestedRest,
     ...restOfChainInfo,
+    stakeCurrency,
     feeCurrencies: [feeCurrencies[0]], // explicity set so they are at the bottom
     currencies: [currencies[0]],
   };
@@ -86,14 +88,15 @@ export const CustomChainForm = ({
         name="suggestedChain"
         className="flex flex-col gap-2"
       >
-        <p>
-          This chain info will be suggested to your wallet. Rest endpoint is not
-          required to be accurate, unless you would like the wallet to read
-          balances.
-        </p>
+        <p>This custom chain info will be suggested to your wallet.</p>
         <InfoText variant="info">
-          Chain name will be defaulted to the domain name.
+          Chain name will be set to "{domainName}".
         </InfoText>
+        <InfoText variant="info">
+          Working rest endpoint is not required. It is useful if you would like
+          the wallet to read balances.
+        </InfoText>
+
         <FormField name="suggestedChainInfo">
           <TextAreaInput
             className="text-xs"
