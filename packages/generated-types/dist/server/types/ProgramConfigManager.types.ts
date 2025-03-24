@@ -311,6 +311,10 @@ export interface ProgramConfig {
     [k: string]: Link;
   };
   owner: string;
+  /**
+   * Optional name of the program
+   */
+  name?: string;
 }
 /**
  * The struct given to us by the user.

@@ -64,14 +64,20 @@ export const ProgramRegistryViewer = ({
       external: externalDomainQueryConfig,
     };
 
+    const programLink = {
+      href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfigForProgram)}`,
+      LinkComponent: Link,
+      blankTarget: false,
+    };
+
     return {
       id: {
         value: id,
-        link: {
-          href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfigForProgram)}`,
-          LinkComponent: Link,
-          blankTarget: false,
-        },
+        link: programLink,
+      },
+      name: {
+        value: parsed.name ?? "-",
+        link: parsed.name ? programLink : undefined,
       },
       config: {
         link: "View config",
@@ -142,6 +148,11 @@ const headers: TableColumnHeader[] = [
     label: "Program ID",
     key: "id",
     cellType: CellType.Number,
+  },
+  {
+    label: "Name",
+    key: "name",
+    cellType: CellType.Text,
   },
   {
     label: "External Domains",

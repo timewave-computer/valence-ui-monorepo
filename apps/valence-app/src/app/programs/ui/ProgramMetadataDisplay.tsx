@@ -17,6 +17,12 @@ export const ProgramMetdataDisplay = ({
   return (
     <div className="flex flex-col  md:grid grid-cols-4 w-full gap-2">
       <div className="">
+        <Heading level="h4">Name</Heading>
+        <div className="text-xs font-mono">
+          {program?.parsedProgram?.name ?? "-"}
+        </div>
+      </div>
+      <div className="">
         <Heading level="h4">Owner</Heading>
         <Copyable copyText={program?.parsedProgram?.owner ?? ""}>
           <div className="text-xs font-mono">

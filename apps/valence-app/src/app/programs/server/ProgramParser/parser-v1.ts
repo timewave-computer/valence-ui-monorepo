@@ -122,6 +122,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
 
   return {
     owner: programData.owner,
+    name: programData.name,
     domains,
     // since there is only 1 format we pretty much just return what what we have for now
     authorizations: programData.authorizations,
