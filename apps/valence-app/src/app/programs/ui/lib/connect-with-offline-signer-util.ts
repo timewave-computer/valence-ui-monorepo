@@ -3,7 +3,6 @@
 import { aminoTypes, protobufRegistry } from "@/context";
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
-import { chains } from "chain-registry";
 import { ChainInfo } from "@keplr-wallet/types";
 
 declare global {
@@ -38,13 +37,10 @@ export const connectWithOfflineSigner = async ({
     );
   }
 
-  // todo: pass fee dnom
-  const feeDenom = "untrn";
-
   try {
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
-      // TODO: do not hardcode the quantity, handle denom more nicely / accept chain info as input
-      gasPrice: GasPrice.fromString(`0.005${feeDenom}`),
+      // TODO: should be fetched from somewhere
+      gasPrice: GasPrice.fromString(`0.005untrn`),
       registry: protobufRegistry,
       aminoTypes: aminoTypes,
     });

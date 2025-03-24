@@ -52,8 +52,6 @@ export const ProcessorSection = ({
         (chain) => chain.domainName === processorDomain,
       )?.chainId ?? "";
 
-  // TODO: if tries to tick with wrong chain id, error is very noisy. should just be chain id error
-
   const { data: accounts, isConnected: isWalletConnected } = useAccount({
     chainId: processorChainId ?? "",
     multiChain: true,
@@ -96,7 +94,6 @@ export const ProcessorSection = ({
         rpcUrl,
       });
 
-      // must come after 'connect with offline signer' so chain can be added if its not already
       const signerAddress = account?.bech32Address ?? undefined;
 
       if (!signerAddress) {
