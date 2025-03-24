@@ -51,4 +51,5 @@ export interface ProgramParserResult {
   libraries: NormalizedLibraries;
   domains: CompositeDomains;
   owner: string;
+  name?: string;
 }

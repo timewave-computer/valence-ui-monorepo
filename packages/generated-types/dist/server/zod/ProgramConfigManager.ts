@@ -387,6 +387,7 @@ export const programConfigSchema = z.object({
   libraries: z.record(libraryInfoSchema),
   links: z.record(linkSchema),
   owner: z.string(),
+  name: z.string().optional(),
 });
 
 export const authorizationInfoUpdateSchema = z.union([
