@@ -90,7 +90,7 @@ export const CustomChainForm = ({
       >
         <p>This custom chain info will be suggested to your wallet.</p>
         <InfoText variant="info">
-          Chain name will be set to "{domainName}".
+          Chain name will be set to &quot;{domainName}&quot;.
         </InfoText>
         <InfoText variant="info">
           Working rest endpoint is not required. It is useful if you would like
