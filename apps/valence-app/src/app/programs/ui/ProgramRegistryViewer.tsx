@@ -64,20 +64,17 @@ export const ProgramRegistryViewer = ({
       external: externalDomainQueryConfig,
     };
 
-    const programLink = {
-      href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfigForProgram)}`,
-      LinkComponent: Link,
-      blankTarget: false,
-    };
-
     return {
       id: {
         value: id,
-        link: programLink,
+        link: {
+          href: `/programs/${id}?queryConfig=${JSON.stringify(queryConfigForProgram)}`,
+          LinkComponent: Link,
+          blankTarget: false,
+        },
       },
       name: {
         value: parsed.name ?? "-",
-        link: parsed.name ? programLink : undefined,
       },
       config: {
         link: "View config",
@@ -119,6 +116,7 @@ export const ProgramRegistryViewer = ({
         </LinkText>
 
         <ProgramRpcSettings
+          initialQueryConfig={initialData.queryConfig}
           queryConfig={queryConfig}
           setQueryConfig={setQueryConfig}
         />

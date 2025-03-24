@@ -290,8 +290,11 @@ const queryAccountBalances = async (
       queryConfig: config,
       domainName: account.domainName,
     })?.rpc;
+
     if (!rpcUrl) {
-      throw new Error(`No RPC URL found for domain ${account.domainName}`);
+      throw new Error(
+        `No RPC URL found for domain ${account.domainName}. Check RPC settings.`,
+      );
     }
     const balances = await fetchAccountBalances({
       accountAddress: account.addr,

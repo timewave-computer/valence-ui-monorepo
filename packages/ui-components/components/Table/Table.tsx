@@ -2,12 +2,7 @@
 import { Fragment, useMemo, useState, useId } from "react";
 import { cn } from "../../utils";
 import { cva, VariantProps } from "class-variance-authority";
-import {
-  CellDataMap,
-  CellLink,
-  CellTypes,
-  isCellDataOfType,
-} from "./cell-types";
+import { CellDataMap, CellTypes, isCellDataOfType } from "./cell-types";
 import { TableHeader } from "./TableHeader";
 import { TableCell } from "./TableCell";
 import { TableCells } from "./cell-renderers";

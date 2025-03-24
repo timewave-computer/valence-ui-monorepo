@@ -48,7 +48,7 @@ export const TableCells: TableCells = {
     )),
     sorter: (a: NumberCellData, b: NumberCellData, ascending) =>
       compareNumbers(a?.value, b?.value, ascending),
-    renderDefault: createRenderer<CellType.Text>(() => <>0.00</>),
+    renderDefault: createRenderer<CellType.Number>(() => <>0.00</>),
   },
   [CellType.Text]: {
     renderer: createRenderer<CellType.Text>((data) => <>{data.value}</>),

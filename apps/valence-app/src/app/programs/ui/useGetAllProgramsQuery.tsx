@@ -60,8 +60,8 @@ export const useGetAllProgramsQuery = ({
     initialData: isEqual(queryConfig, initialQueryData?.queryConfig)
       ? initialQueryData
       : undefined,
-    refetchInterval: 30 * 1000,
-    staleTime: 60 * 1000, // 60s
+    refetchInterval: 60 * 1000, // 1 min
+    staleTime: 5 * 60 * 100, // 5 mins - will remain in cache
     queryFn,
     // IMPORTANT, so react-query knows when to no longer use initialData and fetch instead
     initialDataUpdatedAt: initialQueryData?.dataLastUpdatedAt,

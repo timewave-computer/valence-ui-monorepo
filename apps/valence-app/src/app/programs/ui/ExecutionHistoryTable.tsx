@@ -19,7 +19,7 @@ export const ExecutionHistoryTable = ({
 
     return {
       [ExecutionHistoryTableKeys.executionId]: {
-        value: processorItem.execution_id.toString(),
+        value: processorItem.execution_id,
       },
       [ExecutionHistoryTableKeys.label]: {
         value: processorItem.label,
