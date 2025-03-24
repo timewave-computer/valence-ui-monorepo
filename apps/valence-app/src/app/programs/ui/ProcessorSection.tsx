@@ -63,7 +63,6 @@ export const ProcessorSection = ({
       : undefined;
 
   const { data: offlineSigners } = useOfflineSigners({
-    chainId: processorChainId ?? "",
     multiChain: true,
   });
   const offlineSigner =
