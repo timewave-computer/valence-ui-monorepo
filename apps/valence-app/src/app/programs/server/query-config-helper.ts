@@ -43,8 +43,6 @@ export const makeExternalDomainConfig = ({
   if (externalProgramDomains.length === 0) {
     return [];
   } else if (userSuppliedQueryConfig?.external) {
-    // TODO: maybe carry over the rest of user args?
-
     return externalProgramDomains.map((domain) => {
       const userSuppliedChain = userSuppliedQueryConfig.external?.find(
         (config) => {

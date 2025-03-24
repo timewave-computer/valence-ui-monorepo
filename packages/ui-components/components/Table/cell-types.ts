@@ -19,7 +19,6 @@ export interface NumberCellData {
   value: number;
   link?: CellLink;
   isUsd?: boolean;
-  numberOptions?: Intl.NumberFormatOptions;
 }
 export interface TextCellData {
   value: string;
