@@ -1195,6 +1195,10 @@
         },
         "owner": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "Optional name of the program"
         }
       },
       "additionalProperties": false
