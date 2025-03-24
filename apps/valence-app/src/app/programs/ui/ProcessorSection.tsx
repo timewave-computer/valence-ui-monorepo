@@ -44,15 +44,31 @@ export const ProcessorSection = ({
 
   queryConfig: ProgramQueryConfig;
 }) => {
-  const processorChainId = processorData.chainId;
   const processorDomain = processorData.domainName;
+  const isMainChain = processorDomain === queryConfig.main.domainName;
+  const processorChainId = isMainChain
+    ? queryConfig.main.chainId
+    : queryConfig.external?.find(
+        (chain) => chain.domainName === processorDomain,
+      )?.chainId ?? "";
 
-  const { data: account, isConnected: isWalletConnected } = useAccount({
-    chainId: processorChainId,
+  const { data: accounts, isConnected: isWalletConnected } = useAccount({
+    chainId: processorChainId ?? "",
+    multiChain: true,
   });
-  const { data: offlineSigner } = useOfflineSigners({
-    chainId: processorChainId,
+
+  const account =
+    accounts && processorChainId in accounts
+      ? accounts[processorChainId]
+      : undefined;
+
+  const { data: offlineSigners } = useOfflineSigners({
+    multiChain: true,
   });
+  const offlineSigner =
+    offlineSigners && processorChainId in offlineSigners
+      ? offlineSigners[processorChainId]
+      : undefined;
 
   const queryClient = useQueryClient();
 
@@ -74,11 +90,9 @@ export const ProcessorSection = ({
       const signer = await connectWithOfflineSigner({
         offlineSigner: offlineSigner?.offlineSigner,
         chainId: processorChainId,
-        chainName: queryConfig.main.chainName,
         rpcUrl,
       });
 
-      // must come after 'connect with offline signer' so chain can be added if its not already
       const signerAddress = account?.bech32Address ?? undefined;
 
       if (!signerAddress) {
@@ -103,7 +117,7 @@ export const ProcessorSection = ({
       ];
 
       const result = await signer.signAndBroadcastSync(
-        signerAddress ?? "",
+        signerAddress,
         messages,
         "auto",
       );

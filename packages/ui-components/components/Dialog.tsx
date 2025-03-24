@@ -34,11 +34,17 @@ const DialogContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
+    {/* avoid errors / warnings */}
+    <DialogTitle className="hidden">title</DialogTitle>
+    <DialogDescription className="hidden" id="dialog-description">
+      description
+    </DialogDescription>
+
     <DialogPrimitive.Content
       ref={ref}
       aria-describedby="dialog-description"
       className={cn(
-        "z-50 w-fit max-w-xl gap-4 border border-valence-black  bg-valence-white p-6 px-8 ",
+        "z-50 w-fit min-w-96  gap-4 border border-valence-black  bg-valence-white p-6 px-8 ",
         "fixed left-[50%] top-[50%]  translate-x-[-50%] translate-y-[-50%] ",
         className,
       )}

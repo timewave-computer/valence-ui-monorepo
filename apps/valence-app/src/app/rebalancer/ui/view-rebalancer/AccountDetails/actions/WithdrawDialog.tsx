@@ -152,7 +152,7 @@ export const WithdrawDialog: React.FC<{}> = ({}) => {
           Withdraw
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col gap-6">
+      <DialogContent className="flex flex-col gap-4">
         {
           // to reset when dialog closes
           isWithdrawDialogOpen && (

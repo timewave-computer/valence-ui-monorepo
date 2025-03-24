@@ -3,7 +3,6 @@
 import { aminoTypes, protobufRegistry } from "@/context";
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
-import { chains } from "chain-registry";
 import { ChainInfo } from "@keplr-wallet/types";
 
 declare global {
@@ -17,14 +16,12 @@ const { keplr } = window;
 
 export type ConnectWithOfflineSignerInput = {
   chainId: string;
-  chainName: string;
   rpcUrl: string;
   offlineSigner?: OfflineSigner;
 };
 
 export const connectWithOfflineSigner = async ({
   chainId,
-  chainName,
   rpcUrl,
   offlineSigner,
 }: ConnectWithOfflineSignerInput) => {
@@ -34,30 +31,16 @@ export const connectWithOfflineSigner = async ({
     );
   }
 
-  const registeredChain = chains.find((c) => c.chain_id === chainId);
-  if (!registeredChain) {
-    const testChainInfo = getTestnetChainInfo({
-      chainId,
-      chainName,
-      rpcUrl,
-    });
-    await keplr.experimentalSuggestChain(testChainInfo);
-  }
-  await keplr.enable(chainId);
-
   if (!offlineSigner) {
     throw new Error(
       `Unable to initialize signer for ${chainId} at ${rpcUrl}. Reconnect and try again.`,
     );
   }
 
-  const registeredFeeTokens = registeredChain?.fees?.fee_tokens;
-  const feeDenom = registeredFeeTokens ? registeredFeeTokens[0].denom : "untrn";
-
   try {
     return SigningStargateClient.connectWithSigner(rpcUrl, offlineSigner, {
-      // TODO: do not hardcode the quantity, handle denom more nicely / accept chain info as input
-      gasPrice: GasPrice.fromString(`0.005${feeDenom}`),
+      // TODO: should be fetched from somewhere
+      gasPrice: GasPrice.fromString(`0.005untrn`),
       registry: protobufRegistry,
       aminoTypes: aminoTypes,
     });

@@ -102,10 +102,10 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-4 w-full gap-4 pt-4 pb-4">
+      <div className="flex flex-col md:grid grid-cols-4 w-full gap-4 pt-4 pb-4">
         <div className="flex flex-col gap-2 col-span-4">
           {isLoading ? (
-            <LoadingSkeleton className="min-h-4" />
+            <LoadingSkeleton className="min-h-[48px]" />
           ) : (
             <ProgramMetdataDisplay queryConfig={queryConfig} program={data} />
           )}

@@ -17,3 +17,5 @@ export * from "./ConnectWalletHoverContent";
 export * from "./ProcessorSection";
 export * from "./SuspenseLoadingSkeleton";
 export * from "./ProgramMetadataDisplay";
+export * from "./DomainConnector";
+export * from "./CustomChainForm";

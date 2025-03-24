@@ -81,17 +81,28 @@ export const ExecutableSubroutine = ({
   queryConfig: ProgramQueryConfig;
   program: GetProgramDataReturnValue;
 }) => {
-  const { data: account, isConnected: isWalletConnected } = useAccount({
+  const { data: accounts, isConnected: isWalletConnected } = useAccount({
     chainId: queryConfig.main.chainId,
+    multiChain: true,
   });
+
+  const account =
+    accounts && queryConfig.main.chainId in accounts
+      ? accounts[queryConfig.main.chainId]
+      : null;
 
   const walletAddress = account?.bech32Address;
 
   const queryClient = useQueryClient();
 
-  const { data: offlineSigner } = useOfflineSigners({
-    chainId: queryConfig.main.chainId,
+  const { data: offlineSigners } = useOfflineSigners({
+    multiChain: true,
   });
+
+  const offlineSigner =
+    offlineSigners && queryConfig.main.chainId in offlineSigners
+      ? offlineSigners[queryConfig.main.chainId]
+      : undefined;
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
@@ -118,7 +129,6 @@ export const ExecutableSubroutine = ({
       const signer = await connectWithOfflineSigner({
         offlineSigner: offlineSigner?.offlineSigner,
         chainId: queryConfig.main.chainId,
-        chainName: queryConfig.main.chainName,
         rpcUrl: queryConfig.main.rpc,
       });
 
