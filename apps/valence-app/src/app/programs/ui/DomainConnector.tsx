@@ -83,7 +83,9 @@ export const DomainConnector = ({
   const Layout = ({ children }: { children?: React.ReactNode }) => {
     return (
       <>
-        <div className="text-xs font-mono w-fit">{domainName}</div>
+        <div className="text-xs font-mono w-fit">
+          {domainName} {chainId && `(${chainId})`}
+        </div>
         <div className="text-xs w-fit">{children}</div>
       </>
     );

@@ -75,8 +75,10 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
             </LinkText>
           </div>
           <ProgramRpcSettings
+            initialQueryConfig={initialData.queryConfig}
             queryConfig={queryConfig}
             setQueryConfig={setQueryConfig}
+            domains={data?.parsedProgram?.domains}
           />
         </div>
 

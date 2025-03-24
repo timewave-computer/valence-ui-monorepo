@@ -17,13 +17,13 @@ export const ProgramMetdataDisplay = ({
   return (
     <div className="flex flex-col  md:grid grid-cols-4 w-full gap-2">
       <div className="">
-        <Heading level="h4">Name</Heading>
+        <Heading level="h5">Name</Heading>
         <div className="text-xs font-mono">
           {program?.parsedProgram?.name ?? "-"}
         </div>
       </div>
       <div className="">
-        <Heading level="h4">Owner</Heading>
+        <Heading level="h5">Owner</Heading>
         <Copyable copyText={program?.parsedProgram?.owner ?? ""}>
           <div className="text-xs font-mono">
             {displayAddress(program?.parsedProgram?.owner ?? "")}
@@ -32,7 +32,7 @@ export const ProgramMetdataDisplay = ({
       </div>
 
       <div className="">
-        <Heading level="h4">Authorizations Contract</Heading>
+        <Heading level="h5">Authorizations Contract</Heading>
         <Copyable
           copyText={
             program?.parsedProgram?.authorizationData?.authorization_addr ?? ""
@@ -47,10 +47,10 @@ export const ProgramMetdataDisplay = ({
         </Copyable>
       </div>
       <div>
-        <Heading level="h4">Domains</Heading>
+        <Heading level="h5">Domains</Heading>
 
         {program?.parsedProgram?.domains && (
-          <div className="grid grid-cols-2 gap-y-1 gap-x-2 justify-items-start items-center">
+          <div className="grid grid-cols-[auto_auto] w-fit gap-y-1 gap-x-4 justify-items-start items-center">
             {
               <DomainConnector
                 queryConfig={queryConfig}

@@ -12,9 +12,13 @@ import {
   InputLabel,
   TextInput,
 } from "@valence-ui/ui-components";
-import { type ProgramQueryConfig } from "@/app/programs/server";
+import {
+  ProgramParserResult,
+  type ProgramQueryConfig,
+} from "@/app/programs/server";
 import { debounce } from "lodash";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 
 type RpcConfigFormValues = {
   main: {
@@ -35,9 +39,13 @@ type RpcConfigFormValues = {
 export const ProgramRpcSettings = ({
   queryConfig,
   setQueryConfig,
+  domains,
+  initialQueryConfig,
 }: {
+  domains?: ProgramParserResult["domains"];
   queryConfig: ProgramQueryConfig;
   setQueryConfig: (config: ProgramQueryConfig) => void;
+  initialQueryConfig: ProgramQueryConfig;
 }) => {
   return (
     <Sheet>
@@ -61,6 +69,8 @@ export const ProgramRpcSettings = ({
         </div>
 
         <RpcSettingsForm
+          initialQueryConfig={initialQueryConfig}
+          domains={domains}
           queryConfig={queryConfig}
           setQueryConfig={setQueryConfig}
         />
@@ -75,28 +85,56 @@ export const ProgramRpcSettings = ({
 const RpcSettingsForm = ({
   queryConfig,
   setQueryConfig,
+  domains: _domains,
+  initialQueryConfig,
 }: {
+  domains?: ProgramParserResult["domains"];
+  initialQueryConfig: ProgramQueryConfig;
+
   queryConfig: ProgramQueryConfig;
   setQueryConfig: (config: ProgramQueryConfig) => void;
 }) => {
-  const mainDomain = queryConfig.main;
-  const externalDomains = queryConfig.external;
+  // this will persist domains across refetches, so form does not lose fields during refetch
+  const [domains, setDomains] = useState(_domains);
+  useEffect(() => {
+    if (_domains) {
+      setDomains(_domains);
+    }
+  }, [_domains]);
 
+  const mainDomainName = domains?.main;
+  const externalDomainNames = domains?.external;
+
+  const mainDomainQueryConfig = queryConfig.main;
+
+  // generate form from program config. if params are not specified in url, it will show as blank
   const { register, handleSubmit } = useForm<RpcConfigFormValues>({
     defaultValues: {
       main: {
-        domainName: mainDomain.domainName,
-        chainName: mainDomain.chainName,
-        chainId: mainDomain.chainId,
-        registryAddress: mainDomain.registryAddress,
-        rpc: mainDomain.rpc,
+        domainName: mainDomainName,
+        chainName: mainDomainQueryConfig.chainName,
+        chainId: mainDomainQueryConfig.chainId,
+        registryAddress: mainDomainQueryConfig.registryAddress,
+        rpc: mainDomainQueryConfig.rpc,
       },
-      externalChains: externalDomains?.map((c) => {
+      externalChains: externalDomainNames?.map((externalDomainName) => {
+        // first check url params
+        let externalDomainConfig = queryConfig?.external?.find(
+          (config) => config.domainName === externalDomainName,
+        );
+
+        // otherwise access the default values that come with the fetch
+        if (!externalDomainConfig) {
+          externalDomainConfig = initialQueryConfig?.external?.find(
+            (config) => config.domainName === externalDomainName,
+          );
+        }
+
         return {
-          chainId: c.chainId,
-          rpc: c.rpc,
-          domainName: c.domainName,
-          chainName: c.chainName,
+          chainId: externalDomainConfig?.chainId ?? undefined,
+          rpc: externalDomainConfig?.rpc ?? undefined,
+          domainName: externalDomainName,
+          chainName: externalDomainName,
         };
       }),
     },
@@ -129,7 +167,7 @@ const RpcSettingsForm = ({
         className="flex flex-col gap-6"
       >
         <div className="flex flex-col gap-2 ">
-          <Heading level="h3">Main Chain: {mainDomain.domainName}</Heading>
+          <Heading level="h3">Main Chain: {mainDomainName}</Heading>
 
           <FormField name="main.rpc">
             <InputLabel size="sm" label={`RPC URL`} />
@@ -160,19 +198,19 @@ const RpcSettingsForm = ({
             />
           </FormField>
         </div>
-        {externalDomains && externalDomains.length > 0 && (
+        {externalDomainNames && externalDomainNames.length > 0 && (
           <>
-            {externalDomains.map((chain, index) => {
+            {externalDomainNames.map((externalDomainName, index) => {
               return (
                 <div
-                  key={`externalchain-${chain.domainName}`}
+                  key={`externalchain-${externalDomainName}`}
                   className="flex flex-col gap-2"
                 >
                   <Heading level="h3">
-                    External Chain: {chain.domainName}
+                    External Chain: {externalDomainName}
                   </Heading>
                   <FormField
-                    key={`chain-rpcurl-${chain.domainName}`}
+                    key={`chain-rpcurl-${externalDomainName}`}
                     name={`chains.${index}.rpc`}
                   >
                     <InputLabel size="sm" label={"RPC URL"} />
@@ -183,7 +221,7 @@ const RpcSettingsForm = ({
                     />
                   </FormField>
                   <FormField
-                    key={`chain-chainId-${chain.chainId}`}
+                    key={`chain-chainId-${externalDomainName}}`}
                     name={`chains.${index}.chainId`}
                   >
                     <InputLabel size="sm" label={"Chain ID (for signing)"} />
