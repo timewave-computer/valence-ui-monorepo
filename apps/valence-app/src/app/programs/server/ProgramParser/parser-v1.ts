@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   defaultDomainName,
+  getChainIds,
   getExternalDomains,
   NormalizedAccounts,
   NormalizedAuthorizationData,

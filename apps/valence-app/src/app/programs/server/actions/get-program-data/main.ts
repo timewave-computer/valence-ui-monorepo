@@ -26,7 +26,6 @@ import {
   fetchLibrarySchemas,
   queryAccountBalances,
   AccountBalancesReturnValue,
-  FetchProcessorQueuesReturnType,
 } from ".";
 import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
 
@@ -48,7 +47,6 @@ export type GetProgramDataReturnValue = {
   dataLastUpdatedAt: number; // for handling stale time in react-query
   processorQueues?: FetchProcessorQueuesReturnType;
   processorHistory?: ArrayOfProcessorCallbackInfo;
-  chainIds?: string[];
 };
 
 export const getProgramData = async ({
@@ -137,7 +135,6 @@ export const getProgramData = async ({
     };
   }
 
-  const programChainIds = getChainIds(program);
   const externalDomainNames = program.domains.external;
   const externalDomainConfig = makeExternalDomainConfig({
     externalProgramDomains: externalDomainNames,
@@ -163,7 +160,7 @@ export const getProgramData = async ({
     ]);
   }
 
-  const metadataToFetch = getDenomsAndChainIds({
+  const metadataToFetch = getAssetMetadataIds({
     balances: accountBalances,
     accounts: program.accounts,
   });
@@ -232,17 +229,7 @@ export const getProgramData = async ({
     processorQueues: processorQueues,
     processorHistory: processorHistory,
     libraryConfigs: libraryConfigs,
-    chainIds: programChainIds,
   };
-};
-
-const getChainIds = (program: ProgramParserResult) => {
-  const accountChainIds = Object.values(program.accounts).map((a) => a.chainId);
-  const processorChainIds = Object.values(
-    program.authorizationData.processorData,
-  ).map(({ chainId }) => chainId);
-  const allChainIds = [...accountChainIds, ...processorChainIds];
-  return Array.from(new Set(allChainIds));
 };
 
 async function fetchProgramFromRegistry({
@@ -275,7 +262,7 @@ async function fetchProgramFromRegistry({
   }
 }
 
-function getDenomsAndChainIds({
+function getAssetMetadataIds({
   balances,
   accounts,
 }: {
