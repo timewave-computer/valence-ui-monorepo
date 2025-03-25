@@ -139,7 +139,7 @@ export const getAllProgramsFromRegistry = async ({
   return {
     dataLastUpdatedAt: getLastUpdatedTime(), // required for useQuery knowing when to refetch
     queryConfig: { main: mainDomainConfig, external: null },
-    errors: {},
+    errors: [],
     parsedPrograms: parsedPrograms,
   };
 };

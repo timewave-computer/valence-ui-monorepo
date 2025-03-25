@@ -8,16 +8,21 @@ export enum GetProgramErrorCodes {
   DECODE_BINARY = "DECODE_BINARY",
   PROCESSOR_QUEUE = "PROCESSOR_QUEUE",
   EXECUTION_HISTORY = "EXECUTION_HISTORY",
+  LIBRARY_CONFIG = "LIBRARY_CONFIG",
 }
 
-type ErrorKey = {
+type ErrorCode = {
+  key: GetProgramErrorCodes;
   title: string;
   text?: string;
   message?: string;
 };
-export type ErrorCodes = Record<string, ErrorKey>;
+export type ErrorCodes = Array<ErrorCode>;
 
-const PROGRAM_ERROR_CONTENT: ErrorCodes = {
+const PROGRAM_ERROR_CONTENT: Record<
+  GetProgramErrorCodes,
+  { title: string; text?: string }
+> = {
   [GetProgramErrorCodes.RPC_CONNECTION]: {
     title: "Could not connect to RPC",
     text: "Verify RPC URL in the RPC settings.",
@@ -42,6 +47,9 @@ const PROGRAM_ERROR_CONTENT: ErrorCodes = {
   [GetProgramErrorCodes.BALANCES]: {
     title: "Failed to fetch account balances",
   },
+  [GetProgramErrorCodes.LIBRARY_CONFIG]: {
+    title: "Failed to fetch configuration for library",
+  },
   [GetProgramErrorCodes.DECODE_BINARY]: {
     title: "Failed to decode program",
   },
@@ -56,17 +64,15 @@ const PROGRAM_ERROR_CONTENT: ErrorCodes = {
 export const makeApiErrors = (
   messages: Array<{ code: GetProgramErrorCodes; message?: object | string }>,
 ): ErrorCodes => {
-  return messages.reduce((acc, { code, message }) => {
+  return messages.map(({ code, message }) => {
     return {
-      ...acc,
-      [code]: {
-        ...PROGRAM_ERROR_CONTENT[code],
-        ...(message && !isObjectEmpty(message)
-          ? { message: JSON.stringify(message) }
-          : {}),
-      },
+      key: code,
+      ...PROGRAM_ERROR_CONTENT[code],
+      ...(message && !isObjectEmpty(message)
+        ? { message: JSON.stringify(message) }
+        : {}),
     };
-  }, {} as ErrorCodes);
+  });
 };
 
 const isObjectEmpty = (obj: object | string) => {

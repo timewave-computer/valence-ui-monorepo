@@ -65,18 +65,3 @@ export const getExternalDomains = ({
   );
   return Array.from(new Set(allExternalDomains));
 };
-
-export const getChainIds = ({
-  accounts,
-  authorizationData,
-}: {
-  accounts: NormalizedAccounts;
-  authorizationData: NormalizedAuthorizationData;
-}) => {
-  const accountChainIds = Object.values(accounts).map((a) => a.chainId);
-  const processorChainIds = Object.values(authorizationData.processorData).map(
-    ({ chainId }) => chainId,
-  );
-  const allChainIds = [...accountChainIds, ...processorChainIds];
-  return Array.from(new Set(allChainIds));
-};

@@ -147,7 +147,7 @@ export const getProgramData = async ({
 
   let accountBalances;
   let metadata;
-  let errors = {};
+  let errors: ErrorCodes = [];
 
   try {
     accountBalances = await queryAccountBalances(
@@ -168,10 +168,11 @@ export const getProgramData = async ({
 
   const librarySchemas = await fetchLibrarySchemas(program.libraries);
 
-  const libraryConfigs = await fetchLibraryConfigs(
-    program.libraries,
-    completeQueryConfig,
-  );
+  const { configs: libraryConfigs, errors: libraryConfigErrors } =
+    await fetchLibraryConfigs(program.libraries, completeQueryConfig);
+  if (libraryConfigErrors) {
+    errors = [...errors, ...libraryConfigErrors];
+  }
 
   let processorHistory: ArrayOfProcessorCallbackInfo | undefined = undefined;
   let processorQueues: FetchProcessorQueuesReturnType | undefined = undefined;
@@ -188,7 +189,7 @@ export const getProgramData = async ({
   ]);
 
   if (asyncResults[0].status === "rejected") {
-    errors = {
+    errors = [
       ...errors,
       ...makeApiErrors([
         {
@@ -196,14 +197,14 @@ export const getProgramData = async ({
           message: asyncResults[0].reason?.message,
         },
       ]),
-    };
+    ];
   } else if (asyncResults[0].status === "fulfilled") {
     processorHistory = asyncResults[0].value;
   }
 
   // TODO: the processor queue errors will not bubble up
   if (asyncResults[1].status === "rejected") {
-    errors = {
+    errors = [
       ...errors,
       ...makeApiErrors([
         {
@@ -211,7 +212,7 @@ export const getProgramData = async ({
           message: asyncResults[1].reason?.message,
         },
       ]),
-    };
+    ];
   } else if (asyncResults[1].status === "fulfilled") {
     processorQueues = asyncResults[1].value;
   }
