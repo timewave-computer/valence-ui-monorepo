@@ -141,7 +141,7 @@ const RpcSettingsForm = ({
   });
 
   const handleSubmitForm = debounce((values: RpcConfigFormValues) => {
-    setQueryConfig({
+    const newConfig = {
       main: {
         registryAddress: values.main.registryAddress,
         domainName: values.main.domainName,
@@ -157,7 +157,9 @@ const RpcSettingsForm = ({
           domainName: chain.domainName,
         })) ?? []),
       ],
-    });
+    };
+    console.log("new config", newConfig);
+    setQueryConfig(newConfig);
   }, 1200);
   // TODO!!: base from program domain setup instead of query config
   return (
