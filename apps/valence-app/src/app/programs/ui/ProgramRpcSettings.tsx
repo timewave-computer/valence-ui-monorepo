@@ -102,7 +102,7 @@ const RpcSettingsForm = ({
     }
   }, [_domains]);
 
-  const mainDomainName = domains?.main;
+  const mainDomainName = domains?.main ?? "neutron";
   const externalDomainNames = domains?.external;
 
   const mainDomainQueryConfig = queryConfig.main;
@@ -158,7 +158,6 @@ const RpcSettingsForm = ({
         })) ?? []),
       ],
     };
-    console.log("new config", newConfig);
     setQueryConfig(newConfig);
   }, 1200);
   // TODO!!: base from program domain setup instead of query config
