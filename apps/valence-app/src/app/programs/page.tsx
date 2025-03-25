@@ -28,7 +28,7 @@ export default async function ProgramRegistryPage(
 async function ProgramRegistryViewerLoader({
   searchParams,
 }: ProgramRegistryPageProps) {
-  const { queryConfig } = await loadQueryConfigSearchParams(searchParams);
+  const { queryConfig } = loadQueryConfigSearchParams(searchParams);
 
   const data = await getAllProgramsFromRegistry({ queryConfig });
 

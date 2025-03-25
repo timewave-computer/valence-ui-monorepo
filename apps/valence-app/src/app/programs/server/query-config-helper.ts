@@ -9,7 +9,7 @@ const externalConfigSchema = z.array(
     chainId: z.string(),
     domainName: z.string(),
     chainName: z.string(),
-  }), // note: cannot be optional, it wont be detected by nuqs
+  }),
 );
 export const queryConfigSchema = z.object({
   main: z.object({
@@ -26,10 +26,7 @@ export type ExternalProgramQueryConfig = z.infer<typeof externalConfigSchema>;
 export type ProgramQueryConfig = z.infer<typeof queryConfigSchema>;
 
 const queryConfigLoader = {
-  queryConfig: parseAsJson(queryConfigSchema.parse).withDefault({
-    main: getDefaultMainChainConfig(),
-    external: null,
-  }),
+  queryConfig: parseAsJson(queryConfigSchema.parse),
 };
 export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 
