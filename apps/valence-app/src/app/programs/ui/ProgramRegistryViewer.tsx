@@ -117,7 +117,7 @@ export const ProgramRegistryViewer = ({
 
         <ProgramRpcSettings
           domains={{
-            main: "neutron",
+            main: "neutron", // todo, do not hardcode
             external: [],
           }}
           initialQueryConfig={initialData.queryConfig}
