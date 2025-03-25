@@ -180,15 +180,6 @@ const RpcSettingsForm = ({
             />
           </FormField>
 
-          <FormField name="main.chainId">
-            <InputLabel size="sm" label={`Chain ID (for signing)`} />
-
-            <TextInput
-              size="sm"
-              {...register("main.chainId")}
-              placeholder="neutron-1"
-            />
-          </FormField>
           <FormField name="main.registryAddress">
             <InputLabel size="sm" label="Program registry address" />
 
@@ -196,6 +187,15 @@ const RpcSettingsForm = ({
               size="sm"
               {...register("main.registryAddress")}
               placeholder="neutron1234..."
+            />
+          </FormField>
+          <FormField name="main.chainId">
+            <InputLabel size="sm" label={`Chain ID (for signing)`} />
+
+            <TextInput
+              size="sm"
+              {...register("main.chainId")}
+              placeholder="neutron-1"
             />
           </FormField>
         </div>

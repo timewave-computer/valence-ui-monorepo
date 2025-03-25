@@ -1,34 +1,34 @@
 "use server";
 import {
   ProgramParser,
-  fetchAccountBalances,
   type ProgramQueryConfig,
   type ProgramParserResult,
   type NormalizedAccounts,
-  type NormalizedLibraries,
   type FetchLibrarySchemaReturnValue,
   ErrorCodes,
   makeApiErrors,
   getLastUpdatedTime,
-  NormalizedAuthorizationData,
   makeExternalDomainConfig,
-  getDomainConfig,
 } from "@/app/programs/server";
 import {
   getDefaultMainChainConfig,
-  fetchLibrarySchema,
   GetProgramErrorCodes,
 } from "@/app/programs/server";
 import { fetchAssetMetadata } from "@/server/actions";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { ProcessorQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.client";
-import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
-import { AuthorizationsQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.client";
 import { ArrayOfProcessorCallbackInfo } from "@valence-ui/generated-types/dist/cosmwasm/types/Authorizations.types";
-import { z } from "zod";
-import { isFulfilled } from "@/server/utils";
+import {
+  getProcessorHistory,
+  fetchProcessorQueues,
+  fetchLibraryConfigs,
+  fetchLibrarySchemas,
+  queryAccountBalances,
+  AccountBalancesReturnValue,
+  FetchProcessorQueuesReturnType,
+} from ".";
+import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
 
 type GetProgramDataProps = {
   programId: string;
@@ -51,7 +51,6 @@ export type GetProgramDataReturnValue = {
   chainIds?: string[];
 };
 
-// TODO: make an object of all chain clients, with chain id and chain name
 export const getProgramData = async ({
   programId,
   queryConfig: userSuppliedQueryConfig,
@@ -246,7 +245,7 @@ const getChainIds = (program: ProgramParserResult) => {
   return Array.from(new Set(allChainIds));
 };
 
-const fetchProgramFromRegistry = async ({
+async function fetchProgramFromRegistry({
   programId,
   registryAddress,
   cosmwasmClient,
@@ -254,7 +253,7 @@ const fetchProgramFromRegistry = async ({
   programId: string;
   registryAddress: string;
   cosmwasmClient: CosmWasmClient;
-}) => {
+}) {
   try {
     const programRegistryClient = new ProgramRegistryQueryClient(
       cosmwasmClient,
@@ -274,44 +273,7 @@ const fetchProgramFromRegistry = async ({
       `Unable to fetch program ID ${programId} from registry ${registryAddress}. Error: ${e?.message}`,
     );
   }
-};
-
-const queryAccountBalances = async (
-  accounts: ProgramParserResult["accounts"],
-  config: ProgramQueryConfig,
-) => {
-  const requests = Object.entries(accounts).map(async ([id, account]) => {
-    if (!account.addr) {
-      // should not happen, just to make typescript happy
-      throw new Error(`Account ${id} does not have an address`);
-    }
-
-    const rpcUrl = getDomainConfig({
-      queryConfig: config,
-      domainName: account.domainName,
-    })?.rpc;
-
-    if (!rpcUrl) {
-      throw new Error(
-        `No RPC URL found for domain ${account.domainName}. Check RPC settings.`,
-      );
-    }
-    const balances = await fetchAccountBalances({
-      accountAddress: account.addr,
-      rpcUrl,
-    });
-    return {
-      address: account.addr,
-      balances,
-    };
-  });
-
-  return Promise.all(requests);
-};
-
-type AccountBalancesReturnValue = Awaited<
-  ReturnType<typeof queryAccountBalances>
->;
+}
 
 function getDenomsAndChainIds({
   balances,
@@ -351,191 +313,10 @@ function getDenomsAndChainIds({
   return metadataQueries ?? [];
 }
 
+// in this file to make export out of server action easier to manage
 export type FetchProcessorQueuesReturnType = Array<{
   chainName: string;
   processorAddress: string;
   chainId: string;
   queue?: ArrayOfMessageBatch;
 }>;
-async function fetchProcessorQueues({
-  processorAddresses,
-  queryConfig,
-}: {
-  processorAddresses?: NormalizedAuthorizationData["processorData"];
-  queryConfig: ProgramQueryConfig;
-}): Promise<FetchProcessorQueuesReturnType> {
-  if (!processorAddresses) return [];
-
-  const requests = Object.values(processorAddresses).map(
-    async ({ chainId, chainName, address: processorAddress, domainName }) => {
-      const rpcUrl = getDomainConfig({ queryConfig, domainName })?.rpc;
-
-      const processorMetadata = {
-        chainName,
-        domainName,
-        processorAddress,
-        chainId,
-      };
-
-      const queue = rpcUrl
-        ? await getProcessorQueue({
-            rpcUrl,
-            processorAddress,
-          })
-        : undefined;
-
-      return {
-        ...processorMetadata,
-        queue,
-      };
-    },
-  );
-
-  const awaitedResults = (await Promise.all(requests)).flat();
-  return awaitedResults;
-}
-
-async function getProcessorQueue({
-  rpcUrl,
-  processorAddress,
-}: {
-  rpcUrl: string;
-  processorAddress: string;
-}): Promise<ArrayOfMessageBatch> {
-  try {
-    const processorClient = new ProcessorQueryClient(
-      await getCosmwasmClient(rpcUrl),
-      processorAddress,
-    );
-
-    const results = await Promise.all([
-      processorClient.getQueue({ priority: "high" }),
-      processorClient.getQueue({ priority: "medium" }),
-    ]);
-    return results.flat();
-  } catch (e) {
-    console.log(`Error fetching processor queue: ${e}`);
-    return [];
-  }
-}
-
-async function fetchLibrarySchemas(libraries: NormalizedLibraries) {
-  // TODO: maybe better to pull library addresses from the function data instead.
-  const librariesToFetch = Object.values(libraries).reduce((acc, lib) => {
-    if (lib.addr && lib.domain?.CosmosCosmwasm === "neutron")
-      return [...acc, lib.addr];
-    else return [...acc];
-  }, [] as string[]);
-
-  const requests = await Promise.all(
-    librariesToFetch.map(async (address) => {
-      return {
-        address,
-        schema: await fetchLibrarySchema(address),
-      };
-    }),
-  );
-
-  // todo: for each library, fetch codeId, and use codeId to fetch schema
-  const librarySchemas = requests.reduce(
-    (acc, { address, schema }) => {
-      acc[address] = schema;
-      return acc;
-    },
-    {} as Record<string, FetchLibrarySchemaReturnValue>,
-  );
-  return librarySchemas;
-}
-
-async function fetchLibraryConfig({
-  rpcUrl,
-  libraryAddress,
-}: {
-  rpcUrl: string;
-  libraryAddress: string;
-}): Promise<object> {
-  try {
-    const client = await getCosmwasmClient(rpcUrl);
-
-    const result = await client.queryContractSmart(libraryAddress, {
-      get_library_config: {},
-    });
-    return z.object({}).passthrough().parse(result);
-  } catch (e) {
-    console.log(`Error fetching library config: ${e}`);
-    return Promise.reject(e);
-  }
-}
-
-async function fetchLibraryConfigs(
-  libraries: NormalizedLibraries,
-  queryConfig: ProgramQueryConfig,
-) {
-  // TODO: maybe better to pull library addresses from the function data instead.
-  const librariesToFetch = Object.values(libraries).reduce(
-    (acc, lib) => {
-      if (lib.addr && lib.domainName) {
-        const rpcUrl = getDomainConfig({
-          queryConfig,
-          domainName: lib.domainName,
-        })?.rpc;
-        if (rpcUrl) {
-          return [
-            ...acc,
-            {
-              chainId: lib.chainId,
-              address: lib.addr,
-              rpcUrl: rpcUrl,
-            },
-          ];
-        } else return [...acc];
-      } else return [...acc];
-    },
-    [] as Array<{ address: string; chainId: string; rpcUrl: string }>,
-  );
-
-  const allRequests = await Promise.allSettled(
-    librariesToFetch.map(async (lib) => {
-      return {
-        address: lib.address,
-        config: await fetchLibraryConfig({
-          rpcUrl: lib.rpcUrl,
-          libraryAddress: lib.address,
-        }),
-      };
-    }),
-  );
-
-  const requests = allRequests.filter(isFulfilled).map((r) => r.value);
-
-  const configs = requests.reduce(
-    (acc, { address, config }) => {
-      acc[address] = config;
-      return acc;
-    },
-    {} as Record<string, object>,
-  );
-  return configs;
-}
-
-async function getProcessorHistory({
-  rpcUrl,
-  authorizationsAddress,
-}: {
-  rpcUrl: string;
-  authorizationsAddress?: string;
-}): Promise<ArrayOfProcessorCallbackInfo> {
-  if (!authorizationsAddress) {
-    return Promise.reject(new Error("No authorizations address found"));
-  }
-  try {
-    const authorizationsClient = new AuthorizationsQueryClient(
-      await getCosmwasmClient(rpcUrl),
-      authorizationsAddress,
-    );
-    return authorizationsClient.processorCallbacks({});
-  } catch (e) {
-    console.log(`Error fetching processor history: ${e}`);
-    return Promise.reject(e);
-  }
-}
