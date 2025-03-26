@@ -4,8 +4,11 @@ import { ArrayOfProcessorCallbackInfo } from "@valence-ui/generated-types/dist/c
 import { ProcessorQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.client";
 import { ArrayOfMessageBatch } from "@valence-ui/generated-types/dist/cosmwasm/types/Processor.types";
 import {
+  ErrorCodes,
   FetchProcessorQueuesReturnType,
   getDomainConfig,
+  GetProgramErrorCodes,
+  makeApiErrors,
   NormalizedAuthorizationData,
   ProgramQueryConfig,
 } from "@/app/programs/server";
@@ -38,9 +41,19 @@ export async function fetchProcessorQueues({
 }: {
   processorAddresses?: NormalizedAuthorizationData["processorData"];
   queryConfig: ProgramQueryConfig;
-}): Promise<FetchProcessorQueuesReturnType> {
-  if (!processorAddresses) return [];
+}): Promise<{ results: FetchProcessorQueuesReturnType; errors: ErrorCodes }> {
+  if (!processorAddresses)
+    return {
+      results: [],
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.PROCESSOR_QUEUE,
+          message: `No processor addresses found`,
+        },
+      ]),
+    };
 
+  const errors: ErrorCodes = [];
   const requests = Object.values(processorAddresses).map(
     async ({ chainId, chainName, address: processorAddress, domainName }) => {
       const rpcUrl = getDomainConfig({ queryConfig, domainName })?.rpc;
@@ -52,22 +65,34 @@ export async function fetchProcessorQueues({
         chainId,
       };
 
-      const queue = rpcUrl
+      const { results, errors: requestErrors } = rpcUrl
         ? await getProcessorQueue({
             rpcUrl,
             processorAddress,
           })
-        : undefined;
+        : {
+            results: undefined,
+            errors: makeApiErrors([
+              {
+                code: GetProgramErrorCodes.PROCESSOR_QUEUE,
+                message: `RPC URL not found for ${processorAddress}`,
+              },
+            ]),
+          };
+
+      if (requestErrors) {
+        errors.push(...requestErrors);
+      }
 
       return {
         ...processorMetadata,
-        queue,
+        queue: results,
       };
     },
   );
 
   const awaitedResults = (await Promise.all(requests)).flat();
-  return awaitedResults;
+  return { results: awaitedResults, errors };
 }
 
 export async function getProcessorQueue({
@@ -76,7 +101,7 @@ export async function getProcessorQueue({
 }: {
   rpcUrl: string;
   processorAddress: string;
-}): Promise<ArrayOfMessageBatch> {
+}): Promise<{ results: ArrayOfMessageBatch; errors: ErrorCodes }> {
   try {
     const processorClient = new ProcessorQueryClient(
       await getCosmwasmClient(rpcUrl),
@@ -87,9 +112,17 @@ export async function getProcessorQueue({
       processorClient.getQueue({ priority: "high" }),
       processorClient.getQueue({ priority: "medium" }),
     ]);
-    return results.flat();
+    return { results: results.flat(), errors: [] };
   } catch (e) {
-    console.log(`Error fetching processor queue: ${e}`);
-    return [];
+    const errMsg = !!e?.message ? e.message : JSON.stringify(e);
+    return {
+      results: [],
+      errors: makeApiErrors([
+        {
+          code: GetProgramErrorCodes.PROCESSOR_QUEUE,
+          message: `Failed to fetch processor queue for ${processorAddress}. ${errMsg}`,
+        },
+      ]),
+    };
   }
 }

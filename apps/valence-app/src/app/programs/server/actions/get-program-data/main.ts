@@ -202,7 +202,6 @@ export const getProgramData = async ({
     processorHistory = asyncResults[0].value;
   }
 
-  // TODO: the processor queue errors will not bubble up
   if (asyncResults[1].status === "rejected") {
     errors = [
       ...errors,
@@ -214,7 +213,10 @@ export const getProgramData = async ({
       ]),
     ];
   } else if (asyncResults[1].status === "fulfilled") {
-    processorQueues = asyncResults[1].value;
+    processorQueues = asyncResults[1].value.results;
+    if (asyncResults[1].value.errors) {
+      errors = [...errors, ...asyncResults[1].value.errors];
+    }
   }
 
   return {

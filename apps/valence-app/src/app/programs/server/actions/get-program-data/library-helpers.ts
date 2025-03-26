@@ -55,7 +55,9 @@ export async function fetchLibraryConfigs(
     }),
   );
 
-  const requests = allRequests.filter(isFulfilled).map((r) => r.value);
+  const successfullRequests = allRequests
+    .filter(isFulfilled)
+    .map((r) => r.value);
   let errors: ErrorCodes | undefined = undefined;
   const failedRequests = allRequests.filter(isRejected);
   if (failedRequests.length > 0) {
@@ -71,7 +73,7 @@ export async function fetchLibraryConfigs(
     errors = makeApiErrors(failedRequestsErrors);
   }
 
-  const configs = requests.reduce(
+  const configs = successfullRequests.reduce(
     (acc, { address, config }) => {
       acc[address] = config;
       return acc;
@@ -88,16 +90,12 @@ export async function fetchLibraryConfig({
   rpcUrl: string;
   libraryAddress: string;
 }): Promise<object> {
-  try {
-    const client = await getCosmwasmClient(rpcUrl);
+  const client = await getCosmwasmClient(rpcUrl);
 
-    const result = await client.queryContractSmart(libraryAddress, {
-      get_library_config: {},
-    });
-    return z.object({}).passthrough().parse(result);
-  } catch (e) {
-    return Promise.reject(e);
-  }
+  const result = await client.queryContractSmart(libraryAddress, {
+    get_library_config: {},
+  });
+  return z.object({}).passthrough().parse(result);
 }
 
 /***
