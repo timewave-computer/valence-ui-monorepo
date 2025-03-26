@@ -54,6 +54,8 @@ export async function fetchProcessorQueues({
     };
 
   const errors: ErrorCodes = [];
+  let results: ArrayOfMessageBatch = [];
+
   const requests = Object.values(processorAddresses).map(
     async ({ chainId, chainName, address: processorAddress, domainName }) => {
       const rpcUrl = getDomainConfig({ queryConfig, domainName })?.rpc;
@@ -65,23 +67,22 @@ export async function fetchProcessorQueues({
         chainId,
       };
 
-      const { results, errors: requestErrors } = rpcUrl
-        ? await getProcessorQueue({
-            rpcUrl,
-            processorAddress,
-          })
-        : {
-            results: undefined,
-            errors: makeApiErrors([
-              {
-                code: GetProgramErrorCodes.PROCESSOR_QUEUE,
-                message: `RPC URL not found for ${processorAddress}`,
-              },
-            ]),
-          };
-
-      if (requestErrors) {
-        errors.push(...requestErrors);
+      if (!rpcUrl) {
+        errors.push(
+          ...makeApiErrors([
+            {
+              code: GetProgramErrorCodes.PROCESSOR_QUEUE,
+              message: `RPC URL not found for ${processorAddress}`,
+            },
+          ]),
+        );
+      } else {
+        const processorQueueRequest = await getProcessorQueue({
+          rpcUrl,
+          processorAddress,
+        });
+        results = processorQueueRequest.results;
+        errors.push(...processorQueueRequest.errors);
       }
 
       return {

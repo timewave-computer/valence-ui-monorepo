@@ -112,7 +112,7 @@ export const DomainConnector = ({
         <Dialog>
           <DialogTrigger asChild>
             <Button size="sm" variant="secondary">
-              Connect to custom chain ({chainId})
+              Connect to custom chain
             </Button>
           </DialogTrigger>
           <DialogContent className=" w-3/4">
