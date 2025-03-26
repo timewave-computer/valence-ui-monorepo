@@ -11,10 +11,8 @@ import {
   ToastMessage,
 } from "@valence-ui/ui-components";
 import { useAccount, useConnect } from "graz";
-import { chains } from "chain-registry";
 import { ChainInfo } from "@keplr-wallet/types";
 import { useSupportedChains } from "@/context";
-
 import { useSuggestChainAndConnect, WalletType } from "graz";
 
 export const DomainConnector = ({
@@ -33,8 +31,6 @@ export const DomainConnector = ({
 
   const account = accounts && chainId ? accounts[chainId] : null;
 
-  const isRegisterdChain = chains.find((chain) => chain.chain_id === chainId);
-
   const domainRpcUrl =
     domainName === queryConfig.main.domainName
       ? queryConfig.main.rpc
@@ -43,6 +39,9 @@ export const DomainConnector = ({
 
   const { connect } = useConnect();
   const [supportedChains, setSupportedChains] = useSupportedChains();
+  const isSupportedChain = supportedChains.find(
+    (chain) => chain.chainId === chainId,
+  );
 
   const handleConnectCustomChain = async (chainInfo: ChainInfo) => {
     try {
@@ -99,7 +98,7 @@ export const DomainConnector = ({
         <Label variant="green">Connected</Label>
       </Layout>
     );
-  else if (isRegisterdChain)
+  else if (isSupportedChain)
     return (
       <Layout>
         <Button onClick={handleConnect} size="sm" variant="secondary">
@@ -113,7 +112,7 @@ export const DomainConnector = ({
         <Dialog>
           <DialogTrigger asChild>
             <Button size="sm" variant="secondary">
-              Connect to custom chain ({chainId})
+              Connect to custom chain
             </Button>
           </DialogTrigger>
           <DialogContent className=" w-3/4">

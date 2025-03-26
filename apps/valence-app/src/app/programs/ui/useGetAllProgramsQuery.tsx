@@ -9,7 +9,7 @@ import { LinkText, ToastMessage, toast } from "@valence-ui/ui-components";
 import { useCallback } from "react";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { isEqual } from "lodash";
-import { useProgramQueryConfig } from "./useProgramQueryConfig";
+import { useProgramQueryConfig } from "@/app/programs/ui";
 
 type UseProgramQueryArgs = {
   initialQueryData: GetAllProgramsReturnValue;

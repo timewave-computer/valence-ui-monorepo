@@ -8,7 +8,7 @@ import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 import { protoRegistry } from "@/smol_telescope/proto-registry";
 import { aminoConverters } from "@/smol_telescope/amino-converters";
 import { GrazProvider } from "graz";
-import { neutron, juno, terra, terra2 } from "graz/chains";
+import { neutron, neutrontestnet, juno, terra2 } from "graz/chains";
 import { atom, useAtom } from "jotai";
 import { ChainInfo } from "@keplr-wallet/types";
 
@@ -21,7 +21,7 @@ export const aminoTypes = new AminoTypes({
   ...aminoConverters,
 });
 
-export const supportedProgramsChains = [neutron, juno, terra, terra2];
+export const supportedProgramsChains = [neutron, juno, terra2, neutrontestnet];
 const grazSupportedChainsAtom = atom<Array<ChainInfo>>(supportedProgramsChains);
 export const useSupportedChains = () => {
   return useAtom(grazSupportedChainsAtom);

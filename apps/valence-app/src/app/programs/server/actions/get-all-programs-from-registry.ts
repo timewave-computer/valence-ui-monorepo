@@ -74,7 +74,7 @@ export const getAllProgramsFromRegistry = async ({
   }
 
   let rawPrograms: ArrayOfProgramResponse;
-  let errors = {};
+  let errors: ErrorCodes = [];
 
   try {
     rawPrograms = await fetchAllProgramsFromRegistry({
@@ -103,12 +103,15 @@ export const getAllProgramsFromRegistry = async ({
       const decodedConfig = JSON.parse(decodedBinaryString);
       return { id, decodedConfig };
     } catch (e) {
-      errors = makeApiErrors([
-        {
-          code: GetProgramErrorCodes.DECODE_BINARY,
-          message: e?.message,
-        },
-      ]);
+      errors = [
+        ...errors,
+        ...makeApiErrors([
+          {
+            code: GetProgramErrorCodes.DECODE_BINARY,
+            message: `Program ID ${id}: ${e?.message ?? JSON.stringify(e)}`,
+          },
+        ]),
+      ];
       return { id, decodedConfig: {} };
     }
   });
@@ -123,12 +126,15 @@ export const getAllProgramsFromRegistry = async ({
           parsed: validated,
         });
       } catch (e) {
-        errors = makeApiErrors([
-          {
-            code: GetProgramErrorCodes.PARSE,
-            message: e?.message,
-          },
-        ]);
+        errors = [
+          ...errors,
+          ...makeApiErrors([
+            {
+              code: GetProgramErrorCodes.PARSE,
+              message: `Progeam Id ${id}: ${e?.message ?? JSON.stringify(e)}`,
+            },
+          ]),
+        ];
       }
 
       return acc;
@@ -139,7 +145,7 @@ export const getAllProgramsFromRegistry = async ({
   return {
     dataLastUpdatedAt: getLastUpdatedTime(), // required for useQuery knowing when to refetch
     queryConfig: { main: mainDomainConfig, external: null },
-    errors: {},
+    errors: errors,
     parsedPrograms: parsedPrograms,
   };
 };
