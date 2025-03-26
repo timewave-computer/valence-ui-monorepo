@@ -1,24 +1,14 @@
 import { ProgramQueryConfig } from "@/app/programs/server";
+import { publicProgramsConfig } from "@valence-ui/programs-config";
 
-const defaultNeutronRpc = process.env.NEXT_PUBLIC_DEFAULT_NEUTRON_RPC;
-if (!defaultNeutronRpc) {
-  throw new Error("Missing NEXT_PUBLIC_DEFAULT_NEUTRON_RPC");
-}
-
-const defaultRegistry = process.env.NEXT_PUBLIC_DEFAULT_REGISTRY;
-if (!defaultRegistry) {
-  throw new Error("Missing NEXT_PUBLIC_DEFAULT_REGISTRY");
-}
-
-export const defaultDomainName = "neutron";
-
+export const defaultDomainName = publicProgramsConfig.main.domainName;
 export const getDefaultMainChainConfig = (): ProgramQueryConfig["main"] => {
-  const rpcUrl = defaultNeutronRpc;
+  const neutronConfig = publicProgramsConfig.main;
   return {
-    chainId: "neutron-1",
-    registryAddress: defaultRegistry,
-    rpc: rpcUrl,
-    domainName: defaultDomainName,
-    chainName: defaultDomainName,
+    chainId: neutronConfig.chainId,
+    registryAddress: publicProgramsConfig.registry,
+    rpc: neutronConfig.rpc,
+    domainName: neutronConfig.domainName,
+    chainName: neutronConfig.chainName,
   };
 };

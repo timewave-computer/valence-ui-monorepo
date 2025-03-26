@@ -14,6 +14,21 @@ const testnestChainsUrl =
 
 const urls = [mainnetChainsUrl, mainnetGeneralUrl, testnestChainsUrl];
 
+const chainConfigSchema = z.object({
+  chainId: z.string(),
+  rpc: z.string(),
+  chainName: z.string(),
+  domainName: z.string(),
+  gasPrice: z.string(),
+  gasDenom: z.string(),
+});
+type ChainConfig = z.infer<typeof chainConfigSchema>;
+const programsConfigSchema = z.object({
+  registry: z.string(),
+  main: chainConfigSchema,
+  chains: z.array(chainConfigSchema),
+});
+
 async function fetchAndParseToml() {
   try {
     const files = await Promise.all(
@@ -25,14 +40,42 @@ async function fetchAndParseToml() {
     );
     const [mainnetChains, mainnetGeneral, testnestChains] = files;
 
+    const { neutron, ...restOfMainnetChains } = mainnetChains.chains;
+    console.log("neutron", neutron);
+
+    const restOfChains = [
+      ...Object.entries(restOfMainnetChains),
+      ...Object.entries(testnestChains.chains),
+    ];
+
+    const restOfChainData: ChainConfig[] = restOfChains.map(
+      ([domainName, _chain]) => {
+        const chain = _chain as any;
+        return {
+          domainName,
+          chainName: chain.name,
+          chainId: chain.chain_id,
+          rpc: chain.rpc,
+          gasPrice: chain.gas_price,
+          gasDenom: chain.gas_denom,
+        };
+      }
+    );
+
     const publicProgramsConfig = {
       registry: mainnetGeneral.general.registry_addr,
-      chains: [
-        ...Object.values(mainnetChains.chains),
-        ...Object.values(testnestChains.chains),
-      ],
+      main: {
+        chainId: neutron.chain_id,
+        rpc: neutron.rpc,
+        chainName: neutron.name,
+        domainName: "neutron",
+        gasPrice: neutron.gas_price,
+        gasDenom: neutron.gas_denom,
+      },
+      chains: restOfChainData,
     };
-    const validatedConfig = configSchema.parse(publicProgramsConfig);
+    console.log("publicProgramsConfig", publicProgramsConfig);
+    const validatedConfig = programsConfigSchema.parse(publicProgramsConfig);
     const exportableConfig = `export const publicProgramsConfig = ${JSON.stringify(
       validatedConfig,
       null,
@@ -40,21 +83,8 @@ async function fetchAndParseToml() {
     )};`;
     fs.writeFileSync(WRITE_PATH, exportableConfig, "utf8");
   } catch (error) {
-    console.error("Error fetching or parsing the TOML file:", error);
+    console.error("Error generating public chain config", error);
   }
 }
 
 fetchAndParseToml();
-
-const configSchema = z.object({
-  registry: z.string(),
-  chains: z.array(
-    z.object({
-      chain_id: z.string(),
-      rpc: z.string(),
-      name: z.string(),
-      gas_price: z.string(),
-      gas_denom: z.string(),
-    })
-  ),
-});
