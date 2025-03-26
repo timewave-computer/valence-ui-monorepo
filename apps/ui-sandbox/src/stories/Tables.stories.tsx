@@ -1,7 +1,7 @@
 "use client";
 import { Section, Story } from "~/components";
 import {
-  HoverContent,
+  TooltipHoverContent,
   Table,
   type TableRow,
   CellType,
@@ -88,7 +88,7 @@ const headers: TableColumnHeader[] = [
     label: "Asset",
     cellType: CellType.Asset,
     hoverTooltip: (
-      <HoverContent title="Tooltip title" text="Sample tooltip text." />
+      <TooltipHoverContent title="Tooltip title" text="Sample tooltip text." />
     ),
   },
   {

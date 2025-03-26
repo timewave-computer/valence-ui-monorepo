@@ -22,7 +22,6 @@ const HoverCards = () => {
           </HoverCardContent>
         </HoverCardRoot>
       </Story>
-      <Story></Story>
     </Section>
   );
 };

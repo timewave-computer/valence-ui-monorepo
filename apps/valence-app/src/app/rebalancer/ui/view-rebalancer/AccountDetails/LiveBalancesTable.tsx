@@ -1,6 +1,6 @@
 "use client";
 import {
-  HoverContent,
+  TooltipHoverContent,
   TableHeader,
   Table,
   TableColumnHeader,
@@ -158,7 +158,7 @@ const headers: TableColumnHeader[] = [
     cellType: CellType.Number,
     align: "right",
     hoverTooltip: (
-      <HoverContent
+      <TooltipHoverContent
         className="max-w-md"
         {...LivePortfolioTooltipCopy.withdrawable}
       />

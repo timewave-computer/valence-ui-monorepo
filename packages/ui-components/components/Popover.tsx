@@ -5,11 +5,7 @@ import { cn } from "../utils";
 
 type PopoverRootProps = React.ComponentProps<typeof PopoverPrimitive.Root>;
 export const PopoverRoot = ({ children, ...props }: PopoverRootProps) => {
-  return (
-    <PopoverPrimitive.Root {...props} openDelay={0}>
-      {children}
-    </PopoverPrimitive.Root>
-  );
+  return <PopoverPrimitive.Root {...props}>{children}</PopoverPrimitive.Root>;
 };
 
 export const PopoverTrigger = PopoverPrimitive.Trigger;

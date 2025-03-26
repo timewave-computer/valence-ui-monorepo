@@ -6,7 +6,7 @@ import { displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import {
   FormField,
-  HoverContent,
+  TooltipHoverContent,
   InputLabel,
   WithIconAndTooltip,
   LoadingSkeleton,
@@ -195,7 +195,7 @@ export const DepositAssets: React.FC<{
         />
         <WithIconAndTooltip
           tooltipContent={
-            <HoverContent {...RebalancerFormTooltipCopy.serviceFee} />
+            <TooltipHoverContent {...RebalancerFormTooltipCopy.serviceFee} />
           }
         >
           <span className="text-sm">
