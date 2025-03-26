@@ -91,7 +91,7 @@ export const ConnectWalletButton: React.FC = () => {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent side="bottom" sideOffset={10}>
+      <PopoverContent side="bottom" sideOffset={11}>
         <div className="items-left flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <Heading level="h3">Connected chains</Heading>

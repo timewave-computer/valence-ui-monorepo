@@ -21,7 +21,7 @@ export const PopoverContent = ({
   return (
     <PopoverPrimitive.Content
       {...props}
-      sideOffset={11}
+      sideOffset={10}
       className={cn(
         "p-4 bg-valence-white border border-valence-black shadow-sm shadow-valence-gray min-w-44 text-sm flex flex-col gap-2",
         className,
