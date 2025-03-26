@@ -41,23 +41,23 @@ const PROGRAM_ERROR_CONTENT: Record<
     text: "Verify registry address and RPC URL are correct in the RPC settings.",
   },
   [GetProgramErrorCodes.PARSE]: {
-    title: "Failed to parse program",
+    title: "Error parsing program configuration",
     text: "Configuration format not supported in the UI.",
   },
   [GetProgramErrorCodes.BALANCES]: {
-    title: "Failed to fetch account balances",
+    title: "Error fetching account balances",
   },
   [GetProgramErrorCodes.LIBRARY_CONFIG]: {
-    title: "Failed to fetch configuration for library",
+    title: "Error fetching library configuration",
   },
   [GetProgramErrorCodes.DECODE_BINARY]: {
-    title: "Failed to decode program",
+    title: "Error decoding program",
   },
   [GetProgramErrorCodes.PROCESSOR_QUEUE]: {
-    title: "Failed to fetch processor queue",
+    title: "Error fetching processor queue",
   },
   [GetProgramErrorCodes.EXECUTION_HISTORY]: {
-    title: "Failed to fetch execution history",
+    title: "Error fetching execution history",
   },
 };
 

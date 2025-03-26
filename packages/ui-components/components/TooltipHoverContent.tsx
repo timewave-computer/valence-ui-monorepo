@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 import { Heading } from ".";
 import { cn } from "../utils";
 
-export const HoverContent: React.FC<{
+export const TooltipHoverContent: React.FC<{
   title?: string;
   text?: string;
   children?: ReactNode;
