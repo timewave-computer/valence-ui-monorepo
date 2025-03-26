@@ -54,7 +54,6 @@ export async function fetchProcessorQueues({
     };
 
   const errors: ErrorCodes = [];
-  let results: ArrayOfMessageBatch = [];
 
   const requests = Object.values(processorAddresses).map(
     async ({ chainId, chainName, address: processorAddress, domainName }) => {
@@ -66,6 +65,8 @@ export async function fetchProcessorQueues({
         processorAddress,
         chainId,
       };
+
+      let queueResults: ArrayOfMessageBatch = [];
 
       if (!rpcUrl) {
         errors.push(
@@ -81,13 +82,13 @@ export async function fetchProcessorQueues({
           rpcUrl,
           processorAddress,
         });
-        results = processorQueueRequest.results;
+        queueResults = processorQueueRequest.results;
         errors.push(...processorQueueRequest.errors);
       }
 
       return {
         ...processorMetadata,
-        queue: results,
+        queue: queueResults,
       };
     },
   );
