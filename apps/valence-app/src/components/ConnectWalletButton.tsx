@@ -7,9 +7,11 @@ import {
   ToastMessage,
   cn,
   toast,
+  PopoverRoot,
+  PopoverContent,
+  PopoverTrigger,
 } from "@valence-ui/ui-components";
 import { useAlert, useIsServer } from "@/hooks";
-import * as Popover from "@radix-ui/react-popover";
 import {
   useAccount,
   checkWallet,
@@ -77,8 +79,8 @@ export const ConnectWalletButton: React.FC = () => {
   }
 
   return (
-    <Popover.Root>
-      <Popover.Trigger asChild>
+    <PopoverRoot>
+      <PopoverTrigger asChild>
         <Button
           className={cn(
             "hidden md:flex", // hide on mobile
@@ -87,12 +89,12 @@ export const ConnectWalletButton: React.FC = () => {
         >
           Wallet
         </Button>
-      </Popover.Trigger>
+      </PopoverTrigger>
 
-      <Popover.Content
+      <PopoverContent
         side="bottom"
         sideOffset={11}
-        className="items-left z-50 flex flex-col gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all mr-4"
+        // className="items-left z-50 flex flex-col gap-4 border border-valence-black bg-valence-white p-4 shadow-md transition-all mr-4"
       >
         <div className="items-left flex flex-col gap-4">
           <div className="flex flex-col gap-1">
@@ -139,7 +141,7 @@ export const ConnectWalletButton: React.FC = () => {
             })}
           </div>
         </div>
-      </Popover.Content>
-    </Popover.Root>
+      </PopoverContent>
+    </PopoverRoot>
   );
 };

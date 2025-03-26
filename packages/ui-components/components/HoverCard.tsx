@@ -13,7 +13,7 @@ export const HoverCardRoot = ({
   ...props
 }: HoverCardRootProps) => {
   return (
-    <HoverCard {...props} openDelay={0}>
+    <HoverCard {...props} closeDelay={0} openDelay={0}>
       {children}
     </HoverCard>
   );
@@ -29,9 +29,10 @@ export const HoverCardContent = ({
 }: HoverCardContentProps) => {
   return (
     <Content
+      sideOffset={10}
       {...props}
       className={cn(
-        "p-4 bg-valence-white border border-valence-black shadow-sm shadow-valence-gray",
+        "p-4 bg-valence-white border border-valence-black shadow-sm shadow-valence-gray min-w-44 text-sm flex flex-col gap-2",
         className,
       )}
     >

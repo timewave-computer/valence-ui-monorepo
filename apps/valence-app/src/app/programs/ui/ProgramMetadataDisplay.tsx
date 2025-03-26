@@ -4,7 +4,7 @@ import {
   ProgramQueryConfig,
 } from "@/app/programs/server";
 import { DomainConnector } from "@/app/programs/ui";
-import { Copyable, Heading } from "@valence-ui/ui-components";
+import { Copyable, Heading, LinkText } from "@valence-ui/ui-components";
 import { displayAddress } from "@/utils";
 
 export const ProgramMetdataDisplay = ({
@@ -25,9 +25,13 @@ export const ProgramMetdataDisplay = ({
       <div className="">
         <Heading level="h5">Owner</Heading>
         <Copyable copyText={program?.parsedProgram?.owner ?? ""}>
-          <div className="text-xs font-mono">
+          <LinkText
+            LinkComponent={"div"}
+            className="font-mono text-xs"
+            variant={"secondary"}
+          >
             {displayAddress(program?.parsedProgram?.owner ?? "")}
-          </div>
+          </LinkText>
         </Copyable>
       </div>
 
@@ -38,12 +42,16 @@ export const ProgramMetdataDisplay = ({
             program?.parsedProgram?.authorizationData?.authorization_addr ?? ""
           }
         >
-          <div className="text-xs font-mono">
+          <LinkText
+            LinkComponent={"div"}
+            className="font-mono text-xs"
+            variant={"secondary"}
+          >
             {displayAddress(
               program?.parsedProgram?.authorizationData?.authorization_addr ??
                 "",
             )}
-          </div>
+          </LinkText>
         </Copyable>
       </div>
       <div>
