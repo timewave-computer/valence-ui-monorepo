@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@valence-ui/config/ts/base.json",
+  "extends": "@valence-ui/project-config/ts/base.json",
   "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "baseUrl": ".",

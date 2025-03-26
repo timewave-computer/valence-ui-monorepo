@@ -9,7 +9,7 @@
     "gen:server": "./server/generate.sh"
   },
   "dependencies": {
-    "@valence-ui/config": "*",
+    "@valence-ui/project-config": "*",
     "zod": "^3.23.8"
   },
   "devDependencies": {

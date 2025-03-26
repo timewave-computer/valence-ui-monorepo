@@ -23,12 +23,12 @@ importers:
 
   apps/ui-sandbox:
     dependencies:
-      '@valence-ui/config':
-        specifier: '*'
-        version: link:../../packages/config
       '@valence-ui/fonts':
         specifier: '*'
         version: link:../../packages/fonts
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../../packages/project-config
       '@valence-ui/ui-components':
         specifier: '*'
         version: link:../../packages/ui-components
@@ -126,12 +126,12 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.56.2
         version: 5.59.15(react@19.0.0)
-      '@valence-ui/config':
-        specifier: '*'
-        version: link:../../packages/config
       '@valence-ui/fonts':
         specifier: '*'
         version: link:../../packages/fonts
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../../packages/project-config
       '@valence-ui/socials':
         specifier: '*'
         version: link:../../packages/socials
@@ -301,12 +301,12 @@ importers:
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
-      '@valence-ui/config':
-        specifier: '*'
-        version: link:../../packages/config
       '@valence-ui/fonts':
         specifier: '*'
         version: link:../../packages/fonts
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../../packages/project-config
       '@valence-ui/socials':
         specifier: '*'
         version: link:../../packages/socials
@@ -429,31 +429,6 @@ importers:
         specifier: ^5.4.5
         version: 5.6.3
 
-  packages/config:
-    dependencies:
-      tailwindcss:
-        specifier: ^3.4.3
-        version: 3.4.14(ts-node@10.9.2)
-    devDependencies:
-      '@tanstack/react-query-devtools':
-        specifier: ^5.56.2
-        version: 5.59.15(@tanstack/react-query@5.59.15)(react@19.0.0)
-      '@typescript-eslint/eslint-plugin':
-        specifier: 6.14.0
-        version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.57.1)(typescript@5.3.3)
-      '@typescript-eslint/parser':
-        specifier: 6.14.0
-        version: 6.14.0(eslint@8.57.1)(typescript@5.3.3)
-      prettier-plugin-tailwindcss:
-        specifier: ^0.5.14
-        version: 0.5.14(prettier@3.2.5)
-      tsx:
-        specifier: ^4.19.0
-        version: 4.19.1
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
-
   packages/fonts:
     dependencies:
       '@next/font':
@@ -462,9 +437,9 @@ importers:
 
   packages/generated-types:
     dependencies:
-      '@valence-ui/config':
+      '@valence-ui/project-config':
         specifier: '*'
-        version: link:../config
+        version: link:../project-config
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -497,11 +472,49 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
+  packages/program-config:
+    dependencies:
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../project-config
+    devDependencies:
+      tsx:
+        specifier: ^4.19.0
+        version: 4.19.1
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+
+  packages/project-config:
+    dependencies:
+      tailwindcss:
+        specifier: ^3.4.3
+        version: 3.4.14(ts-node@10.9.2)
+    devDependencies:
+      '@tanstack/react-query-devtools':
+        specifier: ^5.56.2
+        version: 5.59.15(@tanstack/react-query@5.59.15)(react@19.0.0)
+      '@typescript-eslint/eslint-plugin':
+        specifier: 6.14.0
+        version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.57.1)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: 6.14.0
+        version: 6.14.0(eslint@8.57.1)(typescript@5.3.3)
+      prettier-plugin-tailwindcss:
+        specifier: ^0.5.14
+        version: 0.5.14(prettier@3.2.5)
+      tsx:
+        specifier: ^4.19.0
+        version: 4.19.1
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+
   packages/socials:
     dependencies:
-      '@valence-ui/config':
+      '@valence-ui/project-config':
         specifier: '*'
-        version: link:../config
+        version: link:../project-config
     devDependencies:
       tsx:
         specifier: ^4.19.0
@@ -536,9 +549,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.0.7
         version: 1.1.3(@types/react-dom@19.0.2)(@types/react@19.0.8)(react-dom@19.0.0)(react@19.0.0)
-      '@valence-ui/config':
+      '@valence-ui/project-config':
         specifier: '*'
-        version: link:../config
+        version: link:../project-config
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -6881,7 +6894,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@eslint-community/regexpp': 4.11.1
+      '@eslint-community/regexpp': 4.12.1
       '@typescript-eslint/parser': 6.14.0(eslint@8.57.1)(typescript@5.3.3)
       '@typescript-eslint/scope-manager': 6.14.0
       '@typescript-eslint/type-utils': 6.14.0(eslint@8.57.1)(typescript@5.3.3)
