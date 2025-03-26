@@ -21,9 +21,8 @@ import {
   type GetAllProgramsReturnValue,
   getTerra2Chain,
   ProgramQueryConfig,
+  PublicProgramsConfig,
 } from "@/app/programs/server";
-import { chains } from "chain-registry";
-import { Chain } from "@chain-registry/types";
 
 export const ProgramRegistryViewer = ({
   data: initialData,
@@ -46,23 +45,15 @@ export const ProgramRegistryViewer = ({
     const externalDomainQueryConfig: ProgramQueryConfig["external"] =
       externalDomains
         ? externalDomains.reduce((acc, domain) => {
-            let registeredChain: Chain | undefined;
+            const supportedChain =
+              PublicProgramsConfig.getConfigByDomainName(domain);
 
-            // temp
-            if (domain === "terra") {
-              registeredChain = getTerra2Chain();
-            } else {
-              registeredChain = chains.find(
-                (chain) => chain.chain_name === domain,
-              );
-            }
-
-            if (registeredChain) {
+            if (supportedChain) {
               acc.push({
-                chainId: registeredChain.chain_id,
+                chainId: supportedChain.chainId,
                 domainName: domain,
-                chainName: registeredChain.chain_name,
-                rpc: registeredChain.apis?.rpc?.[0]?.address ?? "",
+                chainName: supportedChain.chainName,
+                rpc: supportedChain.rpc,
               });
             }
             return acc;

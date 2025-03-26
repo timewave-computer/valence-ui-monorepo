@@ -131,7 +131,7 @@ export const getAllProgramsFromRegistry = async ({
           ...makeApiErrors([
             {
               code: GetProgramErrorCodes.PARSE,
-              message: `Progeam Id ${id}: ${e?.message ?? JSON.stringify(e)}`,
+              message: `Program Id ${id}: ${e?.message ?? JSON.stringify(e)}`,
             },
           ]),
         ];

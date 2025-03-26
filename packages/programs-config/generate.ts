@@ -2,7 +2,7 @@ import * as fs from "fs";
 import axios from "axios";
 import * as path from "path";
 import * as toml from "toml";
-import { z } from "zod";
+import { ChainConfig, programsConfigSchema } from "./schema";
 
 const WRITE_PATH = path.join(__dirname, "generated", "programs-config.ts");
 const mainnetChainsUrl =
@@ -14,22 +14,7 @@ const testnestChainsUrl =
 
 const urls = [mainnetChainsUrl, mainnetGeneralUrl, testnestChainsUrl];
 
-const chainConfigSchema = z.object({
-  chainId: z.string(),
-  rpc: z.string(),
-  chainName: z.string(),
-  domainName: z.string(),
-  gasPrice: z.string(),
-  gasDenom: z.string(),
-});
-type ChainConfig = z.infer<typeof chainConfigSchema>;
-const programsConfigSchema = z.object({
-  registry: z.string(),
-  main: chainConfigSchema,
-  chains: z.array(chainConfigSchema),
-});
-
-async function fetchAndParseToml() {
+async function main() {
   try {
     const files = await Promise.all(
       urls.map(async (url) => {
@@ -41,7 +26,6 @@ async function fetchAndParseToml() {
     const [mainnetChains, mainnetGeneral, testnestChains] = files;
 
     const { neutron, ...restOfMainnetChains } = mainnetChains.chains;
-    console.log("neutron", neutron);
 
     const restOfChains = [
       ...Object.entries(restOfMainnetChains),
@@ -74,7 +58,6 @@ async function fetchAndParseToml() {
       },
       chains: restOfChainData,
     };
-    console.log("publicProgramsConfig", publicProgramsConfig);
     const validatedConfig = programsConfigSchema.parse(publicProgramsConfig);
     const exportableConfig = `export const publicProgramsConfig = ${JSON.stringify(
       validatedConfig,
@@ -87,4 +70,4 @@ async function fetchAndParseToml() {
   }
 }
 
-fetchAndParseToml();
+main();

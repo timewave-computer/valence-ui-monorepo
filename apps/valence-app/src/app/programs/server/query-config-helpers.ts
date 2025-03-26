@@ -1,7 +1,7 @@
-import { chains } from "chain-registry";
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
-import { Chain } from "@chain-registry/types";
+import { PublicProgramsConfig } from "./public-programs-config";
+import { chains } from "chain-registry";
 
 const externalConfigSchema = z.array(
   z.object({
@@ -30,6 +30,19 @@ const queryConfigLoader = {
 };
 export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 
+export const defaultDomainName = PublicProgramsConfig.get().main.domainName;
+export const getDefaultMainChainConfig = (): ProgramQueryConfig["main"] => {
+  const config = PublicProgramsConfig.get();
+  const neutronConfig = config.main;
+  return {
+    chainId: neutronConfig.chainId,
+    registryAddress: config.registry,
+    rpc: neutronConfig.rpc,
+    domainName: neutronConfig.domainName,
+    chainName: neutronConfig.chainName,
+  };
+};
+
 export const makeExternalDomainConfig = ({
   externalProgramDomains,
   userSuppliedQueryConfig,
@@ -56,22 +69,13 @@ export const makeExternalDomainConfig = ({
   } else {
     // make from defaults
     return externalProgramDomains.map((domain) => {
-      let registeredChain: Chain | undefined;
-      // temporary fix for terra
-      if (domain === "terra") {
-        registeredChain = getTerra2Chain();
-      } else {
-        registeredChain = chains.find((chain) => {
-          return chain.chain_name === domain;
-        });
-      }
+      const supportedChain = PublicProgramsConfig.getConfigByDomainName(domain);
 
-      const rpcUrl = registeredChain?.apis?.rpc?.[0]?.address || "";
       return {
-        rpc: rpcUrl,
-        chainId: registeredChain?.chain_id || "",
+        rpc: supportedChain?.rpc ?? "",
+        chainId: supportedChain?.chainId ?? "",
         domainName: domain,
-        chainName: registeredChain?.chain_name || "",
+        chainName: supportedChain?.chainName || "",
       };
     });
   }
