@@ -5,7 +5,6 @@ import { TooltipHoverContent } from "@valence-ui/ui-components";
 const TooltipHoverContents = () => {
   return (
     <Section id="info text">
-      <Story></Story>
       <TooltipHoverContent
         title="Hover content title"
         text="This is used in tooltips "

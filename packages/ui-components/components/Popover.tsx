@@ -16,14 +16,15 @@ type PopoverContentProps = React.ComponentProps<
 export const PopoverContent = ({
   className,
   children,
+  sideOffset,
   ...props
 }: PopoverContentProps) => {
   return (
     <PopoverPrimitive.Content
       {...props}
-      sideOffset={10}
+      sideOffset={sideOffset ?? 10}
       className={cn(
-        "p-4 bg-valence-white border border-valence-black shadow-sm shadow-valence-gray min-w-44 text-sm flex flex-col gap-2",
+        "p-4 bg-valence-white border border-valence-black shadow-sm shadow-valence-gray min-w-44 text-sm flex flex-col gap-2 z-50",
         className,
       )}
     >
