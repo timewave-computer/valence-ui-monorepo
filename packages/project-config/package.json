@@ -1,5 +1,5 @@
 {
-  "name": "@valence-ui/config",
+  "name": "@valence-ui/project-config",
   "version": "0.1.0",
   "dependencies": {
     "tailwindcss": "^3.4.3"

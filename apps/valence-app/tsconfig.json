@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@valence-ui/config/ts/nextjs.json",
+  "extends": "@valence-ui/project-config/ts/nextjs.json",
   "exclude": ["node_modules"],
   "compilerOptions": {
     "baseUrl": ".",

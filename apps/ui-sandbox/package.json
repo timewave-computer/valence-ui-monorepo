@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@valence-ui/config": "*",
+    "@valence-ui/project-config": "*",
     "@valence-ui/ui-components": "*",
     "@valence-ui/fonts": "*",
     "next": "^14.2.0",

@@ -23,12 +23,12 @@ importers:
 
   apps/ui-sandbox:
     dependencies:
-      '@valence-ui/config':
-        specifier: '*'
-        version: link:../../packages/config
       '@valence-ui/fonts':
         specifier: '*'
         version: link:../../packages/fonts
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../../packages/project-config
       '@valence-ui/ui-components':
         specifier: '*'
         version: link:../../packages/ui-components
@@ -126,12 +126,12 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.56.2
         version: 5.59.15(react@19.0.0)
-      '@valence-ui/config':
-        specifier: '*'
-        version: link:../../packages/config
       '@valence-ui/fonts':
         specifier: '*'
         version: link:../../packages/fonts
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../../packages/project-config
       '@valence-ui/socials':
         specifier: '*'
         version: link:../../packages/socials
@@ -301,12 +301,12 @@ importers:
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
-      '@valence-ui/config':
-        specifier: '*'
-        version: link:../../packages/config
       '@valence-ui/fonts':
         specifier: '*'
         version: link:../../packages/fonts
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../../packages/project-config
       '@valence-ui/socials':
         specifier: '*'
         version: link:../../packages/socials
@@ -429,31 +429,6 @@ importers:
         specifier: ^5.4.5
         version: 5.6.3
 
-  packages/config:
-    dependencies:
-      tailwindcss:
-        specifier: ^3.4.3
-        version: 3.4.14(ts-node@10.9.2)
-    devDependencies:
-      '@tanstack/react-query-devtools':
-        specifier: ^5.56.2
-        version: 5.59.15(@tanstack/react-query@5.59.15)(react@19.0.0)
-      '@typescript-eslint/eslint-plugin':
-        specifier: 6.14.0
-        version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.57.1)(typescript@5.3.3)
-      '@typescript-eslint/parser':
-        specifier: 6.14.0
-        version: 6.14.0(eslint@8.57.1)(typescript@5.3.3)
-      prettier-plugin-tailwindcss:
-        specifier: ^0.5.14
-        version: 0.5.14(prettier@3.2.5)
-      tsx:
-        specifier: ^4.19.0
-        version: 4.19.1
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
-
   packages/fonts:
     dependencies:
       '@next/font':
@@ -462,9 +437,9 @@ importers:
 
   packages/generated-types:
     dependencies:
-      '@valence-ui/config':
+      '@valence-ui/project-config':
         specifier: '*'
-        version: link:../config
+        version: link:../project-config
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -497,11 +472,74 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
+  packages/program-config:
+    dependencies:
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../project-config
+    devDependencies:
+      tsx:
+        specifier: ^4.19.0
+        version: 4.19.1
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+
+  packages/programs-config:
+    dependencies:
+      '@valence-ui/project-config':
+        specifier: '*'
+        version: link:../project-config
+    devDependencies:
+      '@types/axios':
+        specifier: ^0.14.4
+        version: 0.14.4
+      '@types/node':
+        specifier: ^22.13.13
+        version: 22.13.13
+      axios:
+        specifier: ^1.8.4
+        version: 1.8.4
+      toml:
+        specifier: ^3.0.0
+        version: 3.0.0
+      tsx:
+        specifier: ^4.19.0
+        version: 4.19.1
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+
+  packages/project-config:
+    dependencies:
+      tailwindcss:
+        specifier: ^3.4.3
+        version: 3.4.14(ts-node@10.9.2)
+    devDependencies:
+      '@tanstack/react-query-devtools':
+        specifier: ^5.56.2
+        version: 5.59.15(@tanstack/react-query@5.59.15)(react@19.0.0)
+      '@typescript-eslint/eslint-plugin':
+        specifier: 6.14.0
+        version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.57.1)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: 6.14.0
+        version: 6.14.0(eslint@8.57.1)(typescript@5.3.3)
+      prettier-plugin-tailwindcss:
+        specifier: ^0.5.14
+        version: 0.5.14(prettier@3.2.5)
+      tsx:
+        specifier: ^4.19.0
+        version: 4.19.1
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+
   packages/socials:
     dependencies:
-      '@valence-ui/config':
+      '@valence-ui/project-config':
         specifier: '*'
-        version: link:../config
+        version: link:../project-config
     devDependencies:
       tsx:
         specifier: ^4.19.0
@@ -536,9 +574,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.0.7
         version: 1.1.3(@types/react-dom@19.0.2)(@types/react@19.0.8)(react-dom@19.0.0)(react@19.0.0)
-      '@valence-ui/config':
+      '@valence-ui/project-config':
         specifier: '*'
-        version: link:../config
+        version: link:../project-config
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -6486,6 +6524,15 @@ packages:
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
     dev: true
 
+  /@types/axios@0.14.4:
+    resolution: {integrity: sha512-9JgOaunvQdsQ/qW2OPmE5+hCeUB52lQSolecrFrthct55QekhmXEwT203s20RL+UHtCQc15y3VXpby9E7Kkh/g==}
+    deprecated: This is a stub types definition. axios provides its own type definitions, so you do not need this installed.
+    dependencies:
+      axios: 1.8.4
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
   /@types/babel__core@7.20.5:
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
     dependencies:
@@ -6741,6 +6788,12 @@ packages:
     dependencies:
       undici-types: 6.19.8
 
+  /@types/node@22.13.13:
+    resolution: {integrity: sha512-ClsL5nMwKaBRwPcCvH8E7+nU4GxHVx1axNvMZTFHMEfNI7oahimt26P5zjVCRrjiIWj6YFXfE1v3dEp94wLcGQ==}
+    dependencies:
+      undici-types: 6.20.0
+    dev: true
+
   /@types/node@22.7.9:
     resolution: {integrity: sha512-jrTfRC7FM6nChvU7X2KqcrgquofrWLFDeYC1hKfwNWomVvrn7JIksqf344WN2X/y8xrgqBd2dJATZV4GbatBfg==}
     dependencies:
@@ -6881,7 +6934,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@eslint-community/regexpp': 4.11.1
+      '@eslint-community/regexpp': 4.12.1
       '@typescript-eslint/parser': 6.14.0(eslint@8.57.1)(typescript@5.3.3)
       '@typescript-eslint/scope-manager': 6.14.0
       '@typescript-eslint/type-utils': 6.14.0(eslint@8.57.1)(typescript@5.3.3)
@@ -7617,7 +7670,7 @@ packages:
   /@usecapsule/user-management-client@1.18.0:
     resolution: {integrity: sha512-F0q5OQV2GiXQ0US8hnEPaCQ3fITSaubodalhw83wLlYUnC9BY0Xd1hXfGh2lcru17TKQYWIoImWf3aZnwN3LnA==}
     dependencies:
-      axios: 1.7.7
+      axios: 1.8.4
       qs: 6.13.0
     transitivePeerDependencies:
       - debug
@@ -7626,7 +7679,7 @@ packages:
   /@usecapsule/user-management-client@1.21.1:
     resolution: {integrity: sha512-a0aQ5dgYILfMsTaFOWW6PjD4mcdL2dZL1BRbncdhA6uhLp/qkG19754tltF/TIQimT5eiJ+BQyL67jdSfPtY1g==}
     dependencies:
-      axios: 1.7.7
+      axios: 1.8.4
       qs: 6.13.0
     transitivePeerDependencies:
       - debug
@@ -8615,6 +8668,15 @@ packages:
 
   /axios@1.7.7:
     resolution: {integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==}
+    dependencies:
+      follow-redirects: 1.15.9
+      form-data: 4.0.1
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  /axios@1.8.4:
+    resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
     dependencies:
       follow-redirects: 1.15.9
       form-data: 4.0.1
@@ -16494,6 +16556,10 @@ packages:
     engines: {node: '>=0.6'}
     dev: true
 
+  /toml@3.0.0:
+    resolution: {integrity: sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==}
+    dev: true
+
   /tough-cookie@4.1.4:
     resolution: {integrity: sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==}
     engines: {node: '>=6'}
@@ -16857,6 +16923,10 @@ packages:
 
   /undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  /undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
+    dev: true
 
   /unenv@1.10.0:
     resolution: {integrity: sha512-wY5bskBQFL9n3Eca5XnhH6KbUo/tfvkwm9OpcdCvLaeA7piBNbavbOKJySEwQ1V0RH6HvNlSAFRTpvTqgKRQXQ==}
