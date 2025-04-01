@@ -1,7 +1,7 @@
 import { chains } from "chain-registry";
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
-import { getDefaultMainChainConfig } from "@/app/programs/server/config";
+import { Chain } from "@chain-registry/types";
 
 const externalConfigSchema = z.array(
   z.object({
@@ -56,9 +56,15 @@ export const makeExternalDomainConfig = ({
   } else {
     // make from defaults
     return externalProgramDomains.map((domain) => {
-      const registeredChain = chains.find((chain) => {
-        return chain.chain_name === domain;
-      });
+      let registeredChain: Chain | undefined;
+      // temporary fix for terra
+      if (domain === "terra") {
+        registeredChain = getTerra2Chain();
+      } else {
+        registeredChain = chains.find((chain) => {
+          return chain.chain_name === domain;
+        });
+      }
 
       const rpcUrl = registeredChain?.apis?.rpc?.[0]?.address || "";
       return {
@@ -85,4 +91,21 @@ export const getDomainConfig = ({
       return config.domainName === domainName;
     });
   }
+};
+
+// temp
+export const getTerra2Chain = () => {
+  const terra2 = chains.find((c) => c.chain_id === "phoenix-1");
+  if (!terra2) return;
+  return {
+    ...terra2,
+    chain_name: "terra",
+    apis: {
+      rpc: [
+        {
+          address: "https://terra-rpc.polkachu.com",
+        },
+      ],
+    },
+  };
 };
