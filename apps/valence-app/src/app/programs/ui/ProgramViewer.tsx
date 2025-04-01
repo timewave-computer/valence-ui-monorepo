@@ -25,6 +25,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@valence-ui/ui-components";
+import { useOfflineSigners, useStargateSigningClient } from "graz";
 import Link from "next/link";
 
 export type ProgramViewerProps = {
@@ -49,6 +50,17 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   });
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
+
+  const { data: offlineSigners } = useOfflineSigners({
+    multiChain: true,
+  });
+
+  const { data: signingClients } = useStargateSigningClient({
+    multiChain: true,
+  });
+
+  console.log("offline signers", offlineSigners);
+  console.log("stargate signers", signingClients);
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">

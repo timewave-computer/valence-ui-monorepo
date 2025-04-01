@@ -3,6 +3,7 @@ import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
 import { Chain } from "@chain-registry/types";
 
+
 const externalConfigSchema = z.array(
   z.object({
     rpc: z.string(),
