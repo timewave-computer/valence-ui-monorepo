@@ -19,9 +19,11 @@ import Link from "next/link";
 import {
   ExternalProgramQueryConfig,
   type GetAllProgramsReturnValue,
+  getTerra2Chain,
   ProgramQueryConfig,
 } from "@/app/programs/server";
 import { chains } from "chain-registry";
+import { Chain } from "@chain-registry/types";
 
 export const ProgramRegistryViewer = ({
   data: initialData,
@@ -44,9 +46,17 @@ export const ProgramRegistryViewer = ({
     const externalDomainQueryConfig: ProgramQueryConfig["external"] =
       externalDomains
         ? externalDomains.reduce((acc, domain) => {
-            const registeredChain = chains.find(
-              (chain) => chain.chain_name === domain,
-            );
+            let registeredChain: Chain | undefined;
+
+            // temp
+            if (domain === "terra") {
+              registeredChain = getTerra2Chain();
+            } else {
+              registeredChain = chains.find(
+                (chain) => chain.chain_name === domain,
+              );
+            }
+
             if (registeredChain) {
               acc.push({
                 chainId: registeredChain.chain_id,
