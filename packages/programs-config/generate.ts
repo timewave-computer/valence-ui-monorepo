@@ -15,6 +15,7 @@ const testnestChainsUrl =
 const urls = [mainnetChainsUrl, mainnetGeneralUrl, testnestChainsUrl];
 
 async function main() {
+  console.log("Generating programs chain config");
   try {
     const files = await Promise.all(
       urls.map(async (url) => {
@@ -65,6 +66,10 @@ async function main() {
       2
     )};`;
     fs.writeFileSync(WRITE_PATH, exportableConfig, "utf8");
+    console.log(
+      "Successfully generated public chain config. Wrote to",
+      WRITE_PATH
+    );
   } catch (error) {
     console.error("Error generating public chain config", error);
   }
