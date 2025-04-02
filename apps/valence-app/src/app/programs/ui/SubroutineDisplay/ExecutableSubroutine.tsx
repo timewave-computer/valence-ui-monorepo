@@ -88,9 +88,14 @@ export const ExecutableSubroutine = ({
 
   const queryClient = useQueryClient();
 
-  const { data: offlineSigner } = useOfflineSigners({
-    chainId: queryConfig.main.chainId,
+  const { data: offlineSigners } = useOfflineSigners({
+    multiChain: true,
   });
+
+  const offlineSigner =
+    offlineSigners && queryConfig.main.chainId in offlineSigners
+      ? offlineSigners[queryConfig.main.chainId]
+      : undefined;
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
