@@ -9,6 +9,8 @@ export enum GetProgramErrorCodes {
   PROCESSOR_QUEUE = "PROCESSOR_QUEUE",
   EXECUTION_HISTORY = "EXECUTION_HISTORY",
   LIBRARY_CONFIG = "LIBRARY_CONFIG",
+  // client
+  OFFLINE_SIGNER = "OFFLINE_SIGNER",
 }
 
 type ErrorCode = {
@@ -58,6 +60,9 @@ const PROGRAM_ERROR_CONTENT: Record<
   },
   [GetProgramErrorCodes.EXECUTION_HISTORY]: {
     title: "Error fetching execution history",
+  },
+  [GetProgramErrorCodes.OFFLINE_SIGNER]: {
+    title: "Error retrieving signers from wallet",
   },
 };
 

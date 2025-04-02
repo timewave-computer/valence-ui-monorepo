@@ -32,7 +32,6 @@ import {
   jsonToIndentedText,
   LibraryDetails,
   useLibrarySchema,
-  useProgramQuery,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
 import {
@@ -179,7 +178,7 @@ export const ExecutableSubroutine = ({
     },
     onError: (e) => {
       toast.error(
-        <ToastMessage variant="error" title="Execution failed">
+        <ToastMessage variant="error" title="Failed to send to queue">
           {e.message}
         </ToastMessage>,
       );
@@ -187,10 +186,9 @@ export const ExecutableSubroutine = ({
     },
     onSuccess: () => {
       toast.success(
-        <ToastMessage
-          variant="success"
-          title="Sent to processor"
-        ></ToastMessage>,
+        <ToastMessage variant="success" title="Sent to queue">
+          Message(s) added to the processor queue
+        </ToastMessage>,
       );
       queryClient.invalidateQueries({
         refetchType: "active",

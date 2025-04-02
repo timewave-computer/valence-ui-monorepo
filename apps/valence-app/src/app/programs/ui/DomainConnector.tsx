@@ -14,6 +14,7 @@ import { useAccount, useConnect } from "graz";
 import { ChainInfo } from "@keplr-wallet/types";
 import { useSupportedChains } from "@/context";
 import { useSuggestChainAndConnect, WalletType } from "graz";
+import { useEffect, useState } from "react";
 
 export const DomainConnector = ({
   domainName,
@@ -37,11 +38,27 @@ export const DomainConnector = ({
       : queryConfig.external?.find((chain) => chain.domainName === domainName)
           ?.rpc;
 
-  const { connect } = useConnect();
+  const { connect, error: connectError } = useConnect();
   const [supportedChains, setSupportedChains] = useSupportedChains();
   const isSupportedChain = supportedChains.find(
     (chain) => chain.chainId === chainId,
   );
+
+  const [isErrorSeen, setIsErrorSeen] = useState(false);
+
+  useEffect(() => {
+    if (isErrorSeen) return;
+    if (connectError) {
+      setIsErrorSeen(true);
+      toast.error(
+        <ToastMessage variant="error" title={`Wallet failed to connect`}>
+          {`Please check that ${domainName} (${chainId}) is enabled in your wallet.`}
+          <br />
+          {`Details: "${connectError}"`}
+        </ToastMessage>,
+      );
+    }
+  }, [connectError, isErrorSeen]);
 
   const handleConnectCustomChain = async (chainInfo: ChainInfo) => {
     try {
@@ -61,6 +78,7 @@ export const DomainConnector = ({
 
   const handleConnect = () => {
     try {
+      if (isErrorSeen) setIsErrorSeen(false);
       if (!chainId) {
         throw new Error(
           `Chain ID missing for domain ${domainName}. Check RPC settings.`,

@@ -40,10 +40,10 @@ export const ExecutionHistoryTable = ({
         value: JSON.stringify(processorItem.domain),
       },
       [ExecutionHistoryTableKeys.createdAt]: {
-        value: createAtDate.toLocaleString() ?? "-",
+        value: createAtDate ? createAtDate.toLocaleString() : "-",
       },
       [ExecutionHistoryTableKeys.lastUpdated]: {
-        value: lastUpdatedDate.toLocaleString() ?? "-",
+        value: lastUpdatedDate ? lastUpdatedDate.toLocaleString() : "-",
       },
       [ExecutionHistoryTableKeys.initiator]: {
         value: JSON.stringify(processorItem.initiator),
