@@ -12,10 +12,10 @@ import {
   ToastMessage,
 } from "@valence-ui/ui-components";
 import { ChainInfo } from "@keplr-wallet/types";
-import { supportedProgramsChains } from "@/context";
 import { useForm } from "react-hook-form";
 import { neutron as neutronChainInfo } from "graz/chains";
 import { checkWallet, WalletType } from "graz";
+import { supportedChains } from "@/context";
 
 export type CustomChainFormValues = {
   suggestedChainInfo: string;
@@ -33,7 +33,7 @@ export const CustomChainForm = ({
   onSubmit: (chainInfo: ChainInfo) => void;
 }) => {
   const suggestedChainInfo =
-    supportedProgramsChains.find((chain) => chain.chainName === domainName) ??
+    supportedChains.find((chain) => chain.chainName === domainName) ??
     neutronChainInfo;
   const {
     currencies,

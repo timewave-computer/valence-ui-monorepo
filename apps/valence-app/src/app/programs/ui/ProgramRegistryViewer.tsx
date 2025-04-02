@@ -19,7 +19,6 @@ import Link from "next/link";
 import {
   ExternalProgramQueryConfig,
   type GetAllProgramsReturnValue,
-  getTerra2Chain,
   ProgramQueryConfig,
   PublicProgramsConfig,
 } from "@/app/programs/server";

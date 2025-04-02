@@ -125,7 +125,7 @@ export const ProcessorSection = ({
     },
     onError: (e) => {
       toast.error(
-        <ToastMessage variant="error" title="Tick failed">
+        <ToastMessage variant="error" title="Error ticking processor">
           {e.message}
         </ToastMessage>,
       );
@@ -146,7 +146,7 @@ export const ProcessorSection = ({
         queryKey: [QUERY_KEYS.WALLET_BALANCES_V2],
       });
       toast.success(
-        <ToastMessage variant="success" title="Tick successful">
+        <ToastMessage variant="success" title="Prcessor ticked">
           Subroutine will be executed by the authorizations contract.
         </ToastMessage>,
       );

@@ -77,7 +77,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
       ? makeApiErrors([
           {
             code: GetProgramErrorCodes.OFFLINE_SIGNER,
-            message: `Make sure ALL supported chains are enabled in your wallet: ${supportedChains.map((c) => `${c.chainName} (${c.chainId})`).join(", ")}. ${offlineSignerError}`,
+            message: `Confirm that the following chains are enabled in your wallet: ${supportedChains.map((c) => `${c.chainName} (${c.chainId})`).join(", ")}. ${offlineSignerError}`,
           },
         ])
       : []),

@@ -13,4 +13,10 @@ export class PublicProgramsConfig {
       );
     }
   }
+
+  public static getSupportedChainIds() {
+    const chainIds = publicProgramsConfig.chains.map((chain) => chain.chainId);
+    chainIds.push(publicProgramsConfig.main.chainId);
+    return chainIds;
+  }
 }

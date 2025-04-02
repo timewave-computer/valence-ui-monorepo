@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
-import { PublicProgramsConfig } from "./public-programs-config";
-import { chains } from "chain-registry";
+import { PublicProgramsConfig } from "./public-programs-config"; // must be direct import to avoid circular import error
 
 const externalConfigSchema = z.array(
   z.object({
@@ -60,10 +59,10 @@ export const makeExternalDomainConfig = ({
         },
       );
       return {
-        rpc: userSuppliedChain?.rpc || "",
-        chainId: userSuppliedChain?.chainId || "",
+        rpc: userSuppliedChain?.rpc ?? "",
+        chainId: userSuppliedChain?.chainId ?? "",
         domainName: domain,
-        chainName: userSuppliedChain?.chainName || "",
+        chainName: userSuppliedChain?.chainName ?? "",
       };
     });
   } else {
@@ -75,7 +74,7 @@ export const makeExternalDomainConfig = ({
         rpc: supportedChain?.rpc ?? "",
         chainId: supportedChain?.chainId ?? "",
         domainName: domain,
-        chainName: supportedChain?.chainName || "",
+        chainName: supportedChain?.chainName ?? "",
       };
     });
   }
@@ -95,21 +94,4 @@ export const getDomainConfig = ({
       return config.domainName === domainName;
     });
   }
-};
-
-// temp
-export const getTerra2Chain = () => {
-  const terra2 = chains.find((c) => c.chain_id === "phoenix-1");
-  if (!terra2) return;
-  return {
-    ...terra2,
-    chain_name: "terra",
-    apis: {
-      rpc: [
-        {
-          address: "https://terra-rpc.polkachu.com",
-        },
-      ],
-    },
-  };
 };
