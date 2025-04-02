@@ -52,7 +52,7 @@ export const DomainConnector = ({
       setIsErrorSeen(true);
       toast.error(
         <ToastMessage variant="error" title={`Wallet failed to connect`}>
-          {`Please check that ${domainName} (${chainId}) is enabled to your wallet.`}
+          {`Please check that ${domainName} (${chainId}) is enabled in your wallet.`}
           <br />
           {`Details: "${connectError}"`}
         </ToastMessage>,
