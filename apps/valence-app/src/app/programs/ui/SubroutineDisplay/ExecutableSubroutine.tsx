@@ -80,9 +80,15 @@ export const ExecutableSubroutine = ({
   queryConfig: ProgramQueryConfig;
   program: GetProgramDataReturnValue;
 }) => {
-  const { data: account, isConnected: isWalletConnected } = useAccount({
-    chainId: "",
+  const { data: accounts, isConnected: isWalletConnected } = useAccount({
+    chainId: queryConfig.main.chainId,
+    multiChain: true,
   });
+
+  const account =
+    accounts && queryConfig.main.chainId in accounts
+      ? accounts[queryConfig.main.chainId]
+      : null;
 
   const walletAddress = account?.bech32Address;
 
