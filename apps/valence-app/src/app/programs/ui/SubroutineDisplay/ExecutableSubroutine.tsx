@@ -32,7 +32,6 @@ import {
   jsonToIndentedText,
   LibraryDetails,
   useLibrarySchema,
-  useProgramQuery,
 } from "@/app/programs/ui";
 import { useForm } from "react-hook-form";
 import {
@@ -81,28 +80,17 @@ export const ExecutableSubroutine = ({
   queryConfig: ProgramQueryConfig;
   program: GetProgramDataReturnValue;
 }) => {
-  const { data: accounts, isConnected: isWalletConnected } = useAccount({
-    chainId: queryConfig.main.chainId,
-    multiChain: true,
+  const { data: account, isConnected: isWalletConnected } = useAccount({
+    chainId: "",
   });
-
-  const account =
-    accounts && queryConfig.main.chainId in accounts
-      ? accounts[queryConfig.main.chainId]
-      : null;
 
   const walletAddress = account?.bech32Address;
 
   const queryClient = useQueryClient();
 
-  const { data: offlineSigners } = useOfflineSigners({
-    multiChain: true,
+  const { data: offlineSigner } = useOfflineSigners({
+    chainId: queryConfig.main.chainId,
   });
-
-  const offlineSigner =
-    offlineSigners && queryConfig.main.chainId in offlineSigners
-      ? offlineSigners[queryConfig.main.chainId]
-      : undefined;
 
   const form = useForm<SubroutineMessageFormValues>({
     defaultValues: {
@@ -179,7 +167,7 @@ export const ExecutableSubroutine = ({
     },
     onError: (e) => {
       toast.error(
-        <ToastMessage variant="error" title="Execution failed">
+        <ToastMessage variant="error" title="Failed to send to queue">
           {e.message}
         </ToastMessage>,
       );
@@ -187,10 +175,9 @@ export const ExecutableSubroutine = ({
     },
     onSuccess: () => {
       toast.success(
-        <ToastMessage
-          variant="success"
-          title="Sent to processor"
-        ></ToastMessage>,
+        <ToastMessage variant="success" title="Sent to queue">
+          Message(s) added to the processor queue.
+        </ToastMessage>,
       );
       queryClient.invalidateQueries({
         refetchType: "active",

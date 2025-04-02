@@ -1,5 +1,9 @@
 "use client";
-import { GetProgramDataReturnValue } from "@/app/programs/server";
+import {
+  GetProgramDataReturnValue,
+  GetProgramErrorCodes,
+  makeApiErrors,
+} from "@/app/programs/server";
 import {
   AccountsTable,
   ExecutionHistoryTable,
@@ -13,6 +17,7 @@ import {
   useProgramQueryConfig,
   ProgramMetdataDisplay,
 } from "@/app/programs/ui";
+import { useSupportedChains } from "@/context";
 import { useInitializeMetadataCache } from "@/hooks";
 import {
   Button,
@@ -25,6 +30,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@valence-ui/ui-components";
+import { useAccount, useOfflineSigners } from "graz";
 import Link from "next/link";
 
 export type ProgramViewerProps = {
@@ -49,6 +55,33 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
   });
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
+  const [supportedChains] = useSupportedChains();
+
+  const { isConnected: isWalletConnected } = useAccount({
+    multiChain: true,
+  });
+
+  const {
+    data: offlineSigners,
+    error: offlineSignerError,
+    isLoading: isOfflineSignersLoading,
+  } = useOfflineSigners({
+    multiChain: true,
+  });
+  const isOfflineSignerError =
+    isWalletConnected && !isOfflineSignersLoading && !!!offlineSigners;
+
+  const errorsToDisplay = [
+    ...(data?.errors ?? []),
+    ...(isOfflineSignerError
+      ? makeApiErrors([
+          {
+            code: GetProgramErrorCodes.OFFLINE_SIGNER,
+            message: `Make sure ALL supported chains are enabled in your wallet: ${supportedChains.map((c) => `${c.chainName} (${c.chainId})`).join(", ")}. ${offlineSignerError}`,
+          },
+        ])
+      : []),
+  ];
 
   return (
     <div className="w-screen h-screen flex flex-col items-start p-4 ">
@@ -82,7 +115,7 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
           />
         </div>
 
-        <ProgramViewerErrorDisplay errors={data?.errors} />
+        <ProgramViewerErrorDisplay errors={errorsToDisplay} />
         <div className="flex flex-row gap-2 items-center justify-between pt-2">
           <div className="flex flex-row gap-2 items-center">
             <RefetchButton isFetching={isFetching} refetch={refetch} />
