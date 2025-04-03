@@ -3,6 +3,7 @@ import axios from "axios";
 import * as path from "path";
 import * as toml from "toml";
 import { ChainConfig, programsConfigSchema } from "./schema";
+import { z } from "zod";
 
 const WRITE_PATH = path.join(__dirname, "generated", "programs-config.ts");
 
@@ -76,7 +77,21 @@ async function main() {
 
     console.log("Config written to:", WRITE_PATH);
   } catch (error) {
-    console.error("Error generating public chain config", error);
+    console.error("ERROR: failed generative programs chain info config.");
+
+    if (axios.isAxiosError(error)) {
+      console.error(
+        `Network error fetching config: ${error.message}`,
+        error.config?.url
+      );
+    } else if (error instanceof z.ZodError) {
+      console.error("Schema validation failed:", error.errors);
+    } else if (error instanceof Error) {
+      console.error(`Error generating public chain config: ${error.message}`);
+    } else {
+      console.error("Unknown error generating public chain config", error);
+    }
+    process.exit(1);
   }
 }
 
