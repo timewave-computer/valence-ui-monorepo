@@ -27,6 +27,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@tanstack/react-query": "^5.56.2",
     "@valence-ui/project-config": "*",
+    "@valence-ui/programs-config": "*",
     "@valence-ui/fonts": "*",
     "@valence-ui/socials": "*",
     "@valence-ui/ui-components": "*",

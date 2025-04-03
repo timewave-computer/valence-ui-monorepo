@@ -129,6 +129,9 @@ importers:
       '@valence-ui/fonts':
         specifier: '*'
         version: link:../../packages/fonts
+      '@valence-ui/programs-config':
+        specifier: '*'
+        version: link:../../packages/programs-config
       '@valence-ui/project-config':
         specifier: '*'
         version: link:../../packages/project-config
@@ -472,19 +475,6 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
-  packages/program-config:
-    dependencies:
-      '@valence-ui/project-config':
-        specifier: '*'
-        version: link:../project-config
-    devDependencies:
-      tsx:
-        specifier: ^4.19.0
-        version: 4.19.1
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
-
   packages/programs-config:
     dependencies:
       '@valence-ui/project-config':
@@ -500,6 +490,9 @@ importers:
       axios:
         specifier: ^1.8.4
         version: 1.8.4
+      prettier:
+        specifier: ^2.0.0
+        version: 2.8.8
       toml:
         specifier: ^3.0.0
         version: 3.0.0
@@ -509,6 +502,9 @@ importers:
       typescript:
         specifier: 5.3.3
         version: 5.3.3
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
 
   packages/project-config:
     dependencies:

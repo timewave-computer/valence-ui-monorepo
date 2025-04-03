@@ -3,7 +3,11 @@
 
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "@valence-ui/generated-types#prep"],
+      "dependsOn": [
+        "^build",
+        "@valence-ui/programs-config#prep",
+        "@valence-ui/generated-types#prep"
+      ],
       "inputs": [
         "$TURBO_DEFAULT$",
         ".env.production.local",

@@ -5,10 +5,10 @@ import {
   NormalizedAccounts,
   NormalizedAuthorizationData,
   NormalizedLibraries,
+  PublicProgramsConfig,
   type ParseFunction,
 } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
-import { chains } from "chain-registry";
 
 type ProgramConfigV1 = z.infer<typeof programConfigSchema>;
 export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
@@ -23,18 +23,18 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
       if (!domainName) {
         throw new Error(`Domain is not yet supported: ${value.domain} `);
       }
-      const registeredChain = chains.find(
-        (chain) => chain.chain_name === domainName,
-      );
-      if (!registeredChain) {
+      const supportedChain =
+        PublicProgramsConfig.getConfigByDomainName(domainName);
+
+      if (!supportedChain) {
         throw new Error(
-          `Unable to set default rpc. Chain name ${domainName} not found in chain registry.`,
+          `Domain name ${domainName} for account ${value.addr} is not supported.`,
         );
       }
       acc[key] = {
         ...value,
-        chainId: registeredChain.chain_id,
-        chainName: registeredChain.chain_name,
+        chainId: supportedChain.chainId,
+        chainName: supportedChain.chainName,
         domainName: domainName,
       };
       return acc;
@@ -48,18 +48,18 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
       if (!domainName) {
         throw new Error(`Domain is not yet supported: ${value.domain} `);
       }
-      const registeredChain = chains.find(
-        (chain) => chain.chain_name === domainName,
-      );
-      if (!registeredChain) {
+      const supportedChain =
+        PublicProgramsConfig.getConfigByDomainName(domainName);
+
+      if (!supportedChain) {
         throw new Error(
-          `Unable to detect chainId for chain name ${domainName}. Not found in chain registry.`,
+          `Domain name ${domainName} for library ${value.addr} is not supported.`,
         );
       }
       acc[key] = {
         ...value,
-        chainId: registeredChain.chain_id,
-        chainName: registeredChain.chain_name,
+        chainId: supportedChain.chainId,
+        chainName: supportedChain.chainName,
         domainName: domainName,
       };
       return acc;
@@ -83,20 +83,18 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
       if (domainType !== "CosmosCosmwasm") {
         throw new Error(`Processor on unsupported domain: ${domainType} `);
       }
+      const supportedChain =
+        PublicProgramsConfig.getConfigByDomainName(domainName);
 
-      const registeredChain = chains.find(
-        (chain) => chain.chain_name === domainName,
-      );
-
-      if (!registeredChain) {
+      if (!supportedChain) {
         throw new Error(
-          `Unable to find chainId for chain name: ${domainName}. Not found in chain registry.`,
+          `Domain name ${domainName} for processor queue ${address} is not supported.`,
         );
       }
       acc[domainChainName] = {
         address: address,
-        chainId: registeredChain.chain_id,
-        chainName: registeredChain.chain_name,
+        chainId: supportedChain.chainId,
+        chainName: supportedChain.chainName,
         domainName: domainName,
       };
       return acc;

@@ -8,9 +8,9 @@ import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 import { protoRegistry } from "@/smol_telescope/proto-registry";
 import { aminoConverters } from "@/smol_telescope/amino-converters";
 import { GrazProvider } from "graz";
-import { neutron, neutrontestnet, juno, terra2 } from "graz/chains";
 import { atom, useAtom } from "jotai";
 import { ChainInfo } from "@keplr-wallet/types";
+import { programsSupportedChains } from "@/const";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
@@ -21,8 +21,7 @@ export const aminoTypes = new AminoTypes({
   ...aminoConverters,
 });
 
-export const supportedProgramsChains = [neutron, juno, terra2, neutrontestnet];
-const grazSupportedChainsAtom = atom<Array<ChainInfo>>(supportedProgramsChains);
+const grazSupportedChainsAtom = atom<Array<ChainInfo>>(programsSupportedChains);
 export const useSupportedChains = () => {
   return useAtom(grazSupportedChainsAtom);
 };
@@ -32,11 +31,11 @@ export const CosmosProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   // note, must be wrapped in react query client provider
 
-  const [supportedChains] = useSupportedChains();
+  const [programsSupportedChains] = useSupportedChains();
   return (
     <GrazProvider
       grazOptions={{
-        chains: supportedChains,
+        chains: programsSupportedChains,
         chainsConfig: {
           "neutron-1": {
             gas: {

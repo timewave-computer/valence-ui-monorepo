@@ -187,7 +187,7 @@ export const ExecutableSubroutine = ({
     onSuccess: () => {
       toast.success(
         <ToastMessage variant="success" title="Sent to queue">
-          Message(s) added to the processor queue
+          Message(s) added to processor queue.
         </ToastMessage>,
       );
       queryClient.invalidateQueries({
