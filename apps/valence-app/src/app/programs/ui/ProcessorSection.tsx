@@ -146,7 +146,7 @@ export const ProcessorSection = ({
         queryKey: [QUERY_KEYS.WALLET_BALANCES_V2],
       });
       toast.success(
-        <ToastMessage variant="success" title="Prcessor ticked">
+        <ToastMessage variant="success" title="Processor ticked">
           Subroutine will be executed by the authorizations contract.
         </ToastMessage>,
       );

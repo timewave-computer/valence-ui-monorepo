@@ -15,8 +15,10 @@ const testnestChainsUrl = `${urlBase}/testnet/chains.toml`;
 const urls = [mainnetChainsUrl, mainnetGeneralUrl, testnestChainsUrl];
 
 async function main() {
-  console.log("Generating programs chain config");
+  console.log("Generating configuration file for Program Chain Info");
   try {
+    console.log("Fetching toml files from", urls.join(", "));
+
     const files = await Promise.all(
       urls.map(async (url) => {
         const response = await axios.get(url);
@@ -24,6 +26,9 @@ async function main() {
         return data;
       })
     );
+
+    console.log("Files fetched successfully");
+
     const [mainnetChains, mainnetGeneral, testnestChains] = files;
 
     const { neutron, ...restOfMainnetChains } = mainnetChains.chains;
@@ -60,16 +65,16 @@ async function main() {
       chains: restOfChainData,
     };
     const validatedConfig = programsConfigSchema.parse(publicProgramsConfig);
+
+    console.log("Config generated:", validatedConfig);
     const exportableConfig = `export const publicProgramsConfig = ${JSON.stringify(
       validatedConfig,
       null,
       2
     )};`;
     fs.writeFileSync(WRITE_PATH, exportableConfig, "utf8");
-    console.log(
-      "Successfully generated public chain config. Wrote to",
-      WRITE_PATH
-    );
+
+    console.log("Config written to:", WRITE_PATH);
   } catch (error) {
     console.error("Error generating public chain config", error);
   }
