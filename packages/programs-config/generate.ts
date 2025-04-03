@@ -5,12 +5,12 @@ import * as toml from "toml";
 import { ChainConfig, programsConfigSchema } from "./schema";
 
 const WRITE_PATH = path.join(__dirname, "generated", "programs-config.ts");
-const mainnetChainsUrl =
-  "https://raw.githubusercontent.com/timewave-computer/valence-program-manager-config/refs/heads/main/mainnet/chains.toml";
-const mainnetGeneralUrl =
-  "https://raw.githubusercontent.com/timewave-computer/valence-program-manager-config/refs/heads/main/mainnet/general.toml";
-const testnestChainsUrl =
-  "https://raw.githubusercontent.com/timewave-computer/valence-program-manager-config/refs/heads/main/testnet/chains.toml";
+
+const urlBase =
+  "https://raw.githubusercontent.com/timewave-computer/valence-program-manager-config/refs/heads/main";
+const mainnetChainsUrl = `${urlBase}/mainnet/chains.toml`;
+const mainnetGeneralUrl = `${urlBase}/mainnet/general.toml`;
+const testnestChainsUrl = `${urlBase}/testnet/chains.toml`;
 
 const urls = [mainnetChainsUrl, mainnetGeneralUrl, testnestChainsUrl];
 
