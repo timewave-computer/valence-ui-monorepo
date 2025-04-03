@@ -8,10 +8,9 @@ import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 import { protoRegistry } from "@/smol_telescope/proto-registry";
 import { aminoConverters } from "@/smol_telescope/amino-converters";
 import { GrazProvider } from "graz";
-import { mainnetChains, testnetChains } from "graz/chains";
 import { atom, useAtom } from "jotai";
 import { ChainInfo } from "@keplr-wallet/types";
-import { PublicProgramsConfig } from "@/app/programs/server";
+import { programsSupportedChains } from "@/const";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
@@ -22,24 +21,7 @@ export const aminoTypes = new AminoTypes({
   ...aminoConverters,
 });
 
-// this encompasses rebalancer pages too (neutron and neutron testnet)
-export const supportedChains =
-  PublicProgramsConfig.getSupportedChainIds().reduce((acc, chainId) => {
-    let found = Object.values(mainnetChains).find((chain) => {
-      return chain.chainId === chainId;
-    });
-    if (found) {
-      return [...acc, found];
-    } else
-      found = Object.values(testnetChains).find((chain) => {
-        return chain.chainId === chainId;
-      });
-    if (found) {
-      return [...acc, found];
-    } else return acc;
-  }, [] as ChainInfo[]);
-
-const grazSupportedChainsAtom = atom<Array<ChainInfo>>(supportedChains);
+const grazSupportedChainsAtom = atom<Array<ChainInfo>>(programsSupportedChains);
 export const useSupportedChains = () => {
   return useAtom(grazSupportedChainsAtom);
 };
@@ -49,11 +31,11 @@ export const CosmosProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   // note, must be wrapped in react query client provider
 
-  const [supportedChains] = useSupportedChains();
+  const [programsSupportedChains] = useSupportedChains();
   return (
     <GrazProvider
       grazOptions={{
-        chains: supportedChains,
+        chains: programsSupportedChains,
         chainsConfig: {
           "neutron-1": {
             gas: {

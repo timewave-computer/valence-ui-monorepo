@@ -6,3 +6,4 @@ export * from "./error";
 export * from "./config";
 export * from "./mintscan-url";
 export * from "./url";
+export * from "./global-supported-chains";
