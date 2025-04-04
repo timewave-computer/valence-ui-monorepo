@@ -10,7 +10,7 @@ import { aminoConverters } from "@/smol_telescope/amino-converters";
 import { GrazProvider } from "graz";
 import { atom, useAtom } from "jotai";
 import { ChainInfo } from "@keplr-wallet/types";
-import { getDefaultSupportedChains } from "@/const";
+import { getDefaultGrazSupportedChains } from "@/const";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
@@ -22,7 +22,7 @@ export const aminoTypes = new AminoTypes({
 });
 
 const grazSupportedChainsAtom = atom<Array<ChainInfo>>(
-  getDefaultSupportedChains(),
+  getDefaultGrazSupportedChains(),
 );
 export const useSupportedChains = () => {
   return useAtom(grazSupportedChainsAtom);

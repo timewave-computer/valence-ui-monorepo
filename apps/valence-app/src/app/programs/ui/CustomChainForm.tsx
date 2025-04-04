@@ -15,7 +15,7 @@ import { ChainInfo } from "@keplr-wallet/types";
 import { useForm } from "react-hook-form";
 import { neutron as neutronChainInfo } from "graz/chains";
 import { checkWallet, WalletType } from "graz";
-import { getDefaultSupportedChains } from "@/const";
+import { getDefaultGrazSupportedChains } from "@/const";
 
 export type CustomChainFormValues = {
   suggestedChainInfo: string;
@@ -33,7 +33,7 @@ export const CustomChainForm = ({
   onSubmit: (chainInfo: ChainInfo) => void;
 }) => {
   const suggestedChainInfo =
-    getDefaultSupportedChains().find(
+    getDefaultGrazSupportedChains().find(
       (chain) => chain.chainName === domainName,
     ) ?? neutronChainInfo;
   const {

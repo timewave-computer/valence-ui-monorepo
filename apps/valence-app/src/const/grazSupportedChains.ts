@@ -6,7 +6,7 @@ import { ProgramsChainConfig } from "./ProgramsChainConfig";
 // evaluate only once
 let _defaultSupportedChains: ChainInfo[] | null = null;
 
-export const getDefaultSupportedChains = (): ChainInfo[] => {
+export const getDefaultGrazSupportedChains = (): ChainInfo[] => {
   if (!_defaultSupportedChains) {
     _defaultSupportedChains = ProgramsChainConfig.getSupportedChainIds().reduce(
       (acc, chainId) => {
