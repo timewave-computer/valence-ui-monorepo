@@ -10,7 +10,8 @@ import { aminoConverters } from "@/smol_telescope/amino-converters";
 import { GrazProvider } from "graz";
 import { atom, useAtom } from "jotai";
 import { ChainInfo } from "@keplr-wallet/types";
-import { programsSupportedChains } from "@/const";
+import { PublicProgramsConfig } from "@/app/programs/server";
+import { mainnetChains, testnetChains } from "graz/chains";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
@@ -20,6 +21,23 @@ export const protobufRegistry = new Registry(protobufTypes);
 export const aminoTypes = new AminoTypes({
   ...aminoConverters,
 });
+
+// this encompasses rebalancer pages too (neutron and neutron testnet)
+export const programsSupportedChains =
+  PublicProgramsConfig.getSupportedChainIds().reduce((acc, chainId) => {
+    let found = Object.values(mainnetChains).find((chain) => {
+      return chain.chainId === chainId;
+    });
+    if (found) {
+      return [...acc, found];
+    } else
+      found = Object.values(testnetChains).find((chain) => {
+        return chain.chainId === chainId;
+      });
+    if (found) {
+      return [...acc, found];
+    } else return acc;
+  }, [] as ChainInfo[]);
 
 const grazSupportedChainsAtom = atom<Array<ChainInfo>>(programsSupportedChains);
 export const useSupportedChains = () => {
