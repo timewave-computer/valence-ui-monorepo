@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
-import { ProgramsChainConfig } from "@/const/"; // must be direct import to avoid circular import error
+import { ProgramsChainConfig } from "@/const/ProgramsChainConfig";
 
 const externalConfigSchema = z.array(
   z.object({

@@ -1,6 +1,6 @@
 import { mainnetChains, testnetChains } from "graz/chains";
-import { ProgramsChainConfig } from "./ProgramsChainConfig"; // avoid circular dependency
 import { ChainInfo } from "@keplr-wallet/types";
+import { ProgramsChainConfig } from "./ProgramsChainConfig";
 
 // lazy initialize to defer evaulation until ProgramsChainConfig initialized
 // evaluate only once

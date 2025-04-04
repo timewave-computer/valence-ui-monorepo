@@ -8,7 +8,7 @@ import {
   type ParseFunction,
 } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
-import { ProgramsChainConfig } from "@/const";
+import { ProgramsChainConfig } from "@/const/ProgramsChainConfig";
 
 type ProgramConfigV1 = z.infer<typeof programConfigSchema>;
 export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
