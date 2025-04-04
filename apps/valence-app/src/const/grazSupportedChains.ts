@@ -1,0 +1,30 @@
+import { mainnetChains, testnetChains } from "graz/chains";
+import { ChainInfo } from "@keplr-wallet/types";
+import { ProgramsChainConfig } from "./ProgramsChainConfig";
+
+// lazy initialize to defer evaulation until ProgramsChainConfig initialized
+// evaluate only once
+let _defaultSupportedChains: ChainInfo[] | null = null;
+
+export const getDefaultGrazSupportedChains = (): ChainInfo[] => {
+  if (!_defaultSupportedChains) {
+    _defaultSupportedChains = ProgramsChainConfig.getSupportedChainIds().reduce(
+      (acc, chainId) => {
+        let found = Object.values(mainnetChains).find((chain) => {
+          return chain.chainId === chainId;
+        });
+        if (found) {
+          return [...acc, found];
+        } else
+          found = Object.values(testnetChains).find((chain) => {
+            return chain.chainId === chainId;
+          });
+        if (found) {
+          return [...acc, found];
+        } else return acc;
+      },
+      [] as ChainInfo[],
+    );
+  }
+  return _defaultSupportedChains;
+};

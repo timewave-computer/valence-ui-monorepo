@@ -6,3 +6,5 @@ export * from "./error";
 export * from "./config";
 export * from "./mintscan-url";
 export * from "./url";
+export * from "./grazSupportedChains";
+// export * from './ProgramsChainConfig' not exported intentially. causes circular dependency

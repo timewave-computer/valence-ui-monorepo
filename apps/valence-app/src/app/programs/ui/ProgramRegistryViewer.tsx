@@ -14,14 +14,14 @@ import {
   useGetAllProgramsQuery,
   useProgramQueryConfig,
 } from "@/app/programs/ui";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl } from "@/const/";
 import Link from "next/link";
 import {
   ExternalProgramQueryConfig,
   type GetAllProgramsReturnValue,
   ProgramQueryConfig,
-  PublicProgramsConfig,
 } from "@/app/programs/server";
+import { ProgramsChainConfig } from "@/const/ProgramsChainConfig";
 
 export const ProgramRegistryViewer = ({
   data: initialData,
@@ -45,7 +45,7 @@ export const ProgramRegistryViewer = ({
       externalDomains
         ? externalDomains.reduce((acc, domain) => {
             const supportedChain =
-              PublicProgramsConfig.getConfigByDomainName(domain);
+              ProgramsChainConfig.getConfigByDomainName(domain);
 
             if (supportedChain) {
               acc.push({
@@ -110,7 +110,7 @@ export const ProgramRegistryViewer = ({
   });
   return (
     <main className="flex grow flex-col bg-valence-white p-4">
-      <div className="flex flex-row gap-2 items-center justify-between">
+      <div className="flex flex-row flex-wrap gap-4 items-center justify-between">
         <LinkText href={`/programs`} LinkComponent={Link} variant="breadcrumb">
           Programs (alpha)
         </LinkText>

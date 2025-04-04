@@ -1,14 +1,13 @@
 import { z } from "zod";
 import {
-  defaultDomainName,
   getExternalDomains,
   NormalizedAccounts,
   NormalizedAuthorizationData,
   NormalizedLibraries,
-  PublicProgramsConfig,
   type ParseFunction,
 } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
+import { ProgramsChainConfig } from "@/const/ProgramsChainConfig";
 
 type ProgramConfigV1 = z.infer<typeof programConfigSchema>;
 export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
@@ -24,7 +23,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
         throw new Error(`Domain is not yet supported: ${value.domain} `);
       }
       const supportedChain =
-        PublicProgramsConfig.getConfigByDomainName(domainName);
+        ProgramsChainConfig.getConfigByDomainName(domainName);
 
       if (!supportedChain) {
         throw new Error(
@@ -49,7 +48,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
         throw new Error(`Domain is not yet supported: ${value.domain} `);
       }
       const supportedChain =
-        PublicProgramsConfig.getConfigByDomainName(domainName);
+        ProgramsChainConfig.getConfigByDomainName(domainName);
 
       if (!supportedChain) {
         throw new Error(
@@ -84,7 +83,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
         throw new Error(`Processor on unsupported domain: ${domainType} `);
       }
       const supportedChain =
-        PublicProgramsConfig.getConfigByDomainName(domainName);
+        ProgramsChainConfig.getConfigByDomainName(domainName);
 
       if (!supportedChain) {
         throw new Error(
@@ -107,7 +106,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
     processorData: processorsWithChainId,
   };
 
-  const mainDomainName = defaultDomainName; // just default for now
+  const mainDomainName = ProgramsChainConfig.get().main.domainName;
 
   const domains = {
     main: mainDomainName,

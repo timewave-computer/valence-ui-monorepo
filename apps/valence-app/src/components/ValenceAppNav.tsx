@@ -1,5 +1,4 @@
 "use client";
-import { FeatureFlags, useFeatureFlag } from "@/utils";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
@@ -10,10 +9,9 @@ import {
   Button,
   cn,
 } from "@valence-ui/ui-components";
-import { useWalletBalances } from "@/hooks";
 import { STATIC_URL } from "@/const";
 import { ConnectWalletButton } from "@/components";
-import { useAccount } from "graz";
+import Link from "next/link";
 
 const shouldHightlightItem = (href: string, path: string) => {
   if (href === "/")
@@ -31,35 +29,28 @@ const NavLink = ({
   path: string;
 }) => {
   return (
-    <a
+    <Link
       key={`nav-${href}`}
       className={cn(
         "relative top-[1px] flex flex-row items-center",
         shouldHightlightItem(href, path) && "font-semibold",
-        "transition-all focus:font-semibold", // mobile,
-        "md:focus:font-normal",
       )}
       href={href}
     >
       {label}
-    </a>
+    </Link>
   );
 };
 
 export const ValenceAppNav = () => {
   const path = usePathname();
 
-  const isAuctionsEnabled = useFeatureFlag(
-    FeatureFlags.AUCTIONS_LIVE_AGGREGATE,
-  );
-
   const links = (
     <>
       <NavLink href="/covenants" label="Covenants" path={path} />
       <NavLink href="/rebalancer" label="Rebalancer" path={path} />
-      {isAuctionsEnabled && (
-        <NavLink href="/auctions" label="Auctions" path={path} />
-      )}
+      <NavLink href="/auctions" label="Auctions" path={path} />
+      <NavLink href="/programs" label="Programs" path={path} />
     </>
   );
 
@@ -98,7 +89,7 @@ export const ValenceAppNav = () => {
             </Button>
           </SheetTrigger>
 
-          <SheetContent>
+          <SheetContent className="w-3/4">
             <div className=" flex flex-col gap-8 p-4 text-h2">{links}</div>
           </SheetContent>
         </Sheet>

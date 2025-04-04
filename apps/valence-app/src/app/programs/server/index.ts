@@ -5,4 +5,3 @@ export * from "./query-config-helpers";
 export * from "./program-error-codes";
 export * from "./utils";
 export * from "./actions";
-export * from "./public-programs-config";

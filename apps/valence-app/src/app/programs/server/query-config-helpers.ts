@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
-import { PublicProgramsConfig } from "./public-programs-config"; // must be direct import to avoid circular import error
+import { ProgramsChainConfig } from "@/const/ProgramsChainConfig";
 
 const externalConfigSchema = z.array(
   z.object({
@@ -29,9 +29,8 @@ const queryConfigLoader = {
 };
 export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 
-export const defaultDomainName = PublicProgramsConfig.get().main.domainName;
 export const getDefaultMainChainConfig = (): ProgramQueryConfig["main"] => {
-  const config = PublicProgramsConfig.get();
+  const config = ProgramsChainConfig.get();
   const neutronConfig = config.main;
   return {
     chainId: neutronConfig.chainId,
@@ -68,7 +67,7 @@ export const makeExternalDomainConfig = ({
   } else {
     // make from defaults
     return externalProgramDomains.map((domain) => {
-      const supportedChain = PublicProgramsConfig.getConfigByDomainName(domain);
+      const supportedChain = ProgramsChainConfig.getConfigByDomainName(domain);
 
       return {
         rpc: supportedChain?.rpc ?? "",
