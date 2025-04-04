@@ -10,8 +10,7 @@ import { aminoConverters } from "@/smol_telescope/amino-converters";
 import { GrazProvider } from "graz";
 import { atom, useAtom } from "jotai";
 import { ChainInfo } from "@keplr-wallet/types";
-import { PublicProgramsConfig } from "@/app/programs/server";
-import { mainnetChains, testnetChains } from "graz/chains";
+import { getDefaultSupportedChains } from "@/const";
 
 const protobufTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...protoRegistry,
@@ -22,24 +21,9 @@ export const aminoTypes = new AminoTypes({
   ...aminoConverters,
 });
 
-// this encompasses rebalancer pages too (neutron and neutron testnet)
-export const programsSupportedChains =
-  PublicProgramsConfig.getSupportedChainIds().reduce((acc, chainId) => {
-    let found = Object.values(mainnetChains).find((chain) => {
-      return chain.chainId === chainId;
-    });
-    if (found) {
-      return [...acc, found];
-    } else
-      found = Object.values(testnetChains).find((chain) => {
-        return chain.chainId === chainId;
-      });
-    if (found) {
-      return [...acc, found];
-    } else return acc;
-  }, [] as ChainInfo[]);
-
-const grazSupportedChainsAtom = atom<Array<ChainInfo>>(programsSupportedChains);
+const grazSupportedChainsAtom = atom<Array<ChainInfo>>(
+  getDefaultSupportedChains(),
+);
 export const useSupportedChains = () => {
   return useAtom(grazSupportedChainsAtom);
 };
@@ -49,11 +33,11 @@ export const CosmosProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   // note, must be wrapped in react query client provider
 
-  const [programsSupportedChains] = useSupportedChains();
+  const [supportedChains] = useSupportedChains();
   return (
     <GrazProvider
       grazOptions={{
-        chains: programsSupportedChains,
+        chains: supportedChains,
         chainsConfig: {
           "neutron-1": {
             gas: {

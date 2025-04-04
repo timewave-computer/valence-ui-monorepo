@@ -5,10 +5,10 @@ import {
   NormalizedAccounts,
   NormalizedAuthorizationData,
   NormalizedLibraries,
-  PublicProgramsConfig,
   type ParseFunction,
 } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
+import { ProgramsChainConfig } from "@/const";
 
 type ProgramConfigV1 = z.infer<typeof programConfigSchema>;
 export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
@@ -24,7 +24,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
         throw new Error(`Domain is not yet supported: ${value.domain} `);
       }
       const supportedChain =
-        PublicProgramsConfig.getConfigByDomainName(domainName);
+        ProgramsChainConfig.getConfigByDomainName(domainName);
 
       if (!supportedChain) {
         throw new Error(
@@ -49,7 +49,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
         throw new Error(`Domain is not yet supported: ${value.domain} `);
       }
       const supportedChain =
-        PublicProgramsConfig.getConfigByDomainName(domainName);
+        ProgramsChainConfig.getConfigByDomainName(domainName);
 
       if (!supportedChain) {
         throw new Error(
@@ -84,7 +84,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
         throw new Error(`Processor on unsupported domain: ${domainType} `);
       }
       const supportedChain =
-        PublicProgramsConfig.getConfigByDomainName(domainName);
+        ProgramsChainConfig.getConfigByDomainName(domainName);
 
       if (!supportedChain) {
         throw new Error(

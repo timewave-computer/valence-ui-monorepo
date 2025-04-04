@@ -4,9 +4,35 @@ import {
   loadQueryConfigSearchParams,
 } from "@/app/programs/server";
 import { ProgramViewer, SuspenseLoadingSkeleton } from "@/app/programs/ui";
+import { ABSOLUTE_URL, PROGRAMS_DESCRIPTION } from "@/const";
+import { X_HANDLE } from "@valence-ui/socials";
+import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: ProgramPageProps) {
+  const { programId } = params;
+
+  const metadata: Metadata = {
+    title: `Valence Program ${programId}`,
+    description: PROGRAMS_DESCRIPTION,
+    openGraph: {
+      siteName: "Valence",
+      description: PROGRAMS_DESCRIPTION,
+      url: `${ABSOLUTE_URL}/programs/${programId}`,
+      images: ["/img/opengraph/programs-og.png"],
+    },
+    twitter: {
+      creator: X_HANDLE,
+      card: "summary",
+      images: ["/img/opengraph/programs-og.png"],
+      description: PROGRAMS_DESCRIPTION,
+    },
+  };
+
+  return metadata;
+}
 
 interface ProgramPageProps {
   params: { programId: string };

@@ -3,7 +3,7 @@ import { ABSOLUTE_URL, PROGRAMS_DESCRIPTION } from "@/const";
 import { X_HANDLE } from "@valence-ui/socials";
 
 export const metadata: Metadata = {
-  title: "Programs",
+  title: "Valence Programs",
   description: PROGRAMS_DESCRIPTION,
   openGraph: {
     siteName: "Valence",

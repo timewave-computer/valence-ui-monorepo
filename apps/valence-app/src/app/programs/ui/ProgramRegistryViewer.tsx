@@ -14,13 +14,12 @@ import {
   useGetAllProgramsQuery,
   useProgramQueryConfig,
 } from "@/app/programs/ui";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl, ProgramsChainConfig } from "@/const";
 import Link from "next/link";
 import {
   ExternalProgramQueryConfig,
   type GetAllProgramsReturnValue,
   ProgramQueryConfig,
-  PublicProgramsConfig,
 } from "@/app/programs/server";
 
 export const ProgramRegistryViewer = ({
@@ -45,7 +44,7 @@ export const ProgramRegistryViewer = ({
       externalDomains
         ? externalDomains.reduce((acc, domain) => {
             const supportedChain =
-              PublicProgramsConfig.getConfigByDomainName(domain);
+              ProgramsChainConfig.getConfigByDomainName(domain);
 
             if (supportedChain) {
               acc.push({
