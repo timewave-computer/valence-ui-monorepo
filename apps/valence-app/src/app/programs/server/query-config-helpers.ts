@@ -29,7 +29,6 @@ const queryConfigLoader = {
 };
 export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 
-export const defaultDomainName = ProgramsChainConfig.get().main.domainName;
 export const getDefaultMainChainConfig = (): ProgramQueryConfig["main"] => {
   const config = ProgramsChainConfig.get();
   const neutronConfig = config.main;

@@ -1,6 +1,5 @@
 import { z } from "zod";
 import {
-  defaultDomainName,
   getExternalDomains,
   NormalizedAccounts,
   NormalizedAuthorizationData,
@@ -107,7 +106,7 @@ export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {
     processorData: processorsWithChainId,
   };
 
-  const mainDomainName = defaultDomainName; // just default for now
+  const mainDomainName = ProgramsChainConfig.get().main.domainName;
 
   const domains = {
     main: mainDomainName,
