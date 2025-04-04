@@ -30,7 +30,7 @@ const NavLink = ({
   blankTarget?: boolean;
 }) => {
   return (
-    <a
+    <Link
       target={blankTarget ? "_blank" : ""}
       key={`nav-${href}`}
       className={cn(
@@ -41,7 +41,7 @@ const NavLink = ({
       href={href}
     >
       {label}
-    </a>
+    </Link>
   );
 };
 
