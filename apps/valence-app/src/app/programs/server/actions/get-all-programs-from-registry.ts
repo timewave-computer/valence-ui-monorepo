@@ -29,8 +29,12 @@ export type GetAllProgramsReturnValue = {
 
 export const getAllProgramsFromRegistry = async ({
   queryConfig: userSuppliedQueryConfig,
+  startIndex,
+  limit,
 }: {
   queryConfig: ProgramQueryConfig | null;
+  startIndex?: number;
+  limit?: number;
 }): Promise<GetAllProgramsReturnValue> => {
   const isUserSuppliedArgs = !!userSuppliedQueryConfig;
 
@@ -77,9 +81,12 @@ export const getAllProgramsFromRegistry = async ({
   let errors: ErrorCodes = [];
 
   try {
+    console.log("fetching", limit, "from startIndex", startIndex);
     rawPrograms = await fetchAllProgramsFromRegistry({
       registryAddress,
       cosmwasmClient: mainChainCosmwasmClient,
+      startIndex,
+      limit,
     });
   } catch (e) {
     return {
@@ -153,9 +160,13 @@ export const getAllProgramsFromRegistry = async ({
 const fetchAllProgramsFromRegistry = async ({
   registryAddress,
   cosmwasmClient,
+  startIndex,
+  limit = 20,
 }: {
   registryAddress: string;
   cosmwasmClient: CosmWasmClient;
+  startIndex?: number;
+  limit?: number;
 }) => {
   try {
     const programRegistryClient = new ProgramRegistryQueryClient(
@@ -163,21 +174,18 @@ const fetchAllProgramsFromRegistry = async ({
       registryAddress,
     );
 
-    const lastId = await programRegistryClient.getLastId();
-    if (!lastId) {
-      throw new Error("Registry has no programs");
+    if (!startIndex) {
+      const startIndex = await programRegistryClient.getLastId();
+      if (!startIndex) {
+        throw new Error("Registry has no programs");
+      }
     }
-
-    const limit = 200;
-
-    const endIndex = lastId + 1;
-    const startIndex = Math.max(0, endIndex - limit);
 
     // return type on function is incorrect
     return programRegistryClient.getAllConfigs({
-      end: endIndex,
       start: startIndex,
       limit: limit,
+      order: "descending",
     });
   } catch (e) {
     throw new Error(

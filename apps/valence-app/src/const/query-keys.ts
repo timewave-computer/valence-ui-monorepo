@@ -26,4 +26,6 @@ export const QUERY_KEYS = {
   PROGRAMS_FETCH_PROGRAM: "programs-fetch-program",
   PROGRAMS_LIBRARY_SCHEMA: "programs-library-schema",
   PROGRAMS_REGISTRY_ALL_PROGRAMS: "program-registry-all-programs",
+  PROGRAMS_REGISTRY_ALL_PROGRAMS_INFINITE_SCROLL:
+    "program-registry-all-programs-inifinite-scroll",
 };

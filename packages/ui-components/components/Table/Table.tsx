@@ -40,6 +40,7 @@ interface TableProps
   data: Array<TableRow>;
   isLoading?: boolean;
   loadingRows?: number;
+  isStreaming?: boolean;
 }
 
 export const Table = ({
@@ -50,6 +51,7 @@ export const Table = ({
   variant = "primary",
   isLoading,
   loadingRows = 3,
+  isStreaming,
   ...props
 }: TableProps) => {
   const tableId = useId(); // for unique key generation for multiple tables
@@ -172,6 +174,18 @@ export const Table = ({
           );
         })}
       {children}
+
+      {isStreaming && (
+        <div>
+          {Array.from({ length: loadingRows }).map((_, index) =>
+            headers.map((header) => (
+              <Fragment key={`emptytablerow-${tableId}-${header.key}-${index}`}>
+                <TableCell variant={variant} align={header.align} isLoading />
+              </Fragment>
+            )),
+          )}
+        </div>
+      )}
     </div>
   );
 };
