@@ -5,10 +5,10 @@ import {
   NormalizedAccounts,
   NormalizedAuthorizationData,
   NormalizedLibraries,
-  PublicProgramsConfig,
   type ParseFunction,
 } from "@/app/programs/server";
 import { programConfigSchema } from "@valence-ui/generated-types";
+import { PublicProgramsConfig } from "@/const";
 
 type ProgramConfigV1 = z.infer<typeof programConfigSchema>;
 export const parserV1: ParseFunction<ProgramConfigV1> = (programData) => {

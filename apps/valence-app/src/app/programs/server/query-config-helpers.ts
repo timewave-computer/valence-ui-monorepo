@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
-import { PublicProgramsConfig } from "./public-programs-config"; // must be direct import to avoid circular import error
+import { PublicProgramsConfig } from "@/const";
 
 const externalConfigSchema = z.array(
   z.object({

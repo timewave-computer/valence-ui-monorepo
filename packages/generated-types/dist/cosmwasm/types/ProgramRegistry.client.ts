@@ -14,14 +14,12 @@ import {
   InstantiateMsg,
   ExecuteMsg,
   Binary,
-  Action,
-  Expiration,
-  Timestamp,
-  Uint64,
   QueryMsg,
+  Order,
   ArrayOfProgramResponse,
   ProgramResponse,
   NullableProgramResponse,
+  Uint64,
 } from "./ProgramRegistry.types";
 export interface ProgramRegistryReadOnlyInterface {
   contractAddress: string;
@@ -30,10 +28,12 @@ export interface ProgramRegistryReadOnlyInterface {
   getAllConfigs: ({
     end,
     limit,
+    order,
     start,
   }: {
     end?: number;
     limit?: number;
+    order?: Order;
     start?: number;
   }) => Promise<ArrayOfProgramResponse>;
   getLastId: () => Promise<Uint64>;
@@ -72,16 +72,19 @@ export class ProgramRegistryQueryClient
   getAllConfigs = async ({
     end,
     limit,
+    order,
     start,
   }: {
     end?: number;
     limit?: number;
+    order?: Order;
     start?: number;
   }): Promise<ArrayOfProgramResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
       get_all_configs: {
         end,
         limit,
+        order,
         start,
       },
     });
@@ -97,6 +100,11 @@ export interface ProgramRegistryInterface
   contractAddress: string;
   sender: string;
   reserveId: (
+    {
+      addr,
+    }: {
+      addr: string;
+    },
     fee?: number | StdFee | "auto",
     memo?: string,
     _funds?: Coin[]
@@ -104,9 +112,11 @@ export interface ProgramRegistryInterface
   saveProgram: (
     {
       id,
+      owner,
       programConfig,
     }: {
       id: number;
+      owner: string;
       programConfig: Binary;
     },
     fee?: number | StdFee | "auto",
@@ -121,12 +131,6 @@ export interface ProgramRegistryInterface
       id: number;
       programConfig: Binary;
     },
-    fee?: number | StdFee | "auto",
-    memo?: string,
-    _funds?: Coin[]
-  ) => Promise<ExecuteResult>;
-  updateOwnership: (
-    action: Action,
     fee?: number | StdFee | "auto",
     memo?: string,
     _funds?: Coin[]
@@ -151,9 +155,13 @@ export class ProgramRegistryClient
     this.reserveId = this.reserveId.bind(this);
     this.saveProgram = this.saveProgram.bind(this);
     this.updateProgram = this.updateProgram.bind(this);
-    this.updateOwnership = this.updateOwnership.bind(this);
   }
   reserveId = async (
+    {
+      addr,
+    }: {
+      addr: string;
+    },
     fee: number | StdFee | "auto" = "auto",
     memo?: string,
     _funds?: Coin[]
@@ -162,7 +170,9 @@ export class ProgramRegistryClient
       this.sender,
       this.contractAddress,
       {
-        reserve_id: {},
+        reserve_id: {
+          addr,
+        },
       },
       fee,
       memo,
@@ -172,9 +182,11 @@ export class ProgramRegistryClient
   saveProgram = async (
     {
       id,
+      owner,
       programConfig,
     }: {
       id: number;
+      owner: string;
       programConfig: Binary;
     },
     fee: number | StdFee | "auto" = "auto",
@@ -187,6 +199,7 @@ export class ProgramRegistryClient
       {
         save_program: {
           id,
+          owner,
           program_config: programConfig,
         },
       },
@@ -215,23 +228,6 @@ export class ProgramRegistryClient
           id,
           program_config: programConfig,
         },
-      },
-      fee,
-      memo,
-      _funds
-    );
-  };
-  updateOwnership = async (
-    action: Action,
-    fee: number | StdFee | "auto" = "auto",
-    memo?: string,
-    _funds?: Coin[]
-  ): Promise<ExecuteResult> => {
-    return await this.client.execute(
-      this.sender,
-      this.contractAddress,
-      {
-        update_ownership: action,
       },
       fee,
       memo,

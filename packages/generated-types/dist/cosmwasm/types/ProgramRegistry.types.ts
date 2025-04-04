@@ -9,11 +9,14 @@ export interface InstantiateMsg {
 }
 export type ExecuteMsg =
   | {
-      reserve_id: {};
+      reserve_id: {
+        addr: string;
+      };
     }
   | {
       save_program: {
         id: number;
+        owner: string;
         program_config: Binary;
       };
     }
@@ -22,32 +25,8 @@ export type ExecuteMsg =
         id: number;
         program_config: Binary;
       };
-    }
-  | {
-      update_ownership: Action;
     };
 export type Binary = string;
-export type Action =
-  | {
-      transfer_ownership: {
-        expiry?: Expiration | null;
-        new_owner: string;
-      };
-    }
-  | "accept_ownership"
-  | "renounce_ownership";
-export type Expiration =
-  | {
-      at_height: number;
-    }
-  | {
-      at_time: Timestamp;
-    }
-  | {
-      never: {};
-    };
-export type Timestamp = Uint64;
-export type Uint64 = number;
 export type QueryMsg =
   | {
       get_config: {
@@ -63,15 +42,18 @@ export type QueryMsg =
       get_all_configs: {
         end?: number | null;
         limit?: number | null;
+        order?: Order | null;
         start?: number | null;
       };
     }
   | {
       get_last_id: {};
     };
+export type Order = "ascending" | "descending";
 export type ArrayOfProgramResponse = ProgramResponse[];
 export interface ProgramResponse {
   id: number;
   program_config: Binary;
 }
 export type NullableProgramResponse = ProgramResponse | null;
+export type Uint64 = number;

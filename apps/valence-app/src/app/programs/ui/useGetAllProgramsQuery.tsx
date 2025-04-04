@@ -1,5 +1,5 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/const";
 import {
   type GetAllProgramsReturnValue,
@@ -13,7 +13,68 @@ import { useProgramQueryConfig } from "@/app/programs/ui";
 
 type UseProgramQueryArgs = {
   initialQueryData: GetAllProgramsReturnValue;
+  limit?: number;
 };
+
+export const useGetAllProgramsInfiniteQuery = ({
+  initialQueryData,
+  limit = 20, // Default limit
+}: UseProgramQueryArgs) => {
+  const { queryConfig } = useProgramQueryConfig(initialQueryData.queryConfig);
+
+  const queryFn = async ({ pageParam }) => {
+    const startIndex = pageParam === 0 ? 0 : pageParam + limit;
+    const data = await getAllProgramsFromRegistry({
+      queryConfig: {
+        main: queryConfig.main,
+        external: queryConfig.external,
+      },
+      startIndex: startIndex,
+      limit, // Pass limit to the server
+    });
+    // return the partial result. it contains errors
+    return data;
+  };
+  return useInfiniteQuery({
+    queryFn: queryFn,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      // sort ascending
+      const lastPageSortedById = lastPage.parsedPrograms?.sort(
+        (a, b) => a.id - b.id,
+      );
+
+      // return next index to query on
+      const lastId =
+        lastPageSortedById?.[lastPageSortedById.length - 1]?.id ?? 0;
+
+      // set condition for end of data
+      if (lastId >= 118) {
+        return undefined; // No more pages
+      }
+      return lastId + 1;
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+    queryKey: [
+      QUERY_KEYS.PROGRAMS_REGISTRY_ALL_PROGRAMS_INFINITE_SCROLL,
+      queryConfig.external,
+      queryConfig.main,
+    ],
+    // only supply initial data if the query config is the same
+    initialData: isEqual(queryConfig, initialQueryData?.queryConfig)
+      ? {
+          pages: [initialQueryData], // Wrap initial data in a `pages` array
+          pageParams: [0], // Start with pageParam = 0
+        }
+      : undefined,
+    refetchInterval: 60 * 1000, // 1 min
+    staleTime: 5 * 60 * 1000, // 5 mins - will remain in cache
+    initialDataUpdatedAt: initialQueryData?.dataLastUpdatedAt, // IMPORTANT, so react-query knows when to no longer use initialData and fetch instead
+  });
+};
+
 export const useGetAllProgramsQuery = ({
   initialQueryData,
 }: UseProgramQueryArgs) => {
@@ -63,7 +124,6 @@ export const useGetAllProgramsQuery = ({
     refetchInterval: 60 * 1000, // 1 min
     staleTime: 5 * 60 * 1000, // 5 mins - will remain in cache
     queryFn,
-    // IMPORTANT, so react-query knows when to no longer use initialData and fetch instead
-    initialDataUpdatedAt: initialQueryData?.dataLastUpdatedAt,
+    initialDataUpdatedAt: initialQueryData?.dataLastUpdatedAt, // IMPORTANT, so react-query knows when to no longer use initialData and fetch instead
   });
 };

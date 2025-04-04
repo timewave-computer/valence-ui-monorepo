@@ -1,5 +1,6 @@
 "use client";
 import {
+  Button,
   CellType,
   Heading,
   LinkText,
@@ -11,33 +12,72 @@ import {
   ProgramRpcSettings,
   ProgramViewerErrorDisplay,
   RefetchButton,
+  useGetAllProgramsInfiniteQuery,
   useGetAllProgramsQuery,
   useProgramQueryConfig,
 } from "@/app/programs/ui";
-import { CelatoneUrl } from "@/const";
+import { CelatoneUrl, PublicProgramsConfig } from "@/const";
 import Link from "next/link";
 import {
   ExternalProgramQueryConfig,
   type GetAllProgramsReturnValue,
   ProgramQueryConfig,
-  PublicProgramsConfig,
 } from "@/app/programs/server";
+import { useEffect, useRef } from "react";
 
 export const ProgramRegistryViewer = ({
   data: initialData,
 }: {
   data: GetAllProgramsReturnValue;
 }) => {
-  const { data, isLoading, refetch, isFetching } = useGetAllProgramsQuery({
-    initialQueryData: initialData,
-  });
   const { queryConfig, setQueryConfig } = useProgramQueryConfig(
     initialData.queryConfig,
   );
 
+  const infiniteQuery = useGetAllProgramsInfiniteQuery({
+    initialQueryData: initialData,
+    limit: 5,
+  });
+
+  const ids = infiniteQuery.data?.pages.map((page, i) => {
+    return [i, ...(page.parsedPrograms?.map((program) => program.id) ?? [])];
+  });
+
+  const errorsFlat = infiniteQuery.data?.pages.flatMap((page) => {
+    return page.errors;
+  });
+
+  const observerRef = useRef<HTMLDivElement | null>(null);
+
+  // Infinite scroll logic
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && infiniteQuery.hasNextPage) {
+          infiniteQuery.fetchNextPage();
+        }
+      },
+      { threshold: 1.0 },
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current);
+      }
+    };
+  }, [infiniteQuery.hasNextPage, infiniteQuery.fetchNextPage]);
+
   const mainQueryConfig = queryConfig.main;
 
-  const tableData = data?.parsedPrograms?.map(({ id, parsed, raw }) => {
+  const flattenedData = infiniteQuery.data?.pages.flatMap((page) => {
+    return page.parsedPrograms ?? [];
+  });
+
+  const tableData = flattenedData?.map(({ id, parsed, raw }) => {
     const authorizationsAddress = parsed.authorizationData?.authorization_addr;
     const externalDomains = parsed.domains.external;
 
@@ -108,6 +148,7 @@ export const ProgramRegistryViewer = ({
       },
     };
   });
+
   return (
     <main className="flex grow flex-col bg-valence-white p-4">
       <div className="flex flex-row gap-2 items-center justify-between">
@@ -122,21 +163,39 @@ export const ProgramRegistryViewer = ({
         />
       </div>
 
-      <ProgramViewerErrorDisplay errors={data?.errors} />
+      <ProgramViewerErrorDisplay errors={errorsFlat} />
 
       <div className="flex flex-row gap-2 w-full  justify-between pt-2">
-        <RefetchButton isFetching={isFetching} refetch={refetch} />
+        <RefetchButton
+          isFetching={infiniteQuery.isFetching}
+          refetch={infiniteQuery.refetch}
+        />
       </div>
+
       <div className="flex flex-col  gap-2 pt-4 items-stretch overflow-clip">
         <Table
           className="overflow-scroll"
-          loadingRows={10}
-          isLoading={isLoading}
+          loadingRows={20}
+          isLoading={infiniteQuery.isLoading}
           variant="primary"
           headers={headers}
           data={tableData ?? []}
+          isStreaming={
+            infiniteQuery.isFetchingNextPage && !infiniteQuery.isRefetching
+          }
         />
+        {/* Observer div to detect scrolling */}
+        {/* <div className=" pb-[200px]" ref={observerRef}>
+                  observer ref
+                </div> */}
       </div>
+      <Button
+        onClick={() => {
+          infiniteQuery.fetchNextPage();
+        }}
+      >
+        fetch more
+      </Button>
     </main>
   );
 };
