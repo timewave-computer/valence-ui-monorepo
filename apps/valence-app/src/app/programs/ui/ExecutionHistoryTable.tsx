@@ -14,8 +14,12 @@ export const ExecutionHistoryTable = ({
   program?: GetProgramDataReturnValue;
 }) => {
   const data = program?.processorHistory?.map((processorItem) => {
-    const createAtDate = fromUnixTime(processorItem.created_at);
-    const lastUpdatedDate = fromUnixTime(processorItem.last_updated_at);
+    const createAtDate = processorItem.created_at
+      ? fromUnixTime(processorItem.created_at)
+      : undefined;
+    const lastUpdatedDate = processorItem.last_updated_at
+      ? fromUnixTime(processorItem.last_updated_at)
+      : undefined;
 
     return {
       [ExecutionHistoryTableKeys.executionId]: {
