@@ -6,7 +6,7 @@ import {
   type TableColumnHeader,
 } from "@valence-ui/ui-components";
 import { type GetProgramDataReturnValue } from "@/app/programs/server";
-import { fromUnixTime } from "date-fns";
+import { displayUnixTimeAsUtc } from "@/app/programs/ui";
 
 export const ExecutionHistoryTable = ({
   program,
@@ -14,13 +14,6 @@ export const ExecutionHistoryTable = ({
   program?: GetProgramDataReturnValue;
 }) => {
   const data = program?.processorHistory?.map((processorItem) => {
-    const createAtDate = processorItem.created_at
-      ? fromUnixTime(processorItem.created_at)
-      : undefined;
-    const lastUpdatedDate = processorItem.last_updated_at
-      ? fromUnixTime(processorItem.last_updated_at)
-      : undefined;
-
     return {
       [ExecutionHistoryTableKeys.executionId]: {
         value: processorItem.execution_id,
@@ -44,10 +37,10 @@ export const ExecutionHistoryTable = ({
         value: JSON.stringify(processorItem.domain),
       },
       [ExecutionHistoryTableKeys.createdAt]: {
-        value: createAtDate ? createAtDate.toLocaleString() : "-",
+        value: displayUnixTimeAsUtc(processorItem.created_at) ?? "-",
       },
       [ExecutionHistoryTableKeys.lastUpdated]: {
-        value: lastUpdatedDate ? lastUpdatedDate.toLocaleString() : "-",
+        value: displayUnixTimeAsUtc(processorItem.last_updated_at) ?? "-",
       },
       [ExecutionHistoryTableKeys.initiator]: {
         value: JSON.stringify(processorItem.initiator),

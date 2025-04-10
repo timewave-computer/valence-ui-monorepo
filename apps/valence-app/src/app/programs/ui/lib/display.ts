@@ -4,6 +4,7 @@ import {
   Subroutine,
 } from "@valence-ui/generated-types";
 import { getSubroutineType, isPermissionless } from "@/app/programs/ui";
+import { fromUnixTime } from "date-fns";
 
 export const displayDomain = (domain: Domain) => {
   return Object.values(domain)[0];
@@ -55,4 +56,10 @@ export const permissionFactoryDenom = ({
   authorizationLabel: string;
 }) => {
   return `factory/${authorizationsAddress}/${authorizationLabel}`;
+};
+
+export const displayUnixTimeAsUtc = (date?: number) => {
+  // 1744133294 -> "4/8/2025, 2:35:14 PM"
+  if (!date) return;
+  return fromUnixTime(date).toLocaleString();
 };
