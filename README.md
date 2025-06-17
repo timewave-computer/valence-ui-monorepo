@@ -17,17 +17,33 @@
 
 ## Local development
 
-To run the repo locally, install `turbo` and `pnpm` globally, then run:
+1. To run the repo locally, install `turbo` and `pnpm` globally
+
+2. Install dependencies
 
 ```bash
 pnpm install
-turbo dev
+```
 
+3. Add env file
+
+```bash
+# do for each app you want to run
+cd app/valence-app
+vercel env link
+```
+
+4. Run app
+
+```bash
 # to run only specific apps (recommended)
+turbo dev
 turbo dev --filter @valence-ui/valence-app
 turbo dev --filter @valence-ui/valence-app --filter @valence-ui/ui-sandbox
 turbo dev --filter @valence-ui/valence-static --filter @valence-ui/ui-sandbox
 ```
+
+## Production build
 
 To test production build
 
@@ -36,6 +52,10 @@ turbo build
 turbo build --filter @valence-ui/valence-app
 turbo start --filter @valence-ui/valence-app
 ```
+
+## Manager config
+
+Manager config downloads as a pre-build script. Run `turbo build` to rerun the prep scripts.
 
 ## How to add a package
 

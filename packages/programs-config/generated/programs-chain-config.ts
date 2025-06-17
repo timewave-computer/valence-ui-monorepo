@@ -15,7 +15,7 @@ export const programsChainConfig = {
   chains: [
     {
       chainId: "juno-1",
-      rpc: "https://juno-rpc.polkachu.com",
+      rpc: "https://juno-rpc.polkachu.com:443",
       chainName: "juno",
       domainName: "juno",
       gasPrice: "0.075",
@@ -23,11 +23,19 @@ export const programsChainConfig = {
     },
     {
       chainId: "phoenix-1",
-      rpc: "https://terra-rpc.polkachu.com",
+      rpc: "https://terra-rpc.polkachu.com:443",
       chainName: "terra",
       domainName: "terra",
       gasPrice: "0.015",
       gasDenom: "uluna",
+    },
+    {
+      chainId: "osmosis-1",
+      rpc: "https://osmosis-rpc.polkachu.com:443",
+      chainName: "osmosis",
+      domainName: "osmosis",
+      gasPrice: "0.025",
+      gasDenom: "uosmo",
     },
     {
       chainId: "pion-1",
