@@ -53,6 +53,8 @@ export function ProgramViewer({ programId, initialData }: ProgramViewerProps) {
     queryConfig,
     initialQueryData: initialData,
   });
+
+  console.log("data", data?.parsedProgram);
   useInitializeMetadataCache(data?.metadata ?? {});
   useInitializeLibrarySchemaCache(data?.librarySchemas ?? {});
   const [supportedChains] = useSupportedChains();

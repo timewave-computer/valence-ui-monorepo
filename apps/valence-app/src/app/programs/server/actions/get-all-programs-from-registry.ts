@@ -7,19 +7,14 @@ import {
   GetProgramErrorCodes,
   makeApiErrors,
   ProgramParser,
-  ProgramParserResult,
   type ProgramQueryConfig,
+  type ParsedPrograms,
 } from "@/app/programs/server";
 import { getCosmwasmClient } from "@/server/rpc";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { ProgramRegistryQueryClient } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.client";
 import { ArrayOfProgramResponse } from "@valence-ui/generated-types/dist/cosmwasm/types/ProgramRegistry.types";
 
-type ParsedPrograms = Array<{
-  id: number;
-  parsed: ProgramParserResult;
-  raw: string;
-}>;
 export type GetAllProgramsReturnValue = {
   dataLastUpdatedAt: number;
   queryConfig: ProgramQueryConfig;

@@ -12,3 +12,4 @@ export {
   type FetchProcessorQueuesReturnType,
   getProgramData,
 } from "./get-program-data/main";
+export { type ParsedPrograms } from "./common";
