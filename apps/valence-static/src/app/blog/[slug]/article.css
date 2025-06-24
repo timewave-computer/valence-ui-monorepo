@@ -4,10 +4,14 @@ article {
 }
 
 article > h1 {
-  @apply text-h2  font-medium pt-4 md:pt-8;
+  @apply text-h1  font-medium pt-4 md:pt-8;
 }
 
 article > h2 {
+  @apply font-medium text-h2 pt-2 md:pt-4;
+}
+
+article > h3 {
   @apply font-medium text-h3 pt-2 md:pt-4;
 }
 
