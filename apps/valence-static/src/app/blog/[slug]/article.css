@@ -20,11 +20,7 @@ article > p {
 }
 
 /* bold text */
-article > p > strong {
-  @apply font-semibold;
-}
-
-article > ul > li > strong {
+article strong {
   @apply font-semibold;
 }
 
