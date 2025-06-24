@@ -24,6 +24,10 @@ article > p > strong {
   @apply font-semibold;
 }
 
+article > ul > li > strong {
+  @apply font-semibold;
+}
+
 article > ul {
   @apply col-span-3 col-start-3 flex list-disc flex-col gap-2 pl-3;
 }
