@@ -15,7 +15,7 @@
         ".env.production",
         ".env"
       ],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "outputs": [".next/**"],
       "env": [
         "NODE_ENV",
         "API_CACHE_URL",
@@ -43,7 +43,7 @@
     },
     "web#build": {
       "dependsOn": ["^build", "@valence-ui/generated-types#prep"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**"]
     },
     "dev": {
       "inputs": [
