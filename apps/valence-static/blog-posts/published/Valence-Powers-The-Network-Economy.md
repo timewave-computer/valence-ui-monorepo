@@ -6,7 +6,7 @@ description: Introducing Valence Protocol, a unified platform for building, test
 heroImagePath: /img/blog/networked-economy.svg
 ---
 
-Crypto today is fragmented. Liquidity, users, and state are siloed across networks, forcing each protocol to operate like its own island. Valence has a simple these: the endgame must be a single, networked economy where applications can seamlessly access assets and users, regardless of where they originate.
+Crypto today is fragmented. Liquidity, users, and state are siloed across networks, forcing each protocol to operate like its own island. Valence has a simple thesis: the endgame must be a single, networked economy where applications can seamlessly access assets and users, regardless of where they originate.
 
 But a thesis is not a product. A vision does not solve real engineering challenges. We need to build the infrastructure we wished already existed.
 
