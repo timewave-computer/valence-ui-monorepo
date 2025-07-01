@@ -57,5 +57,3 @@ turbo start --filter @valence-ui/valence-app
 - add app to the turbo.json file
 - import packages in package.json
 - add short description to README
-
-temp
