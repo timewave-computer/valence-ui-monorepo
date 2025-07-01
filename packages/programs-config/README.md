@@ -1,6 +1,6 @@
 # Programs Config
 
-This package is responsible for generating the public programs configuration from the [Program Manager Config Repo](https://github.com/timewave-computer/valence-program-manager-config/tree/main).
+This package downloads the public programs configuration from the [Program Manager Config Repo](https://github.com/timewave-computer/valence-program-manager-config/tree/main).
 
 ## Scripts
 
