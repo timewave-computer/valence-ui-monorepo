@@ -62,6 +62,11 @@
     "prep": {
       "dependsOn": ["^prep"],
       "outputs": ["dist/**"]
+    },
+    "@valence-ui/programs-config#prep": {
+      "dependsOn": ["^prep"],
+      "outputs": ["dist/**"],
+      "cache": false
     }
   }
 }
