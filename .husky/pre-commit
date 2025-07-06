@@ -1,1 +1,31 @@
-pnpm exec lint-staged
+#!/bin/sh
+# Preserve existing pnpm workflow, but use Nix if pnpm not available
+
+# Function to check if lint-staged is available
+check_lint_staged() {
+  if [ -f "node_modules/.bin/lint-staged" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Try different approaches in order of preference
+if command -v pnpm > /dev/null 2>&1 && check_lint_staged; then
+  # Use native pnpm if available and dependencies are installed
+  echo "Using native pnpm with lint-staged"
+  pnpm exec lint-staged
+elif command -v pnpm > /dev/null 2>&1; then
+  # pnpm is available but dependencies might not be installed
+  echo "Using native pnpm (attempting to install dependencies)"
+  pnpm install --prefer-offline 2>/dev/null || true
+  pnpm exec lint-staged
+elif command -v nix > /dev/null 2>&1 && [ -f flake.nix ]; then
+  # Use Nix environment
+  echo "Using Nix environment for git hooks"
+  nix develop --command bash -c 'pnpm install --prefer-offline 2>/dev/null || true; pnpm exec lint-staged'
+else
+  echo "Error: Neither pnpm nor Nix is available. Please install one of them."
+  echo "For this repository, you can use: nix develop"
+  exit 1
+fi
