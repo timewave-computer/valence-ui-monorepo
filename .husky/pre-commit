@@ -18,12 +18,12 @@ if command -v pnpm > /dev/null 2>&1 && check_lint_staged; then
 elif command -v pnpm > /dev/null 2>&1; then
   # pnpm is available but dependencies might not be installed
   echo "Using native pnpm (attempting to install dependencies)"
-  pnpm install --frozen-lockfile 2>&1 | grep -v "ERR_PNPM_FROZEN_LOCKFILE_WITH_OUTDATED_LOCKFILE\|Cannot perform a frozen installation" || true
+  pnpm install --frozen-lockfile 2>&1 | grep -v "ERR_PNPM_FROZEN_LOCKFILE_WITH_OUTDATED_LOCKFILE\|Cannot perform a frozen installation\|Try either:\|1\. Aligning the version\|2\. Migrating the lockfile\|3\. Using \"pnpm install --no-frozen-lockfile\"\|Note that in CI environments" || true
   pnpm exec lint-staged
 elif command -v nix > /dev/null 2>&1 && [ -f flake.nix ]; then
   # Use Nix environment
   echo "Using Nix environment for git hooks"
-  nix develop --command bash -c 'pnpm install --frozen-lockfile 2>&1 | grep -v "ERR_PNPM_FROZEN_LOCKFILE_WITH_OUTDATED_LOCKFILE\|Cannot perform a frozen installation" || true; pnpm exec lint-staged'
+  nix develop --command bash -c 'pnpm install --frozen-lockfile 2>&1 | grep -v "ERR_PNPM_FROZEN_LOCKFILE_WITH_OUTDATED_LOCKFILE\|Cannot perform a frozen installation\|Try either:\|1\. Aligning the version\|2\. Migrating the lockfile\|3\. Using \"pnpm install --no-frozen-lockfile\"\|Note that in CI environments" || true; pnpm exec lint-staged'
 else
   echo "Error: Neither pnpm nor Nix is available. Please install one of them."
   echo "For this repository, you can use: nix develop"
