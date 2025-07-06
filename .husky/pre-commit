@@ -1,5 +1,5 @@
 #!/bin/sh
-# Preserve existing pnpm workflow, but use Nix if pnpm not available
+# Smart pre-commit hook that works with or without Nix
 
 # Function to check if lint-staged is available
 check_lint_staged() {
@@ -15,15 +15,15 @@ if command -v pnpm > /dev/null 2>&1 && check_lint_staged; then
   # Use native pnpm if available and dependencies are installed
   echo "Using native pnpm with lint-staged"
   pnpm exec lint-staged
-elif command -v pnpm > /dev/null 2>&1; then
-  # pnpm is available but dependencies might not be installed
-  echo "Using native pnpm (attempting to install dependencies)"
-  pnpm install --frozen-lockfile 2>&1 | grep -v "ERR_PNPM_FROZEN_LOCKFILE_WITH_OUTDATED_LOCKFILE\|Cannot perform a frozen installation\|Try either:\|1\. Aligning the version\|2\. Migrating the lockfile\|3\. Using \"pnpm install --no-frozen-lockfile\"\|Note that in CI environments" || true
-  pnpm exec lint-staged
 elif command -v nix > /dev/null 2>&1 && [ -f flake.nix ]; then
-  # Use Nix environment
+  # Use Nix environment with global lint-staged
   echo "Using Nix environment for git hooks"
-  nix develop --command bash -c 'pnpm install --frozen-lockfile 2>&1 | grep -v "ERR_PNPM_FROZEN_LOCKFILE_WITH_OUTDATED_LOCKFILE\|Cannot perform a frozen installation\|Try either:\|1\. Aligning the version\|2\. Migrating the lockfile\|3\. Using \"pnpm install --no-frozen-lockfile\"\|Note that in CI environments" || true; pnpm exec lint-staged'
+  nix develop --command lint-staged
+elif command -v pnpm > /dev/null 2>&1; then
+  # pnpm is available but dependencies might not be installed - try to install
+  echo "Using native pnpm (attempting to install dependencies)"
+  pnpm install --prefer-offline 2>/dev/null || echo "Dependencies already installed or install failed"
+  pnpm exec lint-staged
 else
   echo "Error: Neither pnpm nor Nix is available. Please install one of them."
   echo "For this repository, you can use: nix develop"

@@ -35,6 +35,10 @@
           typescript-language-server
           vscode-langservers-extracted
           
+          # Git hooks and formatting tools
+          lint-staged
+          prettier
+          
           # System tools
           pkg-config
           openssl
@@ -42,6 +46,16 @@
           # Git (if not available)
           git
         ];
+
+        # WebAssembly compilation environment setup
+        wasmEnvSetup = ''
+          # Set up environment for WebAssembly compilation
+          export CC="$(which clang)"
+          export CXX="$(which clang++)"
+          export AR="$(which llvm-ar)"
+          export RANLIB="$(which llvm-ranlib)"
+          export CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER="$(which lld)"
+        '';
 
         # Rust-specific packages
         rustPackages = with pkgs; [
@@ -59,7 +73,6 @@
           
           # Additional build tools
           cmake
-          pkg-config
         ];
 
         # Shell hook for environment setup
@@ -74,32 +87,10 @@
           echo "LLVM: $(llvm-config --version)"
           echo ""
           
-          # Set up environment for WebAssembly compilation
-          export CC="$(which clang)"
-          export CXX="$(which clang++)"
-          export AR="$(which llvm-ar)"
-          export RANLIB="$(which llvm-ranlib)"
-          export CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER="$(which lld)"
+          ${wasmEnvSetup}
           
-          # Set up pnpm environment variables to avoid version switching issues
-          export PNPM_HOME="$HOME/.local/share/pnpm"
-          export PATH="$PNPM_HOME:$PATH"
-          
-          echo "Installing dependencies..."
-          if [ -f "package.json" ]; then
-            echo "Installing dependencies with pnpm..."
-            if command -v pnpm &> /dev/null; then
-              echo "Run 'pnpm install' to install dependencies"
-            fi
-          fi
-          
-          if [ -f "apps/valence-app/src/wasm/pid/Cargo.toml" ]; then
-            echo "WebAssembly component available at apps/valence-app/src/wasm/pid/"
-            echo "Run 'cargo build --release --target wasm32-unknown-unknown' to build it"
-          fi
-          
-          echo ""
-          echo "Available commands (matching team workflow):"
+          echo "Quick Setup:"
+          echo "  pnpm install     - Install project dependencies"
           echo "  pnpm dev         - Start development servers"
           echo "  pnpm build       - Build all packages"
           echo "  pnpm lint        - Run linting"
@@ -111,7 +102,11 @@
           echo "  valence-app      - Main application (http://localhost:3000)"
           echo "  valence-static   - Static site (http://localhost:3002)"
           echo ""
-          echo "Environment ready! (pnpm workflow active)"
+          echo "WebAssembly:"
+          echo "  apps/valence-app/src/wasm/pid/ - Rust WebAssembly component"
+          echo "  cargo build --release --target wasm32-unknown-unknown"
+          echo ""
+          echo "Environment ready! Git hooks enabled with lint-staged."
         '';
       in
       {
@@ -132,7 +127,7 @@
               echo "pnpm: $(pnpm --version)"
               echo "Rust: $(rustc --version)"
               echo "Building project..."
-              pnpm install --frozen-lockfile --prefer-offline 2>/dev/null || true
+              pnpm install --frozen-lockfile --prefer-offline 2>/dev/null
               echo "Environment ready for building!"
             '';
           };
@@ -147,12 +142,7 @@
               echo "wasm-pack: $(wasm-pack --version)"
               echo "Targets: $(rustup target list --installed 2>/dev/null || echo 'wasm32-unknown-unknown')"
               
-              # Set up environment for WebAssembly compilation
-              export CC="$(which clang)"
-              export CXX="$(which clang++)"
-              export AR="$(which llvm-ar)"
-              export RANLIB="$(which llvm-ranlib)"
-              export CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER="$(which lld)"
+              ${wasmEnvSetup}
               
               echo "Environment ready for Rust/WebAssembly development!"
             '';
