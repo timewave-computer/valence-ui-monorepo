@@ -17,7 +17,9 @@
 
 ## Local development
 
-To run the repo locally, install `turbo` and `pnpm` globally, then run:
+### Option 1: Standard Setup
+
+Install `turbo` and `pnpm` globally, then run:
 
 ```bash
 pnpm install
@@ -29,7 +31,25 @@ turbo dev --filter @valence-ui/valence-app --filter @valence-ui/ui-sandbox
 turbo dev --filter @valence-ui/valence-static --filter @valence-ui/ui-sandbox
 ```
 
-To test production build
+### Option 2: Nix Development Environment
+
+For a complete, reproducible development environment with all tools pre-configured:
+
+```bash
+nix develop          # Enter development shell with Node.js 20, pnpm 9.0, Rust, WebAssembly tools
+pnpm install         # Same commands as above
+turbo dev            # Everything works the same
+```
+
+**Prerequisites:** [Install Nix](https://nixos.org/download) and enable flakes:
+
+```bash
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
+
+**Benefits:** Reproducible environment, automatic tool installation, WebAssembly support configured.
+
+### Production Build
 
 ```bash
 turbo build
