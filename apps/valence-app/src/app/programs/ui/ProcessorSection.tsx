@@ -143,7 +143,7 @@ export const ProcessorSection = ({
       queryClient.invalidateQueries({
         refetchType: "active",
         exact: false,
-        queryKey: [QUERY_KEYS.WALLET_BALANCES_V2],
+        queryKey: [QUERY_KEYS.WALLET_BALANCES],
       });
       toast.success(
         <ToastMessage variant="success" title="Processor ticked">
