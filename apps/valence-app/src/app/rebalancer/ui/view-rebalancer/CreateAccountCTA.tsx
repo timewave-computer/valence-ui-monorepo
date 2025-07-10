@@ -1,8 +1,11 @@
 "use client";
 import { Asset, Heading } from "@valence-ui/ui-components";
-import { SymbolColors, useAssetMetadata } from "@/app/rebalancer/ui";
+import {
+  SymbolColors,
+  useAssetMetadata,
+  useRebalancerAssetBalances,
+} from "@/app/rebalancer/ui";
 import { displayNumberV2, microToBase } from "@/utils";
-import { useWalletBalances } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { chainConfig } from "@/const/config";
 import { StatusBar } from "@/components/StatusBar";
@@ -17,7 +20,7 @@ export const CreateAccountCTA = () => {
   const {
     isLoading: isBalancesLoading,
     data: walletBalances, // will be loaded at this stage
-  } = useWalletBalances(walletAddress, {
+  } = useRebalancerAssetBalances(walletAddress, {
     refetchInveral: 10 * 1000,
   });
 

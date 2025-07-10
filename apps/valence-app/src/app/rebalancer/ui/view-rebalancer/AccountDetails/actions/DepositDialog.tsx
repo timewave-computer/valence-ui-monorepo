@@ -19,7 +19,6 @@ import {
 } from "@valence-ui/ui-components";
 import { QUERY_KEYS } from "@/const/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useWalletBalances } from "@/hooks";
 import { Fragment, useState } from "react";
 import { baseToMicro, displayNumberV2, microToBase } from "@/utils";
 import { useForm } from "react-hook-form";
@@ -29,6 +28,7 @@ import {
   BalanceReturnValue,
   useAssetMetadata,
   SupportedAssets,
+  useRebalancerAssetBalances,
 } from "@/app/rebalancer/ui";
 import { FetchSupportedBalancesReturnValue } from "@/server/actions";
 import { CelatoneUrl, chainConfig } from "@/const";
@@ -126,7 +126,7 @@ export const DepositDialog: React.FC<{}> = ({}) => {
 
   const {
     data: walletBalances, // will be loaded at this stage
-  } = useWalletBalances(walletAddress, {
+  } = useRebalancerAssetBalances(walletAddress, {
     refetchInveral: 10 * 1000,
   });
 

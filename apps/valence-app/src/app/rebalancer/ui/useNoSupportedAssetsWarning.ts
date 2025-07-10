@@ -1,8 +1,8 @@
 import { chainConfig } from "@/const/config";
-import { useWalletBalances } from "@/hooks";
+import { useRebalancerAssetBalances } from "@/app/rebalancer/ui";
 
 export const useNoSupportedAssetsWarning = (address: string) => {
-  const { data: balances } = useWalletBalances(address);
+  const { data: balances } = useRebalancerAssetBalances(address);
 
   const feeBalance = balances?.find(
     (b) => b.denom === chainConfig.serviceFee.denom,
