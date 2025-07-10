@@ -18,3 +18,4 @@ export * from "./useSettingsProjection";
 export * from "./useValenceAccount";
 export * from "./withTimeout";
 export * from "./useLivePrices";
+export * from "./useRebalancerAssetBalances";

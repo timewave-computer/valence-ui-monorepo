@@ -198,7 +198,7 @@ export const ExecutableSubroutine = ({
       queryClient.invalidateQueries({
         refetchType: "active",
         exact: false,
-        queryKey: [QUERY_KEYS.WALLET_BALANCES_V2],
+        queryKey: [QUERY_KEYS.WALLET_BALANCES],
       });
     },
   });

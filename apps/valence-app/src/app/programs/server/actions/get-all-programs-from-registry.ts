@@ -116,6 +116,8 @@ export const getAllProgramsFromRegistry = async ({
     }
   });
 
+  console.log("len of decodedPrograms", decodedPrograms.length);
+
   const parsedPrograms = decodedPrograms.reduce(
     (acc, { id, decodedConfig }) => {
       try {
@@ -168,7 +170,7 @@ const fetchAllProgramsFromRegistry = async ({
       throw new Error("Registry has no programs");
     }
 
-    const limit = 200;
+    const limit = 400;
 
     const endIndex = lastId + 1;
     const startIndex = Math.max(0, endIndex - limit);

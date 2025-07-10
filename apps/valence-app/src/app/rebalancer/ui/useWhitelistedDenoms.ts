@@ -18,7 +18,7 @@ export const useWhitelistedDenoms = () => {
     queryFn: () =>
       withTimeout(
         () => fetchRebalancerWhitelist(),
-        QUERY_KEYS.WALLET_BALANCES,
+        QUERY_KEYS.REBALANCER_WHITELIST,
         5000,
       ) as Promise<WhitelistsResponse>,
   });

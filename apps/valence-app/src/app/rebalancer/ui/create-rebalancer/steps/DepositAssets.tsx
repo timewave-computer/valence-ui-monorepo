@@ -1,7 +1,6 @@
 import React, { Fragment, ReactNode, useCallback } from "react";
 import { CreateRebalancerForm } from "@/types/rebalancer";
 import { UseFormReturn } from "react-hook-form";
-import { useWalletBalances } from "@/hooks";
 import { displayNumber, displayValue, microToBase } from "@/utils";
 import { produce } from "immer";
 import {
@@ -30,6 +29,7 @@ import {
   useMinimumRequiredValue,
   useNoSupportedAssetsWarning,
   SymbolColors,
+  useRebalancerAssetBalances,
 } from "@/app/rebalancer/ui";
 import { useAccount } from "graz";
 
@@ -41,7 +41,7 @@ export const DepositAssets: React.FC<{
     data: balances,
     isLoading: isLoadingBalances,
     isFetched: isBalancesFetched,
-  } = useWalletBalances(address, {
+  } = useRebalancerAssetBalances(address, {
     refetchInveral: 10 * 1000,
   });
   const { setValue, getValues, watch } = form;
