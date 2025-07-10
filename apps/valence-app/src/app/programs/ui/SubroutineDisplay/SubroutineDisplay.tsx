@@ -23,7 +23,7 @@ export const SubroutineDisplay = ({
       {authorizations.map((authorization, i) => {
         return (
           <AuthorizationDisplay
-            key={`authorization-${authorization.label}`}
+            key={`authorization-${authorization.label}-${i}`}
             program={program}
             queryConfig={queryConfig}
             authorization={authorization}

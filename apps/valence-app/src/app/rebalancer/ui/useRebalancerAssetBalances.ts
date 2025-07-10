@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { withTimeout } from ".";
+import { withTimeout } from "@/app/rebalancer/ui";
 import { QUERY_KEYS } from "@/const/query-keys";
 import {
   fetchSupportedBalances,
