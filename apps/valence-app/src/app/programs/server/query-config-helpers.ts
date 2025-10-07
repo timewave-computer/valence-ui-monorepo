@@ -35,7 +35,7 @@ export const getDefaultMainChainConfig = (): ProgramQueryConfig["main"] => {
   return {
     chainId: neutronConfig.chainId,
     registryAddress: config.registry,
-    rpc: neutronConfig.rpc,
+    rpc: "https://rpc-lb.neutron.org",
     domainName: neutronConfig.domainName,
     chainName: neutronConfig.chainName,
   };
