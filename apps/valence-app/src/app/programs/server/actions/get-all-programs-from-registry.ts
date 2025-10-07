@@ -170,7 +170,7 @@ const fetchAllProgramsFromRegistry = async ({
       throw new Error("Registry has no programs");
     }
 
-    const limit = 400;
+    const limit = 100;
 
     const endIndex = lastId + 1;
     const startIndex = Math.max(0, endIndex - limit);
