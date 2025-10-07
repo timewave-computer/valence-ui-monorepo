@@ -165,7 +165,8 @@ const fetchAllProgramsFromRegistry = async ({
       registryAddress,
     );
 
-    const lastId = await programRegistryClient.getLastId();
+    // const lastId = await programRegistryClient.getLastId();
+    const lastId = 125;
     if (!lastId) {
       throw new Error("Registry has no programs");
     }
