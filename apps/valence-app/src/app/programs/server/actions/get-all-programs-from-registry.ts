@@ -25,12 +25,25 @@ export type GetAllProgramsReturnValue = {
   queryConfig: ProgramQueryConfig;
   errors: ErrorCodes;
   parsedPrograms?: ParsedPrograms;
+  pagination: PaginationArgs;
+};
+
+export type PaginationArgs = {
+  lastId: number;
+  limit: number;
+};
+
+const DEFAULT_PAGINATION: PaginationArgs = {
+  lastId: 10000,
+  limit: 100,
 };
 
 export const getAllProgramsFromRegistry = async ({
   queryConfig: userSuppliedQueryConfig,
+  pagination,
 }: {
   queryConfig: ProgramQueryConfig | null;
+  pagination?: PaginationArgs;
 }): Promise<GetAllProgramsReturnValue> => {
   const isUserSuppliedArgs = !!userSuppliedQueryConfig;
 
@@ -43,6 +56,7 @@ export const getAllProgramsFromRegistry = async ({
     mainChainCosmwasmClient = await getCosmwasmClient(mainDomainConfig.rpc);
   } catch (e) {
     return {
+      pagination: pagination ?? DEFAULT_PAGINATION,
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: {
         main: mainDomainConfig,
@@ -60,6 +74,7 @@ export const getAllProgramsFromRegistry = async ({
   const registryAddress = mainDomainConfig.registryAddress;
   if (!registryAddress) {
     return {
+      pagination: pagination ?? DEFAULT_PAGINATION,
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: {
         main: mainDomainConfig,
@@ -77,12 +92,27 @@ export const getAllProgramsFromRegistry = async ({
   let errors: ErrorCodes = [];
 
   try {
+    const programRegistryClient = new ProgramRegistryQueryClient(
+      mainChainCosmwasmClient,
+      registryAddress,
+    );
+
+    if (!pagination) {
+      const lastId = await programRegistryClient.getLastId();
+      if (!lastId) {
+        throw new Error("Registry has no programs");
+      }
+      pagination = { lastId, limit: DEFAULT_PAGINATION.limit };
+    }
+
     rawPrograms = await fetchAllProgramsFromRegistry({
       registryAddress,
       cosmwasmClient: mainChainCosmwasmClient,
+      pagination,
     });
   } catch (e) {
     return {
+      pagination: pagination ?? DEFAULT_PAGINATION,
       dataLastUpdatedAt: getLastUpdatedTime(),
       queryConfig: {
         main: mainDomainConfig,
@@ -116,8 +146,6 @@ export const getAllProgramsFromRegistry = async ({
     }
   });
 
-  console.log("len of decodedPrograms", decodedPrograms.length);
-
   const parsedPrograms = decodedPrograms.reduce(
     (acc, { id, decodedConfig }) => {
       try {
@@ -145,6 +173,7 @@ export const getAllProgramsFromRegistry = async ({
   );
 
   return {
+    pagination: pagination,
     dataLastUpdatedAt: getLastUpdatedTime(), // required for useQuery knowing when to refetch
     queryConfig: { main: mainDomainConfig, external: null },
     errors: errors,
@@ -155,9 +184,11 @@ export const getAllProgramsFromRegistry = async ({
 const fetchAllProgramsFromRegistry = async ({
   registryAddress,
   cosmwasmClient,
+  pagination,
 }: {
   registryAddress: string;
   cosmwasmClient: CosmWasmClient;
+  pagination: PaginationArgs;
 }) => {
   try {
     const programRegistryClient = new ProgramRegistryQueryClient(
@@ -165,21 +196,14 @@ const fetchAllProgramsFromRegistry = async ({
       registryAddress,
     );
 
-    const lastId = await programRegistryClient.getLastId();
-    if (!lastId) {
-      throw new Error("Registry has no programs");
-    }
-
-    const limit = 400;
-
-    const endIndex = lastId + 1;
-    const startIndex = Math.max(0, endIndex - limit);
+    const endIndex = pagination.lastId + 1;
+    const startIndex = Math.max(0, endIndex - pagination.limit);
 
     // return type on function is incorrect
     return programRegistryClient.getAllConfigs({
       end: endIndex,
       start: startIndex,
-      limit: limit,
+      limit: pagination.limit,
     });
   } catch (e) {
     throw new Error(

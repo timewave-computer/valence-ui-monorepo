@@ -10,12 +10,15 @@ import { useCallback } from "react";
 import { X_HANDLE, X_URL } from "@valence-ui/socials";
 import { isEqual } from "lodash";
 import { useProgramQueryConfig } from "@/app/programs/ui";
+import { PaginationArgs } from "../server/actions/get-all-programs-from-registry";
 
 type UseProgramQueryArgs = {
   initialQueryData: GetAllProgramsReturnValue;
+  pagination?: PaginationArgs;
 };
 export const useGetAllProgramsQuery = ({
   initialQueryData,
+  pagination,
 }: UseProgramQueryArgs) => {
   const { queryConfig } = useProgramQueryConfig(initialQueryData.queryConfig);
 
@@ -28,6 +31,7 @@ export const useGetAllProgramsQuery = ({
           main: queryConfig.main,
           external: queryConfig.external,
         },
+        pagination,
       });
       // return the partial result. it contains errors
       return data;
@@ -46,7 +50,13 @@ export const useGetAllProgramsQuery = ({
         </ToastMessage>,
       );
     }
-  }, [queryConfig.main, queryConfig.external]);
+  }, [
+    queryConfig.main,
+    queryConfig.external,
+    pagination,
+    pagination?.lastId,
+    pagination?.limit,
+  ]);
   return useQuery<GetAllProgramsReturnValue | undefined>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -55,11 +65,15 @@ export const useGetAllProgramsQuery = ({
       QUERY_KEYS.PROGRAMS_REGISTRY_ALL_PROGRAMS,
       queryConfig.external,
       queryConfig.main,
+      pagination?.lastId,
+      pagination?.limit,
     ],
     // only supply initial data if the query config is the same
-    initialData: isEqual(queryConfig, initialQueryData?.queryConfig)
-      ? initialQueryData
-      : undefined,
+    initialData:
+      isEqual(queryConfig, initialQueryData?.queryConfig) &&
+      isEqual(pagination, initialQueryData?.pagination)
+        ? initialQueryData
+        : undefined,
     refetchInterval: 60 * 1000, // 1 min
     staleTime: 5 * 60 * 1000, // 5 mins - will remain in cache
     queryFn,
