@@ -13,6 +13,8 @@ import {
   RefetchButton,
   useGetAllProgramsQuery,
   useProgramQueryConfig,
+  Pagination,
+  usePagination,
 } from "@/app/programs/ui";
 import { CelatoneUrl } from "@/const/";
 import Link from "next/link";
@@ -21,16 +23,28 @@ import {
   type GetAllProgramsReturnValue,
   ProgramQueryConfig,
 } from "@/app/programs/server";
-import { ProgramsChainConfig } from "@/const/ProgramsChainConfig";
 
+import { ProgramsChainConfig } from "@/const/ProgramsChainConfig";
 export const ProgramRegistryViewer = ({
   data: initialData,
 }: {
   data: GetAllProgramsReturnValue;
 }) => {
+  const { pagination, next, previous } = usePagination(initialData.pagination);
+
+  const isPreviousDisabled =
+    pagination.lastId ===
+    initialData?.parsedPrograms?.[initialData?.parsedPrograms?.length - 1].id;
+
+  console.log("isPreviousDisabled", isPreviousDisabled);
+  console.log("lastId", initialData?.parsedPrograms?.[0].id);
+  console.log("pagination.lastId", pagination.lastId);
+
   const { data, isLoading, refetch, isFetching } = useGetAllProgramsQuery({
     initialQueryData: initialData,
+    pagination,
   });
+
   const { queryConfig, setQueryConfig } = useProgramQueryConfig(
     initialData.queryConfig,
   );
@@ -125,7 +139,14 @@ export const ProgramRegistryViewer = ({
       <ProgramViewerErrorDisplay errors={data?.errors} />
 
       <div className="flex flex-row gap-2 w-full  justify-between pt-2">
-        <RefetchButton isFetching={isFetching} refetch={refetch} />
+        <div className="flex flex-row gap-2 items-center">
+          <RefetchButton isFetching={isFetching} refetch={refetch} />
+          <Pagination
+            onPrevious={previous}
+            onNext={next}
+            isPreviousDisabled={isPreviousDisabled}
+          />
+        </div>
       </div>
       <div className="flex flex-col  gap-2 pt-4 items-stretch overflow-clip">
         <Table

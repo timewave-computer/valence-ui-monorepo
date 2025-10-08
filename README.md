@@ -17,64 +17,39 @@
 
 ## Local development
 
-### Option 1: Standard Setup
-
-Install `turbo` and `pnpm` globally, then run:
-
-```bash
-pnpm install
-turbo dev
-
-# to run only specific apps (recommended)
-turbo dev --filter @valence-ui/valence-app
-turbo dev --filter @valence-ui/valence-app --filter @valence-ui/ui-sandbox
-turbo dev --filter @valence-ui/valence-static --filter @valence-ui/ui-sandbox
-```
-
-FYI: if you see this error, try again. Sometimes the generate command fails
-
-```
-│ Running graz generate -g
-│ ⏳DOCTGenerating chain list...
-│ ⚠️     blockxtestnet has no REST/RPC endpoints, skipping codegen...
-│ ⚠️yntaxcudostestnet has no fee currencies, skipping codegen...
-│ ⚠️   atlombardledgertestnet has no REST/RPC endpoints, skipping codegen...
-│ ⚠️   atmetanovaversetestnet has no REST/RPC endpoints, skipping codegen...
-│ ⚠️   atneuradevnet has no REST/RPC endpoints, skipping codegen...
-│ ⚠️   atneuratestnet has no REST/RPC endpoints, skipping codegen...
-│ ⚠️   atseitestnet has no REST/RPC endpoints, skipping codegen...
-│ ⚠️   atulastestnet has no fee currencies, skipping codegen...
-│ <anonymous_script>:1
-│ <!DOCTYPE
-```
-
-### Option 2: Nix Development Environment
+1. Set up development environment
+   **Prerequisites:** [Install Nix](https://nixos.org/download) and enable flakes:
 
 For a complete, reproducible development environment with all tools pre-configured:
 
 ```bash
-nix develop          # Enter development shell with Node.js 20, pnpm 9.0, Rust, WebAssembly tools
-pnpm install         # Same commands as above
-turbo dev            # Everything works the same
+nix develop          # Enter development shell with Node.js 20, pnpm 9.0, turbo
+pnpm install
 ```
 
-**Prerequisites:** [Install Nix](https://nixos.org/download) and enable flakes:
+2. Start application in dev mode
 
 ```bash
-echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
-```
 
-**Benefits:** Reproducible environment, automatic tool installation, WebAssembly support configured.
+# run specific app
+turbo dev --filter @valence-ui/valence-app ## starts main app
+turbo dev --filter @valence-ui/valence-static ## starts static site
+
+turbo dev # runs all apps (not recommended)
+
+```
 
 ### Production Build
 
 ```bash
-turbo build
+turbo build ## Builds all
 turbo build --filter @valence-ui/valence-app
 turbo start --filter @valence-ui/valence-app
 ```
 
-## How to add a package
+## Contributing
+
+### How to add a package
 
 - create a folder under packages with the following files, which import global project config (can copy from another package)
   - tsconfig.json
@@ -86,7 +61,7 @@ turbo start --filter @valence-ui/valence-app
 - import the package from other repos
 - add short description to README
 
-## How to add an app
+### How to add an app
 
 - create the app in the `apps` folder
 - add same files as needed above (can use valence-static or ui-sandbox as template)

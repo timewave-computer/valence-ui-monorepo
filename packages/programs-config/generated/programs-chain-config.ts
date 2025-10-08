@@ -6,7 +6,7 @@ export const programsChainConfig = {
     "neutron1d8me7p72yq95sqnq5jpk34nn4t2vdl30yff29r05250ef92mr80saqcl2f",
   main: {
     chainId: "neutron-1",
-    rpc: "https://rpc-lb.neutron.org",
+    rpc: "https://rpc-voidara.neutron-1.neutron.org",
     chainName: "neutron",
     domainName: "neutron",
     gasPrice: "0.0053",
