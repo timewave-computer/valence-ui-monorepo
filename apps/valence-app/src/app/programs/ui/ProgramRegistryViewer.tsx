@@ -36,10 +36,6 @@ export const ProgramRegistryViewer = ({
     pagination.lastId ===
     initialData?.parsedPrograms?.[initialData?.parsedPrograms?.length - 1].id;
 
-  console.log("isPreviousDisabled", isPreviousDisabled);
-  console.log("lastId", initialData?.parsedPrograms?.[0].id);
-  console.log("pagination.lastId", pagination.lastId);
-
   const { data, isLoading, refetch, isFetching } = useGetAllProgramsQuery({
     initialQueryData: initialData,
     pagination,

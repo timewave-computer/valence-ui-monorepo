@@ -1,10 +1,14 @@
 "use client";
 import { useState, useCallback } from "react";
-import { type PaginationArgs } from "@/app/programs/server";
 
-export const usePagination = (initialPagination: PaginationArgs) => {
-  const [pagination, setPagination] =
-    useState<PaginationArgs>(initialPagination);
+export const usePagination = (initialPagination: {
+  lastId: number;
+  limit: number;
+}) => {
+  const [pagination, setPagination] = useState<{
+    lastId: number;
+    limit: number;
+  }>(initialPagination);
 
   const next = useCallback(() => {
     setPagination({

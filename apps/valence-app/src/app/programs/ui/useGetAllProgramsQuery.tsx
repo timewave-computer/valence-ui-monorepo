@@ -20,12 +20,10 @@ export const useGetAllProgramsQuery = ({
   initialQueryData,
   pagination,
 }: UseProgramQueryArgs) => {
-  console.log("pagination in useGetAllProgramsQuery", pagination);
   const { queryConfig } = useProgramQueryConfig(initialQueryData.queryConfig);
 
   // must be defined in callback to detect input changes
   const queryFn = useCallback(async () => {
-    console.log("fetching with pagination", pagination);
     // nullify initial data after first fetch, otherwise it will be used for every response
     try {
       const data = await getAllProgramsFromRegistry({
@@ -55,6 +53,7 @@ export const useGetAllProgramsQuery = ({
   }, [
     queryConfig.main,
     queryConfig.external,
+    pagination,
     pagination?.lastId,
     pagination?.limit,
   ]);
