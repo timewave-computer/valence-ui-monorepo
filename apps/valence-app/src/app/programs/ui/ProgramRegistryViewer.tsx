@@ -147,7 +147,7 @@ export const ProgramRegistryViewer = ({
       <div className="flex flex-col  gap-2 pt-4 items-stretch overflow-clip">
         <Table
           className="overflow-scroll"
-          loadingRows={10}
+          loadingRows={25}
           isLoading={isLoading}
           variant="primary"
           headers={headers}

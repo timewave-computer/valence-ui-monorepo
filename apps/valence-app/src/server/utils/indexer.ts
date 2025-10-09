@@ -2,7 +2,6 @@ import { USDC_DENOM } from "@/const/chain-data";
 import { chainConfig } from "@/const/config";
 
 const INDEXER_API_KEY = process.env.INDEXER_API_KEY;
-if (!INDEXER_API_KEY) throw new Error("INDEXER_API_KEY is not set");
 const ORACLE_ADDRESS = chainConfig.addresses.oracle;
 const INDEXER_URL = chainConfig.indexerUrl;
 const timeStep = 24 * 60 * 60 * 1000; // 1 day (in milliseconds)

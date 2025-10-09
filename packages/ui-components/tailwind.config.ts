@@ -5,4 +5,4 @@ const tailwindConfig = {
   presets: [require("@valence-ui/project-config/tailwind/config")],
 };
 
-module.exports = tailwindConfig;
+export default tailwindConfig;

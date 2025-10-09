@@ -15,7 +15,6 @@ import {
   useLivePortfolio,
   SymbolColors,
 } from "@/app/rebalancer/ui";
-import { useAtom } from "jotai";
 import { useQueryState } from "nuqs";
 
 export type LiveBalancesTableData = {
@@ -103,7 +102,7 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
       );
     }, 0);
     return total ?? 0;
-  }, [data]);
+  }, [data, livePortfolio?.balances]);
 
   const isLoading = isBalancesLoading || isConfigLoading;
 

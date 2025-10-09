@@ -53,6 +53,7 @@ export const FunctionMessageFormField = ({
 
   useEffect(() => {
     handleValidateJson({ value: fieldValue });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fieldValue]);
 
   const messageBody = generateMessageBody(subroutineFunction.message_details);

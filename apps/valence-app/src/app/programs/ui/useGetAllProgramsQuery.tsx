@@ -39,7 +39,7 @@ export const useGetAllProgramsQuery = ({
       // catch if it just totally fails
       console.log("Failed to fetch programs", e);
       toast(
-        <ToastMessage variant="error" title="Failed to fetch program">
+        <ToastMessage variant="error" title="Failed to fetch programs">
           <div className="flex flex-row flex-wrap gap-0.5">
             Refresh the page and contact{" "}
             <LinkText href={X_URL} variant="primary">
@@ -50,13 +50,7 @@ export const useGetAllProgramsQuery = ({
         </ToastMessage>,
       );
     }
-  }, [
-    queryConfig.main,
-    queryConfig.external,
-    pagination,
-    pagination?.lastId,
-    pagination?.limit,
-  ]);
+  }, [queryConfig.main, queryConfig.external, pagination]);
   return useQuery<GetAllProgramsReturnValue | undefined>({
     refetchOnMount: false,
     refetchOnWindowFocus: false,

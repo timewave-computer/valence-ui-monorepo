@@ -58,6 +58,7 @@ export const DomainConnector = ({
         </ToastMessage>,
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectError, isErrorSeen]);
 
   const handleConnectCustomChain = async (chainInfo: ChainInfo) => {
