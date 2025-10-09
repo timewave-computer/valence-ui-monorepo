@@ -26,6 +26,8 @@ import {
   prefetchLivePrices,
 } from "@/server/prefetch";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Edit Rebalancer",
   description: EDIT_REBALANCER_DESCRIPTION,

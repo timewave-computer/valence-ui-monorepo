@@ -2,6 +2,8 @@ import { fetchHistoricalPricesV2 } from "@/server/actions";
 import { UTCDate } from "@date-fns/utc";
 import { format } from "date-fns";
 
+export const dynamic = "force-dynamic";
+
 /***
  * this is only here for internal purposes
  */

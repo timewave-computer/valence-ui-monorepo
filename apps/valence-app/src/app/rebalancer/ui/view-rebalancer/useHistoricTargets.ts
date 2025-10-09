@@ -13,9 +13,7 @@ export const useHistoricTargets = ({
 }) => {
   return useQuery({
     staleTime: 1000 * 60 * 10, // 10 mins,
-    retry: (errorCount) => {
-      return errorCount < 1;
-    },
+    retry: false,
     enabled: accountAddress.length > 0,
     queryKey: [
       QUERY_KEYS.HISTORIC_TARGETS,

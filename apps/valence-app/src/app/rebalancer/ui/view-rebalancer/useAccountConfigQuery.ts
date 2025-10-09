@@ -20,7 +20,7 @@ export const useAccountConfigQuery = ({ account }: { account: string }) => {
   // maintain custom error state
   const [error, setError] = useState<null | LOAD_CONFIG_ERROR>(null);
   const query = useQuery({
-    retry: 1,
+    retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
     queryKey: [QUERY_KEYS.REBALANCER_ACCOUNT_CONFIG, account],
     queryFn: async () => {

@@ -18,19 +18,18 @@ export const getPrices = async (
   }
   const promises = coingeckoIds.map(async (id) => {
     try {
-      const result = await fetchMaybeCached(CACHE_KEYS.COINGECKO_PRICE, { id });
-      // const data = await fetch(
-      //   `https://pro-api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd`,
-      //   {
-      //     headers: {
-      //       "x-cg-pro-api-key": process.env.COINGECKO_API_KEY ?? "",
-      //     },
-      //     next: {
-      //       revalidate: secondsToMinutes(5),
-      //     },
-      //   },
-      // );
-      // const result = await data.json();
+      const data = await fetch(
+        `https://pro-api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd`,
+        {
+          headers: {
+            "x-cg-pro-api-key": process.env.COINGECKO_API_KEY ?? "",
+          },
+          next: {
+            revalidate: secondsToMinutes(5),
+          },
+        },
+      );
+      const result = await data.json();
       const validated = z.number().safeParse(result);
       if (!validated.success) {
         throw ErrorHandler.makeError(
