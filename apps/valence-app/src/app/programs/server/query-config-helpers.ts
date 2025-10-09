@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { parseAsJson, createLoader } from "nuqs/server";
-import { ProgramsChainConfig } from "@/const/ProgramsChainConfig";
+import {
+  ProgramsChainConfig,
+  PUBLIC_DEFAULT_NEUTRON_RPC,
+} from "@/const/ProgramsChainConfig";
 
 const externalConfigSchema = z.array(
   z.object({
@@ -32,7 +35,7 @@ export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 export const getDefaultMainChainConfig = (): ProgramQueryConfig["main"] => {
   const config = ProgramsChainConfig.get();
   const neutronConfig = config.main;
-  const defaultNeutronRpcOverride = "https://rpc-lb.neutron.org"; // requires an override, config file is outdated
+  const defaultNeutronRpcOverride = PUBLIC_DEFAULT_NEUTRON_RPC; // requires an override, config file is outdated
   return {
     chainId: neutronConfig.chainId,
     registryAddress: config.registry,

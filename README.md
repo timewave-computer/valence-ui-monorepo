@@ -38,7 +38,15 @@ pnpm install # Install all dependencies
 
 **Note**: if `pnpm install` fails during the `graz generate -g` postinstall step, trying rerunning the command. This step can occasionally be flaky, but it will succeed after 2–3 attempts.
 
-### 3. Run in production mode
+### 3. Set environment variables
+
+The only required environment variable is the default public neutron RPC url. Modify the URL as needed.
+
+```bash
+cp apps/valence-app/.env.example apps/valence-app/.env.local
+```
+
+### 4. Run in production mode
 
 ```bash
 turbo build --filter @valence-ui/valence-app
@@ -47,7 +55,7 @@ turbo start --filter @valence-ui/valence-app
 
 The app will be available at the URL printed in the terminal.
 
-### 4. (Optional) Run in dev mode
+### 5. (Optional) Run in dev mode
 
 ```bash
 # Run specific apps
@@ -58,10 +66,12 @@ turbo dev --filter @valence-ui/valence-static  # Static site
 turbo dev
 ```
 
-### 5. Deployment
+### 6. Deployment
 
 Each app in the `apps/` directory can be deployed individually to Vercel with a few clicks.
 When creating a new Vercel project, simply select the corresponding app folder.
+
+Make sure to add environment variables in the Vercel dashboard.
 
 ## Contributing
 

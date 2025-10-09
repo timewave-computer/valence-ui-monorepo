@@ -25,7 +25,8 @@
         "NEXT_PUBLIC_FF_AUCTIONS_LIVE_AGGREGATE",
         "INDEXER_API_KEY",
         "NEXT_PUBLIC_CHAIN_ID",
-        "COINGECKO_API_KEY"
+        "COINGECKO_API_KEY",
+        "NEXT_PUBLIC_DEFAULT_NEUTRON_RPC"
       ]
     },
     "start": {
