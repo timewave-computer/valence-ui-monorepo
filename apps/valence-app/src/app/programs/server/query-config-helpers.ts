@@ -35,7 +35,7 @@ export const loadQueryConfigSearchParams = createLoader(queryConfigLoader);
 export const getDefaultMainChainConfig = (): ProgramQueryConfig["main"] => {
   const config = ProgramsChainConfig.get();
   const neutronConfig = config.main;
-  const defaultNeutronRpcOverride = PUBLIC_DEFAULT_NEUTRON_RPC; // requires an override, config file is outdated
+  const defaultNeutronRpcOverride = PUBLIC_DEFAULT_NEUTRON_RPC; // requires an override, the config file from which this is generated is outdated
   return {
     chainId: neutronConfig.chainId,
     registryAddress: config.registry,
