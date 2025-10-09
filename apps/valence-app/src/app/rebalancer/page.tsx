@@ -9,6 +9,8 @@ import {
 } from "@/app/rebalancer/ui";
 import { RebalancerMainServerComponent } from "@/app/rebalancer/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Rebalancer",
   description: REBALANCER_DESCRIPTION,

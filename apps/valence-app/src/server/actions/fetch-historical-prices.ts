@@ -1,6 +1,5 @@
 "use server";
 import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
-import { CACHE_KEYS, fetchMaybeCached } from "@/server/utils";
 import { IndexerHistoricalTargetsResponse } from "@/types/rebalancer";
 import {
   CoinGeckoHistoricPrices,
@@ -83,25 +82,20 @@ export const fetchHistoricalPricesV2 = async (asset: {
   denom: string;
   coingeckoId: string;
 }): Promise<CoinGeckoHistoricPrices> => {
-  const response = await fetchMaybeCached(CACHE_KEYS.COINGECKO_PRICE_HISTORY, {
-    id: asset.coingeckoId,
-    range: "year",
-    interval: "daily",
-  });
-  // const interval = "daily";
-  // const range = TimeRange.Year;
-  // const { start, end } = getRangeBounds(range);
+  const interval = "daily";
+  const range = TimeRange.Year;
+  const { start, end } = getRangeBounds(range);
 
-  // const url = `https://pro-api.coingecko.com/api/v3/coins/${asset.coingeckoId}/market_chart/range?vs_currency=usd&from=${BigInt(start).toString()}&to=${BigInt(end).toString()}${interval ? `&interval=${interval}` : ""}`;
-  // const data = await fetch(url, {
-  //   headers: {
-  //     "x-cg-pro-api-key": process.env.COINGECKO_API_KEY ?? "",
-  //   },
-  //   next: {
-  //     revalidate: secondsToHours(1),
-  //   },
-  // });
-  // const response = await data.json();
+  const url = `https://pro-api.coingecko.com/api/v3/coins/${asset.coingeckoId}/market_chart/range?vs_currency=usd&from=${BigInt(start).toString()}&to=${BigInt(end).toString()}${interval ? `&interval=${interval}` : ""}`;
+  const data = await fetch(url, {
+    headers: {
+      "x-cg-pro-api-key": process.env.COINGECKO_API_KEY ?? "",
+    },
+    next: {
+      revalidate: secondsToHours(1),
+    },
+  });
+  const response = await data.json();
 
   const validated = CoinGeckoHistoricPricesSchema.safeParse(response);
   if (!validated.success) {

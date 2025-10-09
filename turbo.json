@@ -19,15 +19,13 @@
       "env": [
         "NODE_ENV",
         "API_CACHE_URL",
-        "NEUTRON_RPC_URL",
         "NEXT_PUBLIC_FF_COVENANTS_VIEW_POL",
         "NEXT_PUBLIC_FF_REBALANCER_NONUSDC_VALUE",
         "NEXT_PUBLIC_FF_ENABLE_MULTIPLE_ACCTS",
         "NEXT_PUBLIC_FF_AUCTIONS_LIVE_AGGREGATE",
         "INDEXER_API_KEY",
         "NEXT_PUBLIC_CHAIN_ID",
-        "COINGECKO_API_KEY",
-        "SUBCRIBE_GOOGLE_FORM_ID"
+        "COINGECKO_API_KEY"
       ]
     },
     "start": {

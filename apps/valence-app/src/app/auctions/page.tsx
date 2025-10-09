@@ -1,5 +1,3 @@
-import { FeatureFlags, isFeatureFlagEnabled } from "@/utils";
-import { redirect } from "next/navigation";
 import { Metadata } from "next";
 import { X_HANDLE } from "@valence-ui/socials";
 import { LiveAuctionsHero, LiveAuctionsTable } from "@/app/auctions/components";
@@ -9,6 +7,8 @@ import { fetchLiveAuctions, fetchAssetMetadata } from "@/server/actions";
 import { chainConfig, ABSOLUTE_URL, AUCTIONS_DESCRIPTION } from "@/const";
 
 export const revalidate = 60;
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Auctions",
@@ -28,9 +28,6 @@ export const metadata: Metadata = {
 };
 
 export default async function AuctionsPage() {
-  const isEnabled = isFeatureFlagEnabled(FeatureFlags.AUCTIONS_LIVE_AGGREGATE);
-  if (!isEnabled) redirect("/");
-
   return (
     <main className="flex grow flex-col bg-valence-white p-4">
       <LiveAuctionsHero />

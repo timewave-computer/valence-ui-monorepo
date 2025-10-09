@@ -45,7 +45,7 @@ export const useLivePortfolio = ({
     queryFn: async () => {
       return fetchAuctionStatuses();
     },
-    retry: (errorCount) => errorCount < 1,
+    retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
@@ -93,9 +93,7 @@ export const useLivePortfolio = ({
       {
         refetchInterval: 60 * 1000 * 5,
         enabled: isFetchEnabled,
-        retry: (errorCount) => {
-          return errorCount < 2;
-        },
+        retry: false,
         queryKey: [QUERY_KEYS.AUCTION_BALANCES, accountAddress, auctionStatus],
         queryFn: async (): Promise<BalanceReturnValue> => {
           const auctionBalances = await fetchAuctionBalances({

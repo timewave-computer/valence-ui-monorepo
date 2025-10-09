@@ -54,6 +54,7 @@ export const useHistoricalGraph = ({
       historicalValues?.data?.length,
       priceSource,
     ],
+    retry: false,
     enabled:
       !config.isLoading &&
       !livePortfolio.isLoading &&

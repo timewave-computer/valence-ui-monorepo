@@ -53,6 +53,7 @@ export const useHistoricValues = ({
   } = useHistoricPrices();
 
   const historicalValues = useQuery({
+    retry: false,
     queryKey: [
       QUERY_KEYS.COMBINED_HISTORICAL_VALUE_DATA,
       targets,

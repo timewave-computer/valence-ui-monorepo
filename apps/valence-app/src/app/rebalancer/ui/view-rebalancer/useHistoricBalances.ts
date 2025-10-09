@@ -19,9 +19,7 @@ export const useHistoricBalances = ({
     refetchInterval: 0,
     staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: accountAddress.length > 0,
-    retry: (errorCount) => {
-      return errorCount < 1;
-    },
+    retry: false,
     queryKey: [
       QUERY_KEYS.HISTORIC_BALANCES,
       accountAddress,

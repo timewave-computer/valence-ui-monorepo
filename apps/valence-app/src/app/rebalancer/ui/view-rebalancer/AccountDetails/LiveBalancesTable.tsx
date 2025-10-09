@@ -102,7 +102,7 @@ export const LiveBalancesTable: React.FC<{}> = ({}) => {
       );
     }, 0);
     return total ?? 0;
-  }, [data, livePortfolio?.balances]);
+  }, [livePortfolio?.balances]);
 
   const isLoading = isBalancesLoading || isConfigLoading;
 

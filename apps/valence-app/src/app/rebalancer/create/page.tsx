@@ -11,6 +11,8 @@ import {
 } from "@tanstack/react-query";
 import { prefetchAssetMetdata, prefetchLivePrices } from "@/server/prefetch";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Start Rebalancing",
   description: CREATE_REBALANCER_DESCRIPTION,

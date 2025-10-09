@@ -12,7 +12,7 @@ export const useHistoricPrices = () => {
       staleTime: 60 * 1000 * 10, // 10 mins
       queryKey: [QUERY_KEYS.HISTORIC_PRICES_COINGECKO, asset.denom],
       refetchInterval: 0,
-      retry: (errorCount: number) => errorCount < 1,
+      retry: false,
       queryFn: async () => {
         const data = await fetchHistoricalPricesV2({
           denom: asset.denom,
@@ -27,7 +27,7 @@ export const useHistoricPrices = () => {
       staleTime: 60 * 1000 * 10, // 10 mins
       queryKey: [QUERY_KEYS.HISTORIC_PRICES_ORACLE, asset.denom],
       refetchInterval: 0,
-      retry: (errorCount: number) => errorCount < 1,
+      retry: false,
       queryFn: () => fetchOraclePrices(asset.denom),
     })),
   });
