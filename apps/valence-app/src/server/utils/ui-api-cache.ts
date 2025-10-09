@@ -9,7 +9,6 @@ import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 const _API_CACHE_URL = process.env.API_CACHE_URL;
 
 const getApiCacheUrl = () => {
-  if (!_API_CACHE_URL) throw new Error("Please provide API_CACHE_URL");
   return _API_CACHE_URL;
 };
 

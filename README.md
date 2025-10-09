@@ -15,41 +15,52 @@
   - socials: since source of URLS, domains, project links
   - ui-components: reusable UI components
 
-## Local development
+## Running Valence UI
 
-1. Set up development environment
-   **Prerequisites:** [Install Nix](https://nixos.org/download) and enable flakes:
+### 1. Prerequisites
 
-For a complete, reproducible development environment with all tools pre-configured:
+1. [Install Nix](https://nixos.org/download).
+2. Enable nix flakes:
 
 ```bash
-nix develop          # Enter development shell with Node.js 20, pnpm 9.0, turbo
-pnpm install
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
-2. Start application in dev mode
+### 2. Install project dependencies
 
 ```bash
+nix develop  # Enter development shell with Node.js, pnpm, turbo
+pnpm install # installs all dependencies
+```
 
+**Note**: if `pnpm install` fails on the `graz generate -g` postinstall step, trying rerunning `pnpm install`. This step can be flaky, but it will succeed with 2-3 tries.
+
+### 3. Run in production mode
+
+```bash
+turbo build --filter @valence-ui/valence-app
+turbo start --filter @valence-ui/valence-app
+```
+
+Access the app at the endpoint printed in the terminal.
+
+### 4. (Optional) Run in dev mode
+
+```bash
 # run specific app
 turbo dev --filter @valence-ui/valence-app ## starts main app
 turbo dev --filter @valence-ui/valence-static ## starts static site
 
 turbo dev # runs all apps (not recommended)
-
 ```
 
-### Production Build
+### 5. Deploying
 
-```bash
-turbo build ## Builds all
-turbo build --filter @valence-ui/valence-app
-turbo start --filter @valence-ui/valence-app
-```
+Each app in `apps/` can be deployed on vercel. You should be able to select the folder without issue.
 
 ## Contributing
 
-### How to add a package
+### Adding a package
 
 - create a folder under packages with the following files, which import global project config (can copy from another package)
   - tsconfig.json
@@ -61,7 +72,7 @@ turbo start --filter @valence-ui/valence-app
 - import the package from other repos
 - add short description to README
 
-### How to add an app
+### Adding an app
 
 - create the app in the `apps` folder
 - add same files as needed above (can use valence-static or ui-sandbox as template)

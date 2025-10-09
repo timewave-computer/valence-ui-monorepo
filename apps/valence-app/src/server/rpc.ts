@@ -3,19 +3,9 @@ import { ERROR_MESSAGES, ErrorHandler } from "@/const/error";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { StargateClient } from "@cosmjs/stargate";
 
-let NEUTRON_RPC = process.env.NEUTRON_RPC_URL;
-
-export const getNeutronRpc = () => {
-  // This code runs only in the backend (Node.js environment)
-  if (!NEUTRON_RPC) {
-    throw new Error("Please provide NEUTRON_RPC_URL");
-  }
-  return NEUTRON_RPC;
-};
-
 const getRpcUrl = (chainId: string) => {
   const urls = {
-    "neutron-1": getNeutronRpc(),
+    "neutron-1": "https://rpc-lb.neutron.org",
     "pion-1": "https://rpc-falcron.pion-1.ntrn.tech",
   };
   return urls[chainId];

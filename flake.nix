@@ -46,8 +46,6 @@
           echo "Turbo: $(turbo --version)"
           echo ""
           
-          ${wasmEnvSetup}
-          
           echo "Quick Setup:"
           echo "  pnpm install     - Install project dependencies"
           echo "  pnpm dev         - Start development servers"
