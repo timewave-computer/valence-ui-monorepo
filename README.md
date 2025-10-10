@@ -1,13 +1,13 @@
 # Monorepo for Valence UI
 
-This repository contains all applications, shared packages, and configuration files for the **Valence UI** ecosystem.
+This repository contains all applications, shared packages, and configuration files for the [Valence Protocol](https://github.com/timewave-computer/valence-protocol) ecosystem.
 
 ## Folder structure
 
 ### Apps
 
-- **valence-app** – Main application interface for Valence UI
-- **valence-static** – Landing page and blog
+- **valence-app** – Main application interface for Valence UI. Application interface for Rebalancer, Auctions, and Valence Programs
+- **valence-static** – Valence landing page and blog
 - **ui-sandbox** – Component library and development playground
 
 ### Packages
